@@ -20,6 +20,17 @@
                 "users": {
                     "tenants": 1,
                     "users_per_tenant": 1
+                },
+                "quota": {
+                    "neutron": {
+                        "network": -1,
+                        "port": -1
+                    },
+                    "nova": {
+                        "instances": -1,
+                        "cores": -1,
+                        "ram": -1
+                    }
                 }
             }
         }
