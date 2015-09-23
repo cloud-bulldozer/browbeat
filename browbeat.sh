@@ -1,17 +1,12 @@
 #!/bin/bash
 source ~/stackrc
 DEBUG=true
-#WORKERS="metadata_workers|osapi_compute_workers|ec2_workers|public_workers|admin_workers|rpc_workers|api_workers"
 CONTROLLERS=$(nova list | grep control)
 SSH_OPTS="StrictHostKeyChecking no"
 declare -A WORKERS
 WORKERS["keystone"]="public_workers|admin_workers"
 WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers"
 WORKERS["neutron"]="rpc_workers|api_workers"
-
-#
-# So this function pulls the current config from the hosts and just presents it -- doesn't store or use it... we could change this.
-#
 
 check_controllers()
 {
@@ -28,11 +23,6 @@ check_controllers()
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]}
  done
 }
-
-
-#
-#  This will update each of the functions - we pass which one to update.
-#
 
 update_workers()
 {
@@ -63,7 +53,6 @@ update_workers()
   for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
     echo "Copying Config files"
     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
-    #ssh -o "${SSH_OPTS}" heat-admin@$IP sudo sed -i -e 's/$i.*/${i}=${wkr_count}/g' ${services[$worker]}
     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
   done
  done
@@ -71,7 +60,12 @@ update_workers()
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-keystone"
  fi
-
+ if [ "${osp_service}" == "nova" ]; then
+  IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-api"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-conductor"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-scheduler"
+ fi
 }
 
 
