@@ -135,16 +135,17 @@ fi
 # 4) Re-Run tests above
 #
 
-
+mkdir -p results
 check_controllers
 for num_wkrs in `seq 24 -2 2`; do
 #for num_wkrs in 12; do
+  num_wkr_padded="$(printf "%02d" ${num_wkrs})"
   # Update number of workers
   update_workers ${num_wkrs} keystone
   # Show number of workers
   check_controllers
   # Run Rally $SERVICE test
-  run_rally keystone "test001-${num_wkrs}"
+  run_rally keystone "test001-${num_wkr_padded}"
 done
 update_workers 24 keystone
 check_controllers
