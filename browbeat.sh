@@ -8,6 +8,14 @@ WORKERS["keystone"]="public_workers|admin_workers"
 WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers"
 WORKERS["neutron"]="rpc_workers|api_workers"
 
+declare -A TIMES 
+TIMES["keystone"]=5000
+TIMES["nova"]=128
+
+declare -A CONCURRENCY 
+CONCURRENCY["keystone"]="128 256 384"
+CONCURRENCY["nova"]="32 64 128"
+
 check_controllers()
 {
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
@@ -49,13 +57,13 @@ update_workers()
  fi
 
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-  #for i in $(echo $WORKERS | tr "|" "\n") ; do
   for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
-    echo "Copying Config files"
-    ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
-    ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
+     echo "Copying Config files to : $IP"
+     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
+     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
   done
  done
+
  if [ "${osp_service}" == "keystone" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-keystone"
@@ -66,8 +74,20 @@ update_workers()
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-conductor"
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-scheduler"
  fi
-}
 
+ sleep 5 # Give things time to come up
+
+ for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+  echo "Validate number of workers: "
+  keystone_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
+  nova_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Nn]ova" | wc -l)
+  echo "$IP - keystone- $keystone_num workers"
+  echo "$IP - nova - $nova_num workers"
+ # Keystone should be 2x for public and private + 1 for main process
+ # Nova should be 2x + 2, for conductor,api and console+scheduler
+ # Neutron ?
+ done
+}
 
 run_rally()
 {
@@ -88,15 +108,13 @@ run_rally()
  else
   test_prefix=$2
  fi
-
  for task_file in `ls ${osp_service}`
  do
   if [ ${task_file: -3} == "-cc" ]
   then
-   #for concur in 32 64 128 256 384
-   for concur in 128 256 384
+   for concur in ${CONCURRENCY[${osp_service}]} 
    do
-    times=5000
+    times=${TIMES[${osp_service}]}
     task_dir=$osp_service
     test_name="${test_prefix}-${task_file}-${concur}"
     echo "${test_name}"
@@ -112,7 +130,6 @@ run_rally()
     mv ${test_name}.html results/
 
     sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
-    sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
    done
   fi
  done
@@ -132,14 +149,17 @@ fi
 mkdir -p results
 check_controllers
 for num_wkrs in `seq 24 -2 2`; do
-#for num_wkrs in 12; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
-  # Update number of workers
+
   update_workers ${num_wkrs} keystone
-  # Show number of workers
   check_controllers
-  # Run Rally $SERVICE test
-  run_rally keystone "test001-${num_wkr_padded}"
+  run_rally keystone "test001-keystone-${num_wkr_padded}"
+
+  update_workers ${num_wkrs} nova 
+  check_controllers
+  run_rally nova "test001-nova-${num_wkr_padded}"
+
 done
 update_workers 24 keystone
+update_workers 24 nova 
 check_controllers

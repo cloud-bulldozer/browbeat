@@ -13,7 +13,7 @@
       },
       "runner": {
         "concurrency": 1,
-        "times": 1,
+        "times": 5000,
         "type": "constant"
       }
     }
