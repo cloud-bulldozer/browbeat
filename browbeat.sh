@@ -130,6 +130,7 @@ run_rally()
     mv ${test_name}.html results/
 
     sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
+    sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
    done
   fi
  done
