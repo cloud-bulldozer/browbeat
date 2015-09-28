@@ -8,11 +8,11 @@ WORKERS["keystone"]="public_workers|admin_workers"
 WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers"
 WORKERS["neutron"]="rpc_workers|api_workers"
 
-declare -A TIMES 
+declare -A TIMES
 TIMES["keystone"]=5000
 TIMES["nova"]=128
 
-declare -A CONCURRENCY 
+declare -A CONCURRENCY
 CONCURRENCY["keystone"]="64 96 128 256"
 CONCURRENCY["nova"]="32 64 128"
 
@@ -66,13 +66,25 @@ update_workers()
 
  if [ "${osp_service}" == "keystone" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-keystone"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-keystone"
+  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-keystone"
+  done
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-keystone"
  fi
  if [ "${osp_service}" == "nova" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-api"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-conductor"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource restart openstack-nova-scheduler"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-api"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-conductor"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-scheduler"
+  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-api"
+   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-conductor"
+   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-scheduler"
+  done
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-api"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-conductor"
+  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-scheduler"
  fi
 
  sleep 5 # Give things time to come up
@@ -112,7 +124,7 @@ run_rally()
  do
   if [ ${task_file: -3} == "-cc" ]
   then
-   for concur in ${CONCURRENCY[${osp_service}]} 
+   for concur in ${CONCURRENCY[${osp_service}]}
    do
     times=${TIMES[${osp_service}]}
     task_dir=$osp_service
@@ -157,11 +169,11 @@ for num_wkrs in `seq 24 -2 2`; do
   check_controllers
   run_rally keystone "test001-keystone-${num_wkr_padded}"
 
-  update_workers ${num_wkrs} nova 
+  update_workers ${num_wkrs} nova
   check_controllers
   run_rally nova "test001-nova-${num_wkr_padded}"
 
 done
 update_workers 24 keystone
-update_workers 24 nova 
+update_workers 24 nova
 check_controllers
