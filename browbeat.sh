@@ -13,7 +13,7 @@ TIMES["keystone"]=5000
 TIMES["nova"]=128
 
 declare -A CONCURRENCY 
-CONCURRENCY["keystone"]="128 256 384"
+CONCURRENCY["keystone"]="64 96 128 256"
 CONCURRENCY["nova"]="32 64 128"
 
 check_controllers()
@@ -116,7 +116,8 @@ run_rally()
    do
     times=${TIMES[${osp_service}]}
     task_dir=$osp_service
-    test_name="${test_prefix}-${task_file}-${concur}"
+    concur_padded="$(printf "%04d" ${concur})"
+    test_name="${test_prefix}-${task_file}-${concur_padded}"
     echo "${test_name}"
     sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
