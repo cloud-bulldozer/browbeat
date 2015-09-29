@@ -1,6 +1,8 @@
 #!/bin/bash
 source ~/stackrc
 DEBUG=true
+CONNMON=true
+CONNMON_PID=0
 CONTROLLERS=$(nova list | grep control)
 SSH_OPTS="StrictHostKeyChecking no"
 declare -A WORKERS
@@ -138,8 +140,18 @@ run_rally()
     log Test-Name ${test_name}
     sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
+    if $CONNMON ; then
+        log Starting connmon
+        connmon ${task_dir} ${task_name} > /dev/null 2>&1 &
+        CONNMON_PID=$!
+    fi
 
     rally task start --task ${task_dir}/${task_file} 2>&1 | tee ${test_name}.log
+
+    if $CONNMON ; then
+        log Stopping connmon
+        kill -9 $CONNMON_PID
+    fi
 
     # grep the log file for the results to be run
     test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
