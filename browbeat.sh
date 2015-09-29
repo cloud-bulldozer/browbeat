@@ -16,18 +16,23 @@ declare -A CONCURRENCY
 CONCURRENCY["keystone"]="64 96 128 256"
 CONCURRENCY["nova"]="32 64 128"
 
+log()
+{
+    echo "[$(date)]: $*"
+}
+
 check_controllers()
 {
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   # Number of cores?
   CORES=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /proc/cpuinfo | grep processor | wc -l)
-  echo " ------------------- Controller : $IP -------------------"
-  echo " -- Number of cores : $CORES --"
-  echo " :::: Service : Keystone ::::"
+  log Controller : $IP
+  log Number of cores : $CORES
+  log Service : Keystone
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]}
-  echo " :::: Service : Nova ::::"
+  log Service : Nova
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]}
-  echo " :::: Service : Neutron ::::"
+  log Service : Neutron
   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]}
  done
 }
@@ -43,7 +48,7 @@ update_workers()
   echo "ERROR : Pass # of workers to use"
   exit 1
  else
-  echo " Setting : $1 for number of workers"
+  log Setting : $1 for number of workers
   wkr_count=$1
  fi
  if [ -z "$2" ] ; then
@@ -52,13 +57,13 @@ update_workers()
   echo "Valid services : keystone, nova, neutron"
   exit 1
  else
-  echo "Updating : $2"
+  log Updating : $2
   osp_service=$2
  fi
 
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
-     echo "Copying Config files to : $IP"
+     log Copying Config files to : $IP
      ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
      ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
   done
@@ -90,11 +95,11 @@ update_workers()
  sleep 5 # Give things time to come up
 
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-  echo "Validate number of workers: "
+  log Validate number of workers
   keystone_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
   nova_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Nn]ova" | wc -l)
-  echo "$IP - keystone- $keystone_num workers"
-  echo "$IP - nova - $nova_num workers"
+  log $IP : keystone : $keystone_num workers
+  log $IP : nova : $nova_num workers
  # Keystone should be 2x for public and private + 1 for main process
  # Nova should be 2x + 2, for conductor,api and console+scheduler
  # Neutron ?
@@ -111,7 +116,7 @@ run_rally()
  else
   echo "Benchmarking : $1"
   osp_service=$1
- fi
+  fi
  if [ -z "$2" ] ; then
   echo "ERROR : Pass test_prefix to run rally tests"
   echo "Usage : run_rally SERVICE TEST_PREFIX"
@@ -130,7 +135,7 @@ run_rally()
     task_dir=$osp_service
     concur_padded="$(printf "%04d" ${concur})"
     test_name="${test_prefix}-${task_file}-${concur_padded}"
-    echo "${test_name}"
+    log Test-Name ${test_name}
     sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
 
@@ -150,7 +155,7 @@ run_rally()
 }
 
 if $DEBUG ; then
-  echo "$CONTROLLERS"
+  log $CONTROLLERS
 fi
 
 #
