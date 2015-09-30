@@ -1,14 +1,15 @@
 import csv
 import sys
 from datetime import datetime
-import matplotlib as mpl
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
 from pylab import rcParams
 rcParams['figure.figsize'] = 18, 10
 
 services=['nova-scheduler','keystone-all','nova-api','nova-conductor']
-color_wheel=['r','g','b']
+color_wheel=['r','g','b','y']
 
 data = {}
 for service in services :
@@ -29,6 +30,7 @@ for row in reader:
             data[service][row['host']]['datetime'].append(datetime.strptime(row['datetime'],'%Y-%m-%d %H:%M:%S'))
             data[service][row['host']]['conn'].append(row['conn'])
             data[service][row['host']]['maxconn'].append(row['maxconn'])
+            data[service][row['host']]['ckout'].append(row['ckout'])
 
 for service in data :
     pos=0
@@ -42,4 +44,19 @@ for service in data :
 
     plt.legend(["%s-controller0"%service,"%s-controller1"%service,"%s-controller2"%service])
     plt.savefig("%s_%s-maxconnctions.png"%(sys.argv[1],service), bbox_inches='tight')
+    plt.close()
+
+    pos=0
+    for host in data[service] :
+        plt.title("Service : %s" % service)
+        plt.xlabel("Time")
+        plt.ylabel("Connections")
+        controller,=plt.plot_date(data[service][host]['datetime'][1::30],data[service][host]['conn'][1::30],'c',linewidth=4,label="%s-controller0-conn"%service)
+        controller1,=plt.plot_date(data[service][host]['datetime'][1::30],data[service][host]['ckout'][1::30],'c',linewidth=1,label="%s-controller0-ckout"%service)
+        controller.set_color(color_wheel[pos])
+        controller1.set_color(color_wheel[pos])
+        pos=pos+1
+
+    plt.legend(["%s-controller0-conn"%service,"%s-controller0-ckout"%service,"%s-controller1-conn"%service,"%s-controller1-ckout"%service,"%s-controller2-conn"%service,"%s-controller2-ckout"%service])
+    plt.savefig("%s_%s-connctions.png"%(sys.argv[1],service), bbox_inches='tight')
     plt.close()
