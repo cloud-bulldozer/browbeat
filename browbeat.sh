@@ -142,7 +142,7 @@ run_rally()
     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
     if $CONNMON ; then
         log Starting connmon
-        connmon ${task_dir} ${task_name} > /dev/null 2>&1 &
+        connmon results ${test_name} > /dev/null 2>&1 &
         CONNMON_PID=$!
     fi
 
