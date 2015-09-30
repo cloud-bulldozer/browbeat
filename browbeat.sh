@@ -31,11 +31,11 @@ check_controllers()
   log Controller : $IP
   log Number of cores : $CORES
   log Service : Keystone
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]}
+  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
   log Service : Nova
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]}
+  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
   log Service : Neutron
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]}
+  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]})
  done
 }
 
