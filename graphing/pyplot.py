@@ -1,35 +1,45 @@
 import csv
+import sys
 from datetime import datetime
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.cbook as cbook
+from pylab import rcParams
+rcParams['figure.figsize'] = 18, 10
 
 services=['nova-scheduler','keystone-all','nova-api','nova-conductor']
+color_wheel=['r','g','b']
 
-# Build Struct.
 data = {}
 for service in services :
     data[service] = {}
-    data[service]['datetime'] = []
-    data[service]['host'] = []
-    data[service]['maxconn'] = []
-    data[service]['conn'] = []
-    data[service]['ckout'] = []
 
-reader = csv.DictReader(open('test001-nova-24-nova-boot-list-cc-0128-connmon_2015-09-29_192137.csv'))
+reader = csv.DictReader(open(sys.argv[1]))
 for row in reader:
     for service in services :
-        if row['progname'] == service :
-            data[service]['datetime'].append(datetime.strptime(row['datetime'],'%Y-%m-%d %H:%M:%S'))
-            data[service]['conn'].append(row['conn'])
-            data[service]['maxconn'].append(row['maxconn'])
+        if not row['host'] in data[service].keys() :
+            data[service][row['host']] = {}
+            data[service][row['host']]['datetime'] = []
+            data[service][row['host']]['host'] = []
+            data[service][row['host']]['maxconn'] = []
+            data[service][row['host']]['conn'] = []
+            data[service][row['host']]['ckout'] = []
 
-plt.title("Service : %s" % service)
-plt.xlabel("Date Time")
-plt.ylabel("Max Connections")
-keystone,=plt.plot_date(data['keystone-all']['datetime'][1::30],data['keystone-all']['maxconn'][1::30],'c',linewidth=2,label="keystone")
-conductor,=plt.plot_date(data['nova-conductor']['datetime'][1::30],data['nova-conductor']['maxconn'][1::30],'g',linewidth=2, label="nova-condcutor")
-api,=plt.plot_date(data['nova-api']['datetime'][1::30],data['nova-api']['maxconn'][1::30],'r',linewidth=2,label="nova-api")
-scheduler,=plt.plot_date(data['nova-scheduler']['datetime'][1::30],data['nova-scheduler']['maxconn'][1::30],'b',linewidth=2, label="nova-scheduler")
-plt.legend([keystone,conductor,api,scheduler],['keystone','nova-conductor','nova-api','nova-scheduler'])
-plt.show()
+        if row['progname'] == service :
+            data[service][row['host']]['datetime'].append(datetime.strptime(row['datetime'],'%Y-%m-%d %H:%M:%S'))
+            data[service][row['host']]['conn'].append(row['conn'])
+            data[service][row['host']]['maxconn'].append(row['maxconn'])
+
+for service in data :
+    pos=0
+    for host in data[service] :
+        plt.title("Service : %s" % service)
+        plt.xlabel("Time")
+        plt.ylabel("Max Connections")
+        controller,=plt.plot_date(data[service][host]['datetime'][1::30],data[service][host]['maxconn'][1::30],'c',linewidth=2,label="%s-controller0"%service)
+        controller.set_color(color_wheel[pos])
+        pos=pos+1
+
+    plt.legend(["%s-controller0"%service,"%s-controller1"%service,"%s-controller2"%service])
+    plt.savefig("%s_%s-maxconnctions.png"%(sys.argv[1],service), bbox_inches='tight')
+    plt.close()
