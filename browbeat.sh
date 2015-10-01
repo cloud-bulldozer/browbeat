@@ -179,7 +179,7 @@ fi
 
 mkdir -p results
 check_controllers
-for num_wkrs in `seq 24 -2 2`; do
+for num_wkrs in `seq 24 -4 4`; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
   update_workers ${num_wkrs} keystone
