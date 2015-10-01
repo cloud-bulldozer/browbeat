@@ -140,6 +140,7 @@ run_rally()
     log Test-Name ${test_name}
     sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
+    truncate_token_bloat
     if $CONNMON ; then
         log Starting connmon
         connmon results ${test_name} > /dev/null 2>&1 &
@@ -165,6 +166,14 @@ run_rally()
   fi
  done
 }
+
+truncate_token_bloat()
+{
+ log "Truncating Token Bloat"
+ IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
+ ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "mysql keystone -e 'truncate token;'"
+}
+
 
 if $DEBUG ; then
   log $CONTROLLERS
