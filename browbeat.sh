@@ -15,7 +15,7 @@ TIMES["keystone"]=5000
 TIMES["nova"]=128
 
 declare -A CONCURRENCY
-CONCURRENCY["keystone"]="64 96 128 256"
+CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
 CONCURRENCY["nova"]="32 64 128"
 
 log()
