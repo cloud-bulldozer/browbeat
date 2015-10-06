@@ -4,6 +4,8 @@ DEBUG=true
 CONNMON=true
 CONNMON_PID=0
 CONTROLLERS=$(nova list | grep control)
+PBENCH=true
+PBENCH_INTERVAL=2
 SSH_OPTS="StrictHostKeyChecking no"
 declare -A WORKERS
 WORKERS["keystone"]="public_workers|admin_workers"
@@ -147,7 +149,13 @@ run_rally()
         CONNMON_PID=$!
     fi
 
-    rally task start --task ${task_dir}/${task_file} 2>&1 | tee ${test_name}.log
+    if $PBENCH ; then
+     setup_pbench
+     user-benchmark --config=${test_name} -- "./browbeat-run-rally.sh ${task_dir}/${task_file} ${test_name}"
+    else
+     # pbench is off, just run rally directly
+     rally task start --task ${task_dir}/${task_file} 2>&1 | tee ${test_name}.log
+    fi
 
     if $CONNMON ; then
         log Stopping connmon
@@ -157,6 +165,14 @@ run_rally()
     # grep the log file for the results to be run
     test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
     rally task report ${test_id} --out ${test_name}.html
+    if $PBENCH ; then
+     pbench_results_dir=`find /var/lib/pbench-agent/ -name "*${test_prefix}*" -print`
+     log "Copying rally report and log into ${pbench_results_dir}"
+     cp ${test_name}.log ${pbench_results_dir}
+     cp ${test_name}.html ${pbench_results_dir}
+     move-results --prefix=${test_prefix}/${task_file}-${concur}
+     clear-tools
+    fi
     mv ${test_name}.log results/
     mv ${test_name}.html results/
 
@@ -164,6 +180,25 @@ run_rally()
     sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
    done
   fi
+ done
+}
+
+setup_pbench()
+{
+ log "Setting up pbench tools"
+ clear-tools
+ kill-tools
+ register-tool --name=mpstat -- --interval=${PBENCH_INTERVAL}
+ register-tool --name=iostat -- --interval=${PBENCH_INTERVAL}
+ register-tool --name=sar -- --interval=${PBENCH_INTERVAL}
+ register-tool --name=vmstat -- --interval=${PBENCH_INTERVAL}
+ register-tool --name=pidstat -- --interval=${PBENCH_INTERVAL}
+ for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+  register-tool --name=mpstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  register-tool --name=iostat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  register-tool --name=sar --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  register-tool --name=vmstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  register-tool --name=pidstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
  done
 }
 
