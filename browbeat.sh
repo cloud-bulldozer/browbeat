@@ -188,11 +188,11 @@ setup_pbench()
  log "Setting up pbench tools"
  clear-tools
  kill-tools
- register-tool --name=mpstat -- --interval=${PBENCH_INTERVAL}
- register-tool --name=iostat -- --interval=${PBENCH_INTERVAL}
- register-tool --name=sar -- --interval=${PBENCH_INTERVAL}
- register-tool --name=vmstat -- --interval=${PBENCH_INTERVAL}
- register-tool --name=pidstat -- --interval=${PBENCH_INTERVAL}
+ sudo /opt/pbench-agent/util-scripts/register-tool --name=mpstat -- --interval=${PBENCH_INTERVAL}
+ sudo /opt/pbench-agent/util-scripts/register-tool --name=iostat -- --interval=${PBENCH_INTERVAL}
+ sudo /opt/pbench-agent/util-scripts/register-tool --name=sar -- --interval=${PBENCH_INTERVAL}
+ sudo /opt/pbench-agent/util-scripts/register-tool --name=vmstat -- --interval=${PBENCH_INTERVAL}
+ sudo /opt/pbench-agent/util-scripts/register-tool --name=pidstat -- --interval=${PBENCH_INTERVAL}
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   register-tool --name=mpstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
   register-tool --name=iostat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
