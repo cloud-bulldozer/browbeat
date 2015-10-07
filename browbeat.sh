@@ -210,6 +210,12 @@ truncate_token_bloat()
 }
 
 
+if [ ! $# == 1 ]; then
+  echo "Usage: ./browbeat.sh <test_prefix>"
+  exit
+fi
+complete_test_prefix=$1
+
 if $DEBUG ; then
   log $CONTROLLERS
 fi
@@ -228,11 +234,11 @@ for num_wkrs in `seq 24 -4 4`; do
 
   update_workers ${num_wkrs} keystone
   check_controllers
-  run_rally keystone "test001-keystone-${num_wkr_padded}"
+  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}"
 
   update_workers ${num_wkrs} nova
   check_controllers
-  run_rally nova "test001-nova-${num_wkr_padded}"
+  run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}"
 
 done
 update_workers 24 keystone
