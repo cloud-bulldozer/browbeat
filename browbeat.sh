@@ -145,7 +145,7 @@ run_rally()
     truncate_token_bloat
     if $CONNMON ; then
         log Starting connmon
-        connmon results ${test_name} > /dev/null 2>&1 &
+        connmond --config connmon/config > connmond-${test_name} 2>&1 &
         CONNMON_PID=$!
     fi
 
@@ -160,6 +160,7 @@ run_rally()
     if $CONNMON ; then
         log Stopping connmon
         kill -9 $CONNMON_PID
+        mv current-run.csv ${test_name}
     fi
 
     # grep the log file for the results to be run
