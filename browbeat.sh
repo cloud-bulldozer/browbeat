@@ -2,6 +2,9 @@
 source ~/stackrc
 DEBUG=true
 CONNMON=true
+# Number of workers to test. This is a loop.
+NUM_WORKERS="24 12 6"
+RESET_WORKERS="24"
 CONNMON_PID=0
 CONTROLLERS=$(nova list | grep control)
 PBENCH=true
@@ -18,7 +21,14 @@ TIMES["nova"]=128
 
 declare -A CONCURRENCY
 CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
-CONCURRENCY["nova"]="32 64 128"
+CONCURRENCY["nova"]="8 16 32 48"
+
+ROOT=false
+LOGIN_USER="heat-admin"
+if [[ $(whoami) == "root" ]]; then
+    LOGIN_USER="root"
+    ROOT=true
+fi
 
 log()
 {
@@ -29,15 +39,15 @@ check_controllers()
 {
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   # Number of cores?
-  CORES=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /proc/cpuinfo | grep processor | wc -l)
+  CORES=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /proc/cpuinfo | grep processor | wc -l)
   log Controller : $IP
   log Number of cores : $CORES
   log Service : Keystone
-  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
+  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
   log Service : Nova
-  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
+  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
   log Service : Neutron
-  log $(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]})
+  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]})
  done
 }
 
@@ -68,40 +78,40 @@ update_workers()
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
      log Copying Config files to : $IP
-     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
-     ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
+     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
+     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
   done
  done
 
  if [ "${osp_service}" == "keystone" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-keystone"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-keystone"
   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-keystone"
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-keystone"
   done
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-keystone"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-keystone"
  fi
  if [ "${osp_service}" == "nova" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-api"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-conductor"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource unmanage openstack-nova-scheduler"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-api"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-conductor"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-scheduler"
   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-api"
-   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-conductor"
-   ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "systemctl restart openstack-nova-scheduler"
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-api"
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-conductor"
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-scheduler"
   done
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-api"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-conductor"
-  ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "pcs resource manage openstack-nova-scheduler"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-api"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-conductor"
+  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-scheduler"
  fi
 
  sleep 5 # Give things time to come up
 
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   log Validate number of workers
-  keystone_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
-  nova_num=$(ssh -o "${SSH_OPTS}" heat-admin@$IP sudo ps afx | grep "[Nn]ova" | wc -l)
+  keystone_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
+  nova_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova" | wc -l)
   log $IP : keystone : $keystone_num workers
   log $IP : nova : $nova_num workers
  # Keystone should be 2x for public and private + 1 for main process
@@ -195,11 +205,12 @@ setup_pbench()
  sudo /opt/pbench-agent/util-scripts/register-tool --name=vmstat -- --interval=${PBENCH_INTERVAL}
  sudo /opt/pbench-agent/util-scripts/register-tool --name=pidstat -- --interval=${PBENCH_INTERVAL}
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-  register-tool --name=mpstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
-  register-tool --name=iostat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
-  register-tool --name=sar --remote=${IP} -- --interval=${PBENCH_INTERVAL}
-  register-tool --name=vmstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
-  register-tool --name=pidstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=mpstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=iostat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=sar --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=vmstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=pidstat --remote=${IP} -- --interval=${PBENCH_INTERVAL}
+  sudo /opt/pbench-agent/util-scripts/register-tool --name=user-tool --remote=${IP} -- --tool-name=mariadb-conntrack --start-script=/opt/usertool/mariadb-track.sh
  done
 }
 
@@ -207,7 +218,7 @@ truncate_token_bloat()
 {
  log "Truncating Token Bloat"
  IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
- ssh -o "${SSH_OPTS}" heat-admin@$IP sudo "mysql keystone -e 'truncate token;'"
+ ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "mysql keystone -e 'truncate token;'"
 }
 
 
@@ -230,7 +241,8 @@ fi
 
 mkdir -p results
 check_controllers
-for num_wkrs in `seq 24 -4 4`; do
+#for num_wkrs in `seq 24 -4 4`; do
+for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
   update_workers ${num_wkrs} keystone
@@ -242,6 +254,6 @@ for num_wkrs in `seq 24 -4 4`; do
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}"
 
 done
-update_workers 24 keystone
-update_workers 24 nova
+update_workers ${RESET_WORKERS} keystone
+update_workers ${RESET_WORKERS} nova
 check_controllers
