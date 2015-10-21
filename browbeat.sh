@@ -6,6 +6,8 @@ CONNMON=true
 NUM_WORKERS="24 12 6"
 RESET_WORKERS="24"
 CONNMON_PID=0
+# Number of times we should rerun a Rally Scenario
+RERUN=3
 CONTROLLERS=$(nova list | grep control)
 PBENCH=true
 PBENCH_INTERVAL=2
@@ -139,56 +141,68 @@ run_rally()
  else
   test_prefix=$2
  fi
+
  for task_file in `ls ${osp_service}`
  do
+  task_dir=$osp_service
+
   if [ ${task_file: -3} == "-cc" ]
   then
+
    for concur in ${CONCURRENCY[${osp_service}]}
    do
-    times=${TIMES[${osp_service}]}
-    task_dir=$osp_service
-    concur_padded="$(printf "%04d" ${concur})"
-    test_name="${test_prefix}-${task_file}-${concur_padded}"
-    log Test-Name ${test_name}
-    sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
-    sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
-    truncate_token_bloat
-    if $CONNMON ; then
-        log Starting connmon
-        connmond --config connmon/config > connmond-${test_name} 2>&1 &
-        CONNMON_PID=$!
-    fi
 
-    if $PBENCH ; then
-     setup_pbench
-     user-benchmark --config=${test_name} -- "./browbeat-run-rally.sh ${task_dir}/${task_file} ${test_name}"
-    else
-     # pbench is off, just run rally directly
-     rally task start --task ${task_dir}/${task_file} 2>&1 | tee ${test_name}.log
-    fi
+    for ((i=1; i<=${RERUN}; i++))
+    do
 
-    if $CONNMON ; then
-        log Stopping connmon
-        kill -9 $CONNMON_PID
-        mv current-run.csv ${test_name}
-    fi
+     times=${TIMES[${osp_service}]}
+     concur_padded="$(printf "%04d" ${concur})"
+     test_name="${test_prefix}-iteration_$i-${task_file}-${concur_padded}"
+     log Test-Name ${test_name}
+     sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
+     sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
+     truncate_token_bloat
 
-    # grep the log file for the results to be run
-    test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
-    rally task report ${test_id} --out ${test_name}.html
-    if $PBENCH ; then
-     pbench_results_dir=`find /var/lib/pbench-agent/ -name "*${test_prefix}*" -print`
-     log "Copying rally report and log into ${pbench_results_dir}"
-     cp ${test_name}.log ${pbench_results_dir}
-     cp ${test_name}.html ${pbench_results_dir}
-     move-results --prefix=${test_prefix}/${task_file}-${concur}
-     clear-tools
-    fi
-    mv ${test_name}.log results/
-    mv ${test_name}.html results/
+     if $CONNMON ; then
+         log Starting connmon
+         connmond --config connmon/config > connmond-${test_name} 2>&1 &
+         CONNMON_PID=$!
+     fi
 
-    sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
-    sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
+     if $PBENCH ; then
+      setup_pbench
+      user-benchmark --config=${test_name} -- "./browbeat-run-rally.sh ${task_dir}/${task_file} ${test_name}"
+     else
+      # pbench is off, just run rally directly
+      rally task start --task ${task_dir}/${task_file} 2>&1 | tee ${test_name}.log
+     fi
+
+     if $CONNMON ; then
+      log Stopping connmon
+      kill -9 $CONNMON_PID
+      mv current-run.csv ${test_name}
+     fi
+
+     # grep the log file for the results to be run
+     test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
+     rally task report ${test_id} --out ${test_name}.html
+     if $PBENCH ; then
+      pbench_results_dir=`find /var/lib/pbench-agent/ -name "*${test_prefix}*" -print`
+      log "Copying rally report and log into ${pbench_results_dir}"
+      cp ${test_name}.log ${pbench_results_dir}
+      cp ${test_name}.html ${pbench_results_dir}
+      move-results --prefix=${test_prefix}/${task_file}-${concur}
+      clear-tools
+     fi
+     mv ${test_name}.log results/
+     mv ${test_name}.html results/
+
+     sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
+     sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
+    done
+
+    update_workers $3 keystone
+    update_workers $3 nova
    done
   fi
  done
@@ -241,17 +255,16 @@ fi
 
 mkdir -p results
 check_controllers
-#for num_wkrs in `seq 24 -4 4`; do
 for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
   update_workers ${num_wkrs} keystone
   check_controllers
-  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}"
+  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
 
   update_workers ${num_wkrs} nova
   check_controllers
-  run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}"
+  run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
 
 done
 update_workers ${RESET_WORKERS} keystone
