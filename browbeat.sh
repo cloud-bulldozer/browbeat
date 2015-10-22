@@ -113,12 +113,21 @@ update_workers()
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   log Validate number of workers
   keystone_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
-  nova_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova" | wc -l)
-  log $IP : keystone : $keystone_num workers
-  log $IP : nova : $nova_num workers
- # Keystone should be 2x for public and private + 1 for main process
- # Nova should be 2x + 2, for conductor,api and console+scheduler
- # Neutron ?
+  nova_api_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-api" | wc -l)
+  nova_conductor_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-conductor" | wc -l)
+  nova_scheduler_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-scheduler" | wc -l)
+  nova_consoleauth_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-consoleauth" | wc -l)
+  nova_novncproxy_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-novncproxy" | wc -l)
+  log $IP : keystone : $keystone_num workers admin/main combined
+  log $IP : nova-api : $nova_api_num workers
+  log $IP : nova-conductor : $nova_conductor_num workers
+  log $IP : nova-scheduler : $nova_scheduler_num workers
+  log $IP : nova-consoleauth : $nova_consoleauth_num workers
+  log $IP : nova-novncproxy : $nova_novncproxy_num workers
+
+  # Keystone should be 2x for admin and main + 1 for main process
+  # Nova should be 3x + 1 nova-api, core_count + 1 for conductor, and scheduler+consoleauth+novncproxy
+  # Neutron ?
  done
 }
 
@@ -234,7 +243,7 @@ truncate_token_bloat()
 
 
 if [ ! $# == 1 ]; then
-  echo "Usage: ./browbeat.sh <test_prefix>"
+  log "Usage: ./browbeat.sh <test_prefix>"
   exit
 fi
 complete_test_prefix=$1
