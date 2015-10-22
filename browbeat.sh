@@ -14,7 +14,7 @@ PBENCH_INTERVAL=2
 SSH_OPTS="StrictHostKeyChecking no"
 declare -A WORKERS
 WORKERS["keystone"]="public_workers|admin_workers"
-WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers"
+WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers|workers|#workers"
 WORKERS["neutron"]="rpc_workers|api_workers"
 
 declare -A TIMES
@@ -82,6 +82,8 @@ update_workers()
      log Copying Config files to : $IP
      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
+     i_without_hash=`echo ${i} | sed -e "s/^#//g"`
+     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9A-Za-z<>]\)*/${i_without_hash}=${wkr_count}/g\" ${services[$osp_service]}"
   done
  done
 
