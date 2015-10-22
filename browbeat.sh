@@ -199,13 +199,10 @@ run_rally()
 
      sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
-    done
-
-    update_workers $3 keystone
-    update_workers $3 nova
-   done
+    done  # RERUN
+   done  # Concurrency
   fi
- done
+ done  # Task Files
 }
 
 setup_pbench()
@@ -259,10 +256,11 @@ for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
   update_workers ${num_wkrs} keystone
+  update_workers ${num_wkrs} nova
+
   check_controllers
   run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
 
-  update_workers ${num_wkrs} nova
   check_controllers
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
 
