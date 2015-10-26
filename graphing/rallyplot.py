@@ -19,6 +19,7 @@ measurements = ['min', 'median', '90%ile', '95%ile', 'Max', 'Avg', 'Success%', '
 
 def main():
     compiled_results = OrderedDict()
+    compiled_issues = []
     # Should be /home/<user>/browbeat/graphing:
     rallyplot_path = os.path.dirname(os.path.realpath(__file__))
     browbeat_path = rallyplot_path.replace('/graphing', '')
@@ -47,26 +48,40 @@ def main():
                     iteration = int(extract_numbers.group(2))
                     concurrency = extract_numbers.group(3)
 
-                print 'Service: {}, Test: {}, Worker Count: {}, Concurrency: {}, Iteration: {}'.format(service, test, w_count, concurrency, iteration)
+                print 'Result_file: {}, Service: {}, Test: {}, Worker Count: {}, Concurrency: {}, Iteration: {}'.format(result_file, service, test, w_count, concurrency, iteration)
                 if iteration not in compiled_results[service][test]:
                     compiled_results[service][test][iteration] = OrderedDict()
                 if w_count not in compiled_results[service][test][iteration]:
-                    compiled_results[service][test][iteration][w_count] = OrderedDict()
+                    # Use a regular dict vs OrderedDict since, we may have multiple test runs and
+                    # worker count ordering should be done via sorted()
+                    compiled_results[service][test][iteration][w_count] = {}
                 if concurrency not in compiled_results[service][test][iteration][w_count]:
                     compiled_results[service][test][iteration][w_count][concurrency] = OrderedDict()
 
                 grep_cmd = subprocess.Popen(['grep', 'total', '{}/results/{}'.format(browbeat_path, result_file)],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, err =  grep_cmd.communicate()
-                output = [s.strip() for s in out.strip().split('|') if s]
-                compiled_results[service][test][iteration][w_count][concurrency]['min'] = output[1]
-                compiled_results[service][test][iteration][w_count][concurrency]['median'] = output[2]
-                compiled_results[service][test][iteration][w_count][concurrency]['90%ile'] = output[3]
-                compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = output[4]
-                compiled_results[service][test][iteration][w_count][concurrency]['Max'] = output[5]
-                compiled_results[service][test][iteration][w_count][concurrency]['Avg'] = output[6]
-                compiled_results[service][test][iteration][w_count][concurrency]['Success%'] = output[7].replace('%', '')
-                compiled_results[service][test][iteration][w_count][concurrency]['Count'] = output[8]
+                if len(out) == 0:
+                    print 'Could not find results. Setting to -1'
+                    compiled_issues.append(result_file)
+                    compiled_results[service][test][iteration][w_count][concurrency]['min'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['median'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['90%ile'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Max'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Avg'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Success%'] = '0'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Count'] = '-1'
+                else:
+                    output = [s.strip() for s in out.strip().split('|') if s]
+                    compiled_results[service][test][iteration][w_count][concurrency]['min'] = output[1]
+                    compiled_results[service][test][iteration][w_count][concurrency]['median'] = output[2]
+                    compiled_results[service][test][iteration][w_count][concurrency]['90%ile'] = output[3]
+                    compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = output[4]
+                    compiled_results[service][test][iteration][w_count][concurrency]['Max'] = output[5]
+                    compiled_results[service][test][iteration][w_count][concurrency]['Avg'] = output[6]
+                    compiled_results[service][test][iteration][w_count][concurrency]['Success%'] = output[7].replace('%', '')
+                    compiled_results[service][test][iteration][w_count][concurrency]['Count'] = output[8]
 
     rally_graph_dir = '{}/rally-compiled-graphs'.format(browbeat_path)
     if not os.path.exists(rally_graph_dir):
@@ -78,8 +93,8 @@ def main():
             # Assumption is all tests have same number of iterations!!!
             for iteration in compiled_results[service][test]:
                 for measurement in measurements:
-                    concurrency_dict = OrderedDict()
-                    for worker_count in compiled_results[service][test][iteration]:
+                    concurrency_dict = {}
+                    for worker_count in sorted(compiled_results[service][test][iteration].keys()):
                         for concurrency in compiled_results[service][test][iteration][worker_count]:
                             if concurrency not in concurrency_dict:
                                 concurrency_dict[concurrency] = []
@@ -92,21 +107,28 @@ def main():
                     print 'Iteration: {}'.format(iteration)
                     print 'Measurement: {}'.format(measurement)
                     print 'File Name: {}'.format(graph_file_name)
-                    print 'X-Axis (Worker Counts): {}'.format(compiled_results[service][test][iteration].keys())
+                    print 'X-Axis (Worker Counts): {}'.format(sorted(compiled_results[service][test][iteration].keys()))
                     print 'X-Axis (# of values per series): {}'.format(len(compiled_results[service][test][iteration].keys()))
                     print '# of Series (# of Concurrencies tested): {}'.format(len(compiled_results[service][test][iteration][worker_count].keys()))
-                    for series in concurrency_dict:
+                    for series in sorted(concurrency_dict):
                         print 'Series: {}, Values: {}'.format(series, concurrency_dict[series])
-                    print 'Legend: {}'.format(concurrency_dict.keys())
+                    print 'Legend: {}'.format(sorted(concurrency_dict.keys()))
                     print '----------------------------------------------------------'
                     plt.title('Service: {}, Test: {}, Iteration: {}'.format(service, test, iteration))
                     plt.xlabel('Workers')
                     plt.ylabel('{} Time (s)'.format(measurement))
-                    for series in concurrency_dict:
-                        plt.plot(compiled_results[service][test][iteration].keys(), concurrency_dict[series])
-                    plt.legend(concurrency_dict.keys())  # Constant Concurrencies
+                    for series in sorted(concurrency_dict.keys()):
+                        plt.plot(sorted(compiled_results[service][test][iteration].keys()), concurrency_dict[series])
+                    plt.legend(sorted(concurrency_dict.keys()))  # Constant Concurrencies
                     plt.savefig(graph_file_name, bbox_inches='tight')
                     plt.close()
+
+    # Print files that had an issue:
+    print '----------------------------------------------------------'
+    print 'Files missing results:'
+    print '----------------------------------------------------------'
+    for issue in compiled_issues:
+        print 'File: {}'.format(issue)
 
 
 if __name__ == "__main__":
