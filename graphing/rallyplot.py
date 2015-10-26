@@ -98,7 +98,7 @@ def main():
                         for concurrency in compiled_results[service][test][iteration][worker_count]:
                             if concurrency not in concurrency_dict:
                                 concurrency_dict[concurrency] = []
-                            concurrency_dict[concurrency].append(compiled_results[service][test][iteration][worker_count][concurrency][measurement])
+                            concurrency_dict[concurrency].append(float(compiled_results[service][test][iteration][worker_count][concurrency][measurement]))
 
                     graph_file_name = '{}/{}-{}-{}-{}.png'.format(rally_graph_dir, service, test, iteration, measurement)
                     print '----------------------------------------------------------'
@@ -114,12 +114,16 @@ def main():
                         print 'Series: {}, Values: {}'.format(series, concurrency_dict[series])
                     print 'Legend: {}'.format(sorted(concurrency_dict.keys()))
                     print '----------------------------------------------------------'
-                    plt.title('Service: {}, Test: {}, Iteration: {}'.format(service, test, iteration))
+                    plt.title('Service: {}, Test: {}, Iteration: {}\nGraphed from rally task log output'.format(service, test, iteration))
                     plt.xlabel('Workers')
                     plt.ylabel('{} Time (s)'.format(measurement))
                     for series in sorted(concurrency_dict.keys()):
-                        plt.plot(sorted(compiled_results[service][test][iteration].keys()), concurrency_dict[series])
-                    plt.legend(sorted(concurrency_dict.keys()))  # Constant Concurrencies
+                        plt_linewidth = 1
+                        if '-1' in concurrency_dict[series]:
+                            plt_linewidth = 2
+                        plt.plot(sorted(compiled_results[service][test][iteration].keys()),
+                            concurrency_dict[series], linewidth=plt_linewidth, label=series)
+                    plt.legend(loc='upper center', bbox_to_anchor=(1.12, 0.5), fancybox=True)
                     plt.savefig(graph_file_name, bbox_inches='tight')
                     plt.close()
 
