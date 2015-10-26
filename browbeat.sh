@@ -13,6 +13,7 @@ PBENCH=true
 PBENCH_INTERVAL=2
 SSH_OPTS="StrictHostKeyChecking no"
 
+# Keystone is running in Apache (httpd) rather than as openstack-keystone (Eventlet)
 KEYSTONE_IN_APACHE=true
 
 declare -A WORKERS
@@ -52,8 +53,8 @@ check_controllers()
   log Number of cores : $CORES
   log Service : Keystone
   if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
-   log "\_Admin:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]} | awk "{print $5 $6}")
-   log "\_Main:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_main.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]} | awk "{print $5 $6}")
+   log "\_Admin:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
+   log "\_Main:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_main.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
   else
    log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
   fi
@@ -139,12 +140,15 @@ update_workers()
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   log Validate number of workers
   keystone_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
+  keystone_admin_httpd_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone-admin" | wc -l)
+  keystone_main_httpd_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone-main" | wc -l)
   nova_api_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-api" | wc -l)
   nova_conductor_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-conductor" | wc -l)
   nova_scheduler_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-scheduler" | wc -l)
   nova_consoleauth_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-consoleauth" | wc -l)
   nova_novncproxy_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-novncproxy" | wc -l)
   log $IP : keystone : $keystone_num workers admin/main combined
+  log $IP : "keystone(httpd)"  : $keystone_admin_httpd_num admin workers, $keystone_main_httpd_num main workers
   log $IP : nova-api : $nova_api_num workers
   log $IP : nova-conductor : $nova_conductor_num workers
   log $IP : nova-scheduler : $nova_scheduler_num workers
