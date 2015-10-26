@@ -65,7 +65,7 @@ def main():
                 compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = output[4]
                 compiled_results[service][test][iteration][w_count][concurrency]['Max'] = output[5]
                 compiled_results[service][test][iteration][w_count][concurrency]['Avg'] = output[6]
-                compiled_results[service][test][iteration][w_count][concurrency]['Success%'] = output[7]
+                compiled_results[service][test][iteration][w_count][concurrency]['Success%'] = output[7].replace('%', '')
                 compiled_results[service][test][iteration][w_count][concurrency]['Count'] = output[8]
 
     rally_graph_dir = '{}/rally-compiled-graphs'.format(browbeat_path)
