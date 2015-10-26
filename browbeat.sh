@@ -12,8 +12,14 @@ CONTROLLERS=$(nova list | grep control)
 PBENCH=true
 PBENCH_INTERVAL=2
 SSH_OPTS="StrictHostKeyChecking no"
+
+KEYSTONE_IN_APACHE=true
+
 declare -A WORKERS
 WORKERS["keystone"]="public_workers|admin_workers"
+if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+ WORKERS["keystone"]="processes"
+fi
 WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers|workers|#workers"
 WORKERS["neutron"]="rpc_workers|api_workers"
 
@@ -45,7 +51,12 @@ check_controllers()
   log Controller : $IP
   log Number of cores : $CORES
   log Service : Keystone
-  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
+  if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+   log "\_Admin:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]} | awk "{print $5 $6}")
+   log "\_Main:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_main.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]} | awk "{print $5 $6}")
+  else
+   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
+  fi
   log Service : Nova
   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
   log Service : Neutron
@@ -80,20 +91,33 @@ update_workers()
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
      log Copying Config files to : $IP
-     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
-     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
-     i_without_hash=`echo ${i} | sed -e "s/^#//g"`
-     ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9A-Za-z<>]\)*/${i_without_hash}=${wkr_count}/g\" ${services[$osp_service]}"
+     if [[ "$osp_service" == "keystone" ]] && [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/\(processes\)\( \)*=\( \)*\([0-9]\)*/processes=${wkr_count}/g\" /etc/httpd/conf.d/10-keystone_wsgi_main.conf"
+      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/\(processes\)\( \)*=\( \)*\([0-9]\)*/processes=${wkr_count}/g\" /etc/httpd/conf.d/10-keystone_wsgi_admin.conf"
+     else
+      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
+      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
+      i_without_hash=`echo ${i} | sed -e "s/^#//g"`
+      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9A-Za-z<>]\)*/${i_without_hash}=${wkr_count}/g\" ${services[$osp_service]}"
+     fi
   done
  done
 
  if [ "${osp_service}" == "keystone" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-keystone"
-  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-keystone"
-  done
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-keystone"
+  if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage httpd"
+   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+    ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart httpd"
+   done
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage httpd"
+  else
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-keystone"
+   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+    ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-keystone"
+   done
+   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-keystone"
+  fi
  fi
  if [ "${osp_service}" == "nova" ]; then
   IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
