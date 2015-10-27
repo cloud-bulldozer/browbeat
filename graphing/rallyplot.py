@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 services = ['keystone', 'nova', 'neutron']
 
 # Saved Measurements:
-measurements = ['min', 'median', '90%ile', '95%ile', 'Max', 'Avg', 'Success%', 'Count']
+measurements = ['Min', 'Median', '90%ile', '95%ile', 'Max', 'Avg', 'Success%', 'Count']
 
 # Structure of compiled results dictionary:
 # results[service][test][iteration][#workers][concurrency][measurement] = value
@@ -64,8 +64,8 @@ def main():
                 if len(out) == 0:
                     print 'Could not find results. Setting to -1'
                     compiled_issues.append(result_file)
-                    compiled_results[service][test][iteration][w_count][concurrency]['min'] = '-1'
-                    compiled_results[service][test][iteration][w_count][concurrency]['median'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Min'] = '-1'
+                    compiled_results[service][test][iteration][w_count][concurrency]['Median'] = '-1'
                     compiled_results[service][test][iteration][w_count][concurrency]['90%ile'] = '-1'
                     compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = '-1'
                     compiled_results[service][test][iteration][w_count][concurrency]['Max'] = '-1'
@@ -74,8 +74,8 @@ def main():
                     compiled_results[service][test][iteration][w_count][concurrency]['Count'] = '-1'
                 else:
                     output = [s.strip() for s in out.strip().split('|') if s]
-                    compiled_results[service][test][iteration][w_count][concurrency]['min'] = output[1]
-                    compiled_results[service][test][iteration][w_count][concurrency]['median'] = output[2]
+                    compiled_results[service][test][iteration][w_count][concurrency]['Min'] = output[1]
+                    compiled_results[service][test][iteration][w_count][concurrency]['Median'] = output[2]
                     compiled_results[service][test][iteration][w_count][concurrency]['90%ile'] = output[3]
                     compiled_results[service][test][iteration][w_count][concurrency]['95%ile'] = output[4]
                     compiled_results[service][test][iteration][w_count][concurrency]['Max'] = output[5]
@@ -114,15 +114,20 @@ def main():
                         print 'Series: {}, Values: {}'.format(series, concurrency_dict[series])
                     print 'Legend: {}'.format(sorted(concurrency_dict.keys()))
                     print '----------------------------------------------------------'
-                    plt.title('Service: {}, Test: {}, Iteration: {}\nGraphed from rally task log output'.format(service, test, iteration))
+                    fig = plt.figure()
+                    plt.title('Service: {}, Test: {}, Iteration: {}, Measurement: {}\nGraphed from rally task log output'.format(service, test, iteration, measurement))
                     plt.xlabel('Workers')
                     plt.ylabel('{} Time (s)'.format(measurement))
+                    ax = fig.add_subplot(111)
                     for series in sorted(concurrency_dict.keys()):
                         plt_linewidth = 1
                         if '-1' in concurrency_dict[series]:
                             plt_linewidth = 2
                         plt.plot(sorted(compiled_results[service][test][iteration].keys()),
-                            concurrency_dict[series], linewidth=plt_linewidth, label=series)
+                            concurrency_dict[series], linewidth=plt_linewidth, label=series, marker='o')
+                        for x, y in zip(sorted(compiled_results[service][test][iteration].keys()), 
+                                concurrency_dict[series]):
+                            ax.annotate('%s' % y, xy=(x,y), xytext=(4,4), textcoords='offset points')
                     plt.legend(loc='upper center', bbox_to_anchor=(1.12, 0.5), fancybox=True)
                     plt.savefig(graph_file_name, bbox_inches='tight')
                     plt.close()
