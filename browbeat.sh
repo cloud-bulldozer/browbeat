@@ -202,9 +202,12 @@ run_rally()
      sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
      truncate_token_bloat
 
+     mkdir -p results/${test_prefix}/${task_file}/run-$i/
+
      if $CONNMON ; then
          log Starting connmon
-         connmond --config connmon/config > connmond-${test_name} 2>&1 &
+         sed -i 's/csv_dump:.*/csv_dump: results\/${test_prefix}\/${task_file}\/run-${i}\/current-run.csv/g' connmon/config
+         connmond --config connmon/config > /tmp/connmond-${test_name} 2>&1 &
          CONNMON_PID=$!
      fi
 
@@ -219,7 +222,7 @@ run_rally()
      if $CONNMON ; then
       log Stopping connmon
       kill -9 $CONNMON_PID
-      mv current-run.csv ${test_name}
+      mv results/${task_prefix}/${test_name}/run-$i/current-run.csv results/${task_prefix}/${test_name}/run-$i/${test_name}.csv
      fi
 
      # grep the log file for the results to be run
@@ -233,8 +236,8 @@ run_rally()
       move-results --prefix=${test_prefix}/${task_file}-${concur}
       clear-tools
      fi
-     mv ${test_name}.log results/
-     mv ${test_name}.html results/
+     mv ${test_name}.log results/${task_prefix}/${test_name}/run-$i/
+     mv ${test_name}.html results/${task_prefix}/${test_name}/run-$i/
 
      sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}

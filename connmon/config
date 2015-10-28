@@ -1,5 +1,5 @@
 [connmon_service_default]
 name: default
-csv_dump: ./current-run.csv
+csv_dump: ./csv_results.csv
 nodes:
-  node1 hostname=localhost:5800 bind=0.0.0.0 
+  node1 hostname=localhost:5800 bind=0.0.0.0
