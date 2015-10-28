@@ -23,6 +23,9 @@ for service in services :
     average[service]['max_checkedout_avg'] = 0
     average[service]['checkouts_per_second_avg'] = 0
 
+print "--------------------------------------------------------------------------------------"
+print "Reading File : %s" % sys.argv[1]
+print "--------------------------------------------------------------------------------------"
 reader = csv.DictReader(open(sys.argv[1]))
 for row in reader:
     for service in services :
