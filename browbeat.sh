@@ -3,7 +3,7 @@ source ~/stackrc
 DEBUG=true
 CONNMON=true
 # Number of workers to test. This is a loop.
-NUM_WORKERS="24 12 6"
+NUM_WORKERS="36 32 24 12 6"
 RESET_WORKERS="24"
 CONNMON_PID=0
 # Number of times we should rerun a Rally Scenario
@@ -30,7 +30,7 @@ TIMES["nova"]=128
 
 declare -A CONCURRENCY
 CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
-CONCURRENCY["nova"]="8 16 32 48"
+CONCURRENCY["nova"]="8 16 32 48 54"
 
 ROOT=false
 LOGIN_USER="heat-admin"
@@ -42,6 +42,21 @@ fi
 log()
 {
     echo "[$(date)]: $*"
+}
+
+clean_logs()
+{
+ for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
+  log Controller : $IP
+  log Clenaing Logs : Keystone
+  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
+  log Cleaning Logs : Neutron
+  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
+  log Cleaning Logs : Neutron
+  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
+  log Cleaning Logs : Nova 
+  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/nova/*.log); do  echo "" > $i; done')
+ done
 }
 
 check_controllers()
@@ -240,12 +255,32 @@ run_rally()
      mv ${test_name}.log $results_dir
      mv ${test_name}.html $results_dir
 
+     post_process $results_dir
+
      sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
     done  # RERUN
    done  # Concurrency
   fi
  done  # Task Files
+}
+
+post_process()
+{
+ if [ -z "$1" ] ; then
+  echo "Error result path not passed" 
+  exit 1
+ else
+  log Post-Processing : $1
+  results=$1
+ fi
+ 
+ if $CONNMON ; then
+  log Building Connmon Graphs
+  for i in `ls -talrh $results | grep -E "*\.csv$" | awk '{print $9}'` ; do 
+    python graphing/connmonplot.py $results/$i; 
+  done
+ fi
 }
 
 setup_pbench()
@@ -295,6 +330,7 @@ fi
 
 mkdir -p results
 check_controllers
+clean_logs
 for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
@@ -311,3 +347,4 @@ done
 update_workers ${RESET_WORKERS} keystone
 update_workers ${RESET_WORKERS} nova
 check_controllers
+
