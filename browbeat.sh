@@ -206,23 +206,23 @@ run_rally()
    for concur in ${CONCURRENCY[${osp_service}]}
    do
 
-    for ((i=1; i<=${RERUN}; i++))
+    for ((run_count=1; run_count<=${RERUN}; run_count++))
     do
 
      times=${TIMES[${osp_service}]}
      concur_padded="$(printf "%04d" ${concur})"
-     test_name="${test_prefix}-iteration_$i-${task_file}-${concur_padded}"
+     test_name="${test_prefix}-iteration_$run_count-${task_file}-${concur_padded}"
      log Test-Name ${test_name}
      sed -i "s/\"concurrency\": 1,/\"concurrency\": ${concur},/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": 1,/\"times\": ${times},/g" ${task_dir}/${task_file}
      truncate_token_bloat
 
-     results_dir=results/${test_prefix}/$osp_service/${task_file}/run-$i
+     results_dir=results/${test_prefix}/$osp_service/${task_file}/run-$run_count
      mkdir -p $results_dir
 
      if $CONNMON ; then
          log Starting connmon
-         sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$i\/current-run.csv/g" connmon/config
+         sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$run_count\/current-run.csv/g" connmon/config
          connmond --config connmon/config > /tmp/connmond-${test_name} 2>&1 &
          CONNMON_PID=$!
      fi
