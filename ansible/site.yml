@@ -2,3 +2,4 @@
   remote_user: heat-admin 
   roles:
   - common
+  - nova
