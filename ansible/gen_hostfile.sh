@@ -22,22 +22,22 @@ while read line; do
 done < <(nova list | grep over)
 
 if [[ ${#compute} -gt 0 ]]; then
-echo "[computes]">> $file | tee
+echo "[computes]">> $file
 for c in ${compute[@]}; do
-  echo $c >> $file | tee
+  echo $c >> $file
 done
 fi
 if [[ ${#controllers} -gt 0 ]]; then
-echo "">> $file | tee
-echo "[controllers]" >> $file | tee
+echo "">> $file
+echo "[controllers]" >> $file
 for ct in ${controllers[@]}; do
- echo $ct >> $file | tee
+ echo $ct >> $file
 done
 fi
 if [[ ${#ceph} -gt 0 ]]; then
-echo "" >> $file | tee
-echo "[ceph]" >> $file | tee
+echo "" >> $file
+echo "[ceph]" >> $file
 for ceph in ${ceph[@]}; do
- echo $ceph >> $file | tee
+ echo $ceph >> $file
 done
 fi
