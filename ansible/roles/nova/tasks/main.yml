@@ -8,8 +8,13 @@
     value: "{{ item.value }}"
     backup: yes
   with_items:
+
+  with_items:
     - { section: DEFAULT, option: log_dir, value: /var/log/nova}
     - { section: DEFAULT, option: verbose, value: True }
     - { section: DEFAULT, option: debug, value: True }
-  register: nova_conf
-
+    - { section: DEFAULT, option: ec2_workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: osapi_compute_workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: metadata_workers, value: "{{ num_workers }}" }
+    - { section: conductor, option: workers, value: "{{ num_workers }}" }
