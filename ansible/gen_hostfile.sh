@@ -3,6 +3,7 @@
 #
 #
 . ~/stackrc
+file="./hosts"
 compute=()
 controllers=()
 ceph=()
@@ -19,23 +20,24 @@ while read line; do
    controllers+="$IP "
  fi
 done < <(nova list | grep over)
+
 if [[ ${#compute} -gt 0 ]]; then
-echo "[computes]"
+echo "[computes]">> $file | tee
 for c in ${compute[@]}; do
-  echo $c
+  echo $c >> $file | tee
 done
 fi
 if [[ ${#controllers} -gt 0 ]]; then
-echo ""
-echo "[controllers]"
+echo "">> $file | tee
+echo "[controllers]" >> $file | tee
 for ct in ${controllers[@]}; do
- echo $ct
+ echo $ct >> $file | tee
 done
 fi
 if [[ ${#ceph} -gt 0 ]]; then
-echo ""
-echo "[ceph]"
+echo "" >> $file | tee
+echo "[ceph]" >> $file | tee
 for ceph in ${ceph[@]}; do
- echo $ceph
+ echo $ceph >> $file | tee
 done
 fi
