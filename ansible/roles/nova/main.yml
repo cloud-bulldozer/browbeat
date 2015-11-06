@@ -1,0 +1,12 @@
+---
+- name: ensure nova.conf is properly configured
+  ini_file:
+    dest: /etc/nova/nova.conf
+    group: keystone
+    mode: 0640
+  with_items:
+    - { section: DEFAULT, option: log_dir, value: /var/log/nova}
+    - { section: DEFAULT, option: verbose, value: "true" }
+    - { section: DEFAULT, option: debug, value: "true" }
+    #- { section: database, option: connection,
+  register: nova_ini
