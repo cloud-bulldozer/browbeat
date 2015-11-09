@@ -3,7 +3,7 @@
   register: sestatus
   changed_when: false
 
-- name: check selinux config file 
+- name: check selinux config file
   lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=enforcing
 
 - name: Check tuned profile on controllers
@@ -11,7 +11,7 @@
   register: tuned_result
 
 - name: Check max_connections
-  shell: mysql -e "show status where \`variable_name\` = 'Max_used_connections';" | grep Max_used_connections | awk '{print $2}'
+  shell: mysql -e "show status where \`variable_name\` = 'Max_connections';" | grep Max_used_connections | awk '{print $2}'
   register: max_connections_result
 
 - name : Check rabbitmq file descriptors
@@ -21,4 +21,3 @@
 - debug: msg="{{ tuned_result.stdout}}"
 - debug: msg="{{ rabbitmq_fd_result.stdout}}"
 - debug: msg="{{ max_connections_result.stdout}}"
-
