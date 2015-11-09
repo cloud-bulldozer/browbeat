@@ -1,3 +1,11 @@
 ---
-
-num_workers: "{{ lookup('env','NUM_WORKERS') }}" 
+#
+# Number of Service workers for OpenStack
+#
+num_workers: 24
+num_workers: "{{ lookup('env','NUM_WORKERS') }}"
+#
+# Tool for monitoring database connections
+#
+connmon: True
+connmon: "{{ lookup('env','CONNMON') }}"
