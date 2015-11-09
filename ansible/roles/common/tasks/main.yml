@@ -1,23 +1,21 @@
 - name: test to see if selinux is running
   command: getenforce
   register: sestatus
-  changed_when: false
-
-- name: check selinux config file
-  lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=enforcing
 
 - name: Check tuned profile on controllers
   command: tuned-adm active
   register: tuned_result
+  failed_when: tuned_result.rc == -1
 
 - name: Check max_connections
   shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
   register: max_connections_result
+- fail: "The database does not have max_connections set properly"
+  failed_when: max_connections_result.stdout|int < 4096
 
 - name : Check rabbitmq file descriptors
-  shell: rabbitmqctl status | grep file_descriptors -A 3
+  shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
   register: rabbitmq_fd_result
+- fail: "RabbitMQ does not have fd setup proerply"
+  failed_when: rabbitmq_fd_result.stdout|int < 16284
 
-- debug: msg="{{ tuned_result.stdout}}"
-- debug: msg="{{ rabbitmq_fd_result.stdout}}"
-- debug: msg="{{ max_connections_result.stdout}}"
