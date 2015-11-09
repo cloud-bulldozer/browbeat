@@ -1,5 +1,5 @@
-- hosts : controllers 
-  remote_user: heat-admin 
+- hosts : controllers
+  remote_user: heat-admin
   roles:
   - common
   - nova
