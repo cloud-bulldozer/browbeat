@@ -11,7 +11,7 @@
   register: tuned_result
 
 - name: Check max_connections
-  shell: mysql -e "show status where \`variable_name\` = 'Max_connections';" | grep Max_used_connections | awk '{print $2}'
+  shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
   register: max_connections_result
 
 - name : Check rabbitmq file descriptors
