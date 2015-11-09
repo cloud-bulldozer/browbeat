@@ -5,7 +5,7 @@ Playbook to modify the overcloud.
 Generate the host file for ansible. 
 
 ```
-# sh gen_hostfile.sh
+# bash gen_hostfile.sh
 ```
 **Review the host file the script generates.
 
