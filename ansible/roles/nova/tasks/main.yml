@@ -8,8 +8,6 @@
     value: "{{ item.value }}"
     backup: yes
   with_items:
-
-  with_items:
     - { section: DEFAULT, option: log_dir, value: /var/log/nova}
     - { section: DEFAULT, option: verbose, value: True }
     - { section: DEFAULT, option: debug, value: True }
