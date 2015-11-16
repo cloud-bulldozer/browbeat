@@ -1,4 +1,26 @@
 ---
+- name: Check for connmon in nova.conf
+  shell : grep -q 'connection = mysql:' /etc/nova/nova.conf
+  when : connmon
+  register : nova_mysql
+  ignore_errors: true
+  changed_when: no  
+
+- name : Enable Connmon in nova.conf 
+  shell : sed -i 's/mysql:/mysq+connmon:/g' /etc/nova/nova.conf
+  when: connmon and nova_mysql.rc == 0
+
+- name: Check for connmon_service in nova.conf
+  shell : grep -q 'connmon_service' /etc/nova/nova.conf
+  when : connmon
+  ignore_errors: true
+  register : nova_connmon_service
+  changed_when: no  
+
+- name : Enable Connmon in nova.conf 
+  shell : sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
+  when: connmon and nova_connmon_service.rc == 1
+
 - name: Ensure nova.conf is properly configured
   ini_file:
     dest: /etc/nova/nova.conf

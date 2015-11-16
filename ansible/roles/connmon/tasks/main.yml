@@ -1,0 +1,48 @@
+---
+#
+# Connmon install
+#
+#
+- name : Check for pip
+  shell : /bin/pip --version
+  register: pip_installed
+  changed_when: no
+
+- name : Add DNS record
+  shell : sed -i '1s/^/nameserver {{ dns_server }}\n/' /etc/resolv.conf 
+  when : pip_installed.rc == 1
+
+- name : Install pip 
+  easy_install : name=pip
+  when : pip_installed.rc == 1
+
+- name : Check for connmon 
+  shell : /bin/connmon --help
+  register: pip_installed
+  changed_when: no
+
+- name : install connmon 
+  pip: name=connmon
+  when: pip_installed.rc == 1
+
+#
+# Connmon setup
+#
+- name : Check for connmon config 
+  stat: path=/etc/connmon.cfg
+  register: connmon_config 
+  changed_when: no
+
+- name : Copy Connmon config 
+  template: src=/home/stack/browbeat/connmon/controller_config dest=/etc/connmon.cfg mode=644
+  when: connmon_config.stat.exists == False 
+
+- name: Check connmon is configured 
+  shell: grep -q "{{ connmon_host }}" /etc/connmon.cfg 
+  ignore_errors: yes
+  register: connmon_conf
+  changed_when: no
+
+- name : Config Connmon
+  shell : sed -i 's/localhost/{{ connmon_host }}/g' /etc/connmon.cfg
+  when: connmon_conf.rc == 1 

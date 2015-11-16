@@ -21,8 +21,6 @@ while read line; do
  fi
 done < <(nova list | grep over)
 
-truncate -s 0 ${file}
-
 if [[ ${#compute} -gt 0 ]]; then
 echo "[computes]">> $file
 for c in ${compute[@]}; do
