@@ -1,0 +1,33 @@
+---
+# Connmon install
+- name : Check for pip
+  shell : /bin/pip --version
+  register: pip_installed
+  changed_when: no
+
+- name : Add DNS record
+  shell : sed -i '1s/^/nameserver {{ dns_server }}\n/' /etc/resolv.conf
+  when : pip_installed.rc == 1
+
+- name : Install pip
+  easy_install : name=pip
+  when : pip_installed.rc == 1
+
+- name : Check for connmon
+  shell : /bin/connmon --help
+  register: pip_installed
+  changed_when: no
+
+- name : install connmon
+  pip: name=connmon
+  when: pip_installed.rc == 1
+
+- name : check iptables
+  shell : iptables -nvL | grep -q "dpt:5800"
+  changed_when: no
+  register: connmon_port
+  changed_when: no
+
+- name : open up iptables
+  shell : /usr/sbin/iptables -I INPUT 1 -p tcp --dport 5800 -j ACCEPT 
+  when : connmon_port.rc == 1

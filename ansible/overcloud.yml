@@ -1,0 +1,9 @@
+#
+#
+#
+- hosts : controllers 
+  remote_user: heat-admin
+  roles:
+  - common
+  - connmon
+  - nova

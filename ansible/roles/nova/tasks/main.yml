@@ -1,0 +1,60 @@
+---
+- name: Check for connmon in nova.conf
+  shell : grep -q 'connection = mysql:' /etc/nova/nova.conf
+  when : connmon
+  register : nova_mysql
+  ignore_errors: true
+  changed_when: no  
+
+- name : Enable Connmon in nova.conf 
+  shell : sed -i 's/mysql:/mysq+connmon:/g' /etc/nova/nova.conf
+  when: connmon and nova_mysql.rc == 0
+
+- name: Check for connmon_service in nova.conf
+  shell : grep -q 'connmon_service' /etc/nova/nova.conf
+  when : connmon
+  ignore_errors: true
+  register : nova_connmon_service
+  changed_when: no  
+
+- name : Enable Connmon in nova.conf 
+  shell : sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
+  when: connmon and nova_connmon_service.rc == 1
+
+- name: Ensure nova.conf is properly configured
+  ini_file:
+    dest: /etc/nova/nova.conf
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { section: DEFAULT, option: verbose, value: False }
+    - { section: DEFAULT, option: debug, value: False }
+    - { section: DEFAULT, option: ec2_workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: osapi_compute_workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: workers, value: "{{ num_workers }}" }
+    - { section: DEFAULT, option: metadata_workers, value: "{{ num_workers }}" }
+    - { section: conductor, option: workers, value: "{{ num_workers }}" }
+
+- name: Unmanage Nova Service from pacemaker
+  shell : pcs resource unmanage {{ item }}
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+
+- name: Restart Nova services
+  service: name={{ item }} state=restarted
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+
+- name: Manage Nova Service from pacemaker
+  shell : pcs resource manage {{ item }}
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
