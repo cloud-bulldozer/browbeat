@@ -6,8 +6,8 @@
   ignore_errors: true
   changed_when: no  
 
-- name : Enable Connmon in nova.conf 
-  shell : sed -i 's/mysql:/mysq+connmon:/g' /etc/nova/nova.conf
+- name : Enable Connmon in nova.conf
+  shell : sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
   when: connmon and nova_mysql.rc == 0
 
 - name: Check for connmon_service in nova.conf
@@ -17,7 +17,7 @@
   register : nova_connmon_service
   changed_when: no  
 
-- name : Enable Connmon in nova.conf 
+- name : Enable Connmon in nova.conf
   shell : sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
   when: connmon and nova_connmon_service.rc == 1
 

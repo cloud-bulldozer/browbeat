@@ -1,0 +1,11 @@
+---
+#
+# Tests specific to compute hosts
+#
+
+- name: Check if swap device exists
+  command: swapon -s
+  register: swap_result
+  changed_when: no
+  failed_when: "'dev' not in '{{ swap_result.stdout }}'"
+  ignore_errors: True
