@@ -1,0 +1,13 @@
+---
+#
+# Tasks for pbench
+#
+
+- name: Install pbench repo file
+  get_url: {{ pbench_repo_file_url }} dest=/etc/yum.repos.d/pbench.repo
+  when: pbench
+
+- name: Install pbench-agent
+  yum: name=pbench-agent state=latest
+  when: pbench
+

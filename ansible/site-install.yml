@@ -9,6 +9,7 @@
     install: True
   roles:
   - connmon
+  - pbench
   - nova
   - keystone
 
@@ -18,4 +19,5 @@
     install: True
   roles:
   - connmon
+  - pbench
   - director

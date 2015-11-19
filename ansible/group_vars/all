@@ -1,0 +1,6 @@
+---
+
+pbench: true
+#pbench: "{{ lookup('env','PBENCH') }}"
+
+pbench_repo_file_url: http://pbench.example.com/repo/yum.repos.d/pbench.repo
