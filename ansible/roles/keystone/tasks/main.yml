@@ -1,4 +1,22 @@
 ---
+#
+# Keystone tasks to change the number of eventlet workers
+#
+
+- name: Check Keystone cron job
+  command: crontab -l -u keystone
+  register: keystone_cron_result
+  changed_when: no
+  failed_when: "'token_flush' not in '{{ keystone_cron_result.stdout }}'"
+  ignore_errors: True
+  when: not install
+
+- name: Check Keystone Token Provider
+  command: crudini --get /etc/keystone/keystone.conf token provider
+  register: keystone_token_provider
+  changed_when: no
+  ignore_errors: True
+
 - name: Ensure keystone.conf is properly configured
   ini_file:
     dest: /etc/keystone/keystone.conf
@@ -12,18 +30,13 @@
     - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: public_workers, value: "{{ num_workers }}" }
     - { section: DEFAULT, option: admin_workers, value: "{{ num_workers }}" }
+  when: not install
 
 - name: Unmanage Keystone Service from pacemaker
-  shell : pcs resource unmanage {{ item }}
-  with_items:
-    - openstack-keystone
+  shell: pcs resource unmanage openstack-keystone
 
 - name: Restart Keystone services
-  service: name={{ item }} state=restarted
-  with_items:
-    - openstack-keystone
+  service: name=openstack-keystone state=restarted
 
 - name: Manage Keystone Service from pacemaker
-  shell : pcs resource manage {{ item }}
-  with_items:
-    - openstack-keystone
+  shell: pcs resource manage openstack-keystone

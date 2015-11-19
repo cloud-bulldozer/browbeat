@@ -3,7 +3,19 @@
 # Playbook to install connmon and pbench on director/overcloud
 #
 
-- hosts : controllers 
+- hosts: controllers
   remote_user: heat-admin
+  vars:
+    install: True
   roles:
   - connmon
+  - nova
+  - keystone
+
+- hosts: director
+  remote_user: stack
+  vars:
+    install: True
+  roles:
+  - connmon
+  - director

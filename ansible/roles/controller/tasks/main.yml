@@ -7,12 +7,12 @@
   shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
   register: max_connections_result
   changed_when: no
-- fail: "The database does not have max_connections set properly"
   failed_when: max_connections_result.stdout|int < mariadb_max_connections
+  ignore_errors: True
 
 - name : Check rabbitmq file descriptors
   shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
   register: rabbitmq_fd_result
   changed_when: no
-- fail: "RabbitMQ does not have fd setup proerply"
   failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
+  ignore_errors: True

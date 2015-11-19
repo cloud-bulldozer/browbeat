@@ -1,25 +1,26 @@
 ---
 - name: Check for connmon in nova.conf
-  shell : grep -q 'connection = mysql:' /etc/nova/nova.conf
-  when : connmon
-  register : nova_mysql
+  shell: grep -q 'connection = mysql:' /etc/nova/nova.conf
+  when: connmon and install
+  register: nova_mysql
   ignore_errors: true
-  changed_when: no  
+  changed_when: no
 
-- name : Enable Connmon in nova.conf
-  shell : sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
-  when: connmon and nova_mysql.rc == 0
+- name: Enable Connmon in nova.conf
+  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
+  when: connmon and install and nova_mysql.rc == 0
 
 - name: Check for connmon_service in nova.conf
-  shell : grep -q 'connmon_service' /etc/nova/nova.conf
-  when : connmon
+  shell: grep -q 'connmon_service' /etc/nova/nova.conf
+  when: connmon and install
   ignore_errors: true
-  register : nova_connmon_service
+  register: nova_connmon_service
   changed_when: no  
+  when: install
 
-- name : Enable Connmon in nova.conf
-  shell : sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
-  when: connmon and nova_connmon_service.rc == 1
+- name: Enable Connmon in nova.conf
+  shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
+  when: connmon and install and nova_connmon_service.rc == 1
 
 - name: Ensure nova.conf is properly configured
   ini_file:
@@ -39,7 +40,7 @@
     - { section: conductor, option: workers, value: "{{ num_workers }}" }
 
 - name: Unmanage Nova Service from pacemaker
-  shell : pcs resource unmanage {{ item }}
+  shell: pcs resource unmanage {{ item }}
   with_items:
     - openstack-nova-conductor
     - openstack-nova-api
@@ -53,7 +54,7 @@
     - openstack-nova-scheduler
 
 - name: Manage Nova Service from pacemaker
-  shell : pcs resource manage {{ item }}
+  shell: pcs resource manage {{ item }}
   with_items:
     - openstack-nova-conductor
     - openstack-nova-api
