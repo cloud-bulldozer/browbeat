@@ -1,0 +1,10 @@
+---
+#
+# Playbook to change number of workers for nova and keystone services
+#
+
+- hosts : controllers 
+  remote_user: heat-admin
+  roles:
+  - nova
+  - keystone

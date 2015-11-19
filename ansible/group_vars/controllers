@@ -1,5 +1,4 @@
 ---
-
 ansible_sudo: yes
 
 #
@@ -17,6 +16,7 @@ connmon_host: 192.0.2.1
 
 dns_server: 8.8.8.8
 
+tuned_profile: throughput-performance
 rabbitmq_fd: 2048 
 mariadb_max_connections: 4096
 

@@ -1,26 +1,23 @@
 ---
+#
+# Tests common to Controller/Compute/Director
+#
 
-- name: test to see if selinux is running
+- name: Get selinux mode
   command: getenforce
   changed_when: no
   register: sestatus
 
-- name: Check tuned profile on controllers
+- name: Check tuned running on host
   command: tuned-adm active
   register: tuned_result
   changed_when: no
   failed_when: tuned_result.rc == -1
+  ignore_errors: True
 
-- name: Check max_connections
-  shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
-  register: max_connections_result
+- name: Check tuned for correct profile on host
+  command: tuned-adm active
+  register: tuned_result
   changed_when: no
-- fail: "The database does not have max_connections set properly"
-  failed_when: max_connections_result.stdout|int < mariadb_max_connections
-
-- name : Check rabbitmq file descriptors
-  shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
-  register: rabbitmq_fd_result
-  changed_when: no
-- fail: "RabbitMQ does not have fd setup proerply"
-  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
+  failed_when: "'{{ tuned_profile }}' not in '{{ tuned_result.stdout }}'"
+  ignore_errors: True

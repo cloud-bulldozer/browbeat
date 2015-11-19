@@ -1,3 +1,0 @@
----
-  - include: director.yml
-  - include: overcloud.yml

@@ -1,0 +1,16 @@
+---
+#
+# Playbook to check OSP install for common performance tuning issues
+#
+
+- hosts : controllers 
+  remote_user: heat-admin
+  roles:
+  - common
+  - controller
+
+- hosts : computes
+  remote_user: heat-admin
+  roles:
+  - common
+  - compute

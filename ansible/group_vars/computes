@@ -1,0 +1,4 @@
+---
+ansible_sudo: yes
+
+tuned_profile: virtual-host
