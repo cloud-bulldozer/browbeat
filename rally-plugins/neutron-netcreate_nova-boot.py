@@ -7,7 +7,7 @@ from rally.task import utils as task_utils
 from rally.task import validation
 
 class NeutronPlugin(neutron_utils.NeutronScenario,
-                    nova_utils.NovaScenario, 
+                    nova_utils.NovaScenario,
                     scenario.Scenario):
 
     #
@@ -20,8 +20,7 @@ class NeutronPlugin(neutron_utils.NeutronScenario,
                flavor=types.FlavorResourceType)
     @validation.image_valid_on_flavor("flavor", "image")
     @validation.required_openstack(users=True)
-    @scenario.configure(context={"cleanup": ["nova"]})
-    @scenario.configure(context={"cleanup": ["neutron"]})
+    @scenario.configure(context={"cleanup": ["nova","neutron"]})
     def create_network_nova_boot(self,image,flavor,network_create_args=None,**kwargs):
         network = self._create_network_and_subnets(network_create_args or {})
         kwargs["nics"] = [{ 'net-id': network[0]['network']['id']}]
