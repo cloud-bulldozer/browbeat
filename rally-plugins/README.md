@@ -1,12 +1,19 @@
 # Rally Plugins Browbeat can use
 ## Current plugins
 ### neutron-netcreate_nova-boot
-Rally plugin that utilizes both Neutron and Nova scneario
-utilities. This Rally plugin will create a network then
-launch a guest within that network.
+This Rally plugin utilizes both Neutron and Nova utilities This Rally plugin will create a network then. launch a guest within that network. This plugin will also attempt to ping the guest, to make sure connectivity works.
+
+#### Assumptions
+This Plugin assumes the following networking toplogy :
+```
+[ Rally Host ] --- Link to tenant nework --- [ Router ] -- [ tenant networks ] -- Guests
+```
+We suggest this method, so you do not have to have a 1:1 connection:tenant network. 
+
+*** The below JSON needs updating to show that we need to pass a router t othe plugin. 
 
 #### Example json
-'''
+```
 {% set flavor_name = flavor_name or "m1.flavorname" %}
 {
     "NeutronPlugin.create_network_nova_boot": [
@@ -33,5 +40,4 @@ launch a guest within that network.
         }
     ]
 }
-
-'''
+```
