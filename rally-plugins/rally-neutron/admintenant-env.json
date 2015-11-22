@@ -1,0 +1,18 @@
+{
+    "type": "ExistingCloud",
+    "auth_url": "http://<deployment-ip>:5000/v2.0/",
+    "region_name": "regionOne",
+    "endpoint_type": "public",
+    "admin": {
+        "username": "admin",
+        "password": "",
+        "tenant_name": "admin"
+    },
+    "users": [
+        {
+            "username": "admin",
+            "password": "",
+            "tenant_name": "admin"
+        }
+    ]
+}

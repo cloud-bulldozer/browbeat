@@ -9,6 +9,12 @@
                 "image": {
                     "name": "centos7"
                 },
+                "network": {
+                    "id": "a8443e27-c124-4774-a12d-7a0b9905e214",
+                },
+                "router": {
+                    "id" : "d3a1f5a9-87b8-448d-b941-8ff40de84003",
+                },
                 "network_create_args": {},
             },
             "runner": {
