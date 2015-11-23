@@ -1,0 +1,18 @@
+---
+#
+# Tasks to install shaker for datqa plane testing    
+#
+
+    - name: check for heat engine
+      service: name=openstack-heat-engine state=running
+    - name: check for heat api
+      service: name=openstack-heat-api state=running
+    - name: upgrade all packages
+      yum: name=* state=latest
+    - name: install pip
+      yum: name=python-pip state=present
+    - name: install development tools
+      yum: name="@Development tools" state=present
+    - name: install shaker
+      shell: pip install pyshaker
+
