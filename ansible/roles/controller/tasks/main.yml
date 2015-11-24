@@ -16,3 +16,10 @@
   changed_when: no
   failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
   ignore_errors: True
+
+- name : Check rabbitmq for partitions
+  shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
+  register: rabbitmq_partition_result
+  changed_when: no
+  failed_when: rabbitmq_partition_result.rc == 0
+  ignore_errors: True
