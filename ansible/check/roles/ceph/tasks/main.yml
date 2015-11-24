@@ -7,3 +7,4 @@
   shell: ceph status
   register: ceph_status
   failed_when: "'HEALTH_OK' not in '{{ ceph_status.stdout }}'"
+  ignore_errors: True
