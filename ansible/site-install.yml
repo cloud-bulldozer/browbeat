@@ -12,6 +12,7 @@
   - pbench
   - nova
   - keystone
+  - shaker
 
 - hosts: director
   remote_user: stack
