@@ -16,27 +16,3 @@
   register: keystone_token_provider
   changed_when: no
   ignore_errors: True
-
-- name: Ensure keystone.conf is properly configured
-  ini_file:
-    dest: /etc/keystone/keystone.conf
-    mode: 0640
-    section: "{{ item.section }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-    backup: yes
-  with_items:
-    - { section: DEFAULT, option: verbose, value: False }
-    - { section: DEFAULT, option: debug, value: False }
-    - { section: DEFAULT, option: public_workers, value: "{{ num_workers }}" }
-    - { section: DEFAULT, option: admin_workers, value: "{{ num_workers }}" }
-  when: not install
-
-- name: Unmanage Keystone Service from pacemaker
-  shell: pcs resource unmanage openstack-keystone
-
-- name: Restart Keystone services
-  service: name=openstack-keystone state=restarted
-
-- name: Manage Keystone Service from pacemaker
-  shell: pcs resource manage openstack-keystone

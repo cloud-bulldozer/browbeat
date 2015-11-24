@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+Listen {{ item.public_ip_address }}:80
+{% if 'httpd' in item.deployment %}
+Listen {{ item.admin_ip_address }}:35357
+Listen {{ item.public_ip_address }}:5000
+{% endif %}

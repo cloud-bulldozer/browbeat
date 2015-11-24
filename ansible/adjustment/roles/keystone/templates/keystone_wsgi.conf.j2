@@ -1,0 +1,23 @@
+<VirtualHost {{ item.ip_address }}:35357>
+  ServerName  keystone_wsgi_{{ item.interface }}
+
+  ## Vhost docroot
+  DocumentRoot "/var/www/cgi-bin/keystone"
+
+  ## Directories, there should at least be a declaration for /var/www/cgi-bin/keystone
+
+  <Directory "/var/www/cgi-bin/keystone">
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Require all granted
+  </Directory>
+
+  ## Logging
+  ErrorLog "/var/log/httpd/keystone_wsgi_{{ item.interface }}_error.log"
+  LogLevel info
+  ServerSignature Off
+  CustomLog "/var/log/httpd/keystone_wsgi_{{ item.interface }}_access.log" combined
+  WSGIDaemonProcess keystone_{{ item.interface }} display-name=keystone-{{ item.interface }} group=keystone processes={{ item.processes }} threads={{ item.threads }} user=keystone
+  WSGIProcessGroup keystone_{{ item.interface }}
+  WSGIScriptAlias / "/var/www/cgi-bin/keystone/{{ item.interface }}"
+</VirtualHost>

@@ -6,7 +6,9 @@
 - hosts: controllers 
   remote_user: heat-admin
   vars:
-    install: False
+    deployment: eventlet
+    workers: 24
+    threads: 6
   roles:
   - nova
   - keystone

@@ -1,0 +1,117 @@
+---
+#
+# Keystone tasks for browbeat
+# * Can change from eventlet to httpd
+# * Can change eventlet worker count
+# * Can change httpd process and thread count
+#
+
+- name: Get keystone admin ip address
+  command: crudini --get /etc/keystone/keystone.conf DEFAULT admin_bind_host
+  register: admin_ip_addr
+
+- name: Get keystone admin ip address
+  command: crudini --get /etc/keystone/keystone.conf DEFAULT public_bind_host
+  register: public_ip_addr
+
+- name: Unmanage Keystone Service from pacemaker
+  shell: pcs resource unmanage openstack-keystone
+
+- name: Unmanage httpd Service from pacemaker
+  shell: pcs resource unmanage httpd
+
+- name: Stop Keystone Service
+  service: name=openstack-keystone state=stopped
+
+- name: Stop httpd services
+  service: name=httpd state=stopped
+
+- name: Configure eventlet workers
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { section: DEFAULT, option: verbose, value: False }
+    - { section: DEFAULT, option: debug, value: False }
+    - { section: DEFAULT, option: public_workers, value: "{{ workers }}" }
+    - { section: DEFAULT, option: admin_workers, value: "{{ workers }}" }
+  when: "'eventlet' in '{{ deployment }}'"
+
+- name: Unconfigure keystone in httpd if eventlet
+  file:
+    path: /etc/httpd/conf.d/10-keystone_wsgi_{{ item }}.conf
+    state: absent
+  with_items:
+    - admin
+    - main
+  when: "'eventlet' in '{{ deployment }}'"
+
+- name: Create keystone in httpd wsgi directory
+  file: 
+    path: /var/www/cgi-bin/keystone
+    state: directory
+    owner: keystone
+    group: keystone
+  when: "'httpd' in '{{ deployment }}'"
+
+- name: Copy Keystone in httpd files over
+  copy:
+    src: keystone_httpd
+    dest: /var/www/cgi-bin/keystone/{{ item }}
+    owner: keystone
+    group: keystone
+    mode: 0744
+  with_items:
+    - admin
+    - main
+  when: "'httpd' in '{{ deployment }}'"
+
+- name: Configure httpd processes/threads
+  template:
+    src=keystone_wsgi.conf.j2
+    dest=/etc/httpd/conf.d/10-keystone_wsgi_{{ item.interface }}.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - ip_address: "{{ admin_ip_addr.stdout }}"
+      interface: "admin"
+      processes: "{{ workers }}"
+      port: 35357
+      threads: "{{ threads }}"
+    - ip_address: "{{ public_ip_addr.stdout }}"
+      interface: "main"
+      processes: "{{ workers }}"
+      port: 5000
+      threads: "{{ threads }}"
+  when: "'httpd' in '{{ deployment }}'"
+
+- name: Configure httpd ports.conf for keystone
+  template:
+    src=keystone_ports.conf.j2
+    dest=/etc/httpd/conf/ports.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - admin_ip_address: "{{ admin_ip_addr.stdout }}"
+      public_ip_address: "{{ public_ip_addr.stdout }}"
+      deployment: "{{ deployment }}"
+
+- name: Start Keystone services
+  service: name=openstack-keystone state=started
+  when: "'eventlet' in '{{ deployment }}'"
+
+- name: Start httpd services
+  service: name=httpd state=started
+
+- name: Manage Keystone Service from pacemaker
+  shell: pcs resource manage openstack-keystone
+  when: "'eventlet' in '{{ deployment }}'"
+
+- name: Manage httpd Service from pacemaker
+  shell: pcs resource manage openstack-keystone
