@@ -1,4 +1,5 @@
 ---
+ansible_sudo: yes
 
 pbench: true
 #pbench: "{{ lookup('env','PBENCH') }}"

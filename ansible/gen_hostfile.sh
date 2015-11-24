@@ -67,14 +67,14 @@ echo "[director]" | tee ${ansible_inventory_file}
 echo "${ospd_ip_address}" | tee -a ${ansible_inventory_file}
 if [[ ${#controllers_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
- echo "[controllers]" | tee -a ${ansible_inventory_file}
+ echo "[controller]" | tee -a ${ansible_inventory_file}
  for ct in ${controllers_hn[@]}; do
   echo "${ct}" | tee -a ${ansible_inventory_file}
  done
 fi
 if [[ ${#compute_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
- echo "[computes]" | tee -a ${ansible_inventory_file}
+ echo "[compute]" | tee -a ${ansible_inventory_file}
  for c in ${compute_hn[@]}; do
   echo "${c}" | tee -a ${ansible_inventory_file}
  done

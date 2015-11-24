@@ -1,0 +1,32 @@
+---
+#
+# Playbook to check OSP install for common performance tuning issues
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  vars:
+    tuned_profile: throughput-performance
+    rabbitmq_fd: 2048 
+    mariadb_max_connections: 4096
+  roles:
+  - common
+  - controller
+  - keystone
+
+- hosts: compute
+  remote_user: heat-admin
+  vars:
+    tuned_profile: virtual-host
+  roles:
+  - common
+  - compute
+
+- hosts: ceph
+  remote_user: heat-admin
+  vars:
+    # Place holder for now, unsure of what recommended tuned profile is.
+    tuned_profile: throughput-performance
+  roles:
+  - common
+  - ceph

@@ -1,6 +1,6 @@
 ---
 #
-# Tests common to Controller/Compute/Director
+# Tests common to Director/Controller/Compute/Ceph
 #
 
 - name: Get selinux mode

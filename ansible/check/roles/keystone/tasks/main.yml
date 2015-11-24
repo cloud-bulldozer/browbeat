@@ -1,0 +1,17 @@
+---
+#
+# Keystone tasks for performance checks
+#
+
+- name: Check Keystone cron job
+  command: crontab -l -u keystone
+  register: keystone_cron_result
+  changed_when: no
+  failed_when: "'token_flush' not in '{{ keystone_cron_result.stdout }}'"
+  ignore_errors: True
+
+- name: Check Keystone Token Provider
+  command: crudini --get /etc/keystone/keystone.conf token provider
+  register: keystone_token_provider
+  changed_when: no
+  ignore_errors: True

@@ -1,6 +1,6 @@
 ---
 #
-# Tests specific to controller hosts
+# Performance checks specific to controller hosts
 #
 
 - name: Check max_connections

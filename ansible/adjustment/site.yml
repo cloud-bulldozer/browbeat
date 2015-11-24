@@ -3,7 +3,7 @@
 # Playbook to change number of workers for nova and keystone services
 #
 
-- hosts: controllers 
+- hosts: controller
   remote_user: heat-admin
   vars:
     deployment: eventlet
