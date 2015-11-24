@@ -5,7 +5,13 @@ Playbook to modify the overcloud.
 Generate the host file for ansible. 
 
 ```
-# bash gen_hostfile.sh
+# ssh-copy-id stack@<udercloud-ip>
+```
+
+Then run our script to generate the hosts file for browbeat.
+
+```
+# ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 ```
 **Review the host file the script generates.
 
