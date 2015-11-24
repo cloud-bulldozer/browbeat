@@ -32,21 +32,21 @@ echo "    IdentityFile ~/.ssh/id_rsa" | tee -a ${ssh_config_file}
 echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
 echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
-compute=()
-controllers=()
-ceph=()
+compute_hn=()
+controllers_hn=()
+ceph_hn=()
 IFS=$'\n'
 for line in $nodes; do
  host=$(echo $line| awk '{print $4}')
  IP=$(echo $line | awk '{print $12}' | cut -d "=" -f2)
  if [[ ${host} =~ compute ]]; then
-  compute+="$IP "
+  compute_hn+=("$host")
  fi
  if [[ ${host} =~ ceph ]] ; then
-  ceph+="$IP "
+  ceph_hn+=("$host")
  fi
  if [[ ${host} =~ control ]]; then
-  controllers+="$IP "
+  controllers_hn+=("$host")
  fi
  echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
@@ -65,24 +65,24 @@ echo "---------------------------"
 echo ""
 echo "[director]" | tee ${ansible_inventory_file}
 echo "${ospd_ip_address}" | tee -a ${ansible_inventory_file}
-if [[ ${#controllers} -gt 0 ]]; then
+if [[ ${#controllers_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[controllers]" | tee -a ${ansible_inventory_file}
- for ct in ${controllers[@]}; do
+ for ct in ${controllers_hn[@]}; do
   echo "${ct}" | tee -a ${ansible_inventory_file}
  done
 fi
-if [[ ${#compute} -gt 0 ]]; then
+if [[ ${#compute_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[computes]" | tee -a ${ansible_inventory_file}
- for c in ${compute[@]}; do
+ for c in ${compute_hn[@]}; do
   echo "${c}" | tee -a ${ansible_inventory_file}
  done
 fi
-if [[ ${#ceph} -gt 0 ]]; then
+if [[ ${#ceph_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[ceph]" | tee -a ${ansible_inventory_file}
- for ceph in ${ceph[@]}; do
+ for ceph in ${ceph_hn[@]}; do
   echo "${ceph}" | tee -a ${ansible_inventory_file}
  done
 fi
