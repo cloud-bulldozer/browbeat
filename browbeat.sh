@@ -82,11 +82,6 @@ check_controllers()
 
 update_workers()
 {
- declare -A services
- services["keystone"]="/etc/keystone/keystone.conf"
- services["nova"]="/etc/nova/nova.conf"
- services["neutron"]="/etc/neutron/neutron.conf"
-
  if [ -z "$1" ] ; then
   echo "ERROR : Pass # of workers to use"
   exit 1
@@ -94,63 +89,12 @@ update_workers()
   log Setting : $1 for number of workers
   wkr_count=$1
  fi
- if [ -z "$2" ] ; then
-  echo "ERROR : Pass which service to update"
-  echo "Usage : update_workers COUNT SERVICE"
-  echo "Valid services : keystone, nova, neutron"
-  exit 1
+
+ if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+  ansible-playbook -i ansible/hosts ansible/adjustment/site.yml -e "workers=${wkr_count}" -e "deployment=httpd"
  else
-  log Updating : $2
-  osp_service=$2
+  ansible-playbook -i ansible/hosts ansible/adjustment/site.yml -e "workers=${wkr_count}" -e "deployment=eventlet"
  fi
-
- for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-  for i in $(echo ${WORKERS[$osp_service]} | tr "|" "\n") ; do
-     log Copying Config files to : $IP
-     if [[ "$osp_service" == "keystone" ]] && [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
-      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/\(processes\)\( \)*=\( \)*\([0-9]\)*/processes=${wkr_count}/g\" /etc/httpd/conf.d/10-keystone_wsgi_main.conf"
-      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/\(processes\)\( \)*=\( \)*\([0-9]\)*/processes=${wkr_count}/g\" /etc/httpd/conf.d/10-keystone_wsgi_admin.conf"
-     else
-      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cp ${services[$osp_service]} ${services[$osp_service]}-copy
-      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9]\)*/${i}=${wkr_count}/g\" ${services[$osp_service]}"
-      i_without_hash=`echo ${i} | sed -e "s/^#//g"`
-      ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "sed -i -e \"s/^\(${i}\)\( \)*=\( \)*\([0-9A-Za-z<>]\)*/${i_without_hash}=${wkr_count}/g\" ${services[$osp_service]}"
-     fi
-  done
- done
-
- if [ "${osp_service}" == "keystone" ]; then
-  IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage httpd"
-   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-    ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart httpd"
-   done
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage httpd"
-  else
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-keystone"
-   for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-    ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-keystone"
-   done
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-keystone"
-  fi
- fi
- if [ "${osp_service}" == "nova" ]; then
-  IP=`echo "$CONTROLLERS" | head -n 1 | awk '{print $12}' | cut -d "=" -f 2`
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-api"
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-conductor"
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource unmanage openstack-nova-scheduler"
-  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-api"
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-conductor"
-   ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "systemctl restart openstack-nova-scheduler"
-  done
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-api"
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-conductor"
-  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "pcs resource manage openstack-nova-scheduler"
- fi
-
- sleep 5 # Give things time to come up
 
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   log Validate number of workers
@@ -315,6 +259,13 @@ if [ ! $# == 1 ]; then
   log "Usage: ./browbeat.sh <test_prefix>"
   exit
 fi
+
+if [ ! -f ansible/hosts ]; then
+  log "ERROR: Ansible inventory file does not exist."
+  log "In ansible directory, run: ./gen_hosts.sh <ospd ip address> ~/.ssh/config"
+  exit
+fi
+
 complete_test_prefix=$1
 
 if $DEBUG ; then
@@ -334,8 +285,7 @@ clean_logs
 for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
-  update_workers ${num_wkrs} keystone
-  update_workers ${num_wkrs} nova
+  update_workers ${num_wkrs}
 
   check_controllers
   run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
@@ -344,7 +294,5 @@ for num_wkrs in ${NUM_WORKERS} ; do
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
 
 done
-update_workers ${RESET_WORKERS} keystone
-update_workers ${RESET_WORKERS} nova
+update_workers ${RESET_WORKERS}
 check_controllers
-
