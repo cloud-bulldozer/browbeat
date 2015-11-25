@@ -1,24 +1,38 @@
-# Ansible for Overcloud changes
-Playbook to modify the overcloud.
+# Ansible for Browbeat
+Playbooks to modify and performance check the overcloud
 
 ## To use
-Generate the host file for ansible. 
 
+Install your public key into stack's authorized_keys
 ```
-# ssh-copy-id stack@<udercloud-ip>
+# ssh-copy-id stack@<undercloud-ip>
 ```
 
-Then run our script to generate the hosts file for browbeat.
+Then run gen_hosts.sh script to generate your overcloud's hosts file for ansible and generate a "jumpbox" ssh config:
 
 ```
 # ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 ```
-**Review the host file the script generates.
+**Review the hosts file the script generates.
 
-To modify the number of workers each service is running, set the env variable
+To modify the number of workers each service is running, and run keystone in eventlet:
 
 ```
-# export NUM_WORKERS=24
+# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "deployment=eventlet"
+```
+Nova and Keystone will be running 8 workers per service.
+
+To run keystone in httpd, change deployment to httpd:
+
+```
+# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "deployment=httpd"
 ```
 
-Once ansible completes, each serivce will be running 24 workers.
+## Performance Checks:
+
+Run the check playbook to identify common performance issues:
+
+```
+# ansible-playbook -i hosts check/site.yml
+```
+
