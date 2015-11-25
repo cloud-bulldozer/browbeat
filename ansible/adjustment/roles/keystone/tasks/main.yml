@@ -1,10 +1,24 @@
 ---
 #
 # Keystone tasks for browbeat
-# * Can change from eventlet to httpd
-# * Can change eventlet worker count
-# * Can change httpd process and thread count
+# * Change eventlet worker count or httpd process count
+# * Change keystone deployed in eventlet or httpd
+# * Change keystone in httpd thread count
 #
+
+- name: Determine if keystone is deployed in eventlet
+  shell: ps afx | grep "[Kk]eystone-all" -c
+  register: deployed
+  when: "'not_defined' in '{{ keystone_deployment }}'"
+  ignore_errors: true
+
+- name: Set keystone_deployment variable to httpd
+  set_fact: keystone_deployment='httpd'
+  when: "'not_defined' in '{{ keystone_deployment }}' and deployed.stdout|int == 0"
+
+- name: Set keystone_deployment variable to eventlet
+  set_fact: keystone_deployment='eventlet'
+  when: "'not_defined' in '{{ keystone_deployment }}'"
 
 - name: Get keystone admin ip address
   command: crudini --get /etc/keystone/keystone.conf DEFAULT admin_bind_host
@@ -39,7 +53,7 @@
     - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: public_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: admin_workers, value: "{{ workers }}" }
-  when: "'eventlet' in '{{ deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Unconfigure keystone in httpd if eventlet
   file:
@@ -48,7 +62,7 @@
   with_items:
     - admin
     - main
-  when: "'eventlet' in '{{ deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Create keystone in httpd wsgi directory
   file: 
@@ -56,7 +70,7 @@
     state: directory
     owner: keystone
     group: keystone
-  when: "'httpd' in '{{ deployment }}'"
+  when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: Copy Keystone in httpd files over
   copy:
@@ -68,7 +82,7 @@
   with_items:
     - admin
     - main
-  when: "'httpd' in '{{ deployment }}'"
+  when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: Configure httpd processes/threads
   template:
@@ -88,7 +102,7 @@
       processes: "{{ workers }}"
       port: 5000
       threads: "{{ threads }}"
-  when: "'httpd' in '{{ deployment }}'"
+  when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: Configure httpd ports.conf for keystone
   template:
@@ -100,18 +114,18 @@
   with_items:
     - admin_ip_address: "{{ admin_ip_addr.stdout }}"
       public_ip_address: "{{ public_ip_addr.stdout }}"
-      deployment: "{{ deployment }}"
+      deployment: "{{ keystone_deployment }}"
 
 - name: Start Keystone services
   service: name=openstack-keystone state=started
-  when: "'eventlet' in '{{ deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Start httpd services
   service: name=httpd state=started
 
 - name: Manage Keystone Service from pacemaker
   shell: pcs resource manage openstack-keystone
-  when: "'eventlet' in '{{ deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Manage httpd Service from pacemaker
   shell: pcs resource manage openstack-keystone

@@ -15,17 +15,23 @@ Then run gen_hosts.sh script to generate your overcloud's hosts file for ansible
 ```
 **Review the hosts file the script generates.
 
-To modify the number of workers each service is running, and run keystone in eventlet:
+To modify the number of workers each service is running:
 
 ```
-# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "deployment=eventlet"
+# ansible-playbook -i hosts adjustment/site.yml -e "workers=8"
 ```
 Nova and Keystone will be running 8 workers per service.
 
-To run keystone in httpd, change deployment to httpd:
+To modify number of workers each service is running and ensure Keystone is deployed in eventlet:
 
 ```
-# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "deployment=httpd"
+# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "keystone_deployment=eventlet"
+```
+
+To run Keystone in httpd, change keystone_deployment to httpd:
+
+```
+# ansible-playbook -i hosts adjustment/site.yml -e "workers=8" -e "keystone_deployment=httpd"
 ```
 
 ## Performance Checks:
