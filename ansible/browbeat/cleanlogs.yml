@@ -1,0 +1,14 @@
+---
+#
+# Playbook to clean log files on controller nodes
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  tasks:
+    - name: Clean Logs
+      shell: for i in $(ls {{ item }}); do  echo "" > $i; done
+      with_items:
+        - /var/log/keystone/*.log
+        - /var/log/nova/*.log
+        - /var/log/neutron/*.log

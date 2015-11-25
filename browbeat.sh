@@ -44,21 +44,6 @@ log()
     echo "[$(date)]: $*"
 }
 
-clean_logs()
-{
- for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
-  log Controller : $IP
-  log Clenaing Logs : Keystone
-  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
-  log Cleaning Logs : Neutron
-  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
-  log Cleaning Logs : Neutron
-  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/keystone/*.log); do  echo "" > $i; done')
-  log Cleaning Logs : Nova 
-  $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP 'for i in $(ls /var/log/nova/*.log); do  echo "" > $i; done')
- done
-}
-
 check_controllers()
 {
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
@@ -80,22 +65,8 @@ check_controllers()
  done
 }
 
-update_workers()
+check_running_workers()
 {
- if [ -z "$1" ] ; then
-  echo "ERROR : Pass # of workers to use"
-  exit 1
- else
-  log Setting : $1 for number of workers
-  wkr_count=$1
- fi
-
- if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
-  ansible-playbook -i ansible/hosts ansible/adjustment/site.yml -e "workers=${wkr_count}" -e "deployment=httpd"
- else
-  ansible-playbook -i ansible/hosts ansible/adjustment/site.yml -e "workers=${wkr_count}" -e "deployment=eventlet"
- fi
-
  for IP in $(echo "$CONTROLLERS" | awk '{print $12}' | cut -d "=" -f 2); do
   log Validate number of workers
   keystone_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Kk]eystone" | wc -l)
@@ -281,11 +252,15 @@ fi
 
 mkdir -p results
 check_controllers
-clean_logs
+
+# Clean logs before run
+ansible-playbook -i ansible/hosts ansible/browbeat/cleanlogs.yml
+
 for num_wkrs in ${NUM_WORKERS} ; do
   num_wkr_padded="$(printf "%02d" ${num_wkrs})"
 
-  update_workers ${num_wkrs}
+  ansible-playbook -i ansible/hosts ansible/browbeat/adjustment.yml -e "workers=${num_wkrs}"
+  check_running_workers
 
   check_controllers
   run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
@@ -294,5 +269,6 @@ for num_wkrs in ${NUM_WORKERS} ; do
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
 
 done
-update_workers ${RESET_WORKERS}
+ansible-playbook -i ansible/hosts ansible/browbeat/adjustment.yml -e "workers=${RESET_WORKERS}"
+check_running_workers
 check_controllers
