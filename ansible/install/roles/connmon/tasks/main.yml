@@ -19,7 +19,7 @@
 
 - name: Install connmon
   pip: name=connmon
-  when: connmon and pip_installed.rc == 1
+  when: connmon
 
 #
 # Connmon Setup
