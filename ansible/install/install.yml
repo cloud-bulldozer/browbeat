@@ -6,19 +6,23 @@
 - hosts: controller
   remote_user: heat-admin
   vars:
-    install: True
+    connmon: false
+    pbench: false
+    shaker: false
   roles:
   - connmon
-  - pbench
   - nova
   - keystone
+  - pbench
   - shaker
 
 - hosts: director
   remote_user: stack
   vars:
-    install: True
+    connmon: false
+    pbench: false
+    shaker: false
   roles:
+  - director
   - connmon
   - pbench
-  - director

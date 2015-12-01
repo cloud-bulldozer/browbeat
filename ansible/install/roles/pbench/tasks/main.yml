@@ -4,7 +4,7 @@
 #
 
 - name: Install pbench repo file
-  get_url: {{ pbench_repo_file_url }} dest=/etc/yum.repos.d/pbench.repo
+  get_url: url="{{ pbench_repo_file_url }}" dest=/etc/yum.repos.d/pbench.repo
   when: pbench
 
 - name: Install pbench-agent

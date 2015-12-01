@@ -1,0 +1,43 @@
+---
+#
+# Connmon Install
+#
+
+- name: Check for pip
+  shell: which pip
+  register: pip_installed
+  when: connmon
+  changed_when: false
+
+- name: Add DNS record
+  shell: sed -i '1s/^/nameserver {{ dns_server }}\n/' /etc/resolv.conf
+  when: connmon and "'no pip' in 'pip_installed.stdout'"
+
+- name: Install pip
+  easy_install: name=pip
+  when: connmon and "'no pip' in 'pip_installed.stdout'"
+
+- name: Install connmon
+  pip: name=connmon
+  when: connmon and pip_installed.rc == 1
+
+#
+# Connmon Setup
+#
+- name: Copy Connmon config
+  copy:
+    src: connmon.cfg
+    dest: /etc/connmon.cfg
+    mode: 0644
+  when: connmon
+
+- name: Check connmon is configured
+  shell: grep -q "{{ connmon_host }}" /etc/connmon.cfg
+  ignore_errors: yes
+  register: connmon_conf
+  changed_when: false
+  when: connmon
+
+- name: Config Connmon Host IP Address
+  shell: sed -i 's/localhost/{{ connmon_host }}/g' /etc/connmon.cfg
+  when: connmon and connmon_conf.rc == 1

@@ -1,8 +1,0 @@
----
-#
-#
-#
-
-- hosts : director 
-  roles:
-  - director 

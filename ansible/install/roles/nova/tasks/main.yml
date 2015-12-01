@@ -1,26 +1,25 @@
 ---
 - name: Check for connmon in nova.conf
   shell: grep -q 'connection = mysql:' /etc/nova/nova.conf
-  when: connmon and install
+  when: connmon
   register: nova_mysql
   ignore_errors: true
   changed_when: no
 
 - name: Enable Connmon in nova.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
-  when: connmon and install and nova_mysql.rc == 0
+  when: connmon and nova_mysql.rc == 0
 
 - name: Check for connmon_service in nova.conf
   shell: grep -q 'connmon_service' /etc/nova/nova.conf
-  when: connmon and install
+  when: connmon
   ignore_errors: true
   register: nova_connmon_service
   changed_when: no  
-  when: install
 
 - name: Enable Connmon in nova.conf
   shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/nova/nova.conf
-  when: connmon and install and nova_connmon_service.rc == 1
+  when: connmon and nova_connmon_service.rc == 1
 
 - name: Unmanage Nova Service from pacemaker
   shell: pcs resource unmanage {{ item }}
@@ -28,6 +27,7 @@
     - openstack-nova-conductor
     - openstack-nova-api
     - openstack-nova-scheduler
+  when: connmon
 
 - name: Restart Nova services
   service: name={{ item }} state=restarted
@@ -35,6 +35,7 @@
     - openstack-nova-conductor
     - openstack-nova-api
     - openstack-nova-scheduler
+  when: connmon
 
 - name: Manage Nova Service from pacemaker
   shell: pcs resource manage {{ item }}
@@ -42,3 +43,4 @@
     - openstack-nova-conductor
     - openstack-nova-api
     - openstack-nova-scheduler
+  when: connmon
