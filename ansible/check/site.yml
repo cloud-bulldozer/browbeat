@@ -7,7 +7,7 @@
   remote_user: heat-admin
   vars:
     tuned_profile: throughput-performance
-    rabbitmq_fd: 16384 
+    rabbitmq_fd: 16384
     mariadb_max_connections: 4096
   roles:
   - common
@@ -18,6 +18,7 @@
   remote_user: heat-admin
   vars:
     tuned_profile: virtual-host
+    reserved_host_memory_check: 2048
   roles:
   - common
   - compute
