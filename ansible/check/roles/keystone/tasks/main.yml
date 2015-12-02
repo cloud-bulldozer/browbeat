@@ -6,21 +6,22 @@
 - name: Check Keystone cron job
   shell: crontab -l -u keystone | grep -v "#"
   register: keystone_cron_result
-  changed_when: no
+  changed_when: false
   failed_when: "'token_flush' not in '{{ keystone_cron_result.stdout }}'"
   ignore_errors: True
 
 - name: Check Keystone Token Provider
   command: crudini --get /etc/keystone/keystone.conf token provider
   register: keystone_token_provider
-  changed_when: no
+  changed_when: false
   ignore_errors: True
 
 - debug: msg="Keystone Token Provider:{{ keystone_token_provider.stdout }}"
 
-- name: Determine if keystone is deployed in eventlet
+- name: Determine if Keystone is deployed in eventlet
   shell: ps afx | grep "[Kk]eystone-all" -c
   register: keystone_in_eventlet
+  changed_when: false
   ignore_errors: true
 
 - name: Set keystone_deployment variable to httpd
