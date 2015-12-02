@@ -4,7 +4,7 @@
 #
 
 - name: Check Keystone cron job
-  command: crontab -l -u keystone
+  shell: crontab -l -u keystone | grep -v "#"
   register: keystone_cron_result
   changed_when: no
   failed_when: "'token_flush' not in '{{ keystone_cron_result.stdout }}'"
@@ -15,3 +15,20 @@
   register: keystone_token_provider
   changed_when: no
   ignore_errors: True
+
+- debug: msg="Keystone Token Provider:{{ keystone_token_provider.stdout }}"
+
+- name: Determine if keystone is deployed in eventlet
+  shell: ps afx | grep "[Kk]eystone-all" -c
+  register: keystone_in_eventlet
+  ignore_errors: true
+
+- name: Set keystone_deployment variable to httpd
+  set_fact: keystone_deployment='httpd'
+  when: keystone_in_eventlet.stdout|int == 0
+
+- name: Set keystone_deployment variable to eventlet
+  set_fact: keystone_deployment='eventlet'
+  when: keystone_in_eventlet.stdout|int > 0
+
+- debug: msg="Keystone deployed in:{{ keystone_deployment }}"
