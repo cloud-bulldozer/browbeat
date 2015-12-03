@@ -8,6 +8,7 @@
   register: pip_installed
   when: connmon
   changed_when: false
+  ignore_errors: true
 
 - name: Add DNS record
   shell: sed -i '1s/^/nameserver {{ dns_server }}\n/' /etc/resolv.conf

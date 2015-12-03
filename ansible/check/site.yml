@@ -18,7 +18,6 @@
   remote_user: heat-admin
   vars:
     tuned_profile: virtual-host
-    reserved_host_memory_check: 2048
   roles:
   - common
   - compute
@@ -31,3 +30,14 @@
   roles:
   - common
   - ceph
+
+- hosts : compute
+  name : Report from Computes
+  vars:
+    reserved_host_memory_check: 2048
+  tasks :
+    - name : Report Compute(s) reserved_host_memory
+      fail:
+        msg: "Compute node reserved memory too low"
+      when: hostvars[item].reserved_host_memory|int < reserved_host_memory_check
+      with_items: groups['compute']
