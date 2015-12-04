@@ -11,3 +11,6 @@
   yum: name=pbench-agent state=latest
   when: pbench
 
+- name: Ensure pbench directory exists as stack user on director
+  file: path=/var/lib/pbench-agent state=directory owner=stack group=stack recurse=yes
+  when: director
