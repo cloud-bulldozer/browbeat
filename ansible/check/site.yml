@@ -25,7 +25,6 @@
 - hosts: ceph
   remote_user: heat-admin
   vars:
-    # Place holder for now, unsure of what recommended tuned profile is.
     tuned_profile: throughput-performance
   roles:
   - common
