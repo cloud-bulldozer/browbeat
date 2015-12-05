@@ -23,6 +23,14 @@
 - set_fact :
     rabbitmq_fd_result : "{{ rabbitmq_fd_stdout.stdout }}"
 
+- name : Check HAProxy Default maxconn
+  shell : cat /etc/haproxy/haproxy.cfg | grep -iPzo '(?s)defaults.*?\n(\n|$)' | grep maxconn | awk '{print $2}'
+  register: haproxy_maxconn_stdout
+  changed_when: no
+
+- set_fact :
+    haproxy_maxconn_result: "{{ haproxy_maxconn_stdout.stdout }}"
+
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
   register: rabbitmq_partition_result

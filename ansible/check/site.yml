@@ -19,7 +19,7 @@
 
 - hosts: ceph
   remote_user: heat-admin
- roles:
+  roles:
   - common
   - ceph
 
@@ -31,7 +31,8 @@
   vars:
     tuned_profile: throughput-performance
     rabbitmq_fd: 16384
-    mariadb_max_connections: 5096
+    haproxy_max_connections: 4096
+    mariadb_max_connections: 4096
   tasks :
     - name : Check Controller Tuned profile
       fail:
@@ -51,6 +52,13 @@
       fail :
         msg: "Expecting {{ mariadb_max_connections }} connections, found {{ hostvars[item].max_connections_result }}"
       when: hostvars[item].max_connections_result|int < mariadb_max_connections
+      with_items: groups['controller']
+      ignore_errors: true
+
+    - name : Check Controller haproxy max connections
+      fail :
+        msg: "Expecting {{ haproxy_max_connections }} connections, found {{ hostvars[item].haproxy_maxconn }}"
+      when: hostvars[item].haproxy_maxconn_result|int < haproxy_max_connections
       with_items: groups['controller']
       ignore_errors: true
 
