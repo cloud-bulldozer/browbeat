@@ -15,6 +15,7 @@
   - director
   - connmon
   - pbench
+  - shaker
 
 - hosts: controller
   remote_user: heat-admin
@@ -29,4 +30,3 @@
   - nova
   - keystone
   - pbench
-  - shaker
