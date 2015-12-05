@@ -19,7 +19,7 @@
 
 - hosts: ceph
   remote_user: heat-admin
-  roles:
+ roles:
   - common
   - ceph
 

@@ -3,20 +3,9 @@
 # Connmon Install
 #
 
-- name: Check for pip
-  shell: which pip
-  register: pip_installed
-  when: connmon
-  changed_when: false
-  ignore_errors: true
-
-- name: Add DNS record
-  shell: sed -i '1s/^/nameserver {{ dns_server }}\n/' /etc/resolv.conf
-  when: connmon and "'no pip' in 'pip_installed.stdout'"
-
 - name: Install pip
   easy_install: name=pip
-  when: connmon and "'no pip' in 'pip_installed.stdout'"
+  when: connmon
 
 - name: Install connmon
   pip: name=connmon
