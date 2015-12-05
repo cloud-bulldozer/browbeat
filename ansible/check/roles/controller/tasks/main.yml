@@ -5,21 +5,26 @@
 
 - name: Check max_connections
   shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
-  register: max_connections_result
+  register: max_connections_stdout
   changed_when: no
-  failed_when: max_connections_result.stdout|int < mariadb_max_connections
+#  failed_when: max_connections_result.stdout|int < mariadb_max_connections
   ignore_errors: True
+
+- set_fact :
+    max_connections_result: "{{ max_connections_stdout.stdout }}"
 
 - name : Check rabbitmq file descriptors
   shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
-  register: rabbitmq_fd_result
+  register: rabbitmq_fd_stdout
   changed_when: no
-  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
+#  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
   ignore_errors: True
+
+- set_fact :
+    rabbitmq_fd_result : "{{ rabbitmq_fd_stdout.stdout }}"
 
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
   register: rabbitmq_partition_result
   changed_when: no
   failed_when: rabbitmq_partition_result.rc == 0
-  ignore_errors: True

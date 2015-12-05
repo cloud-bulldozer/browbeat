@@ -6,9 +6,6 @@
 - hosts: controller
   remote_user: heat-admin
   vars:
-    tuned_profile: throughput-performance
-    rabbitmq_fd: 16384
-    mariadb_max_connections: 4096
   roles:
   - common
   - controller
@@ -16,28 +13,75 @@
 
 - hosts: compute
   remote_user: heat-admin
-  vars:
-    tuned_profile: virtual-host
   roles:
   - common
   - compute
 
 - hosts: ceph
   remote_user: heat-admin
-  vars:
-    # Place holder for now, unsure of what recommended tuned profile is.
-    tuned_profile: throughput-performance
   roles:
   - common
   - ceph
 
+#
+# Generate Report of Checks
+#
+- hosts : controller
+  name : Report for Controller(s)
+  vars:
+    tuned_profile: throughput-performance
+    rabbitmq_fd: 16384
+    mariadb_max_connections: 5096
+  tasks :
+    - name : Check Controller Tuned profile
+      fail:
+        msg: "Incorrect tuned profile for Controller"
+      when: "'{{ tuned_profile }}' not in '{{ hostvars[item].tuned_result }}'"
+      with_items: groups['controller']
+      ignore_errors: true
+
+    - name : Check Controller rabbitmq file descriptors
+      fail :
+        msg: "Expecting {{ rabbitmq_fd }} fds, found {{ hostvars[item].rabbitmq_fd_result }}"
+      when: hostvars[item].rabbitmq_fd_result|int < rabbitmq_fd
+      with_items: groups['controller']
+      ignore_errors: true
+
+    - name : Check Controller database connections
+      fail :
+        msg: "Expecting {{ mariadb_max_connections }} connections, found {{ hostvars[item].max_connections_result }}"
+      when: hostvars[item].max_connections_result|int < mariadb_max_connections
+      with_items: groups['controller']
+      ignore_errors: true
+
 - hosts : compute
-  name : Report from Computes
+  name : Report for Compute(s)
   vars:
     reserved_host_memory_check: 2048
+    tuned_profile: virtual-host
   tasks :
     - name : Report Compute(s) reserved_host_memory
       fail:
-        msg: "Compute node reserved memory too low"
+        msg: "Compute node reserved memory too low - https://bugzilla.redhat.com/show_bug.cgi?id=1282644"
       when: hostvars[item].reserved_host_memory|int < reserved_host_memory_check
       with_items: groups['compute']
+      ignore_errors: true
+
+    - name : Check Compute Tuned profile
+      fail:
+        msg: "Incorrect tuned profile for Compute"
+      when: "'{{ tuned_profile }}' not in '{{ hostvars[item].tuned_result }}'"
+      with_items: groups['compute']
+      ignore_errors: true
+
+- hosts : ceph
+  name : Report for Ceph(s)
+  vars:
+    tuned_profile: throughput-performance
+  tasks :
+    - name : Check Ceph Tuned profile
+      fail:
+        msg: "Incorrect tuned profile for Ceph"
+      when: "'{{ tuned_profile }}' not in '{{ hostvars[item].tuned_result }}'"
+      with_items: groups['ceph']
+      ignore_errors: true
