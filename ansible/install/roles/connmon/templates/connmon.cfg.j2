@@ -2,4 +2,4 @@
 name: default
 csv_dump: ./csv_results.csv
 nodes:
-  node1 hostname=localhost:5800 bind=0.0.0.0
+  node1 hostname={{ item.ip_address }}:5800 bind=0.0.0.0

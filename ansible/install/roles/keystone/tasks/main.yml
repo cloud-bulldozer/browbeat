@@ -2,3 +2,71 @@
 #
 # Keystone tasks
 #
+
+- name: Determine if keystone is deployed in eventlet
+  shell: ps afx | grep "[Kk]eystone-all" -c
+  register: deployed
+  ignore_errors: true
+  changed_when: false
+
+- name: Set keystone_deployment variable/fact to httpd
+  set_fact: keystone_deployment='httpd'
+  when: deployed.stdout|int == 0
+
+- name: Set keystone_deployment variable/fact to eventlet
+  set_fact: keystone_deployment='eventlet'
+  when: deployed.stdout|int > 0
+
+#
+# Configure connmon in keystone.conf
+#
+
+- name: Check for connmon in keystone.conf
+  shell: grep -q 'connection = mysql:' /etc/keystone/keystone.conf
+  when: connmon
+  register: keystone_mysql
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable connmon in keystone.conf
+  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
+  when: connmon and keystone_mysql.rc == 0
+
+- name: Check for connmon_service in keystone.conf
+  shell: grep -q 'connmon_service' /etc/keystone/keystone.conf
+  when: connmon
+  ignore_errors: true
+  register: keystone_connmon_service
+  changed_when: false
+
+- name: Enable connmon in nova.conf
+  shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/keystone/keystone.conf
+  when: connmon and keystone_connmon_service.rc == 1
+
+#
+# Restart keystone when in httpd
+#
+
+- name: Restart httpd service
+  service: name=httpd state=restarted
+  when: "'httpd' in '{{ keystone_deployment }}'"
+
+#
+# Restart keystone when in eventlet
+#
+
+- name: Unmanage keystone service from pacemaker
+  command: pcs resource unmanage openstack-keystone
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: Restart keystone service
+  service: name=openstack-keystone state=restarted
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: Manage keystone service from pacemaker
+  command: pcs resource manage openstack-keystone
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: Cleanup keystone service in pacemaker
+  command: pcs resource cleanup openstack-keystone
+  when: "'eventlet' in '{{ keystone_deployment }}'"

@@ -14,20 +14,14 @@
 #
 # Connmon Setup
 #
-- name: Copy Connmon config
-  copy:
-    src: connmon.cfg
-    dest: /etc/connmon.cfg
-    mode: 0644
-  when: connmon
 
-- name: Check connmon is configured
-  shell: grep -q "{{ connmon_host }}" /etc/connmon.cfg
-  ignore_errors: yes
-  register: connmon_conf
-  changed_when: false
+- name: Configure Connmon Host IP Address
+  template:
+    src=connmon.cfg.j2
+    dest=/etc/connmon.cfg
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - ip_address: "{{ connmon_host }}"
   when: connmon
-
-- name: Config Connmon Host IP Address
-  shell: sed -i 's/localhost/{{ connmon_host }}/g' /etc/connmon.cfg
-  when: connmon and connmon_conf.rc == 1
