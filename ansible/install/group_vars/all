@@ -4,3 +4,4 @@ ansible_sudo: yes
 connmon_host: 192.0.2.1
 dns_server: 8.8.8.8
 pbench_repo_file_url: http://pbench.example.com/repo/yum.repos.d/pbench.repo
+repo_name: rhos-release-rhel-7.2.repo

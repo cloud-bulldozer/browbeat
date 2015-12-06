@@ -13,8 +13,8 @@
   shell: echo "nameserver {{ dns_server }}" | tee -a /etc/resolv.conf
   when: dns_record.rc == 1
 
-- name: Get rhel repo file tfrom director
-  fetch: src=/etc/yum.repos.d/rhos-release-rhel-7.2.repo dest=roles/common/files/rhel.repo flat=yes
+- name: Get rhel repo file from director
+  fetch: src=/etc/yum.repos.d/"{{ repo_name }}" dest=roles/common/files/rhel.repo flat=yes
   when: director
   changed_when: false
 
