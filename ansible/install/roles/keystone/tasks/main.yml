@@ -39,7 +39,7 @@
   register: keystone_connmon_service
   changed_when: false
 
-- name: Enable connmon in nova.conf
+- name: Enable connmon in keystone.conf
   shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/keystone/keystone.conf
   when: connmon and keystone_connmon_service.rc == 1
 
