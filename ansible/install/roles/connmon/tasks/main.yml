@@ -25,3 +25,8 @@
   with_items:
     - ip_address: "{{ connmon_host }}"
   when: connmon
+
+# To remove the screen session: screen -X -S connmond kill
+- name: Run connmond in screen session on director
+  command: screen -d -S connmond -m connmond
+  when: connmon and director
