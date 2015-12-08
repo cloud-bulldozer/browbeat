@@ -28,6 +28,7 @@
 #
 - hosts : controller
   name : Report for Controller(s)
+  gather_facts: false
   vars:
     tuned_profile: throughput-performance
     rabbitmq_fd: 16384
@@ -64,6 +65,7 @@
 
 - hosts : compute
   name : Report for Compute(s)
+  gather_facts: false
   vars:
     reserved_host_memory_check: 2048
     tuned_profile: virtual-host
@@ -77,13 +79,14 @@
 
     - name : Check Compute Tuned profile
       fail:
-        msg: "Incorrect tuned profile for Compute"
+        msg: "Incorrect tuned profile for Compute - https://bugzilla.redhat.com/show_bug.cgi?id=1246645"
       when: "'{{ tuned_profile }}' not in '{{ hostvars[item].tuned_result }}'"
       with_items: groups['compute']
       ignore_errors: true
 
 - hosts : ceph
   name : Report for Ceph(s)
+  gather_facts: false
   vars:
     tuned_profile: throughput-performance
   tasks :
