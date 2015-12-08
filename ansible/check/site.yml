@@ -57,7 +57,7 @@
 
     - name : Check Controller haproxy max connections
       fail :
-        msg: "Expecting {{ haproxy_max_connections }} connections, found {{ hostvars[item].haproxy_maxconn }}"
+        msg: "Expecting {{ haproxy_max_connections }} connections, found {{ hostvars[item].haproxy_maxconn_result }}"
       when: hostvars[item].haproxy_maxconn_result|int < haproxy_max_connections
       with_items: groups['controller']
       ignore_errors: true
