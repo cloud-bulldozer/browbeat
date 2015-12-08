@@ -1,0 +1,38 @@
+DEBUG=true
+CONNMON=true
+# Number of workers to test. This is a loop.
+NUM_WORKERS="36 32 24 12 6"
+RESET_WORKERS="24"
+CONNMON_PID=0
+# Number of times we should rerun a Rally Scenario
+RERUN=3
+CONTROLLERS=$(nova list | grep control)
+PBENCH=true
+PBENCH_INTERVAL=2
+SSH_OPTS="StrictHostKeyChecking no"
+
+# Keystone is running in Apache (httpd) rather than as openstack-keystone (Eventlet)
+KEYSTONE_IN_APACHE=false
+
+declare -A WORKERS
+WORKERS["keystone"]="public_workers|admin_workers"
+if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
+ WORKERS["keystone"]="processes"
+fi
+WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers|workers|#workers"
+WORKERS["neutron"]="rpc_workers|api_workers"
+
+declare -A TIMES
+TIMES["keystone"]=5000
+TIMES["nova"]=128
+
+declare -A CONCURRENCY
+CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
+CONCURRENCY["nova"]="8 16 32 48 54"
+
+ROOT=false
+LOGIN_USER="heat-admin"
+if [[ $(whoami) == "root" ]]; then
+    LOGIN_USER="root"
+    ROOT=true
+fi

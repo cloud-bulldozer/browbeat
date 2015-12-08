@@ -1,43 +1,6 @@
 #!/bin/bash
 source ~/stackrc
-DEBUG=true
-CONNMON=true
-# Number of workers to test. This is a loop.
-NUM_WORKERS="36 32 24 12 6"
-RESET_WORKERS="24"
-CONNMON_PID=0
-# Number of times we should rerun a Rally Scenario
-RERUN=3
-CONTROLLERS=$(nova list | grep control)
-PBENCH=true
-PBENCH_INTERVAL=2
-SSH_OPTS="StrictHostKeyChecking no"
-
-# Keystone is running in Apache (httpd) rather than as openstack-keystone (Eventlet)
-KEYSTONE_IN_APACHE=true
-
-declare -A WORKERS
-WORKERS["keystone"]="public_workers|admin_workers"
-if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
- WORKERS["keystone"]="processes"
-fi
-WORKERS["nova"]="metadata_workers|osapi_compute_workers|ec2_workers|workers|#workers"
-WORKERS["neutron"]="rpc_workers|api_workers"
-
-declare -A TIMES
-TIMES["keystone"]=5000
-TIMES["nova"]=128
-
-declare -A CONCURRENCY
-CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
-CONCURRENCY["nova"]="8 16 32 48 54"
-
-ROOT=false
-LOGIN_USER="heat-admin"
-if [[ $(whoami) == "root" ]]; then
-    LOGIN_USER="root"
-    ROOT=true
-fi
+source browbeat-config
 
 log()
 {
@@ -111,9 +74,9 @@ run_rally()
   test_prefix=$2
  fi
 
- for task_file in `ls ${osp_service}`
+ for task_file in `ls rally/${osp_service}`
  do
-  task_dir=$osp_service
+  task_dir=rally/$osp_service
 
   if [ ${task_file: -3} == "-cc" ]
   then
@@ -183,17 +146,17 @@ run_rally()
 post_process()
 {
  if [ -z "$1" ] ; then
-  echo "Error result path not passed" 
+  echo "Error result path not passed"
   exit 1
  else
   log Post-Processing : $1
   results=$1
  fi
- 
+
  if $CONNMON ; then
   log Building Connmon Graphs
-  for i in `ls -talrh $results | grep -E "*\.csv$" | awk '{print $9}'` ; do 
-    python graphing/connmonplot.py $results/$i; 
+  for i in `ls -talrh $results | grep -E "*\.csv$" | awk '{print $9}'` ; do
+    python graphing/connmonplot.py $results/$i;
   done
  fi
 }
@@ -262,8 +225,8 @@ for num_wkrs in ${NUM_WORKERS} ; do
   ansible-playbook -i ansible/hosts ansible/browbeat/adjustment.yml -e "workers=${num_wkrs}"
   check_running_workers
 
-  check_controllers
-  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
+#  check_controllers
+#  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
 
   check_controllers
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
