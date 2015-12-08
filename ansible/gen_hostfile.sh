@@ -8,7 +8,23 @@ ospd_ip_address=$1
 ansible_inventory_file='hosts'
 ssh_config_file=$2
 
-nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep overcloud")
+nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i running")
+
+controller_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Controller | grep physical_resource_id" | awk '{print $4}')
+compute_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Compute | grep physical_resource_id" | awk '{print $4}')
+controller_ids=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-list ${controller_id} | grep -i controller" | awk '{print $2}')
+compute_ids=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-list ${compute_id} | grep -i compute" | awk '{print $2}')
+
+controller_uuids=()
+for controller in ${controller_ids}
+do
+ controller_uuids+=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
+done
+compute_uuids=()
+for compute in ${compute_ids}
+do
+ compute_uuids+=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show ${compute_id} ${compute} | grep -i nova_server_resource" | awk '{print $4}')
+done
 
 echo ""
 echo "---------------------------"
@@ -33,20 +49,19 @@ echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
 echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
 compute_hn=()
-controllers_hn=()
+controller_hn=()
 ceph_hn=()
 IFS=$'\n'
 for line in $nodes; do
- host=$(echo $line| awk '{print $4}')
+ uuid=$(echo $line | awk '{print $2}')
+ host=$(echo $line | awk '{print $4}')
  IP=$(echo $line | awk '{print $12}' | cut -d "=" -f2)
- if [[ ${host} =~ compute ]]; then
+ if grep -q $uuid <<< {$controller_uuids}; then
+  controller_hn+=("$host")
+ elif grep -q $uuid <<< {$compute_uuids}; then
   compute_hn+=("$host")
- fi
- if [[ ${host} =~ ceph ]] ; then
+ else
   ceph_hn+=("$host")
- fi
- if [[ ${host} =~ control ]]; then
-  controllers_hn+=("$host")
  fi
  echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
@@ -65,10 +80,10 @@ echo "---------------------------"
 echo ""
 echo "[director]" | tee ${ansible_inventory_file}
 echo "${ospd_ip_address}" | tee -a ${ansible_inventory_file}
-if [[ ${#controllers_hn} -gt 0 ]]; then
+if [[ ${#controller_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[controller]" | tee -a ${ansible_inventory_file}
- for ct in ${controllers_hn[@]}; do
+ for ct in ${controller_hn[@]}; do
   echo "${ct}" | tee -a ${ansible_inventory_file}
  done
 fi
