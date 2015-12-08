@@ -8,3 +8,4 @@
   register: ceph_status
   failed_when: "'HEALTH_OK' not in '{{ ceph_status.stdout }}'"
   ignore_errors: True
+  changed_when: false
