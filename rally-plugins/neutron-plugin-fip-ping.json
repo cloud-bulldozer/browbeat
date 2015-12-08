@@ -1,0 +1,30 @@
+{% set flavor_name = flavor_name or "m1.medium" %}
+{
+    "NeutronBootFipPingPlugin.create_network_nova_boot_ping": [
+        {
+            "args": {
+                "floating": True,
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                },
+                "image": {
+                    "name": "CentOS-7-x86_64-GenericCloud-20141129_01"
+                },
+                "ext_net": {
+                    "id": "4d7d6ee4-4423-46c8-9e03-8f4ae8869841",
+                },
+                "network_create_args": {},
+            },
+            "runner": {
+                "type": "serial",
+                "times": 1,
+            },
+            "context": {
+                "users": {
+                    "tenants": 1,
+                    "users_per_tenant": 1
+                },
+            },
+        }
+    ]
+}
