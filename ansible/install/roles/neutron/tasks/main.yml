@@ -1,0 +1,29 @@
+---
+- name: Check for connmon in neutron.conf
+  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/neutron/neutron.conf
+  register: neutron_mysql
+  when: connmon
+  ignore_errors: true
+  changed_when: no
+
+- name: Enable Connmon in neutron.conf
+  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/neutron/neutron.conf
+  when: connmon and neutron_mysql.rc == 0
+
+- name: Unmanage Neutron Service from pacemaker
+  shell: pcs resource unmanage {{ item }}
+  with_items:
+    - neutron-server
+  when: connmon
+
+- name: Restart Neutron services
+  service: name={{ item }} state=restarted
+  with_items:
+    - neutron-server
+  when: connmon
+
+- name: Manage Neutron Service from pacemaker
+  shell: pcs resource manage {{ item }}
+  with_items:
+    - neutron-server
+  when: connmon
