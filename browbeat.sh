@@ -121,6 +121,8 @@ run_rally()
       mv ${results_dir}/current-run.csv ${results_dir}/${test_name}.csv
      fi
 
+     post_process $results_dir
+
      # grep the log file for the results to be run
      test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
      rally task report ${test_id} --out ${test_name}.html
@@ -129,13 +131,18 @@ run_rally()
       log "Copying rally report and log into ${pbench_results_dir}"
       cp ${test_name}.log ${pbench_results_dir}
       cp ${test_name}.html ${pbench_results_dir}
+      if $CONNMON ; then
+        mkdir -p ${pbench_results_dir}/connmon/
+        for connmon_graph in `find ${results_dir}/ | grep -E "png$|csv$"`
+        do
+          cp ${connmon_graph} ${pbench_results_dir}/connmon/
+        done
+      fi
       move-results --prefix=${test_prefix}/${task_file}-${concur}
       clear-tools
      fi
      mv ${test_name}.log $results_dir
      mv ${test_name}.html $results_dir
-
-     post_process $results_dir
 
      sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
