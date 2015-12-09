@@ -24,7 +24,8 @@
     director: false
     pbench: false
     shaker: false
-    stack_ssh_key: "{{ lookup('file', 'roles/common/files/stack_id_rsa.pub') }}"
+    director_root_ssh_key: "{{ lookup('file', 'roles/pbench/files/director_root_id_rsa.pub') }}"
+    director_stack_ssh_key: "{{ lookup('file', 'roles/pbench/files/director_stack_id_rsa.pub') }}"
   roles:
   - common
   - connmon

@@ -15,8 +15,17 @@
   file: path=/var/lib/pbench-agent state=directory owner=stack group=stack recurse=yes
   when: director
 
+- name: Ensure pbench id_rsa is owned by stack
+  file: path=/opt/pbench-agent/id_rsa owner=stack group=stack
+  when: director
+
+- name: Get director root ssh public key
+  fetch: src=/root/.ssh/id_rsa.pub dest=roles/pbench/files/director_root_id_rsa.pub flat=yes
+  when: director
+  changed_when: false
+
 - name: Get director stack ssh public key
-  fetch: src=/home/stack/.ssh/id_rsa.pub dest=roles/common/files/stack_id_rsa.pub flat=yes
+  fetch: src=/home/stack/.ssh/id_rsa.pub dest=roles/pbench/files/director_stack_id_rsa.pub flat=yes
   when: director
   changed_when: false
 
@@ -24,6 +33,10 @@
   lineinfile: dest=/root/.ssh/authorized_keys state=absent regexp="Please login as the user" mode=0600
   when: not director
 
-- name: Copy director stack ssh public key to controllers/compute authorized_keys
-  lineinfile: dest=/root/.ssh/authorized_keys state=present line="{{ stack_ssh_key }}"
+- name: Copy director root ssh public key to controllers/compute root user's authorized_keys
+  lineinfile: dest=/root/.ssh/authorized_keys state=present line="{{ director_root_ssh_key }}"
+  when: not director
+
+- name: Copy director stack ssh public key to controllers/compute root user's authorized_keys
+  lineinfile: dest=/root/.ssh/authorized_keys state=present line="{{ director_stack_ssh_key }}"
   when: not director
