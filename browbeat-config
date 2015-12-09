@@ -24,10 +24,12 @@ WORKERS["neutron"]="rpc_workers|api_workers"
 
 declare -A TIMES
 TIMES["keystone"]=5000
+TIMES["neutron"]=500
 TIMES["nova"]=128
 
 declare -A CONCURRENCY
 CONCURRENCY["keystone"]="64 96 128 160 192 224 256"
+CONCURRENCY["neutron"]="8 16 32 48 54"
 CONCURRENCY["nova"]="8 16 32 48 54"
 
 ROOT=false

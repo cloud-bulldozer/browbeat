@@ -238,6 +238,9 @@ for num_wkrs in ${NUM_WORKERS} ; do
   run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
 
   check_controllers
+  run_rally neutron "${complete_test_prefix}-neutron-${num_wkr_padded}" ${num_wkrs}
+
+  check_controllers
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
 
 done
