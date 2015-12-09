@@ -8,6 +8,12 @@ ospd_ip_address=$1
 ansible_inventory_file='hosts'
 ssh_config_file=$2
 
+# "Hackish" copy ssh key to self if we are on directly on the director machine:
+if [[ "${ospd_ip_address}" == "localhost" ]]; then
+ cat ~stack/.ssh/id_rsa.pub >> ~stack/.ssh/authorized_keys
+ sudo bash -c "cat ~stack/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
+fi
+
 nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i running")
 
 controller_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Controller | grep physical_resource_id" | awk '{print $4}')
@@ -102,6 +108,9 @@ if [[ ${#ceph_hn} -gt 0 ]]; then
  done
 fi
 echo "---------------------------"
+
+# Before referencing a host in ~/.ssh/config, ensure correct permissions on ssh config file
+chmod 0600 ${ssh_config_file}
 
 # Copy heat-admin key so we can use jumpbox
 echo ""
