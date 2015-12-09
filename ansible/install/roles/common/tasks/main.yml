@@ -3,15 +3,8 @@
 # Browbeat Install Common
 #
 
-- name: Check for DNS record
-  command: grep "{{ dns_server }}" /etc/resolv.conf
-  register: dns_record
-  failed_when: false
-  changed_when: false
-
 - name: Add DNS record
-  shell: echo "nameserver {{ dns_server }}" | tee -a /etc/resolv.conf
-  when: dns_record.rc == 1
+  lineinfile: dest=/etc/resolv.conf state=present line="nameserver {{ dns_server }}" insertafter="^search"
 
 - name: Get rhel repo file from director
   fetch: src=/etc/yum.repos.d/"{{ repo_name }}" dest=roles/common/files/rhel.repo flat=yes
