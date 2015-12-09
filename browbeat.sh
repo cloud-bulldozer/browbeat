@@ -100,8 +100,8 @@ run_rally()
 
      if $CONNMON ; then
          log Starting connmon
-         sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$run_count\/current-run.csv/g" connmon/config
-         connmond --config connmon/config > /tmp/connmond-${test_name} 2>&1 &
+         sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$run_count\/current-run.csv/g" /etc/connmon.cfg
+         connmond --config /etc/connmon.cfg > /tmp/connmond-${test_name} 2>&1 &
          CONNMON_PID=$!
      fi
 
