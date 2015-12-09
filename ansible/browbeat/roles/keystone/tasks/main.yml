@@ -47,6 +47,8 @@
     - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: public_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: admin_workers, value: "{{ workers }}" }
+    - { section: eventlet_server, option: public_workers, value: "{{ workers }}" }
+    - { section: eventlet_server, option: admin_workers, value: "{{ workers }}" }
   when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Unconfigure keystone in httpd if eventlet
