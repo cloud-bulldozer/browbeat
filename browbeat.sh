@@ -100,7 +100,9 @@ run_rally()
 
      if $CONNMON ; then
          log Starting connmon
-         sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$run_count\/current-run.csv/g" /etc/connmon.cfg
+         # Kill any existing connmond session in screen, ansible install script creates this
+         sudo screen -X -S connmond kill
+         sudo sed -i "s/csv_dump:.*/csv_dump: results\/$test_prefix\/$osp_service\/$task_file\/run-$run_count\/current-run.csv/g" /etc/connmon.cfg
          connmond --config /etc/connmon.cfg > /tmp/connmond-${test_name} 2>&1 &
          CONNMON_PID=$!
      fi
@@ -225,8 +227,8 @@ for num_wkrs in ${NUM_WORKERS} ; do
   ansible-playbook -i ansible/hosts ansible/browbeat/adjustment.yml -e "workers=${num_wkrs}"
   check_running_workers
 
-#  check_controllers
-#  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
+  check_controllers
+  run_rally keystone "${complete_test_prefix}-keystone-${num_wkr_padded}" ${num_wkrs}
 
   check_controllers
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
