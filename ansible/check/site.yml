@@ -96,3 +96,17 @@
       when: "'{{ tuned_profile }}' not in '{{ hostvars[item].tuned_result }}'"
       with_items: groups['ceph']
       ignore_errors: true
+
+    - name : Verify RBD caching
+      fail :
+        msg: "Verify RBD caching check failed"
+      when : "'true'  not in '{{ hostvars[item].ceph_rbd_caching_result }}'"
+      with_items: groups['ceph']
+      ignore_errors: true
+
+    - name : Verify RBD cache writethrough
+      fail:
+        msg: "Verify RBD cache writethrough check failed"
+      when: "'false'  not in '{{ hostvars[item].ceph_rbd_cache_writethrough_result }}'"
+      with_items: groups['ceph']
+      ignore_errors: true
