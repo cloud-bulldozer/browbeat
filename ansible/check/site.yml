@@ -31,7 +31,7 @@
   gather_facts: false
   vars:
     tuned_profile: throughput-performance
-    rabbitmq_fd: 16384
+    rabbitmq_fd: 1600
     haproxy_max_connections: 4096
     mariadb_max_connections: 4096
   tasks :
