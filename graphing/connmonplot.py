@@ -11,7 +11,7 @@ import matplotlib.cbook as cbook
 from pylab import rcParams
 rcParams['figure.figsize'] = 18, 10
 
-services=['/usr/bin/nova-scheduler','/usr/bin/keystone-all','/usr/bin/nova-api','/usr/bin/nova-conductor']
+services=['/usr/bin/nova-scheduler','/usr/bin/keystone-all','/usr/bin/nova-api','/usr/bin/nova-conductor','/usr/bin/neutron-server']
 color_wheel=['r','g','b','y']
 
 data = {}
@@ -167,18 +167,18 @@ for service in data :
     plt.xlabel("Time")
     plt.ylabel("Connections")
     pos=0
-    controller,=plt.plot_date(data[service][host]['timestamp'],
+    controller,=plt.plot_date(np.resize(data[service][host]['timestamp'],len(total_connections)),
                                total_connections,
                                'c',
                                linewidth=5,label="%s-controllers-conn"%service)
 
-    controller2,=plt.plot_date(data[service][host]['timestamp'],
+    controller2,=plt.plot_date(np.resize(data[service][host]['timestamp'],len(total_checkouts)),
                                total_checkouts,
                                'c',
                                linewidth=3,
                                label="%s-controllers-ckout"%service)
 
-    controller1,=plt.plot_date(data[service][host]['timestamp'],
+    controller1,=plt.plot_date(np.resize(data[service][host]['timestamp'],len(total_maxcheckouts)),
                                total_maxcheckouts,
                                'c',
                                linewidth=1,
@@ -194,3 +194,4 @@ for service in data :
 
     plt.savefig("%s_%s-connctions-all.png"%(sys.argv[1],ntpath.basename(service)), bbox_inches='tight')
     plt.close()
+
