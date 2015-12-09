@@ -7,5 +7,21 @@
   shell: ceph status
   register: ceph_status
   failed_when: "'HEALTH_OK' not in '{{ ceph_status.stdout }}'"
-  ignore_errors: True
   changed_when: false
+  ignore_errors: True
+
+- name: Verify RBD caching
+  shell: ceph --admin-daemon `ls /var/run/ceph/ceph-osd.*.asok|tail -1` config show|grep '"rbd_cache":'|grep -i true|awk '{print tolower($0)}'
+  register: ceph_rbd_caching
+  changed_when: false
+  ignore_errors: True
+
+- name: Verify RBD cache writethrough
+  shell: ceph --admin-daemon `ls /var/run/ceph/ceph-osd.*.asok|tail -1` config show|grep "rbd_cache_writethrough"|grep -i true|awk '{print tolower($0)}'
+  register: ceph_rbd_cache_writethrough
+  changed_when: false
+  ignore_errors: True
+
+- set_fact:
+    ceph_rbd_cache_writethrough_result : "{{ ceph_rbd_cache_writethrough.stdout }}"
+    ceph_rbd_caching_result : "{{ ceph_rbd_caching.stdout }}"
