@@ -1,4 +1,5 @@
 ansible
+matplotlib
 
 # For pbench-agent compatibility:
 configtools

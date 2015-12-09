@@ -38,6 +38,7 @@ $ glance image-create --name centos7 --disk-format=qcow2 --container-format=bare
 $ glance image-update centos7 --is-public true
 $ . ~stack/stackrc
 $ cd browbeat
+$ sudo yum install -y freetype-devel libpng-devel
 $ sudo pip install -Ur requirements.txt
 $ ./browbeat.sh test01
 ```
