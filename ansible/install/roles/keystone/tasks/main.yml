@@ -58,6 +58,7 @@
 - name: Unmanage keystone service from pacemaker
   command: pcs resource unmanage openstack-keystone
   when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true
 
 - name: Restart keystone service
   service: name=openstack-keystone state=restarted
@@ -66,7 +67,9 @@
 - name: Manage keystone service from pacemaker
   command: pcs resource manage openstack-keystone
   when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true
 
 - name: Cleanup keystone service in pacemaker
   command: pcs resource cleanup openstack-keystone
   when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true
