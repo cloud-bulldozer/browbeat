@@ -50,6 +50,7 @@
 - name: Restart httpd service
   service: name=httpd state=restarted
   when: connmon and "'httpd' in '{{ keystone_deployment }}'"
+  ignore_errors: true
 
 #
 # Restart keystone when in eventlet
