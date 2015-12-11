@@ -118,9 +118,14 @@ def main():
                         for concurrency in compiled_results[service][test][iteration][worker_count]:
                             if concurrency not in concurrency_dict:
                                 concurrency_dict[concurrency] = []
-                            concurrency_dict[concurrency].append(float(compiled_results[service][test][iteration][worker_count][concurrency][measurement]))
+                            if str(compiled_results[service][test][iteration][worker_count][concurrency][measurement]) == "n/a":
+                                # Rally will place n/a in place of an actual result when it fails
+                                # completely, we can't graph n/a, so replace with -1
+                                concurrency_dict[concurrency].append(-1)
+                            else:
+                                concurrency_dict[concurrency].append(float(compiled_results[service][test][iteration][worker_count][concurrency][measurement]))
 
-                    graph_file_name = '{}/{}-{}-{}-{}.png'.format(rally_graph_dir, service, test, iteration, measurement)
+                    graph_file_name = '{}{}-{}-{}-{}.png'.format(rally_graph_dir, service, test, iteration, measurement)
                     print '----------------------------------------------------------'
                     print 'Test Prefix: {}'.format(args.test_prefix)
                     print 'Service: {}'.format(service)
