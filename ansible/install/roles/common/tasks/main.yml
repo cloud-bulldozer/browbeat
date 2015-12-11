@@ -5,12 +5,3 @@
 
 - name: Add DNS record
   lineinfile: dest=/etc/resolv.conf state=present line="nameserver {{ dns_server }}" insertafter="^search"
-
-- name: Get rhel repo file from director
-  fetch: src=/etc/yum.repos.d/"{{ repo_name }}" dest=roles/common/files/rhel.repo flat=yes
-  when: director
-  changed_when: false
-
-- name: Copy rhel repo file to controllers/computes
-  copy: src=rhel.repo dest=/etc/yum.repos.d/
-  when: not director

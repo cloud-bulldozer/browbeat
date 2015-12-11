@@ -3,6 +3,15 @@
 # Tasks for pbench
 #
 
+- name: Get repo file from director
+  fetch: src=/etc/yum.repos.d/"{{ repo_name }}" dest=roles/pbench/files/el.repo flat=yes
+  when: pbench and director
+  changed_when: false
+
+- name: Copy repo file to controllers/computes
+  copy: src=el.repo dest=/etc/yum.repos.d/
+  when: pbench and not director
+
 - name: Install pbench repo file
   get_url: url="{{ pbench_repo_file_url }}" dest=/etc/yum.repos.d/pbench.repo
   when: pbench
