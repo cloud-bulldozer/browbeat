@@ -1,4 +1,4 @@
-<VirtualHost {{ item.ip_address }}:35357>
+<VirtualHost {{ item.ip_address }}:{{ item.port }}>
   ServerName  keystone_wsgi_{{ item.interface }}
 
   ## Vhost docroot
