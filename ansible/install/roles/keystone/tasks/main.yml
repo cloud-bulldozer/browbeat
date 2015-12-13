@@ -49,7 +49,7 @@
 
 - name: Restart httpd service
   service: name=httpd state=restarted
-  when: connmon and "'httpd' in '{{ keystone_deployment }}'"
+  when: "connmon and 'httpd' == '{{ keystone_deployment }}'"
   ignore_errors: true
 
 #
@@ -58,19 +58,19 @@
 
 - name: Unmanage keystone service from pacemaker
   command: pcs resource unmanage openstack-keystone
-  when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: Restart keystone service
   service: name=openstack-keystone state=restarted
-  when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
 
 - name: Manage keystone service from pacemaker
   command: pcs resource manage openstack-keystone
-  when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: Cleanup keystone service in pacemaker
   command: pcs resource cleanup openstack-keystone
-  when: connmon and "'eventlet' in '{{ keystone_deployment }}'"
+  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true
