@@ -31,6 +31,12 @@
 - name: Enable connmon in keystone.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
   when: connmon and keystone_mysql.rc == 0
+  notify:
+    - restart httpd
+    - unmanage keystone
+    - restart keystone
+    - manage keystone
+    - cleanup keystone
 
 - name: Check for connmon_service in keystone.conf
   shell: grep -q 'connmon_service' /etc/keystone/keystone.conf
@@ -42,35 +48,9 @@
 - name: Enable connmon in keystone.conf
   shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/keystone/keystone.conf
   when: connmon and keystone_connmon_service.rc == 1
-
-#
-# Restart keystone when in httpd
-#
-
-- name: Restart httpd service
-  service: name=httpd state=restarted
-  when: "connmon and 'httpd' == '{{ keystone_deployment }}'"
-  ignore_errors: true
-
-#
-# Restart keystone when in eventlet
-#
-
-- name: Unmanage keystone service from pacemaker
-  command: pcs resource unmanage openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
-  ignore_errors: true
-
-- name: Restart keystone service
-  service: name=openstack-keystone state=restarted
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
-
-- name: Manage keystone service from pacemaker
-  command: pcs resource manage openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
-  ignore_errors: true
-
-- name: Cleanup keystone service in pacemaker
-  command: pcs resource cleanup openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
-  ignore_errors: true
+  notify:
+    - restart httpd
+    - unmanage keystone
+    - restart keystone
+    - manage keystone
+    - cleanup keystone
