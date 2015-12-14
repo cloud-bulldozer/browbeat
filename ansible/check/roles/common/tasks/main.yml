@@ -19,8 +19,6 @@
   command: tuned-adm active
   register: tuned_stdout
   changed_when: no
+  failed_when: "'{{ tuned_profile }}' not in '{{ tuned_result.stdout }}'"
   ignore_errors: True
-
-- set_fact:
-     tuned_result : "{{ tuned_stdout.stdout }}"
 

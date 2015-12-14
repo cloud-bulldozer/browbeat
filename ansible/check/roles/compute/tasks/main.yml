@@ -13,9 +13,7 @@
 - name: Check reserved_host_memory_mb
   shell: grep reserved_host_memory /etc/nova/nova.conf | grep -v "#" | cut -f2 -d =
   register: reserved_host_memory
+  failed_when: reserved_host_memory.stdout|int < reserved_host_memory_check
   changed_when: no
   ignore_errors: True
 
-- name : Validate reserved_host_memory_mb
-  set_fact:
-    reserved_host_memory_result : "{{ reserved_host_memory.stdout }}"
