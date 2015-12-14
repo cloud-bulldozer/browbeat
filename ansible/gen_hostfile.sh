@@ -70,6 +70,10 @@ for line in $nodes; do
   ceph_hn+=("$host")
  fi
  echo "" | tee -a ${ssh_config_file}
+ echo "# pbench specific configuration, force user to be root on target" | tee -a ${ssh_config_file}
+ echo "Host ${IP}" | tee -a ${ssh_config_file}
+ echo "    User root" | tee -a ${ssh_config_file}
+ echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
  echo "    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa stack@${ospd_ip_address} -W ${IP}:22" | tee -a ${ssh_config_file}
  echo "    User heat-admin" | tee -a ${ssh_config_file}
