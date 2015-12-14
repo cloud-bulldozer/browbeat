@@ -8,17 +8,17 @@
 - name: Determine if keystone is deployed in eventlet
   shell: ps afx | grep "[Kk]eystone-all" -c
   register: deployed
-  when: "'not_defined' in '{{ keystone_deployment }}'"
+  when: keystone_deployment is undefined
   ignore_errors: true
   changed_when: false
 
 - name: Set keystone_deployment variable/fact to httpd
   set_fact: keystone_deployment='httpd'
-  when: "'not_defined' in '{{ keystone_deployment }}' and deployed.stdout|int == 0"
+  when: keystone_deployment is undefined and deployed.stdout|int == 0
 
 - name: Set keystone_deployment variable/fact to eventlet
   set_fact: keystone_deployment='eventlet'
-  when: "'not_defined' in '{{ keystone_deployment }}'"
+  when: keystone_deployment is undefined
 
 - name: Get keystone admin ip address
   command: crudini --get /etc/keystone/keystone.conf DEFAULT admin_bind_host
@@ -113,48 +113,21 @@
       deployment: "{{ keystone_deployment }}"
 
 #
-# Umanage all services from pacemaker, stop keystone eventlet and restart
-# httpd for keystone in httpd
+# Restart keystone services depending on deployment
 #
 
-- name: Set pacemaker default to unmanaged for httpd
+- name: Set pacemaker default to unmanaged
   command: pcs property set is-managed-default=false
-  when: "'httpd' in '{{ keystone_deployment }}'"
 
-- name: Stop keystone service
+- name: Stop keystone service in eventlet
   service: name=openstack-keystone state=stopped
   when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: Restart httpd service
   service: name=httpd state=restarted
-  when: "'httpd' in '{{ keystone_deployment }}'"
 
-#
-# Restart and manage keystone/httpd correctly for keystone in eventlet
-#
-
-- name: Unmanage keystone service from pacemaker
-  command: pcs resource unmanage openstack-keystone
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Unmanage httpd service from pacemaker
-  command: pcs resource unmanage httpd
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Restart httpd service
-  service: name=httpd state=restarted
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Restart keystone service
+- name: Restart keystone service in eventlet
   service: name=openstack-keystone state=restarted
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Manage keystone service from pacemaker
-  command: pcs resource manage openstack-keystone
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Manage httpd service from pacemaker
-  command: pcs resource manage httpd
   when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: Set pacemaker default to managed for eventlet

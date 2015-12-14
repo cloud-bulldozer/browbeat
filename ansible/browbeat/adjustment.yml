@@ -6,7 +6,6 @@
 - hosts: controller
   remote_user: heat-admin
   vars:
-    keystone_deployment: not_defined
     workers: 24
     threads: 6
   roles:
