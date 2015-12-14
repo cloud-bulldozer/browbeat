@@ -22,7 +22,7 @@
   shell: ps afx | grep "[Kk]eystone-all" -c
   register: keystone_in_eventlet
   changed_when: false
-  ignore_errors: true
+  ignore_errors: True
 
 - name: Set keystone_deployment variable to httpd
   set_fact: keystone_deployment='httpd'

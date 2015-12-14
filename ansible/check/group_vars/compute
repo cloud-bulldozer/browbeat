@@ -1,0 +1,3 @@
+---
+reserved_host_memory_check: 2048
+tuned_profile: virtual-host

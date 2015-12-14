@@ -5,31 +5,24 @@
 
 - name: Check max_connections
   shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
-  register: max_connections_stdout
+  register: max_connections
   changed_when: no
-#  failed_when: max_connections_result.stdout|int < mariadb_max_connections
-  ignore_errors: True
-
-- set_fact :
-    max_connections_result: "{{ max_connections_stdout.stdout }}"
+  failed_when: max_connections.stdout|int < mariadb_max_connections
+  ignore_errors: yes
 
 - name : Check rabbitmq file descriptors
   shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
-  register: rabbitmq_fd_stdout
+  register: rabbitmq_fd_result
   changed_when: no
-#  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
-  ignore_errors: True
-
-- set_fact :
-    rabbitmq_fd_result : "{{ rabbitmq_fd_stdout.stdout }}"
+  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
+  ignore_errors: yes
 
 - name : Check HAProxy Default maxconn
   shell : cat /etc/haproxy/haproxy.cfg | grep -iPzo '(?s)defaults.*?\n(\n|$)' | grep maxconn | awk '{print $2}'
-  register: haproxy_maxconn_stdout
+  register: haproxy_maxconn
+  failed_when: haproxy_maxconn.stdout|int < mariadb_max_connections
   changed_when: no
-
-- set_fact :
-    haproxy_maxconn_result: "{{ haproxy_maxconn_stdout.stdout }}"
+  ignore_errors: yes
 
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
