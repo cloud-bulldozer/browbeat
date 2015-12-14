@@ -1,0 +1,106 @@
+---
+#
+# Keystone tasks to change token type
+#
+
+- name: Determine if keystone is deployed in eventlet
+  shell: ps afx | grep "[Kk]eystone-all" -c
+  register: deployed
+  when: keystone_deployment is undefined
+  ignore_errors: true
+  changed_when: false
+
+- name: Set keystone_deployment variable/fact to httpd
+  set_fact: keystone_deployment='httpd'
+  when: keystone_deployment is undefined and deployed.stdout|int == 0
+
+- name: Set keystone_deployment variable/fact to eventlet
+  set_fact: keystone_deployment='eventlet'
+  when: keystone_deployment is undefined
+
+#
+# Get Token type
+#
+
+- name: Check Keystone Token Provider
+  command: crudini --get /etc/keystone/keystone.conf token provider
+  register: keystone_token_provider
+  changed_when: false
+  ignore_errors: True
+
+- name: Set current_token_provider variable/fact to uuid
+  set_fact: current_token_provider='uuid'
+  when: "'uuid' in '{{ keystone_token_provider.stdout }}'"
+
+- name: Set current_token_provider variable/fact to fernet
+  set_fact: current_token_provider='fernet'
+  when: "'fernet' in '{{ keystone_token_provider.stdout }}'"
+
+- name: Set current_token_provider variable/fact to pkiz
+  set_fact: current_token_provider='pkiz'
+  when: "'pkiz' in '{{ keystone_token_provider.stdout }}'"
+
+#
+# Tasks to change token provider if necessary:
+#
+
+- name: Change token provider
+  command: crudini --set /etc/keystone/keystone.conf token provider "keystone.token.providers.{{ token_provider }}.Provider"
+  when: "'{{ current_token_provider }}' != '{{ token_provider }}'"
+  notify:
+    - pacemaker default unmanaged
+    - stop keystone service
+    - restart httpd service
+    - restart keystone service
+    - pacemaker default managed
+    - pacemaker cleanup keystone
+
+#
+# fernet token setup:
+#
+
+- name: Create fernet keys directory
+  file:
+    path=/etc/keystone/fernet-keys
+    state=directory
+    owner=keystone
+    group=keystone
+    mode=0700
+  when: "'{{ token_provider }}' == 'fernet'"
+
+- name: Setup fernet keys
+  command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname == groups['controller'][0])    
+
+- name: Get fernet keys
+  fetch: src=/etc/keystone/fernet-keys/{{ item }} dest=roles/keystone-token/files/{{ item }} flat=yes
+  with_items:
+    - 0
+    - 1
+  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])    
+  changed_when: false
+
+- name: Copy fernet keys
+  copy: src={{ item }} dest=/etc/yum.repos.d/
+  with_items:
+    - 0
+    - 1
+  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname != groups['controller'][0])    
+
+- name: Copy keystone type enforcement file
+  copy:
+    src: my-keystone.te
+    dest: /root/my-keystone.te
+  when: "'{{ token_provider }}' == 'fernet'"
+
+- name: Create keystone.mod file
+  command: checkmodule -M -m -o /root/my-keystone.mod /root/my-keystone.te
+  when: "'{{ token_provider }}' == 'fernet'"
+
+- name: Create keystone.pp file
+  command: semodule_package -o /root/my-keystone.pp -m /root/my-keystone.mod
+  when: "'{{ token_provider }}' == 'fernet'"
+
+- name: Install keystone selinux policy
+  shell: semodule -i /root/my-keystone.pp 
+  when: "'{{ token_provider }}' == 'fernet'"

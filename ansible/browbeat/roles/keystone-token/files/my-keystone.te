@@ -1,0 +1,14 @@
+module my-keystone 1.0;
+
+require {
+    type etc_t;
+    type keystone_t;
+    class process execmem;
+    class dir write;
+}
+
+#============= keystone_t ==============
+allow keystone_t etc_t:dir write;
+
+#!!!! This avc is allowed in the current policy
+allow keystone_t self:process execmem;

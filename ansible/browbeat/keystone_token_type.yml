@@ -1,0 +1,13 @@
+---
+#
+# Playbook to change token type from uuid to fernet and back for keystone.
+#
+# Examples:
+# ansible-playbook -i hosts browbeat/keystone_token_type.yml -e "token_provider=fernet"
+# ansible-playbook -i hosts browbeat/keystone_token_type.yml -e "token_provider=uuid"
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  roles:
+    - keystone-token

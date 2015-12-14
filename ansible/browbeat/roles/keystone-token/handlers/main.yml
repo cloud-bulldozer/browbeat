@@ -1,0 +1,27 @@
+---
+#
+# Keystone change token provider handlers
+#
+
+- name: pacemaker default unmanaged
+  command: pcs property set is-managed-default=false
+
+- name: stop keystone service
+  service: name=openstack-keystone state=stopped
+  when: "'httpd' in '{{ keystone_deployment }}'"
+
+- name: restart httpd service
+  service: name=httpd state=restarted
+  when: "'httpd' in '{{ keystone_deployment }}'"
+
+- name: restart keystone service
+  service: name=openstack-keystone state=restarted
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: pacemaker default managed
+  command: pcs property set is-managed-default=true
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: pacemaker cleanup keystone
+  command: pcs resource cleanup openstack-keystone
+  when: "'eventlet' in '{{ keystone_deployment }}'"
