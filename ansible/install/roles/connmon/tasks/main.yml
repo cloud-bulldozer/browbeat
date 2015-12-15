@@ -27,6 +27,6 @@
   when: connmon
 
 # To remove the screen session: screen -X -S connmond kill
-- name: Run connmond in screen session on director
+- name: Run connmond in screen session on undercloud
   command: screen -d -S connmond -m connmond
-  when: connmon and director
+  when: connmon and undercloud

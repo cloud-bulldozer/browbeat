@@ -1,14 +1,14 @@
 #!/bin/bash
 if [ ! $# == 2 ]; then
   echo "Usage: ./gen_hostfiles.sh <ospd_ip_address> <ssh_config_file>"
-  echo "Generates ssh config file to use OSP director host as a jumpbox and creates ansible inventory file."
+  echo "Generates ssh config file to use OSP undercloud host as a jumpbox and creates ansible inventory file."
   exit
 fi
 ospd_ip_address=$1
 ansible_inventory_file='hosts'
 ssh_config_file=$2
 
-# "Hackish" copy ssh key to self if we are on directly on the director machine:
+# "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${ospd_ip_address}" == "localhost" ]]; then
  cat ~stack/.ssh/id_rsa.pub >> ~stack/.ssh/authorized_keys
  sudo bash -c "cat ~stack/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
@@ -88,7 +88,7 @@ echo "---------------------------"
 echo "Creating ansible inventory file:"
 echo "---------------------------"
 echo ""
-echo "[director]" | tee ${ansible_inventory_file}
+echo "[undercloud]" | tee ${ansible_inventory_file}
 echo "${ospd_ip_address}" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}

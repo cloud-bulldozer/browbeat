@@ -1,18 +1,18 @@
 ---
 #
-# Playbook to install connmon and pbench on director/overcloud
+# Playbook to install connmon and pbench on undercloud/overcloud
 #
 
-- hosts: director
+- hosts: undercloud
   remote_user: stack
   vars:
     connmon: false
-    director: true
+    undercloud: true
     pbench: false
     shaker: false
   roles:
   - common
-  - director
+  - undercloud
   - connmon
   - pbench
   - shaker
@@ -21,11 +21,9 @@
   remote_user: heat-admin
   vars:
     connmon: false
-    director: false
+    undercloud: false
     pbench: false
     shaker: false
-    director_root_ssh_key: "{{ lookup('file', 'roles/pbench/files/director_root_id_rsa.pub') }}"
-    director_stack_ssh_key: "{{ lookup('file', 'roles/pbench/files/director_stack_id_rsa.pub') }}"
   roles:
   - common
   - connmon

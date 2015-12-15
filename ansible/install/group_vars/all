@@ -5,6 +5,6 @@ connmon_host: 192.0.2.1
 dns_server: 8.8.8.8
 pbench_repo_file_url: http://pbench.example.com/repo/yum.repos.d/pbench.repo
 
-# Enterprise Linux Repo name.  Copied from director to controllers for
+# Enterprise Linux Repo name.  Copied from undercloud to controllers for
 # installing any pbench dependencies
 repo_name: rhos-release-rhel-7.2.repo
