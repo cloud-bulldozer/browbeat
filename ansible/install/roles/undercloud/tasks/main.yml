@@ -1,6 +1,6 @@
 ---
 #
-# Tasks for Director Host to run BrowBeat with Connmon
+# Tasks for undercloud to run browbeat with connmon
 #
 
 - name: check iptables

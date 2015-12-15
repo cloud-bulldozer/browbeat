@@ -1,6 +1,6 @@
 ---
 #
-# Playbook to install connmon and pbench on undercloud/overcloud
+# Playbook to install connmon and shaker on undercloud/overcloud
 #
 
 - hosts: undercloud
@@ -8,13 +8,11 @@
   vars:
     connmon: false
     undercloud: true
-    pbench: false
     shaker: false
   roles:
   - common
   - undercloud
   - connmon
-  - pbench
   - shaker
 
 - hosts: controller
@@ -22,12 +20,10 @@
   vars:
     connmon: false
     undercloud: false
-    pbench: false
     shaker: false
   roles:
   - common
   - connmon
   - nova
-  - keystone
   - neutron
-  - pbench
+  - keystone

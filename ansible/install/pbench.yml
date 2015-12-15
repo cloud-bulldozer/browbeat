@@ -1,0 +1,22 @@
+---
+#
+# Playbook to install pbench on undercloud/overcloud
+#
+
+- hosts: undercloud
+  remote_user: stack
+  vars:
+    undercloud: true
+  roles:
+  - common
+  - pbench
+
+- hosts: controller
+  remote_user: heat-admin
+  vars:
+    undercloud: false
+    undercloud_root_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_root_id_rsa.pub') }}"
+    undercloud_stack_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_stack_id_rsa.pub') }}"
+  roles:
+  - common
+  - pbench

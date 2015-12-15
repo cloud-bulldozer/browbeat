@@ -1,35 +1,20 @@
 ---
+#
+# Nova connmon tasks
+#
+
 - name: Check for connmon in nova.conf
-  shell: grep -q 'connection=mysql:' /etc/nova/nova.conf
+  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/nova/nova.conf
   register: nova_mysql
   when: connmon
   ignore_errors: true
-  changed_when: no
+  changed_when: false
 
 - name: Enable Connmon in nova.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
   when: connmon and nova_mysql.rc == 0
-
-- name: Unmanage Nova Service from pacemaker
-  shell: pcs resource unmanage {{ item }}
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
-  when: connmon
-
-- name: Restart Nova services
-  service: name={{ item }} state=restarted
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
-  when: connmon
-
-- name: Manage Nova Service from pacemaker
-  shell: pcs resource manage {{ item }}
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
-  when: connmon
+  notify:
+    - unmanage nova services
+    - restart nova services
+    - manage nova services
+    - cleanup nova services

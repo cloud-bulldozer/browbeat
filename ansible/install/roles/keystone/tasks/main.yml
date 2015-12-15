@@ -1,6 +1,6 @@
 ---
 #
-# Keystone tasks
+# Keystone connmon tasks
 #
 
 - name: Determine if keystone is deployed in eventlet
@@ -22,7 +22,7 @@
 #
 
 - name: Check for connmon in keystone.conf
-  shell: grep -q 'connection = mysql:' /etc/keystone/keystone.conf
+  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/keystone/keystone.conf
   when: connmon
   register: keystone_mysql
   ignore_errors: true
@@ -31,23 +31,6 @@
 - name: Enable connmon in keystone.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
   when: connmon and keystone_mysql.rc == 0
-  notify:
-    - restart httpd
-    - unmanage keystone
-    - restart keystone
-    - manage keystone
-    - cleanup keystone
-
-- name: Check for connmon_service in keystone.conf
-  shell: grep -q 'connmon_service' /etc/keystone/keystone.conf
-  when: connmon
-  ignore_errors: true
-  register: keystone_connmon_service
-  changed_when: false
-
-- name: Enable connmon in keystone.conf
-  shell: sed -i '/connection = mysql/s/$/?connmon_service=default/' /etc/keystone/keystone.conf
-  when: connmon and keystone_connmon_service.rc == 1
   notify:
     - restart httpd
     - unmanage keystone

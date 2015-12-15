@@ -1,0 +1,39 @@
+---
+#
+# Nova handlers
+#
+
+- name: unmanage nova services
+  command: pcs resource unmanage {{ item }}
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+  when: connmon
+  ignore_errors: true
+
+- name: restart nova services
+  service: name={{ item }} state=restarted
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+  when: connmon
+
+- name: manage nova services
+  command: pcs resource manage {{ item }}
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+  when: connmon
+  ignore_errors: true
+
+- name: cleanup nova services
+  command: pcs resource cleanup {{ item }}
+  with_items:
+    - openstack-nova-conductor
+    - openstack-nova-api
+    - openstack-nova-scheduler
+  when: connmon
+  ignore_errors: true

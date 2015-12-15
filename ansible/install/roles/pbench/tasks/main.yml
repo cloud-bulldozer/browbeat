@@ -1,51 +1,49 @@
 ---
 #
-# Tasks for pbench
+# Tasks for pbench install
 #
 
 - name: Get repo file from undercloud
   fetch: src=/etc/yum.repos.d/"{{ repo_name }}" dest=roles/pbench/files/el.repo flat=yes
-  when: pbench and undercloud
+  when: undercloud
   changed_when: false
 
 - name: Copy repo file to controllers/computes
   copy: src=el.repo dest=/etc/yum.repos.d/
-  when: pbench and not undercloud
+  when: not undercloud
 
 - name: Install pbench repo file
   get_url: url="{{ pbench_repo_file_url }}" dest=/etc/yum.repos.d/pbench.repo
-  when: pbench
 
 - name: Install pbench-agent
   yum: name=pbench-agent state=latest
-  when: pbench
 
 - name: Ensure pbench directory exists as stack user on undercloud
   file: path=/var/lib/pbench-agent state=directory owner=stack group=stack recurse=yes
-  when: undercloud and pbench
+  when: undercloud
 
 - name: Ensure pbench id_rsa is owned by stack
   file: path=/opt/pbench-agent/id_rsa owner=stack group=stack
-  when: undercloud and pbench
+  when: undercloud
 
 - name: Get undercloud root ssh public key
   fetch: src=/root/.ssh/id_rsa.pub dest=roles/pbench/files/undercloud_root_id_rsa.pub flat=yes
-  when: undercloud and pbench
+  when: undercloud
   changed_when: false
 
 - name: Get undercloud stack ssh public key
   fetch: src=/home/stack/.ssh/id_rsa.pub dest=roles/pbench/files/undercloud_stack_id_rsa.pub flat=yes
-  when: undercloud and pbench
+  when: undercloud
   changed_when: false
 
 - name: Unblock root user ssh on controllers/computes
   lineinfile: dest=/root/.ssh/authorized_keys state=absent regexp="Please login as the user" mode=0600
-  when: not undercloud and pbench
+  when: not undercloud
 
 - name: Copy undercloud root ssh public key to controllers/compute root user's authorized_keys
   lineinfile: dest=/root/.ssh/authorized_keys state=present line="{{ undercloud_root_ssh_key }}"
-  when: not undercloud and pbench
+  when: not undercloud
 
 - name: Copy undercloud stack ssh public key to controllers/compute root user's authorized_keys
   lineinfile: dest=/root/.ssh/authorized_keys state=present line="{{ undercloud_stack_ssh_key }}"
-  when: not undercloud and pbench
+  when: not undercloud

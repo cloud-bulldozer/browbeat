@@ -42,11 +42,18 @@ Run the check playbook to identify common performance issues:
 # ansible-playbook -i hosts check/site.yml
 ```
 
-## Ansible to Install connmon/pbench/shaker
+## Ansible Installers:
+
+Install connmon/shaker
 
 ```
-# ansible-playbook -i hosts install/install.yml -e "pbench=true"
 # ansible-playbook -i hosts install/install.yml -e "connmon=true"
 # ansible-playbook -i hosts install/install.yml -e "shaker=true"
-# ansible-playbook -i hosts install/install.yml -e "pbench=true connmon=true shaker=true"
+# ansible-playbook -i hosts install/install.yml -e "connmon=true shaker=true"
+```
+
+Install pbench (Requires some knowledge of setting up pbench to have this functionality work completely)
+
+```
+# ansible-playbook -i hosts install/pbench.yml
 ```
