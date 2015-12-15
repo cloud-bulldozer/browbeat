@@ -1,0 +1,28 @@
+# Browbeat generated bug report
+{% for host in groups['controller'] %}
+---------------------------------------
+| Issues for host : {{ host }}
+---------------------------------------
+{% for check in hostvars[host]['checks'] %}
+{% if hostvars[host][check]['failed'] == true %}
+Bug: {{ check }}
+Name: {{ hostvars[host]['checks'][check]['name'] }}
+URL: {{ hostvars[host]['checks'][check]['url'] }}
+
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% for host in groups['compute'] %}
+---------------------------------------
+| Issues for host : {{ host }}
+---------------------------------------
+{% for check in hostvars[host]['checks'] %}
+{% if hostvars[host][check]['failed'] == true %}
+Bug: {{ check }}
+Name: {{ hostvars[host]['checks'][check]['name'] }}
+URL: {{ hostvars[host]['checks'][check]['url'] }}
+
+{% endif %}
+{% endfor %}
+{% endfor %}

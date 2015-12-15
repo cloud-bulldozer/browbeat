@@ -3,3 +3,32 @@ tuned_profile: throughput-performance
 rabbitmq_fd: 1600
 haproxy_max_connections: 4096
 mariadb_max_connections: 4096
+nova_vif_timeout: 300
+
+checks :
+    bz1282491 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1282491"
+        name: "update default file descriptor setting"
+    bz1281584 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1281584"
+        name: "Director does not create an haproxy configuration that conforms to our best-practice recommendations"
+    bz1266253 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1266253"
+        name: "increase mariadb max_connection default value"
+    nova_vif_timeout_result:
+        url: "none"
+        name: "Nova VIF timeout should be >= 300"
+#    neutron_nova_creds:
+#        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
+#        name: "RHEL OSP Director must be configure with nova-event-callback by default"
+    bz1264740:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
+        name: "RHEL OSP Director must be configure with nova-event-callback by default"
+    rabbit_partitioned :
+        url: "none"
+        name: "Rabbit is currently partitioned - YMMV... Good luck."
+    tuned_profile_result :
+        url: "none"
+        name: "Ensure Tuned Profile is set to {{ tuned_profile }}"
+
+# vi:syntax=yaml

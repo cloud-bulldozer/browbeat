@@ -17,8 +17,8 @@
 
 - name: Check tuned for correct profile on host
   command: tuned-adm active
-  register: tuned_stdout
+  register: tuned_profile_result
   changed_when: no
-  failed_when: "'{{ tuned_profile }}' not in '{{ tuned_result.stdout }}'"
+  failed_when: "'{{ tuned_profile }}' not in '{{ tuned_profile_result.stdout }}'"
   ignore_errors: True
 

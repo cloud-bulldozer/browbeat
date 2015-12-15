@@ -1,0 +1,7 @@
+---
+- name: Check nova is configured in neutron config
+  command: crudini --get /etc/neutron/neutron.conf DEFAULT nova_admin_tenant_id
+  register: neutron_nova_creds
+  failed_when: neutron_nova_creds.rc == 1
+  changed_when: false
+  ignore_errors: True

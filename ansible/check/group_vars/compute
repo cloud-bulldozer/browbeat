@@ -1,3 +1,28 @@
 ---
 reserved_host_memory_check: 2048
 tuned_profile: virtual-host
+nova_vif_timeout: 300
+
+checks:
+    bz1245714:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1245714"
+        name: "No Swap Space allocated"
+    bz1282644:
+        url : "https://bugzilla.redhat.com/show_bug.cgi?id=1282644"
+        name : "increase reserved_host_memory_mb"
+    tuned_profile_result :
+        url: "none"
+        name: "Ensure Tuned Profile is set to {{ tuned_profile }}"
+    nova_vif_timeout_result:
+        url: "none"
+        name: "Nova VIF timeout should be >= 300"
+#    neutron_nova_creds:
+#        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
+#        name: "RHEL OSP Director must be configure with nova-event-callback by default"
+    bz1264740:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
+        name: "RHEL OSP Director must be configure with nova-event-callback by default"
+
+
+
+# vi:syntax=yaml

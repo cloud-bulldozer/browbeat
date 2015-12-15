@@ -5,20 +5,30 @@
 
 - hosts: controller
   remote_user: heat-admin
-  vars:
   roles:
   - common
   - controller
   - keystone
+  - neutron
+  - nova
 
 - hosts: compute
   remote_user: heat-admin
   roles:
   - common
   - compute
+  - nova
 
 - hosts: ceph
   remote_user: heat-admin
   roles:
   - common
   - ceph
+
+- hosts: all
+  gather_facts: False
+  become: false
+  sudo: false
+  name: Generating bug report
+  tasks:
+    - local_action: template src=templates/bug_report.j2 dest=./bug_report.log

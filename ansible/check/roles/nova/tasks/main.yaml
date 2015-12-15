@@ -1,0 +1,14 @@
+---
+- name: Check Nova vif_plugging
+  command: crudini --get /etc/nova/nova.conf DEFAULT vif_plugging_is_fatal
+  register: bz1264740
+  failed_when: "'True' not in '{{ bz1264740.stdout }}'"
+  changed_when: false
+  ignore_errors: True
+
+- name: Check Nova vif_plugging_timeout
+  command: crudini --get /etc/nova/nova.conf DEFAULT vif_plugging_timeout
+  register: nova_vif_timeout_result
+  failed_when: nova_vif_timeout > nova_vif_timeout_result.stdout|int
+  changed_when: false
+  ignore_errors: True

@@ -3,29 +3,29 @@
 # Performance checks specific to controller hosts
 #
 
-- name: Check max_connections
+- name: Check max_connections on the database
   shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
-  register: max_connections
+  register: bz1266253
   changed_when: no
-  failed_when: max_connections.stdout|int < mariadb_max_connections
+  failed_when: bz1266253.stdout|int < mariadb_max_connections
   ignore_errors: yes
 
 - name : Check rabbitmq file descriptors
   shell: rabbitmqctl status | grep file_descriptors | awk -F',' '{print $3}' | sed 's/.$//'
-  register: rabbitmq_fd_result
+  register: bz1282491
   changed_when: no
-  failed_when: rabbitmq_fd_result.stdout|int < rabbitmq_fd
+  failed_when: bz1282491.stdout|int < rabbitmq_fd
   ignore_errors: yes
 
 - name : Check HAProxy Default maxconn
   shell : cat /etc/haproxy/haproxy.cfg | grep -iPzo '(?s)defaults.*?\n(\n|$)' | grep maxconn | awk '{print $2}'
-  register: haproxy_maxconn
-  failed_when: haproxy_maxconn.stdout|int < mariadb_max_connections
+  register: bz1281584
+  failed_when: bz1281584.stdout|int < mariadb_max_connections
   changed_when: no
   ignore_errors: yes
 
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
-  register: rabbitmq_partition_result
+  register: rabbit_partitioned
   changed_when: no
-  failed_when: rabbitmq_partition_result.rc == 0
+  failed_when: rabbit_partitioned.rc == 0

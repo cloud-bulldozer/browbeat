@@ -1,2 +1,4 @@
 ---
 ansible_sudo: yes
+
+# vi:syntax=yaml
