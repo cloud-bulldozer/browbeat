@@ -1,6 +1,7 @@
 #!/bin/bash
 source ~/stackrc
-source browbeat-config
+source browbeat.cfg
+
 
 log()
 {
@@ -197,6 +198,11 @@ truncate_token_bloat()
  ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo "mysql keystone -e 'truncate token;'"
 }
 
+if [ "$UPDATED" = false ]; then
+  log "Usage: ./browbeat.sh <test_prefix>"
+  log "Please update the browbeat.cfg before running"
+  exit
+fi
 
 if [ ! $# == 1 ]; then
   log "Usage: ./browbeat.sh <test_prefix>"
