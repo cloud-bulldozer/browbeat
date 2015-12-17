@@ -50,6 +50,12 @@
     - { section: eventlet_server, option: public_workers, value: "{{ workers }}" }
     - { section: eventlet_server, option: admin_workers, value: "{{ workers }}" }
   when: "'eventlet' in '{{ keystone_deployment }}'"
+  notify:
+    - pacemaker unmanaged default
+    - stop keystone eventlet
+    - restart keystone
+    - pacemaker managed default
+    - cleanup keystone
 
 - name: Unconfigure keystone in httpd if eventlet
   file:
@@ -59,9 +65,12 @@
     - admin
     - main
   when: "'eventlet' in '{{ keystone_deployment }}'"
+  notify:
+    - restart httpd
+    - cleanup httpd
 
 - name: Create keystone in httpd wsgi directory
-  file: 
+  file:
     path: /var/www/cgi-bin/keystone
     state: directory
     owner: keystone
@@ -99,6 +108,10 @@
       port: 5000
       threads: "{{ threads }}"
   when: "'httpd' in '{{ keystone_deployment }}'"
+  notify:
+    - pacemaker unmanaged default
+    - stop keystone eventlet
+    - restart httpd
 
 - name: Configure/Unconfigure httpd ports.conf for keystone
   template:
@@ -111,29 +124,9 @@
     - admin_ip_address: "{{ admin_ip_addr.stdout }}"
       public_ip_address: "{{ public_ip_addr.stdout }}"
       deployment: "{{ keystone_deployment }}"
-
-#
-# Restart keystone services depending on deployment
-#
-
-- name: Set pacemaker default to unmanaged
-  command: pcs property set is-managed-default=false
-
-- name: Stop keystone service in eventlet
-  service: name=openstack-keystone state=stopped
-  when: "'httpd' in '{{ keystone_deployment }}'"
-
-- name: Restart httpd service
-  service: name=httpd state=restarted
-
-- name: Restart keystone service in eventlet
-  service: name=openstack-keystone state=restarted
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Set pacemaker default to managed for eventlet
-  command: pcs property set is-managed-default=true
-  when: "'eventlet' in '{{ keystone_deployment }}'"
-
-- name: Cleanup keystone service in pacemaker
-  command: pcs resource cleanup openstack-keystone
-  when: "'eventlet' in '{{ keystone_deployment }}'"
+  notify:
+    - pacemaker unmanaged default
+    - stop keystone eventlet
+    - restart keystone
+    - pacemaker managed default
+    - cleanup keystone

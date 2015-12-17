@@ -2,6 +2,12 @@
 #
 # Playbook to change number of workers for nova and keystone services
 #
+# Change Workers Example:
+# ansible-playbook -i hosts browbeat/adjustment.yml -e "workers=12"
+#
+# Change Workers and Keystone Deployment Example:
+# ansible-playbook -i hosts browbeat/adjustment.yml -e "workers=12 keystone_deployment=httpd"
+#
 
 - hosts: controller
   remote_user: heat-admin

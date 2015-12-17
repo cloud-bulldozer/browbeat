@@ -1,0 +1,34 @@
+---
+#
+# Keystone handlers for browbeat adjustment
+#
+
+- name: pacemaker unmanaged default
+  command: pcs property set is-managed-default=false
+  ignore_errors: true
+
+- name: stop keystone eventlet
+  service: name=openstack-keystone state=stopped
+  when: "'httpd' in '{{ keystone_deployment }}'"
+  ignore_errors: true
+
+- name: restart httpd
+  service: name=httpd state=restarted
+
+- name: restart keystone
+  service: name=openstack-keystone state=restarted
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+
+- name: pacemaker managed default
+  command: pcs property set is-managed-default=true
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true
+
+- name: cleanup keystone
+  command: pcs resource cleanup openstack-keystone
+  when: "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true
+
+- name: cleanup httpd
+  command: pcs resource cleanup httpd
+  ignore_errors: true

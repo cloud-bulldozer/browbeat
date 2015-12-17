@@ -1,6 +1,6 @@
 ---
 #
-# Keystone handlers
+# Keystone handlers for browbeat install connmon
 #
 
 #
@@ -9,8 +9,7 @@
 
 - name: restart httpd
   service: name=httpd state=restarted
-  when: "connmon and 'httpd' == '{{ keystone_deployment }}'"
-  ignore_errors: true
+  when: "'httpd' == '{{ keystone_deployment }}'"
 
 #
 # Restart keystone when in eventlet
@@ -18,19 +17,19 @@
 
 - name: unmanage keystone
   command: pcs resource unmanage openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
+  when: "'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: restart keystone
   service: name=openstack-keystone state=restarted
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
+  when: "'eventlet' == '{{ keystone_deployment }}'"
 
 - name: manage keystone
   command: pcs resource manage openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
+  when: "'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: cleanup keystone
   command: pcs resource cleanup openstack-keystone
-  when: "connmon and 'eventlet' == '{{ keystone_deployment }}'"
+  when: "'eventlet' == '{{ keystone_deployment }}'"
   ignore_errors: true

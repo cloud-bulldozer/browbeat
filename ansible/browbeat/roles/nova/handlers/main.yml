@@ -1,6 +1,6 @@
 ---
 #
-# Nova handlers for browbeat install connmon
+# Nova handlers for browbeat adjustment
 #
 
 - name: unmanage nova services

@@ -5,19 +5,15 @@
 
 - name: unmanage neutron-server
   command: pcs resource unmanage neutron-server
-  when: connmon
   ignore_errors: true
 
 - name: restart neutron-server
   service: name=neutron-server state=restarted
-  when: connmon
 
 - name: manage neutron-server
   command: pcs resource manage neutron-server
-  when: connmon
   ignore_errors: true
 
 - name: cleanup neutron-server
   command: pcs resource cleanup neutron-server
-  when: connmon
   ignore_errors: true

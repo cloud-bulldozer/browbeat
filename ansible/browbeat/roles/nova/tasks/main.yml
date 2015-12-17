@@ -19,24 +19,8 @@
     - { section: DEFAULT, option: osapi_compute_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: metadata_workers, value: "{{ workers }}" }
     - { section: conductor, option: workers, value: "{{ workers }}" }
-
-- name: Unmanage Nova Service from pacemaker
-  shell: pcs resource unmanage {{ item }}
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
-
-- name: Restart Nova services
-  service: name={{ item }} state=restarted
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
-
-- name: Manage Nova Service from pacemaker
-  shell: pcs resource manage {{ item }}
-  with_items:
-    - openstack-nova-conductor
-    - openstack-nova-api
-    - openstack-nova-scheduler
+  notify:
+    - unmanage nova services
+    - restart nova services
+    - manage nova services
+    - cleanup nova services
