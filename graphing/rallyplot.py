@@ -83,7 +83,7 @@ def main():
                             out, err =  grep_cmd.communicate()
                             if len(out) == 0:
                                 print 'Could not find results. Setting to -1'
-                                compiled_issues.append(result_file)
+                                compiled_issues.append(r_file)
                                 compiled_results[service][test][iter_num][w_count][concurrency]['Min'] = '-1'
                                 compiled_results[service][test][iter_num][w_count][concurrency]['Median'] = '-1'
                                 compiled_results[service][test][iter_num][w_count][concurrency]['90%ile'] = '-1'
