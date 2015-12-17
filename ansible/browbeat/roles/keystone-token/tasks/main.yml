@@ -59,10 +59,10 @@
 # fernet token setup:
 #
 
-- name: Create fernet keys undercloud
+- name: Create fernet keys directory
   file:
     path=/etc/keystone/fernet-keys
-    state=undercloud
+    state=directory
     owner=keystone
     group=keystone
     mode=0700
