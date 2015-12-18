@@ -12,3 +12,12 @@ allow keystone_t etc_t:dir write;
 
 #!!!! This avc is allowed in the current policy
 allow keystone_t self:process execmem;
+
+require {
+    type httpd_t;
+    type etc_t;
+    class dir write;
+}
+
+#============= httpd_t ==============
+allow httpd_t etc_t:dir write;
