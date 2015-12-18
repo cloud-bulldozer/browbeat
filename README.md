@@ -27,15 +27,13 @@ On director (As stack user):
 $ git clone https://github.com/jtaleric/browbeat.git
 $ cd browbeat/ansible
 $ ./gen_hostfile.sh localhost ~/.ssh/config
+$ ansible-playbook -i hosts install/setup.yml
 $ cd ~
 $ sudo yum install -y libffi-devel gmp-devel postgresql-devel
 $ wget -q -O- https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh | bash
 $ . ~/rally/bin/activate
 $ . ~stack/overcloudrc
 $ rally deployment create --fromenv --name overcloud
-$ wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-$ glance image-create --name centos7 --disk-format=qcow2 --container-format=bare < CentOS-7-x86_64-GenericCloud.qcow2
-$ glance image-update centos7 --is-public true
 $ . ~stack/stackrc
 $ cd browbeat
 $ sudo yum install -y freetype-devel libpng-devel
