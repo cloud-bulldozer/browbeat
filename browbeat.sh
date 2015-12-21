@@ -126,12 +126,18 @@ run_rally()
 
      # grep the log file for the results to be run
      test_id=`grep "rally task results" ${test_name}.log | awk '{print $4}'`
-     rally task report ${test_id} --out ${test_name}.html
+
+     pbench_results_dir=`find /var/lib/pbench-agent/ -name "*${test_prefix}*" -print`
+
+     if [ -n "${test_id}" ]; then
+      rally task report ${test_id} --out ${test_name}.html
+      if $PBENCH; then
+       cp ${test_name}.html ${pbench_results_dir}
+      fi
+     fi
+
      if $PBENCH ; then
-      pbench_results_dir=`find /var/lib/pbench-agent/ -name "*${test_prefix}*" -print`
-      log "Copying rally report and log into ${pbench_results_dir}"
       cp ${test_name}.log ${pbench_results_dir}
-      cp ${test_name}.html ${pbench_results_dir}
       if $CONNMON ; then
         mkdir -p ${pbench_results_dir}/connmon/
         for connmon_graph in `find ${results_dir}/ | grep -E "png$|csv$"`
@@ -142,8 +148,10 @@ run_rally()
       move-results --prefix=${test_prefix}/${task_file}-${concur}
       clear-tools
      fi
+     if [ -n "${test_id}" ]; then
+      mv ${test_name}.html $results_dir
+     fi
      mv ${test_name}.log $results_dir
-     mv ${test_name}.html $results_dir
 
      sed -i "s/\"concurrency\": ${concur},/\"concurrency\": 1,/g" ${task_dir}/${task_file}
      sed -i "s/\"times\": ${times},/\"times\": 1,/g" ${task_dir}/${task_file}
