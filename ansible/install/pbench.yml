@@ -6,6 +6,7 @@
 - hosts: undercloud
   remote_user: stack
   vars:
+    ansible_sudo: true
     undercloud: true
   roles:
   - common
@@ -14,6 +15,7 @@
 - hosts: controller
   remote_user: heat-admin
   vars:
+    ansible_sudo: true
     undercloud: false
     undercloud_root_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_root_id_rsa.pub') }}"
     undercloud_stack_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_stack_id_rsa.pub') }}"

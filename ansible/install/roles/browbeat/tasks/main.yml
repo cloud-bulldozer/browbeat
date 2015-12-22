@@ -1,0 +1,60 @@
+---
+#
+# Browbeat Install
+#
+
+- name: Install Browbeat dependencies
+  yum: name={{ item }} state=present
+  become: true
+  with_items:
+    - freetype-devel
+    - libpng-devel
+
+- name: Install pip
+  become: yes
+  easy_install: name=pip
+
+- name: Install virtualenv
+  become: true
+  pip: name=virtualenv
+
+- name: Create virtualenv
+  command: virtualenv /home/stack/browbeat-venv creates="/home/stack/browbeat-venv"
+
+- name: Clone Browbeat on undercloud
+  git: repo=https://github.com/jtaleric/browbeat.git dest=/home/stack/browbeat
+  when: "'localhost' not in '{{ inventory_hostname }}'"
+
+- name: Generate hosts and ~/.ssh/config on undercloud
+  shell: . /home/stack/stackrc; /home/stack/browbeat/ansible/gen_hostfile.sh localhost /home/stack/.ssh/config
+  when: "'localhost' not in '{{ inventory_hostname }}'"
+
+- name: Move hosts file to correct location
+  command: mv /home/stack/hosts /home/stack/browbeat/ansible/hosts
+
+- name: Install requirements.txt
+  become: true
+  pip: requirements=/home/stack/browbeat/requirements.txt virtualenv=/home/stack/browbeat-venv
+
+- name: Setup Rally database
+  shell: . /home/stack/browbeat-venv/bin/activate; rally-manage db recreate
+
+- name: Setup Rally deployment
+  shell: . /home/stack/browbeat-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
+
+#
+# Nova boot image tasks
+#
+
+- name: Fetch centos7 image
+  get_url: url={{ centos_image }} dest=/home/stack/centos7.qcow2
+
+- name: Determine is centos7 image exists
+  shell: . /home/stack/overcloudrc; glance image-list | grep "centos7"
+  register: centos7_image_exists
+  ignore_errors: true
+  changed_when: false
+
+- name: Upload centos7 image into cloud
+  shell: . /home/stack/overcloudrc; glance image-create --name centos7 --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/centos7.qcow2
+  when: "'centos7' not in '{{ centos7_image_exists.stdout }}'"

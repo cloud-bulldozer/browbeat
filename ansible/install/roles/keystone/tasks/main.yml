@@ -23,14 +23,13 @@
 
 - name: Check for connmon in keystone.conf
   shell: grep -Eq 'connection\s?=\s?mysql:' /etc/keystone/keystone.conf
-  when: connmon
   register: keystone_mysql
   ignore_errors: true
   changed_when: false
 
 - name: Enable connmon in keystone.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
-  when: connmon and keystone_mysql.rc == 0
+  when: keystone_mysql.rc == 0
   notify:
     - restart httpd
     - unmanage keystone

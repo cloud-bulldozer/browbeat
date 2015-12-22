@@ -1,0 +1,12 @@
+---
+#
+# Playbook to install shaker on undercloud/overcloud
+#
+
+- hosts: undercloud
+  remote_user: stack
+  vars:
+    ansible_sudo: true
+  roles:
+  - common
+  - shaker

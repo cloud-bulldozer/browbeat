@@ -1,0 +1,10 @@
+---
+#
+# Playbook to install browbeat on undercloud
+#
+
+- hosts: undercloud
+  remote_user: stack
+  roles:
+  - common
+  - browbeat

@@ -6,13 +6,12 @@
 - name: Check for connmon in nova.conf
   shell: grep -Eq 'connection\s?=\s?mysql:' /etc/nova/nova.conf
   register: nova_mysql
-  when: connmon
   ignore_errors: true
   changed_when: false
 
 - name: Enable Connmon in nova.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/nova/nova.conf
-  when: connmon and nova_mysql.rc == 0
+  when: nova_mysql.rc == 0
   notify:
     - unmanage nova services
     - restart nova services

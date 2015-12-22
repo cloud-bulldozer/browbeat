@@ -1,26 +1,22 @@
 ---
 #
-# Playbook to install connmon and shaker on undercloud/overcloud
+# Playbook to install connmon on undercloud/overcloud
 #
 
 - hosts: undercloud
   remote_user: stack
   vars:
-    connmon: false
+    ansible_sudo: true
     undercloud: true
-    shaker: false
   roles:
   - common
-  - undercloud
   - connmon
-  - shaker
 
 - hosts: controller
   remote_user: heat-admin
   vars:
-    connmon: false
+    ansible_sudo: true
     undercloud: false
-    shaker: false
   roles:
   - common
   - connmon

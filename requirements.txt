@@ -1,5 +1,6 @@
 ansible
 matplotlib
+rally
 
 # For pbench-agent compatibility:
 configtools

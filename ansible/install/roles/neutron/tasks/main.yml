@@ -6,13 +6,12 @@
 - name: Check for connmon in neutron.conf
   shell: grep -Eq 'connection\s?=\s?mysql:' /etc/neutron/neutron.conf
   register: neutron_mysql
-  when: connmon
   ignore_errors: true
   changed_when: false
 
 - name: Enable Connmon in neutron.conf
   shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/neutron/neutron.conf
-  when: connmon and neutron_mysql.rc == 0
+  when: neutron_mysql.rc == 0
   notify:
     - unmanage neutron-server
     - restart neutron-server

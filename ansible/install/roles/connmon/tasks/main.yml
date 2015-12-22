@@ -5,11 +5,9 @@
 
 - name: Install pip
   easy_install: name=pip
-  when: connmon
 
 - name: Install connmon
   pip: name=connmon
-  when: connmon
 
 #
 # Connmon Setup
@@ -24,10 +22,20 @@
     mode=0644
   with_items:
     - ip_address: "{{ connmon_host }}"
-  when: connmon
 
 # To remove the screen session: screen -X -S connmond kill
 - name: Run connmond in screen session on undercloud
   command: screen -d -S connmond -m connmond
-  when: connmon and undercloud
+  when: undercloud
   changed_when: false
+
+- name: check iptables
+  shell: iptables -nvL | grep -q "dpt:5800"
+  changed_when: false
+  when: undercloud
+  register: connmon_port
+  ignore_errors: true
+
+- name: open up iptables
+  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport 5800 -j ACCEPT
+  when: undercloud and connmon_port.rc == 1
