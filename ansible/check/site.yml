@@ -31,5 +31,5 @@
   sudo: false
   name: Generating bug report
   tasks:
-    - local_action: template src=templates/bug_report.j2 dest=./bug_report.log owner=jtaleric group=jtaleric
+    - local_action: template src=templates/bug_report.j2 dest=./bug_report.log
       sudo: false
