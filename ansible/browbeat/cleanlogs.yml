@@ -5,6 +5,7 @@
 
 - hosts: controller
   remote_user: heat-admin
+  gather_facts: false
   tasks:
     - name: Clean Logs
       shell: for i in $(ls {{ item }}); do  echo "" > $i; done

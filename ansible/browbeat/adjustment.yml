@@ -11,6 +11,7 @@
 
 - hosts: controller
   remote_user: heat-admin
+  gather_facts: false
   vars:
     workers: 24
     threads: 6
