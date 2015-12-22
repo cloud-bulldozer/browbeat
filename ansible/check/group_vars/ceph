@@ -1,2 +1,3 @@
 ---
+ansible_sudo: yes
 tuned_profile: throughput-performance

@@ -1,11 +1,16 @@
 ---
+ansible_sudo: yes
 tuned_profile: throughput-performance
 rabbitmq_fd: 1600
 haproxy_max_connections: 4096
 mariadb_max_connections: 4096
 nova_vif_timeout: 300
+netdev_max_backlog: 100000
 
 checks :
+    bz1095811 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1095811"
+        name: "Network connectivity issues after 1000 netns"
     bz1282491 :
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1282491"
         name: "update default file descriptor setting"

@@ -24,6 +24,13 @@
   changed_when: no
   ignore_errors: yes
 
+- name : Check netns tuning
+  shell : sysctl net.core.netdev_max_backlog | awk '{print $3}'
+  register: bz1095811
+  failed_when: bz1095811.stdout|int < netdev_max_backlog
+  changed_when: no
+  ignore_errors: yes
+
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
   register: rabbit_partitioned
