@@ -1,6 +1,6 @@
 ---
 #
-# Neutron handlers
+# Neutron handlers for browbeat install connmon
 #
 
 - name: unmanage neutron-server

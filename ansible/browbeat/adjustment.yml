@@ -17,4 +17,5 @@
     threads: 6
   roles:
   - nova
+  - neutron
   - keystone
