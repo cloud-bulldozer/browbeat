@@ -5,19 +5,13 @@
 
     - name: check for heat engine
       service: name=openstack-heat-engine state=running
-      when: shaker
     - name: check for heat api
       service: name=openstack-heat-api state=running
-      when: shaker
     - name: upgrade all packages
       yum: name=* state=latest
-      when: shaker
     - name: install pip
       yum: name=python-pip state=present
-      when: shaker
     - name: install development tools
       yum: name="@Development tools" state=present
-      when: shaker
     - name: install shaker
       shell: pip install pyshaker
-      when: shaker
