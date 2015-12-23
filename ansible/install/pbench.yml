@@ -5,6 +5,7 @@
 
 - hosts: undercloud
   remote_user: stack
+  gather_facts: false
   vars:
     ansible_sudo: true
     undercloud: true
@@ -12,8 +13,9 @@
   - common
   - pbench
 
-- hosts: controller
+- hosts: controller:compute
   remote_user: heat-admin
+  gather_facts: false
   vars:
     ansible_sudo: true
     undercloud: false

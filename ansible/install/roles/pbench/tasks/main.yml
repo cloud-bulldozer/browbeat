@@ -12,18 +12,28 @@
   copy: src=el.repo dest=/etc/yum.repos.d/
   when: not undercloud
 
-- name: Install pbench repo file
+- name: Install internal pbench repo file
+  get_url: url="{{ pbench_internal_repo_file_url }}" dest=/etc/yum.repos.d/pbench-internal.repo
+
+- name: Install pbench copr repo file
   get_url: url="{{ pbench_repo_file_url }}" dest=/etc/yum.repos.d/pbench.repo
 
+- name: Install configtools copr repo file
+  get_url: url="{{ configtools_repo_file_url }}" dest=/etc/yum.repos.d/configtools.repo
+
 - name: Install pbench-agent
-  yum: name=pbench-agent state=latest
+  yum: name=pbench-agent-internal state=latest
 
 - name: Ensure pbench directory exists as stack user on undercloud
   file: path=/var/lib/pbench-agent state=directory owner=stack group=stack recurse=yes
   when: undercloud
 
+- name: Ensure pbench tools-default directory exists as stack user on undercloud
+  file: path=/var/lib/pbench-agent/tools-default state=directory owner=stack group=stack recurse=yes
+  when: undercloud
+
 - name: Ensure pbench id_rsa is owned by stack
-  file: path=/opt/pbench-agent/id_rsa owner=stack group=stack
+  file: path=/opt/pbench-agent/id_rsa owner=stack group=stack mode=0600
   when: undercloud
 
 - name: Get undercloud root ssh public key
