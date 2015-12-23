@@ -1,5 +1,5 @@
 ---
-centos_image: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 
 connmon_host: 192.0.2.1
 

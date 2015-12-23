@@ -31,6 +31,7 @@
 
 - name: Move hosts file to correct location
   command: mv /home/stack/hosts /home/stack/browbeat/ansible/hosts
+  when: "'localhost' not in '{{ inventory_hostname }}'"
 
 - name: Install requirements.txt
   become: true
@@ -47,7 +48,7 @@
 #
 
 - name: Fetch centos7 image
-  get_url: url={{ centos_image }} dest=/home/stack/centos7.qcow2
+  get_url: url={{ centos_image_url }} dest=/home/stack/centos7.qcow2
 
 - name: Determine is centos7 image exists
   shell: . /home/stack/overcloudrc; glance image-list | grep "centos7"
