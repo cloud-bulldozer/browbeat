@@ -1,0 +1,42 @@
+{% set flavor_name = flavor_name or "m1.tiny" %}
+{
+    "CinderVolumes.create_and_attach_volume": [
+        {
+            "args": {
+                "size": 1,
+                "image": {
+                    "name": "centos7"
+                },
+                "flavor": {
+                    "name": "{{flavor_name}}"
+                }
+            },
+            "runner": {
+                "times": 1,
+                "concurrency": 1,
+                "type": "constant"
+            },
+            "context": {
+                "users": {
+                    "tenants": 2,
+                    "users_per_tenant": 2
+                },
+                "quotas": {
+                    "neutron": {
+                        "network": -1,
+                        "port": -1
+                    },
+                    "nova": {
+                        "instances": -1,
+                        "cores": -1,
+                        "ram": -1
+                    },
+                    "cinder": {
+                        "gigabytes": -1,
+                        "volumes": -1
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+---
+#
+# Cinder tasks for Browbeat
+# * Can change worker count
+#
+
+- name: Configure cinder.conf
+  ini_file:
+    dest: /etc/cinder/cinder.conf
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { section: DEFAULT, option: osapi_volume_workers, value: "{{ workers }}" }
+    - { section: DEFAULT, option: debug, value: False }
+  notify:
+    - unmanage cinder services
+    - restart cinder services
+    - manage cinder services
+    - cleanup cinder services
+

@@ -23,6 +23,8 @@ check_controllers()
   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
   log Service : Neutron
   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/neutron/neutron.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["neutron"]})
+  log Service : Cinder
+  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/cinder/cinder.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["cinder"]})
  done
 }
 
@@ -38,6 +40,7 @@ check_running_workers()
   nova_scheduler_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-scheduler" | wc -l)
   nova_consoleauth_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-consoleauth" | wc -l)
   nova_novncproxy_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Nn]ova-novncproxy" | wc -l)
+  cinder_worker_num=$(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo ps afx | grep "[Cc]inder-api" | wc -l)
   log $IP : keystone : $keystone_num workers admin/main combined
   log $IP : "keystone(httpd)"  : $keystone_admin_httpd_num admin workers, $keystone_main_httpd_num main workers
   log $IP : nova-api : $nova_api_num workers
@@ -45,6 +48,7 @@ check_running_workers()
   log $IP : nova-scheduler : $nova_scheduler_num workers
   log $IP : nova-consoleauth : $nova_consoleauth_num workers
   log $IP : nova-novncproxy : $nova_novncproxy_num workers
+  log $IP : cinder-api : $cinder_worker_num workers
 
   # Keystone should be 2x for admin and main + 1 for main process
   # Nova should be 3x + 1 nova-api, core_count + 1 for conductor, and scheduler+consoleauth+novncproxy
@@ -253,6 +257,9 @@ for num_wkrs in ${NUM_WORKERS} ; do
 
   check_controllers
   run_rally nova "${complete_test_prefix}-nova-${num_wkr_padded}" ${num_wkrs}
+
+  check_controllers
+  run_rally cinder "${complete_test_prefix}-cinder-${num_wkr_padded}" ${num_wkrs}
 
 done
 ansible-playbook -i ansible/hosts ansible/browbeat/adjustment.yml -e "workers=${RESET_WORKERS}"
