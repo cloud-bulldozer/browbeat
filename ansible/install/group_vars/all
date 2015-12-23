@@ -1,5 +1,6 @@
 ---
 centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+cirros_image_url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 
 connmon_host: 192.0.2.1
 

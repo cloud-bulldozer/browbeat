@@ -47,6 +47,19 @@
 # Nova boot image tasks
 #
 
+- name: Fetch cirros image
+  get_url: url={{ cirros_image_url }} dest=/home/stack/cirros.img
+
+- name: Determine is cirros image exists
+  shell: . /home/stack/overcloudrc; glance image-list | grep "cirros"
+  register: cirros_image_exists
+  ignore_errors: true
+  changed_when: false
+
+- name: Upload cirros image into cloud
+  shell: . /home/stack/overcloudrc; glance image-create --name cirros --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/cirros.img
+  when: "'cirros' not in '{{ cirros_image_exists.stdout }}'"
+
 - name: Fetch centos7 image
   get_url: url={{ centos_image_url }} dest=/home/stack/centos7.qcow2
 
