@@ -16,12 +16,9 @@ check_controllers()
   log Controller : $IP
   log Number of cores : $CORES
   log Service : Keystone
-  if [[ "${KEYSTONE_IN_APACHE}" == true ]]; then
-   log "\_Admin:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
-   log "\_Main:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_main.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
-  else
-   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
-  fi
+  log "\_Admin:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
+  log "\_Main:" $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/httpd/conf.d/10-keystone_wsgi_main.conf | grep -vi "NONE" | grep -v "#" | grep -E ${WORKERS["keystone"]})
+  log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/keystone/keystone.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["keystone"]})
   log Service : Nova
   log $(ssh -o "${SSH_OPTS}" ${LOGIN_USER}@$IP sudo cat /etc/nova/nova.conf | grep -vi "NONE" | grep -v "#" |grep -E ${WORKERS["nova"]})
   log Service : Neutron
