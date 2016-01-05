@@ -1,0 +1,93 @@
+# Browbeat generated bug report
+---------------------------------------
+| Issues for host : overcloud-controller-0
+---------------------------------------
+Bug: bz1095811
+Name: Network connectivity issues after 1000 netns
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
+
+Bug: nova_vif_timeout_result
+Name: Nova VIF timeout should be >= 300
+URL: none
+
+Bug: bz1264740
+Name: RHEL OSP Director must be configure with nova-event-callback by default
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+
+---------------------------------------
+| Issues for host : overcloud-controller-1
+---------------------------------------
+Bug: bz1095811
+Name: Network connectivity issues after 1000 netns
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
+
+Bug: nova_vif_timeout_result
+Name: Nova VIF timeout should be >= 300
+URL: none
+
+Bug: bz1264740
+Name: RHEL OSP Director must be configure with nova-event-callback by default
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+
+---------------------------------------
+| Issues for host : overcloud-controller-2
+---------------------------------------
+Bug: bz1095811
+Name: Network connectivity issues after 1000 netns
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
+
+Bug: nova_vif_timeout_result
+Name: Nova VIF timeout should be >= 300
+URL: none
+
+Bug: bz1264740
+Name: RHEL OSP Director must be configure with nova-event-callback by default
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+
+
+---------------------------------------
+| Issues for host : overcloud-novacompute-0
+---------------------------------------
+Bug: bz1282644
+Name: increase reserved_host_memory_mb
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1282644
+
+Bug: bz1264740
+Name: RHEL OSP Director must be configure with nova-event-callback by default
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+
+Bug: tuned_profile_result
+Name: Ensure Tuned Profile is set to {{ tuned_profile }}
+URL: none
+
+Bug: bz1245714
+Name: No Swap Space allocated
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1245714
+
+Bug: nova_vif_timeout_result
+Name: Nova VIF timeout should be >= 300
+URL: none
+
+---------------------------------------
+| Issues for host : overcloud-novacompute-1
+---------------------------------------
+Bug: bz1282644
+Name: increase reserved_host_memory_mb
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1282644
+
+Bug: bz1264740
+Name: RHEL OSP Director must be configure with nova-event-callback by default
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+
+Bug: tuned_profile_result
+Name: Ensure Tuned Profile is set to {{ tuned_profile }}
+URL: none
+
+Bug: bz1245714
+Name: No Swap Space allocated
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1245714
+
+Bug: nova_vif_timeout_result
+Name: Nova VIF timeout should be >= 300
+URL: none
+
