@@ -1,5 +1,30 @@
+Table of Contents
+=================
+
+  * [Browbeat](#browbeat)
+  * [Before running browbeat](#before-running-browbeat)
+  * [How to run Browbeat?](#how-to-run-browbeat)
+  * [What is necessary?](#what-is-necessary)
+  * [Detailed Install, Check and Run](#detailed-install-check-and-run)
+    * [Install Browbeat from your local machine](#install-browbeat-from-your-local-machine)
+      * [From your local machine:](#from-your-local-machine)
+      * [(Optional) Install shaker:](#optional-install-shaker)
+      * [(Optional) Install connmon:](#optional-install-connmon)
+      * [(Optional) Install pbench:](#optional-install-pbench)
+      * [Run performance checks](#run-performance-checks)
+      * [Run performance stress tests through browbeat on the undercloud:](#run-performance-stress-tests-through-browbeat-on-the-undercloud)
+    * [Install Browbeat directly on undercloud:](#install-browbeat-directly-on-undercloud)
+      * [From your undercloud:](#from-your-undercloud)
+      * [(Optional) Install shaker:](#optional-install-shaker-1)
+      * [(Optional) Install connmon:](#optional-install-connmon-1)
+      * [(Optional) Install pbench:](#optional-install-pbench-1)
+      * [Run performance checks](#run-performance-checks-1)
+      * [Run performance stress tests through browbeat:](#run-performance-stress-tests-through-browbeat)
+
 # Browbeat
-Scripts to help determine number of workers a given OpenStack service needs.
+This started as a project to help determine the number of database connections a given OpenStack deployment uses. It has since
+grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the
+overcloud.
 
 # Before running browbeat
 * Execute the ansible/gen_hostfile.sh script (builds the ssh config)
@@ -22,7 +47,7 @@ On the Red Hat OpenStack Director host, as the Stack user jump into a venv w/ Ra
 
 # Detailed Install, Check and Run
 
-Installing Browbeat and running the performance checks can be performed either from your local machine or from the undercloud.  The local machine install/check assumes you have ansible installed already.
+Installing Browbeat and running the Overcloud checks can be performed either from your local machine or from the undercloud.  The local machine install/check assumes you have ansible installed already.
 
 ## Install Browbeat from your local machine
 
@@ -52,11 +77,11 @@ $ ansible-playbook -i hosts install/connmon.yml
 ```
 * pbench install is under improvement at this time and likely requires additional setup to complete install.
 
-### Run performance checks
+### Run Overcloud checks
 ```
 $ ansible-playbook -i hosts check/site.yml
 ```
-Your performance check output is located in check/bug_report.log
+Your Overcloud check output is located in check/bug_report.log
 
 ### Run performance stress tests through browbeat on the undercloud:
 ```
@@ -102,11 +127,11 @@ $ ssh undercloud-root
 ```
 * pbench install is under improvement at this time and likely requires additional setup to complete install.
 
-### Run performance checks
+### Run Overcloud checks
 ```
 [stack@ospd ansible]$ ansible-playbook -i hosts check/site.yml
 ```
-Your performance check output is located in check/bug_report.log
+Your Overcloud check output is located in check/bug_report.log
 
 ### Run performance stress tests through browbeat:
 ```
