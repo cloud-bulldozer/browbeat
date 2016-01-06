@@ -1,0 +1,35 @@
+---
+#
+# Cinder handlers for browbeat install connmon
+#
+
+- name: unmanage cinder services
+  command: pcs resource unmanage {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  ignore_errors: true
+
+- name: restart cinder services
+  service: name={{ item }} state=restarted
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+
+- name: manage cinder services
+  command: pcs resource manage {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  ignore_errors: true
+
+- name: cleanup cinder services
+  command: pcs resource cleanup {{ item }}
+  with_items:
+    - openstack-cinder-api
+    - openstack-cinder-scheduler
+    - openstack-cinder-volume
+  ignore_errors: true

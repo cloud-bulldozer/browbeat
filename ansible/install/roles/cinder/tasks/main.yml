@@ -1,0 +1,19 @@
+---
+#
+# Cinder connmon tasks
+#
+
+- name: Check for connmon in cinder.conf
+  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/cinder/cinder.conf
+  register: cinder_mysql
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable Connmon in cinder.conf
+  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/cinder/cinder.conf
+  when: cinder_mysql.rc == 0
+  notify:
+    - unmanage cinder services
+    - restart cinder services
+    - manage cinder services
+    - cleanup cinder services

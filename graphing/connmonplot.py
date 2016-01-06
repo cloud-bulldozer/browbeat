@@ -11,7 +11,9 @@ import matplotlib.cbook as cbook
 from pylab import rcParams
 rcParams['figure.figsize'] = 18, 10
 
-services=['/usr/bin/nova-scheduler','/usr/bin/keystone-all','/usr/bin/nova-api','/usr/bin/nova-conductor','/usr/bin/neutron-server']
+services=['/usr/bin/nova-scheduler','/usr/bin/keystone-all','/usr/bin/nova-api',
+            '/usr/bin/nova-conductor','/usr/bin/neutron-server','/usr/bin/cinder-api',
+            '/usr/bin/cinder-volume','/usr/bin/cinder-scheduler']
 color_wheel=['r','g','b','y']
 
 data = {}
