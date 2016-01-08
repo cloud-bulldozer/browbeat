@@ -29,6 +29,12 @@
   when: undercloud
   changed_when: false
 
+- name: Change connmon result owner
+  command: chown stack:stack /tmp/connmon_results.csv
+  when: undercloud
+  changed_when: false
+  ignore_errors: true
+
 - name: check iptables
   shell: iptables -nvL | grep -q "dpt:5800"
   changed_when: false

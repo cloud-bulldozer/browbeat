@@ -1,0 +1,100 @@
+# Basic set of initial stress tests
+browbeat:
+  results : results/
+  sudo: true
+  debug: false
+  connmon: true
+  rerun: 1
+  pbench:
+    enabled: false
+    hosts: ansible/pbench-host-file
+    interval: 2
+    tools:
+        - mpstat
+        - iostat
+        - sar
+        - vmstat
+        - pidstat
+  num_workers: None
+ansible:
+  hosts: ansible/hosts
+  install:
+    connmon: ansible/install/connmon.yml
+    pbench: ansible/install/pbench.yml
+    browbeat: ansible/install/browbeat.yml
+  check: ansible/check/site.yml
+  adjust:
+    workers: ansible/browbeat/adjustment.yml
+    keystone-token: browbeat/keystone_token_type.yml
+rally:
+  benchmarks:
+    cinder:
+      enabled: true
+      concurrency:
+        - 8
+      times: 40
+      scenarios:
+        create-attach-volume-centos:
+          enabled: true
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+        create-attach-volume-cirros:
+          enabled: true
+          image_name: cirros
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+          flavor_name: m1.tiny
+    keystone:
+      enabled: true
+      concurrency:
+        - 64
+      times: 1000
+      scenarios:
+        authentic-keystone:
+          enabled: true
+          file: rally/keystone/authenticate-keystone-cc.yml
+        authentic-neutron:
+          enabled: false
+          file: rally/keystone/authenticate-neutron-cc.yml
+        authentic-nova:
+          enabled: true
+          file: rally/keystone/authenticate-nova-cc.yml
+        create-list-tenant:
+          enabled: false
+          file: rally/keystone/keystone-create-list-tenant-cc.yml
+        create-list-user:
+          enabled: false
+          file: rally/keystone/keystone-create-list-user-cc.yml
+    nova:
+      enabled: false
+      concurrency:
+        - 8
+      times: 40
+      scenarios:
+        boot-list-centos:
+          enabled: false
+          file: rally/nova/nova-boot-list-cc.yml
+        boot-list-cirros:
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-boot-list-cc.yml
+          flavor_name: m1.tiny
+    neutron:
+      enabled: false
+      concurrency:
+        - 8
+      times: 100
+      scenarios:
+        create-list-network:
+          enabled: false
+          file: rally/neutron/neutron-create-list-network-cc.yml
+        create-list-port:
+          enabled: true
+          file: rally/neutron/neutron-create-list-port-cc.yml
+        create-list-router:
+          enabled: false
+          file: rally/neutron/neutron-create-list-router-cc.yml
+        create-list-security-group:
+          enabled: false
+          file: rally/neutron/neutron-create-list-security-group-cc.yml
+        create-list-subnet:
+          enabled: false
+          file: rally/neutron/neutron-create-list-subnet-cc.yml

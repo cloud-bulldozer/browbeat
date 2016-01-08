@@ -1,0 +1,19 @@
+---
+  NeutronNetworks.create_and_list_networks:
+    -
+      args:
+        network_create_args: ""
+      runner:
+        concurrency: {{concurrency}}
+        times: {{times}}
+        type: "constant"
+      context:
+        users:
+          tenants: 1
+          users_per_tenant: 8
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+            router: -1
+            subnet: -1

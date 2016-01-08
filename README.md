@@ -34,7 +34,7 @@ overcloud.
 # How to run Browbeat?
 On the Red Hat OpenStack Director host, as the Stack user jump into a venv w/ Rally and you simply run:
 
-    ./browbeat.sh <test name>
+    ./browbeat.py --help
 
 # What is necessary?
 * Red Hat OpenStack Director
@@ -42,7 +42,7 @@ On the Red Hat OpenStack Director host, as the Stack user jump into a venv w/ Ra
 * OpenStack Rally
   * Why? We are using Rally to stress the control plane of the env.
 * Ansible
-  * Why? We started with using bash to make changes to the Overcloud, creating complex sed/awks that we get for free with Ansible (for the most part). If you prefer to not use Ansible, the older versions (no longer maintained) of the browbeat.sh can be found here.
+  * Why? We started with using bash to make changes to the Overcloud, creating complex sed/awks that we get for free with Ansible (for the most part). If you prefer to not use Ansible, the older versions (no longer maintained) of the browbeat.sh can be found in a older commit.
 
 
 # Detailed Install, Check and Run
@@ -90,8 +90,8 @@ $ ssh undercloud-root
 [stack@ospd ~]$ screen -S browbeat
 [stack@ospd ~]$ . browbeat-venv/bin/activate
 (browbeat-venv)[stack@ospd ~]$ cd browbeat/
-(browbeat-venv)[stack@ospd browbeat]$ vi browbeat.cfg # Edit browbeat.cfg to control how many stress tests are run.
-(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.sh test01
+(browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
 ...
 (browbeat-venv)[stack@ospd browbeat]$ ./graphing/rallyplot.py test01
 ```
@@ -137,8 +137,8 @@ Your Overcloud check output is located in check/bug_report.log
 ```
 [stack@ospd ansible]$ . ../../browbeat-venv/bin/activate
 (browbeat-venv)[stack@ospd ansible]$ cd ..
-(browbeat-venv)[stack@ospd browbeat]$ vi browbeat.cfg # Edit browbeat.cfg to control how many stress tests are run.
-(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.sh test01
+(browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat.cfg to control how many stress tests are run.
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
 ...
 (browbeat-venv)[stack@ospd browbeat]$ ./graphing/rallyplot.py test01
 ```

@@ -1,0 +1,117 @@
+# Complete set of Stress Tests, this can take a long time (day(s))
+browbeat:
+  results : results/
+  sudo: true
+  debug: false
+  connmon: true
+  rerun: 3
+  pbench:
+    enabled: false
+    hosts: ansible/pbench-host-file
+    interval: 2
+    tools:
+        - mpstat
+        - iostat
+        - sar
+        - vmstat
+        - pidstat
+  num_workers: None
+ansible:
+  hosts: ansible/hosts
+  install:
+    connmon: ansible/install/connmon.yml
+    pbench: ansible/install/pbench.yml
+    browbeat: ansible/install/browbeat.yml
+  check: ansible/check/site.yml
+  adjust:
+    workers: ansible/browbeat/adjustment.yml
+    keystone-token: browbeat/keystone_token_type.yml
+rally:
+  benchmarks:
+    cinder:
+      enabled: true
+      concurrency:
+        - 64
+        - 128
+        - 256
+      times: 1024
+      scenarios:
+        create-attach-volume-centos:
+          enabled: true
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+        create-attach-volume-cirros:
+          enabled: true
+          image_name: cirros
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+          flavor_name: m1.tiny
+    keystone:
+      enabled: true
+      concurrency:
+        - 64
+        - 128
+        - 192
+        - 256
+        - 320
+        - 384
+        - 448
+        - 512
+      times: 5000
+      scenarios:
+        authentic-keystone:
+          enabled: true
+          file: rally/keystone/authenticate-keystone-cc.yml
+        authentic-neutron:
+          enabled: true
+          file: rally/keystone/authenticate-neutron-cc.yml
+        authentic-nova:
+          enabled: true
+          file: rally/keystone/authenticate-nova-cc.yml
+        create-list-tenant:
+          enabled: true
+          file: rally/keystone/keystone-create-list-tenant-cc.yml
+        create-list-user:
+          enabled: true
+          file: rally/keystone/keystone-create-list-user-cc.yml
+    nova:
+      enabled: false
+      concurrency:
+        - 16
+        - 32
+        - 48
+        - 64
+        - 80
+        - 96
+      times: 128
+      scenarios:
+        boot-list-centos:
+          enabled: true
+          file: rally/nova/nova-boot-list-cc.yml
+        boot-list-cirros:
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-boot-list-cc.yml
+          flavor_name: m1.tiny
+    neutron:
+      enabled: true
+      concurrency:
+        - 16
+        - 32
+        - 48
+        - 64
+      times: 500
+      scenarios:
+        create-list-network:
+          enabled: true
+          file: rally/neutron/neutron-create-list-network-cc.yml
+        create-list-port:
+          enabled: true
+          file: rally/neutron/neutron-create-list-port-cc.yml
+        create-list-router:
+          enabled: true
+          file: rally/neutron/neutron-create-list-router-cc.yml
+        create-list-security-group:
+          enabled: true
+          file: rally/neutron/neutron-create-list-security-group-cc.yml
+        create-list-subnet:
+          enabled: true
+          file: rally/neutron/neutron-create-list-subnet-cc.yml

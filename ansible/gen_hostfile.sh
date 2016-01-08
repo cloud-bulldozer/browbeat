@@ -1,12 +1,13 @@
 #!/bin/bash
-if [ ! $# == 2 ]; then
-  echo "Usage: ./gen_hostfiles.sh <ospd_ip_address> <ssh_config_file>"
+if [ ! $# -ge 2 ]; then
+  echo "Usage: ./gen_hostfiles.sh <ospd_ip_address> <ssh_config_file> <OPTIONAL pbench_host_file> "
   echo "Generates ssh config file to use OSP undercloud host as a jumpbox and creates ansible inventory file."
   exit
 fi
 ospd_ip_address=$1
 ansible_inventory_file='hosts'
 ssh_config_file=$2
+pbench_host_file=$3
 
 # "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${ospd_ip_address}" == "localhost" ]]; then
@@ -14,7 +15,7 @@ if [[ "${ospd_ip_address}" == "localhost" ]]; then
  sudo bash -c "cat ~stack/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
 fi
 
-nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i running")
+nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
 
 controller_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Controller | grep physical_resource_id" | awk '{print $4}')
 compute_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Compute | grep physical_resource_id" | awk '{print $4}')
@@ -54,6 +55,7 @@ echo "    IdentityFile ~/.ssh/id_rsa" | tee -a ${ssh_config_file}
 echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
 echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
+echo "[hosts]" > ${pbench_host_file}
 compute_hn=()
 controller_hn=()
 ceph_hn=()
@@ -80,6 +82,7 @@ for line in $nodes; do
  echo "    IdentityFile ~/.ssh/heat-admin-id_rsa" | tee -a ${ssh_config_file}
  echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
+ echo "${IP}" >> ${pbench_host_file}
 done
 
 

@@ -1,0 +1,17 @@
+{% set repetitions = repetitions or 2 %}
+---
+  Authenticate.validate_nova: 
+    - 
+      args: 
+        repetitions: {{repetitions}}
+      context: 
+        users: 
+          project_domain: "default"
+          resource_management_workers: 30
+          tenants: 1
+          user_domain: "default"
+          users_per_tenant: 8
+      runner: 
+        concurrency: {{concurrency}}
+        times: {{times}}
+        type: "constant"
