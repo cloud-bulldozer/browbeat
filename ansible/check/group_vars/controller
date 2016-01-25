@@ -34,6 +34,6 @@ checks :
         name: "Rabbit is currently partitioned - YMMV... Good luck."
     tuned_profile_result :
         url: "none"
-        name: "Ensure Tuned Profile is set to {{ tuned_profile }}"
+        name: "Ensure Tuned Profile is set to throughput-performance"
 
 # vi:syntax=yaml

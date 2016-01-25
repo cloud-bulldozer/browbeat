@@ -13,7 +13,7 @@ checks:
         name : "increase reserved_host_memory_mb"
     tuned_profile_result :
         url: "none"
-        name: "Ensure Tuned Profile is set to {{ tuned_profile }}"
+        name: "Ensure Tuned Profile is set to virtual-host"
     nova_vif_timeout_result:
         url: "none"
         name: "Nova VIF timeout should be >= 300"
