@@ -142,3 +142,30 @@ Your Overcloud check output is located in check/bug_report.log
 ...
 (browbeat-venv)[stack@ospd browbeat]$ ./graphing/rallyplot.py test01
 ```
+## Contributing
+Contributions are most welcome! Pull requests need to be submitted using the gerrit code review system. Firstly, you need to login to GerritHub using your GitHub credentials and need to authorize GerritHub to access your account. Once you are logged in click you user name in the top-right corner, go to  'Settings' and under 'SSH Public Keys' you need to paste your public key. You can view your public key using:
+```
+$ cat ~/.ssh/id_\{r or d\}sa.pub
+```
+Set your username and email for git:
+```
+$ git config --global user.email "example@example.com"
+$ git config --global user.name "example"
+```
+Next, Clone the github repository:
+```
+$ git clone https://github.com/jtaleric/browbeat.git
+```
+You need to have git-review in order to be able to submit patches using the gerrit code review system. You can install it using:
+```
+$ yum install git-review
+```
+To set up your cloned repository to work with gerrit:
+```
+[user@laptop browbeat]$ git review -s
+```
+Make your changes and then commit them. Use:
+```
+[user@laptop browbeat]$ git review
+```
+The first time you are submitting a patch, you will be requested for a user name which is typically your GerritHub user name(same as GitHub user name).
