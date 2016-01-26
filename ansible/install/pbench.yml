@@ -7,7 +7,7 @@
   remote_user: stack
   gather_facts: false
   vars:
-    ansible_sudo: true
+    ansible_become: true
     undercloud: true
   roles:
   - common
@@ -17,7 +17,7 @@
   remote_user: heat-admin
   gather_facts: false
   vars:
-    ansible_sudo: true
+    ansible_become: true
     undercloud: false
     undercloud_root_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_root_id_rsa.pub') }}"
     undercloud_stack_ssh_key: "{{ lookup('file', 'roles/pbench/files/undercloud_stack_id_rsa.pub') }}"

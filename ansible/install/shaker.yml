@@ -6,7 +6,7 @@
 - hosts: undercloud
   remote_user: stack
   vars:
-    ansible_sudo: true
+    ansible_become: true
   roles:
   - common
   - shaker

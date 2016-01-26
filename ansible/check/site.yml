@@ -28,8 +28,7 @@
 - hosts: localhost
   gather_facts: False
   become: false
-  sudo: false
   name: Generating bug report
   tasks:
     - local_action: template src=templates/bug_report.j2 dest=./bug_report.log
-      sudo: false
+      become: false

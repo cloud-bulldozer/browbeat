@@ -11,7 +11,7 @@
     - libpng-devel
 
 - name: Install pip
-  become: yes
+  become: true
   easy_install: name=pip
 
 - name: Install virtualenv
@@ -56,9 +56,17 @@
   ignore_errors: true
   changed_when: false
 
-- name: Upload cirros image into cloud
+- name: Upload cirros image into cloud (OSP8)
   shell: . /home/stack/overcloudrc; glance image-create --name cirros --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/cirros.img
   when: "'cirros' not in '{{ cirros_image_exists.stdout }}'"
+  register: cirros_image_osp8
+  ignore_errors: true
+
+- name: Upload cirros image into cloud (OSP7)
+  shell: . /home/stack/overcloudrc; glance image-create --name cirros --is-public true --disk-format=qcow2 --container-format=bare < /home/stack/cirros.img
+  when: "'cirros' not in '{{ cirros_image_exists.stdout }}' and not cirros_image_osp8.rc == 0"
+  ignore_errors: true
+
 
 - name: Fetch centos7 image
   get_url: url={{ centos_image_url }} dest=/home/stack/centos7.qcow2
@@ -69,6 +77,13 @@
   ignore_errors: true
   changed_when: false
 
-- name: Upload centos7 image into cloud
+- name: Upload centos7 image into cloud (OSP8)
   shell: . /home/stack/overcloudrc; glance image-create --name centos7 --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/centos7.qcow2
   when: "'centos7' not in '{{ centos7_image_exists.stdout }}'"
+  register: centos7_image_osp8
+  ignore_errors: true
+
+- name: Upload centos7 image into cloud (OSP7)
+  shell: . /home/stack/overcloudrc; glance image-create --name centos7 --is-public true --disk-format=qcow2 --container-format=bare < /home/stack/centos7.qcow2
+  when: "'centos7' not in '{{ centos7_image_exists.stdout }}' and not centos7_image_osp8.rc == 0"
+  ignore_errors: true

@@ -1,5 +1,5 @@
 ---
-ansible_sudo: yes
+ansible_become: true
 tuned_profile: throughput-performance
 rabbitmq_fd: 1600
 haproxy_max_connections: 4096
