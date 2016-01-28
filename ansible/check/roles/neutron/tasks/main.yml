@@ -5,3 +5,10 @@
   failed_when: neutron_nova_creds.rc == 1
   changed_when: false
   ignore_errors: True
+
+- name: Check for rootwrap daemon
+  command: crudini --get /etc/neutron/neutron.conf agent root_helper_daemon
+  register: neutron_rootwrap_daemon
+  failed_when: neutron_rootwrap_daemon.rc == 1
+  changed_when: false
+  ignore_errors: True

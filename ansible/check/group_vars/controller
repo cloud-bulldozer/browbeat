@@ -23,17 +23,17 @@ checks :
     nova_vif_timeout_result:
         url: "none"
         name: "Nova VIF timeout should be >= 300"
-#    neutron_nova_creds:
-#        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
-#        name: "RHEL OSP Director must be configure with nova-event-callback by default"
     bz1264740:
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
         name: "RHEL OSP Director must be configure with nova-event-callback by default"
-    rabbit_partitioned :
+    rabbit_partitioned:
         url: "none"
         name: "Rabbit is currently partitioned - YMMV... Good luck."
-    tuned_profile_result :
+    tuned_profile_result:
         url: "none"
         name: "Ensure Tuned Profile is set to throughput-performance"
+    neutron_rootwrap_daemon:
+        url: "none"
+        name: "Ensure rootwrap has daemon mode enabled"
 
 # vi:syntax=yaml
