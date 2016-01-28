@@ -1,0 +1,6 @@
+# Prevent hosts files from sneaking into the git repo
+ansible/hosts
+ansible/pbench-host-file
+
+# Prevent Results from sneaking into the git repo
+results/
