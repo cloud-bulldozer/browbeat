@@ -1,4 +1,4 @@
-# Basic set of initial stress tests
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
   results : results/
   sudo: true
@@ -31,11 +31,11 @@ rally:
     cinder:
       enabled: true
       concurrency:
-        - 8
-      times: 40
+        - 2
+      times: 6
       scenarios:
         create-attach-volume-centos:
-          enabled: true
+          enabled: false
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
         create-attach-volume-cirros:
           enabled: true
@@ -46,7 +46,7 @@ rally:
       enabled: true
       concurrency:
         - 64
-      times: 1000
+      times: 500
       scenarios:
         authentic-keystone:
           enabled: true
@@ -55,7 +55,7 @@ rally:
           enabled: false
           file: rally/keystone/authenticate-neutron-cc.yml
         authentic-nova:
-          enabled: true
+          enabled: false
           file: rally/keystone/authenticate-nova-cc.yml
         create-list-tenant:
           enabled: false
@@ -64,7 +64,7 @@ rally:
           enabled: false
           file: rally/keystone/keystone-create-list-user-cc.yml
     nova:
-      enabled: false
+      enabled: true
       concurrency:
         - 8
       times: 40
@@ -78,7 +78,7 @@ rally:
           file: rally/nova/nova-boot-list-cc.yml
           flavor_name: m1.tiny
     neutron:
-      enabled: false
+      enabled: true
       concurrency:
         - 8
       times: 100
