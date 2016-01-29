@@ -30,7 +30,7 @@ class Rally:
             self.logger.info("Starting Scenario")
             tool = "rally"
             rally = self.tools.find_cmd(tool)
-            cmd = ("user-benchmark --config={1} -- \"./browbeat-run-rally.sh"
+            cmd = ("user-benchmark --config={1} -- \"./pbench/browbeat-run-rally.sh"
                 " {0} {1} \'{2}\'\"".format(task_file, test_name, task_args))
             self.tools.run_cmd(cmd)
         else:
