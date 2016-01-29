@@ -1,0 +1,14 @@
+LoadPlugin write_graphite
+
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{ item.ip_address }}"
+    Port "2003"
+    Prefix "{{ item.prefix }}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>

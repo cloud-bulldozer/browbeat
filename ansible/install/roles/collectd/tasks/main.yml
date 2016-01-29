@@ -1,0 +1,91 @@
+---
+#
+# Install collectd for browbeat
+#
+
+- name: Install epel repo
+  command: rpm -ivh {{ epel_repo }}
+
+- name: Install collectd agent
+  yum: name=collectd state=present
+
+- name: Copy collectd.conf file
+  copy:
+    src=collectd.conf
+    dest=/etc/collectd.conf
+    owner=root
+    group=root
+    mode=0644
+
+- name: Copy collectd config files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/collectd.d/{{ item }}
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - disk.conf
+    - filter.conf
+    - processes.conf
+    - redis.conf
+    - tail.conf
+    - tcpconns.conf
+
+- name: Copy collectd-redis.sh
+  copy:
+    src=collectd-redis.sh
+    dest=/usr/local/bin/collectd-redis.sh
+    owner=root
+    group=root
+    mode=0755
+
+- name: Configure collectd graphite.conf
+  template:
+    src=graphite.conf.j2
+    dest=/etc/collectd.d/graphite.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items:
+    - ip_address: "{{ graphite_host }}"
+      prefix: "{{ graphite_prefix }}"
+
+- name: Setup collectd service
+  service: name=collectd state=restarted enabled=yes
+
+#
+# Configure selinux bits
+#
+
+- name: Check for collectd permissive
+  shell: semodule -l | grep -q permissive_collectd_t
+  register: collectd_permissive
+  ignore_errors: true
+  changed_when: false
+
+- name: Set permissive for collectd
+  shell: semanage permissive -a collectd_t
+  when: collectd_permissive.rc != 0
+
+#
+# additional policy bits may be needed for exec
+#
+- name: collectd policy customization
+  copy:
+    src=custom-collectd.pp
+    dest=/root/custom-collectd.pp
+    owner=root
+    group=root
+    mode=644
+
+- name: Check for collectd custom
+  shell: semodule -l | grep -q custom-collectd
+  register: collectd_custom
+  ignore_errors: true
+  changed_when: false
+
+- name: Set custom policy for collectd
+  shell: semodule -i /root/custom-collectd.pp
+  when: collectd_custom.rc != 0
+

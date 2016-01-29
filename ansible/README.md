@@ -49,6 +49,14 @@ Install Shaker
 # ansible-playbook -i hosts install/shaker.yml
 ```
 
+Install Collectd Agent
+Prior to installing the agent, please review the install/group_vars/all to ensure the
+correct params are passed
+```
+# ansible-playbook -i hosts install/collectd
+```
+
+
 ## Performance Checks:
 
 Run the check playbook to identify common performance issues:

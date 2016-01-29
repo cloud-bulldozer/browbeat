@@ -6,6 +6,13 @@ connmon_host: 192.0.2.1
 
 dns_server: 8.8.8.8
 
+# collectd params:
+#  epel_repo for collectd packages
+#  graphite_host, where to send the collectd metrics
+epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+graphite_host: 1.1.1.1
+graphite_prefix: openstack
+
 # pbench repos, you must replace the internal to the correct repo to install pbench
 pbench_internal_repo_file_url: http://pbench.example.com/repo/yum.repos.d/pbench.repo
 pbench_repo_file_url: https://copr.fedoraproject.org/coprs/ndokos/pbench/repo/epel-7/ndokos-pbench-epel-7.repo

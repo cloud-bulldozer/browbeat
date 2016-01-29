@@ -1,0 +1,12 @@
+---
+#
+# Playbook to install connmon on undercloud/overcloud
+#
+- hosts: controller:compute
+  remote_user: heat-admin
+  vars:
+    ansible_become: true
+    undercloud: false
+  roles:
+  - common
+  - collectd
