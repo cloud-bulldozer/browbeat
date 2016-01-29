@@ -1,5 +1,7 @@
 # Ansible for Browbeat
 
+Currently we only support Ansible 1.9.4.
+
 Playbooks for:
 * Install Browbeat
 * Install connmon
