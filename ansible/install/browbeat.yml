@@ -5,6 +5,8 @@
 
 - hosts: undercloud
   remote_user: stack
+  vars:
+    results_in_httpd: true
   roles:
   - common
   - browbeat

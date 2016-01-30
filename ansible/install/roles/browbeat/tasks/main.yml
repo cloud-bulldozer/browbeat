@@ -44,6 +44,44 @@
   shell: . /home/stack/browbeat-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
 
 #
+# Serve results out of httpd if results_in_httpd is set to true
+#
+
+- name: Setup browbeat.conf in /etc/httpd/conf.d
+  copy:
+    src: 00-browbeat.conf
+    dest: /etc/httpd/conf.d/00-browbeat.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: results_in_httpd
+  notify:
+    - restart httpd
+
+- name: Check iptables for browbeat port(9000)
+  shell: iptables -nvL | grep -q "dpt:9000"
+  become: true
+  changed_when: false
+  when: results_in_httpd
+  register: browbeat_results_port
+  ignore_errors: true
+
+- name: Open iptables for browbeat port(9000)
+  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport 9000 -j ACCEPT
+  become: true
+  when: results_in_httpd and browbeat_results_port.rc == 1
+
+- name: Set seboolean(httpd_read_user_content)
+  seboolean: name=httpd_read_user_content state=yes persistent=yes
+  become: true
+  when: results_in_httpd
+
+- name: Allow httpd to serve content in /home/stack
+  file: path=/home/stack state=directory mode=0755
+  when: results_in_httpd
+
+#
 # Nova boot image tasks
 #
 
