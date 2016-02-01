@@ -125,4 +125,4 @@ echo "---------------------------"
 echo "Copying heat-admin key to local machine(~/.ssh/heat-admin-id_rsa) to for use with ssh config file"
 echo "---------------------------"
 echo ""
-scp undercloud-root:/home/stack/.ssh/id_rsa ~/.ssh/heat-admin-id_rsa
+scp "stack@${ospd_ip_address}":/home/stack/.ssh/id_rsa ~/.ssh/heat-admin-id_rsa
