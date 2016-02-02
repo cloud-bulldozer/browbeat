@@ -31,6 +31,13 @@
   changed_when: no
   ignore_errors: yes
 
+- name : Check udev performance issue
+  shell : grep -q 'SUBSYSTEM=="net", ACTION=="add", TAG+="systemd", ENV{SYSTEMD_WANTS}+="dhcp-interface@$name.service"' /etc/udev/rules.d/99-dhcp-all-interfaces.rules
+  register : bz1293712
+  changed_when: no
+  ignore_errors: yes
+  failed_when: bz1293712.rc == 0
+
 - name : Check rabbitmq for partitions
   shell: rabbitmqctl cluster_status | grep partitions -A 1 | grep -q controller
   register: rabbit_partitioned
