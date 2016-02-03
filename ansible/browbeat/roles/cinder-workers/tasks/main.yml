@@ -14,10 +14,8 @@
     backup: yes
   with_items:
     - { section: DEFAULT, option: osapi_volume_workers, value: "{{ workers }}" }
-    - { section: DEFAULT, option: debug, value: False }
   notify:
     - unmanage cinder services
     - restart cinder services
     - manage cinder services
     - cleanup cinder services
-

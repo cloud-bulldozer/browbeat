@@ -1,0 +1,21 @@
+---
+#
+# Neutron tasks for Browbeat
+#
+
+- name: Configure min_l3_agents
+  ini_file:
+    dest: /etc/neutron/neutron.conf
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { section: DEFAULT, option: max_l3_agents_per_router, value: "{{ max_l3_agents }}" }
+    - { section: DEFAULT, option: min_l3_agents_per_router, value: "{{ min_l3_agents }}" }
+  notify:
+    - unmanage neutron services
+    - restart neutron services
+    - manage neutron services
+    - cleanup neutron services

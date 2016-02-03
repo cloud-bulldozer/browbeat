@@ -1,0 +1,23 @@
+---
+#
+# Playbook to change number of workers for nova,cinder and keystone services
+#
+# Change Workers Example:
+# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12"
+#
+# Change Workers and Keystone Deployment Example:
+# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12 keystone_deployment=httpd"
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  gather_facts: false
+  vars:
+    ansible_become: true
+    workers: 24
+    threads: 6
+  roles:
+  - nova-workers
+  - neutron-workers
+  - keystone-workers
+  - cinder-workers

@@ -9,5 +9,7 @@
 
 - hosts: controller
   remote_user: heat-admin
+  vars:
+    ansible_become: true
   roles:
     - keystone-token

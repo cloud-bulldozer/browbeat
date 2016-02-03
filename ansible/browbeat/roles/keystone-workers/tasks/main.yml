@@ -43,8 +43,6 @@
     value: "{{ item.value }}"
     backup: yes
   with_items:
-    - { section: DEFAULT, option: verbose, value: False }
-    - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: public_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: admin_workers, value: "{{ workers }}" }
     - { section: eventlet_server, option: public_workers, value: "{{ workers }}" }

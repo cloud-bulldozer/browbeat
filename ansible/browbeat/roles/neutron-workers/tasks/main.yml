@@ -13,8 +13,6 @@
     value: "{{ item.value }}"
     backup: yes
   with_items:
-    - { section: DEFAULT, option: verbose, value: False }
-    - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: api_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: rpc_workers, value: "{{ workers }}" }
   notify:

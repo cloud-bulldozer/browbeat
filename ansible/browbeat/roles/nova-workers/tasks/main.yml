@@ -13,8 +13,6 @@
     value: "{{ item.value }}"
     backup: yes
   with_items:
-    - { section: DEFAULT, option: verbose, value: False }
-    - { section: DEFAULT, option: debug, value: False }
     - { section: DEFAULT, option: ec2_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: osapi_compute_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: metadata_workers, value: "{{ workers }}" }

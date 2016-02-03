@@ -1,0 +1,17 @@
+---
+#
+# Playbook to change number of Neutron l3 agents
+#
+# Change l3 agents Example:
+# ansible-playbook -i hosts browbeat/adjustment-l3.yml -e "max_l3_agents=3 min_l3_agents=3"
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  gather_facts: false
+  vars:
+    ansible_become: true
+    max_l3_agents: 3
+    min_l3_agents: 2
+  roles:
+  - neutron-l3
