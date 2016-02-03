@@ -8,7 +8,7 @@ class Connmon :
         return None
 
     # Start connmond
-    def start_connmon(self):
+    def start_connmon(self,retry=None):
         self.stop_connmon()
         tool="connmond"
         connmond=self.tools.find_cmd(tool)
@@ -23,7 +23,17 @@ class Connmon :
         self.logger.info("Starting connmond")
         cmd = ""
         cmd +="{} --config /etc/connmon.cfg > /tmp/connmond 2>&1 &".format(connmond)
-        return self.tools.run_cmd(cmd)
+        self.tools.run_cmd(cmd)
+        if self.check_connmon_results == False:
+            if retry == None :
+                self.start_connmon(retry=True)
+            else :
+                return False
+        else :
+            return True
+
+    def check_connmon_results(self,result_file='/tmp/connmon_results.csv'):
+        return os.path.isfile(result_file)
 
     # Stop connmond
     def stop_connmon(self):
