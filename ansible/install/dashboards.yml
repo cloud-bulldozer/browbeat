@@ -1,0 +1,12 @@
+---
+#
+# Generates Dashboards based on your Ansible hosts and uploads it to your grafana server
+#
+
+- hosts: undercloud
+  gather_facts: false
+  remote_user: stack
+  vars:
+    overwrite_existing: true
+  roles:
+    - dashboard

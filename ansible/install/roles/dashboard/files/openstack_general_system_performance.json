@@ -1,0 +1,3663 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Openstack General System Performance",
+    "tags": [],
+    "style": "dark",
+    "timezone": "browser",
+    "editable": true,
+    "hideControls": false,
+    "sharedCrosshair": false,
+    "rows": [
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 1,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-system), 'System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-user), 'User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-nice), 'Nice')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-steal), 'Steal')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-softirq), 'SoftIRQ')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-interrupt), 'Interrupt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-wait), 'Wait')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(averageSeries($Cloud.$Node.cpu-*.cpu-idle), 'Idle')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - CPU",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "CPU"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 2,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.memory.memory-slab_unrecl, 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.memory.memory-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.memory.memory-buffered, 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.memory.memory-slab_recl, 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.memory.memory-cached, 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.memory.memory-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Memory",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 62,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.swap.swap-used, 'Used')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.swap.swap-cached, 'Cached')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.swap.swap-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Swap Usage",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 63,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.swap.swap_io-in, 'In')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.swap.swap_io-out, 'Out')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Swap IO",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Memory & Swap"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 3,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Write",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.$Disk.disk_ops.read, 'Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.$Disk.disk_ops.write, 'Write')",
+                "textEditor": false
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $Disk iops",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "iops",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 5,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Write",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.$Disk.disk_octets.read, 'Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.$Disk.disk_octets.write, 'Write')",
+                "textEditor": false
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $Disk Throughput",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "Bps",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 61,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Write",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.df-root.percent_bytes-reserved, 'Reserved')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.df-root.percent_bytes-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.df-root.percent_bytes-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - / Partition Capacity",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Disk"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 4,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "RX",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.$Interface.if_packets.tx, 'TX')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.$Interface.if_packets.rx, 'RX')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $Interface Network IO",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "pps",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 6,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "RX",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.$Interface.if_octets.tx, 8), 'TX')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.$Interface.if_octets.rx, 8), 'RX')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $Interface Network Throughput",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "Bps",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Network"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 7,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.load.load.shortterm, '1m avg')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.load.load.midterm, '5m avg')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.load.load.longterm, '15m avg')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node Load Averages",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Load"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 8,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes.ps_state-running, 'Running')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes.ps_state-stopped, 'Stopped')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes.ps_state-sleeping, 'Sleeping')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes.ps_state-blocked, 'Blocked')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes.ps_state-paging, 'Paging')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes.ps_state-zombies, 'Zombies')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Processes State",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 17,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes.fork_rate, 'Fork Rate')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Fork Rate",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Processes"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "25px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 16,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-dnsmasq.ps_count.processes, 'Dnsmasq Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-dnsmasq.ps_count.threads, 'Dnsmasq Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-haproxy.ps_count.processes, 'Haproxy Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-haproxy.ps_count.threads, 'Haproxy Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-httpd.ps_count.processes, 'Httpd Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-httpd.ps_count.threads, 'Httpd Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-memcached.ps_count.processes, 'Memcached Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-memcached.ps_count.threads, 'Memcached Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-mongod.ps_count.processes, 'Mongo Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-mongod.ps_count.threads, 'Mongo Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-mysqld.ps_count.processes, 'Mysqld Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-mysqld.ps_count.threads, 'Mysqld Threads')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-ovs-vswitchd.ps_count.processes, 'Ovs-vswitchd Processes')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-ovs-vswitchd.ps_count.threads, 'Ovs-vswitchd Threads')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-ovsdb-server.ps_count.processes, 'Ovsdb-Server Processes')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-ovsdb-server.ps_count.threads, 'Ovsdb-Server Threads')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-qemu-kvm.ps_count.processes, 'Qemu-kvm Processes')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-qemu-kvm.ps_count.threads, 'Qemu-kvm Threads')"
+              },
+              {
+                "refId": "S",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_count.processes, 'Rabbitmq Processes')"
+              },
+              {
+                "refId": "T",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_count.threads, 'Rabbitmq Threads')"
+              },
+              {
+                "refId": "U",
+                "target": "alias($Cloud.$Node.processes-redis-server.ps_count.processes, 'Redis-Server Processes')"
+              },
+              {
+                "refId": "V",
+                "target": "alias($Cloud.$Node.processes-redis-server.ps_count.threads, 'Redis-Server Threads')"
+              },
+              {
+                "refId": "W",
+                "target": "alias($Cloud.$Node.processes-tuskar-api.ps_count.processes, 'Tuskar-Api Processes')"
+              },
+              {
+                "refId": "X",
+                "target": "alias($Cloud.$Node.processes-tuskar-api.ps_count.threads, 'Tuskar-Api Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Everything Else",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 10,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-nova-api.ps_count.processes, 'Nova-Api Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-nova-api.ps_count.threads, 'Nova-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-nova-cert.ps_count.processes, 'Nova-Cert Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-nova-cert.ps_count.threads, 'Nova-Cert Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-nova-conductor.ps_count.processes, 'Nova-Conductor Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-nova-conductor.ps_count.threads, 'Nova-Conductor Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-nova-scheduler.ps_count.processes, 'Nova-Scheduler Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-nova-scheduler.ps_count.threads, 'Nova-Scheduler Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-nova-compute.ps_count.processes, 'Nova-Compute Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-nova-compute.ps_count.threads, 'Nova-Compute Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-nova-consoleauth.ps_count.processes, 'Nova-Consoleauth Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-nova-consoleauth.ps_count.threads, 'Nova-Consoleauth Threads')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-nova-novncproxy.ps_count.processes, 'Nova-Novncproxy Processes')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-nova-novncproxy.ps_count.threads, 'Nova-Novncproxy Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Nova",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 12,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-neutron-server.ps_count.processes, 'Neutron-Server Processes')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-neutron-server.ps_count.threads, 'Neutron-Server Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-neutron-openvswitch-agent.ps_count.processes, 'Neutron-Openvswitch-Agent Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-neutron-openvswitch-agent.ps_count.threads, 'Neutron-Openvswitch-Agent Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-neutron-ns-metadata-proxy.ps_count.processes, 'Neutron-NS-Metadata-Proxy Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-neutron-ns-metadata-proxy.ps_count.threads, 'Neutron-NS-Metadata-Proxy Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-neutron-metadata-agent.ps_count.processes, 'Neutron-Metadata-Agent Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-neutron-metadata-agent.ps_count.threads, 'Neutron-Metadata-Agent Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-neutron-l3-agent.ps_count.processes, 'Neutron-L3-Agent Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-neutron-l3-agent.ps_count.threads, 'Neutron-L3-Agent Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-neutron-dhcp-agent.ps_count.processes, 'Neutron-DHCP-Agent Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-neutron-dhcp-agent.ps_count.threads, 'Neutron-DHCP-Agent Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Neutron",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 9,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-keystone-all.ps_count.processes, 'Keystone-all Processes')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-keystone-all.ps_count.threads, 'Keystone-all Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Keystone",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 11,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-cinder-api.ps_count.processes, 'Cinder-Api Processes')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-cinder-api.ps_count.threads, 'Cinder-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-cinder-scheduler.ps_count.processes, 'Cinder-Scheduler Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-cinder-scheduler.ps_count.threads, 'Cinder-Scheduler Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-cinder-volume.ps_count.processes, 'Cinder-Volume Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-cinder-volume.ps_count.threads, 'Cinder-Volume Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Cinder",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 14,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-heat-api.ps_count.processes, 'Heat-Api Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-heat-api.ps_count.threads, 'Heat-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-heat-api-cfn.ps_count.processes, 'Heat-Api-Cfn Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-heat-api-cfn.ps_count.threads, 'Heat-Api-Cfn Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-heat-api-cloudwatch.ps_count.processes, 'Heat-Api-Cloudwatch Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-heat-api-cloudwatch.ps_count.threads, 'Heat-Api-Cloudwatch Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-heat-engine.ps_count.processes, 'Heat-Engine Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-heat-engine.ps_count.threads, 'Heat-Engine Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Heat",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 13,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-glance-api.ps_count.processes, 'Glance-Api Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-glance-api.ps_count.threads, 'Glance-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-glance-registry.ps_count.processes, 'Glance-Registry Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-glance-registry.ps_count.threads, 'Glance-Registry Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Glance",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 15,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-swift-account-auditor.ps_count.processes, 'Swift-Account-Auditor Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-swift-account-auditor.ps_count.threads, 'Swift-Account-Auditor Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-swift-account-reaper.ps_count.processes, 'Swift-Account-Reaper Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-swift-account-reaper.ps_count.threads, 'Swift-Account-Reaper Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-swift-account-replicator.ps_count.processes, 'Swift-Account-Replicator Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-swift-account-replicator.ps_count.threads, 'Swift-Account-Replicator Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-swift-account-server.ps_count.processes, 'Swift-Account-Server Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-swift-account-server.ps_count.threads, 'Swift-Account-Server Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-swift-container-auditor.ps_count.processes, 'Swift-Container-Auditor Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-swift-container-auditor.ps_count.threads, 'Swift-Container-Auditor Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-swift-container-replicator.ps_count.processes, 'Swift-Container-Replicator Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-swift-container-replicator.ps_count.threads, 'Swift-Container-Replicator Threads')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-swift-container-server.ps_count.processes, 'Swift-Container-Server Processes')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-swift-container-server.ps_count.threads, 'Swift-Container-Server Threads')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-swift-container-updater.ps_count.processes, 'Swift-Container-Updater Processes')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-swift-container-updater.ps_count.threads, 'Swift-Container-Updater Threads')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-swift-object-auditor.ps_count.processes, 'Swift-Object-Auditor Processes')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-swift-object-auditor.ps_count.threads, 'Swift-Object-Auditor Threads')"
+              },
+              {
+                "refId": "S",
+                "target": "alias($Cloud.$Node.processes-swift-object-replicator.ps_count.processes, 'Swift-Object-Replicator Processes')"
+              },
+              {
+                "refId": "T",
+                "target": "alias($Cloud.$Node.processes-swift-object-replicator.ps_count.threads, 'Swift-Object-Replicator Threads')"
+              },
+              {
+                "refId": "U",
+                "target": "alias($Cloud.$Node.processes-swift-object-server.ps_count.processes, 'Swift-Object-Server Processes')"
+              },
+              {
+                "refId": "V",
+                "target": "alias($Cloud.$Node.processes-swift-object-server.ps_count.threads, 'Swift-Object-Server Threads')"
+              },
+              {
+                "refId": "W",
+                "target": "alias($Cloud.$Node.processes-swift-object-updater.ps_count.processes, 'Swift-Object-Updater Processes')"
+              },
+              {
+                "refId": "X",
+                "target": "alias($Cloud.$Node.processes-swift-object-updater.ps_count.threads, 'Swift-Object-Updater Threads')"
+              },
+              {
+                "refId": "Y",
+                "target": "alias($Cloud.$Node.processes-swift-proxy-server.ps_count.processes, 'Swift-Proxy-Server Processes')"
+              },
+              {
+                "refId": "Z",
+                "target": "alias($Cloud.$Node.processes-swift-proxy-server.ps_count.threads, 'Swift-Proxy-Server Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Swift",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 18,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceilometer-api.ps_count.processes, 'Ceilometer-Api Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceilometer-api.ps_count.threads, 'Ceilometer-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-central.ps_count.processes, 'Ceilometer-Agent-Central Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-central.ps_count.threads, 'Ceilometer-Agent-Central Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-notification.ps_count.processes, 'Ceilometer-Agent-Notification Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-notification.ps_count.threads, 'Ceilometer-Agent-Notification Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-evaluator.ps_count.processes, 'Ceilometer-Alarm-Evaluator Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-evaluator.ps_count.threads, 'Ceilometer-Alarm-Evaluator Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-notifier.ps_count.processes, 'Ceilometer-Alarm-Notifier Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-notifier.ps_count.threads, 'Ceilometer-Alarm-Notifier Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-ceilometer-collector.ps_count.processes, 'Ceilometer-Collector Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-ceilometer-collector.ps_count.threads, 'Ceilometer-Collector Threads')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-compute.ps_count.processes, 'Ceilometer-Agent-Compute Processes')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-compute.ps_count.threads, 'Ceilometer-Agent-Compute Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceilometer",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 46,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-collectd.ps_count.processes, 'Collectd Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-collectd.ps_count.threads, 'Collectd Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Collectd",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 47,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ironic-api.ps_count.processes, 'Ironic-Api Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ironic-api.ps_count.threads, 'Ironic-Api Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ironic-conductor.ps_count.processes, 'Ironic-Conductor Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ironic-conductor.ps_count.threads, 'Ironic-Conductor Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.processes, 'Dnsmasq - Ironic')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.threads, 'DnsMasq - Ironic')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ironic",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 48,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-corosync.ps_count.processes, 'Corosync Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-corosync.ps_count.threads, 'Corosync Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-pacemakerd.ps_count.processes, 'Pacemakerd Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-pacemakerd.ps_count.threads, 'Pacemaker Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-cib.ps_count.processes, 'Cib Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-cib.ps_count.threads, 'Cib Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-stonithd.ps_count.processes, 'Stonithd Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-stonithd.ps_count.threads, 'Stonithd Threads')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-attrd.ps_count.processes, 'Attrd Processes')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-attrd.ps_count.threads, 'Attrd Threads')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-pengine.ps_count.processes, 'Pengine Processes')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-pengine.ps_count.threads, 'Pengine Threads')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-crmd.ps_count.processes, 'Crmd Processes')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-crmd.ps_count.threads, 'Crmd Threads')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-lrmd.ps_count.processes, 'Lrmd Processes')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-lrmd.ps_count.threads, 'Lrmd Threads')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-pcsd.ps_count.processes, 'Pcsd Processes')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-pcsd.ps_count.threads, 'Pcsd Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Corosync / Pacemaker",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "OSP Process/Thread Counts"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 49,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-dnsmasq.ps_rss, 'Dnsmasq RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-dnsmasq.ps_vm, 'Dnsmasq Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-haproxy.ps_rss, 'Haproxy RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-haproxy.ps_vm, 'Haproxy Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-httpd.ps_rss, 'Httpd RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-httpd.ps_vm, 'Httpd Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-memcached.ps_rss, 'Memcached RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-memcached.ps_vm, 'Memcached Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-mongod.ps_rss, 'Mongo RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-mongod.ps_vm, 'Mongo Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-mysqld.ps_rss, 'Mysqld RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-mysqld.ps_vm, 'Mysqld Virtual')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-ovs-vswitchd.ps_rss, 'Ovs-vswitchd RSS')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-ovs-vswitchd.ps_vm, 'Ovs-vswitchd Virtual')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-ovsdb-server.ps_rss, 'Ovsdb-Server RSS')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-ovsdb-server.ps_vm, 'Ovsdb-Server Virtual')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-qemu-kvm.ps_rss, 'Qemu-kvm RSS')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-qemu-kvm.ps_vm, 'Qemu-kvm Virtual')"
+              },
+              {
+                "refId": "S",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_rss, 'Rabbitmq RSS')"
+              },
+              {
+                "refId": "T",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_vm, 'Rabbitmq Virtual')"
+              },
+              {
+                "refId": "U",
+                "target": "alias($Cloud.$Node.processes-redis-server.ps_rss, 'Redis-Server RSS')"
+              },
+              {
+                "refId": "V",
+                "target": "alias($Cloud.$Node.processes-redis-server.ps_vm, 'Redis-Server Virtual')"
+              },
+              {
+                "refId": "W",
+                "target": "alias($Cloud.$Node.processes-tuskar-api.ps_rss, 'Tuskar-Api RSS')"
+              },
+              {
+                "refId": "X",
+                "target": "alias($Cloud.$Node.processes-tuskar-api.ps_vm, 'Tuskar-Api Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Everything Else",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 50,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-nova-api.ps_rss, 'Nova-Api RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-nova-api.ps_vm, 'Nova-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-nova-cert.ps_rss, 'Nova-Cert RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-nova-cert.ps_vm, 'Nova-Cert Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-nova-conductor.ps_rss, 'Nova-Conductor RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-nova-conductor.ps_vm, 'Nova-Conductor Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-nova-scheduler.ps_rss, 'Nova-Scheduler RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-nova-scheduler.ps_vm, 'Nova-Scheduler Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-nova-compute.ps_rss, 'Nova-Compute RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-nova-compute.ps_vm, 'Nova-Compute Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-nova-consoleauth.ps_rss, 'Nova-Consoleauth RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-nova-consoleauth.ps_vm, 'Nova-Consoleauth Virtual')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-nova-novncproxy.ps_rss, 'Nova-Novncproxy RSS')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-nova-novncproxy.ps_vm, 'Nova-Novncproxy Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Nova",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 51,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-neutron-server.ps_rss, 'Neutron-Server RSS')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-neutron-server.ps_vm, 'Neutron-Server Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-neutron-openvswitch-agent.ps_rss, 'Neutron-Openvswitch-Agent RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-neutron-openvswitch-agent.ps_vm, 'Neutron-Openvswitch-Agent Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-neutron-ns-metadata-proxy.ps_rss, 'Neutron-NS-Metadata-Proxy RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-neutron-ns-metadata-proxy.ps_vm, 'Neutron-NS-Metadata-Proxy Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-neutron-metadata-agent.ps_rss, 'Neutron-Metadata-Agent RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-neutron-metadata-agent.ps_vm, 'Neutron-Metadata-Agent Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-neutron-l3-agent.ps_rss, 'Neutron-L3-Agent RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-neutron-l3-agent.ps_vm, 'Neutron-L3-Agent Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-neutron-dhcp-agent.ps_rss, 'Neutron-DHCP-Agent RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-neutron-dhcp-agent.ps_vm, 'Neutron-DHCP-Agent Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Neutron",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 52,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": false,
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-keystone-all.ps_rss, 'Keystone-all RSS')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-keystone-all.ps_vm, 'Keystone-all Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Keystone",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 53,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-cinder-api.ps_rss, 'Cinder-Api RSS')"
+              },
+              {
+                "hide": false,
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-cinder-api.ps_vm, 'Cinder-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-cinder-scheduler.ps_rss, 'Cinder-Scheduler RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-cinder-scheduler.ps_vm, 'Cinder-Scheduler Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-cinder-volume.ps_rss, 'Cinder-Volume RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-cinder-volume.ps_vm, 'Cinder-Volume Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Cinder",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 54,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-heat-api.ps_rss, 'Heat-Api RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-heat-api.ps_vm, 'Heat-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-heat-api-cfn.ps_rss, 'Heat-Api-Cfn RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-heat-api-cfn.ps_vm, 'Heat-Api-Cfn Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-heat-api-cloudwatch.ps_rss, 'Heat-Api-Cloudwatch RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-heat-api-cloudwatch.ps_vm, 'Heat-Api-Cloudwatch Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-heat-engine.ps_rss, 'Heat-Engine RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-heat-engine.ps_vm, 'Heat-Engine Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Heat",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 55,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-glance-api.ps_rss, 'Glance-Api RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-glance-api.ps_vm, 'Glance-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-glance-registry.ps_rss, 'Glance-Registry RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-glance-registry.ps_vm, 'Glance-Registry Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Glance",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 56,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-swift-account-auditor.ps_rss, 'Swift-Account-Auditor RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-swift-account-auditor.ps_vm, 'Swift-Account-Auditor Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-swift-account-reaper.ps_rss, 'Swift-Account-Reaper RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-swift-account-reaper.ps_vm, 'Swift-Account-Reaper Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-swift-account-replicator.ps_rss, 'Swift-Account-Replicator RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-swift-account-replicator.ps_vm, 'Swift-Account-Replicator Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-swift-account-server.ps_rss, 'Swift-Account-Server RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-swift-account-server.ps_vm, 'Swift-Account-Server Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-swift-container-auditor.ps_rss, 'Swift-Container-Auditor RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-swift-container-auditor.ps_vm, 'Swift-Container-Auditor Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-swift-container-replicator.ps_rss, 'Swift-Container-Replicator RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-swift-container-replicator.ps_vm, 'Swift-Container-Replicator Virtual')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-swift-container-server.ps_rss, 'Swift-Container-Server RSS')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-swift-container-server.ps_vm, 'Swift-Container-Server Virtual')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-swift-container-updater.ps_rss, 'Swift-Container-Updater RSS')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-swift-container-updater.ps_vm, 'Swift-Container-Updater Virtual')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-swift-object-auditor.ps_rss, 'Swift-Object-Auditor RSS')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-swift-object-auditor.ps_vm, 'Swift-Object-Auditor Virtual')"
+              },
+              {
+                "refId": "S",
+                "target": "alias($Cloud.$Node.processes-swift-object-replicator.ps_rss, 'Swift-Object-Replicator RSS')"
+              },
+              {
+                "refId": "T",
+                "target": "alias($Cloud.$Node.processes-swift-object-replicator.ps_vm, 'Swift-Object-Replicator Virtual')"
+              },
+              {
+                "refId": "U",
+                "target": "alias($Cloud.$Node.processes-swift-object-server.ps_rss, 'Swift-Object-Server RSS')"
+              },
+              {
+                "refId": "V",
+                "target": "alias($Cloud.$Node.processes-swift-object-server.ps_vm, 'Swift-Object-Server Virtual')"
+              },
+              {
+                "refId": "W",
+                "target": "alias($Cloud.$Node.processes-swift-object-updater.ps_rss, 'Swift-Object-Updater RSS')"
+              },
+              {
+                "refId": "X",
+                "target": "alias($Cloud.$Node.processes-swift-object-updater.ps_vm, 'Swift-Object-Updater Virtual')"
+              },
+              {
+                "refId": "Y",
+                "target": "alias($Cloud.$Node.processes-swift-proxy-server.ps_rss, 'Swift-Proxy-Server RSS')"
+              },
+              {
+                "refId": "Z",
+                "target": "alias($Cloud.$Node.processes-swift-proxy-server.ps_vm, 'Swift-Proxy-Server Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Swift",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 57,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceilometer-api.ps_rss, 'Ceilometer-Api RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceilometer-api.ps_vm, 'Ceilometer-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-central.ps_rss, 'Ceilometer-Agent-Central RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-central.ps_vm, 'Ceilometer-Agent-Central Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-notification.ps_rss, 'Ceilometer-Agent-Notification RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-notification.ps_vm, 'Ceilometer-Agent-Notification Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-evaluator.ps_rss, 'Ceilometer-Alarm-Evaluator RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-evaluator.ps_vm, 'Ceilometer-Alarm-Evaluator Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-notifier.ps_rss, 'Ceilometer-Alarm-Notifier RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-ceilometer-alarm-notifier.ps_vm, 'Ceilometer-Alarm-Notifier Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-ceilometer-collector.ps_rss, 'Ceilometer-Collector RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-ceilometer-collector.ps_vm, 'Ceilometer-Collector Virtual')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-compute.ps_rss, 'Ceilometer-Agent-Compute RSS')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-ceilometer-agent-compute.ps_vm, 'Ceilometer-Agent-Compute Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceilometer",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 58,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-collectd.ps_rss, 'Collectd RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-collectd.ps_vm, 'Collectd Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Collectd",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 59,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ironic-api.ps_rss, 'Ironic-Api RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ironic-api.ps_vm, 'Ironic-Api Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ironic-conductor.ps_rss, 'Ironic-Conductor RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ironic-conductor.ps_vm, 'Ironic-Conductor Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_rss, 'Dnsmasq - Ironic')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_vm, 'DnsMasq - Ironic')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ironic",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 60,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-corosync.ps_rss, 'Corosync RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-corosync.ps_vm, 'Corosync Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-pacemakerd.ps_rss, 'Pacemakerd RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-pacemakerd.ps_vm, 'Pacemaker Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-cib.ps_rss, 'Cib RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-cib.ps_vm, 'Cib Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-stonithd.ps_rss, 'Stonithd RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-stonithd.ps_vm, 'Stonithd Virtual')"
+              },
+              {
+                "refId": "I",
+                "target": "alias($Cloud.$Node.processes-attrd.ps_rss, 'Attrd RSS')"
+              },
+              {
+                "refId": "J",
+                "target": "alias($Cloud.$Node.processes-attrd.ps_vm, 'Attrd Virtual')"
+              },
+              {
+                "refId": "K",
+                "target": "alias($Cloud.$Node.processes-pengine.ps_rss, 'Pengine RSS')"
+              },
+              {
+                "refId": "L",
+                "target": "alias($Cloud.$Node.processes-pengine.ps_vm, 'Pengine Virtual')"
+              },
+              {
+                "refId": "M",
+                "target": "alias($Cloud.$Node.processes-crmd.ps_rss, 'Crmd RSS')"
+              },
+              {
+                "refId": "N",
+                "target": "alias($Cloud.$Node.processes-crmd.ps_vm, 'Crmd Virtual')"
+              },
+              {
+                "refId": "O",
+                "target": "alias($Cloud.$Node.processes-lrmd.ps_rss, 'Lrmd RSS')"
+              },
+              {
+                "refId": "P",
+                "target": "alias($Cloud.$Node.processes-lrmd.ps_vm, 'Lrmd Virtual')"
+              },
+              {
+                "refId": "Q",
+                "target": "alias($Cloud.$Node.processes-pcsd.ps_rss, 'Pcsd RSS')"
+              },
+              {
+                "refId": "R",
+                "target": "alias($Cloud.$Node.processes-pcsd.ps_vm, 'Pcsd Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Corosync / Pacemaker",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "OSP Process Memory"
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "westfordperf",
+            "value": "westfordperf",
+            "tags": []
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud",
+          "options": [],
+          "query": "*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "overcloud-controller-0_localdomain",
+            "value": "overcloud-controller-0_localdomain"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "interface",
+            "value": "interface"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Interface",
+          "options": [],
+          "query": "$Cloud.$Node.interface-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "disk",
+            "value": "disk"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Disk",
+          "options": [],
+          "query": "$Cloud.$Node.disk-*",
+          "refresh": true,
+          "type": "query"
+        }
+      ]
+    },
+    "annotations": {
+      "list": []
+    },
+    "schemaVersion": 8,
+    "version": 16,
+    "links": [],
+    "overwrite": true
+  }
+}

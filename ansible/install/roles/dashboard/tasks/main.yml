@@ -1,0 +1,83 @@
+---
+#
+# Generate Dashboards for all Hosts and upload them into Grafana
+#
+
+- name: Generate All Nodes CPU Dashboard
+  template:
+    src: all_cpu_graphs.json.j2
+    dest: /home/stack/all_cpu_graphs.json
+    owner: stack
+    group: stack
+    mode: 0644
+  with_items:
+    - prefix: "{{ graphite_prefix }}"
+
+- name: Generate All Nodes Memory Dashboard
+  template:
+    src: all_memory_graphs.json.j2
+    dest: /home/stack/all_memory_graphs.json
+    owner: stack
+    group: stack
+    mode: 0644
+  with_items:
+    - prefix: "{{ graphite_prefix }}"
+
+- name: Generate All Nodes Disk Dashboard
+  template:
+    src: all_disk_graphs.json.j2
+    dest: /home/stack/all_disk_graphs.json
+    owner: stack
+    group: stack
+    mode: 0644
+  with_items:
+    - prefix: "{{ graphite_prefix }}"
+
+- name: Generate All Nodes Network Dashboard
+  template:
+    src: all_network_graphs.json.j2
+    dest: /home/stack/all_network_graphs.json
+    owner: stack
+    group: stack
+    mode: 0644
+  with_items:
+    - prefix: "{{ graphite_prefix }}"
+
+- name: Copy Static Openstack Dashboards
+  copy:
+    src: "{{ item }}"
+    dest: /home/stack/{{ item }}
+    owner: stack
+    group: stack
+    mode: 0744
+  with_items:
+    - openstack_general_system_performance.json
+
+- name: Remove Existing Dashboards
+  command: "curl -X DELETE -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' http://{{ graphite_host }}:3000/api/dashboards/db/{{ item }}"
+  when: overwrite_existing
+  with_items:
+    - "{{ graphite_prefix }}-all-nodes-cpu"
+    - "{{ graphite_prefix }}-all-nodes-memory"
+    - "{{ graphite_prefix }}-all-nodes-disk"
+    - "{{ graphite_prefix }}-all-nodes-network"
+    - openstack-general-system-performance
+
+
+- name: Upload Dashboards to Grafana
+  command: "curl -X POST -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' -d @{{ item }} http://{{ graphite_host }}:3000/api/dashboards/db"
+  with_items:
+    - all_cpu_graphs.json
+    - all_memory_graphs.json
+    - all_disk_graphs.json
+    - all_network_graphs.json
+    - openstack_general_system_performance.json
+
+- name: Remove leftover json file(s)
+  file: path={{ item }} state=absent
+  with_items:
+    - /home/stack/all_cpu_graphs.json
+    - /home/stack/all_memory_graphs.json
+    - /home/stack/all_disk_graphs.json
+    - /home/stack/all_network_graphs.json
+    - /home/stack/openstack_general_system_performance.json
