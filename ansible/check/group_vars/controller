@@ -20,6 +20,9 @@ checks :
     bz1266253 :
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1266253"
         name: "increase mariadb max_connection default value"
+    bz1293712 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1293712"
+        name: "/etc/udev/rules.d/99-dhcp-all-interfaces.rules causes a slow and miserable degradation until things fail"
     nova_vif_timeout_result:
         url: "none"
         name: "Nova VIF timeout should be >= 300"
