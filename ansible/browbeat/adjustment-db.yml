@@ -1,0 +1,13 @@
+---
+#
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  gather_facts: false
+  vars:
+    ansible_become: true
+    greenlet_pool_size: 100
+    max_overflow: 100
+  roles:
+  - nova-db

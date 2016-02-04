@@ -1,0 +1,35 @@
+---
+#
+# Nova handlers for browbeat adjustment
+#
+
+- name: unmanage nova services
+  command: pcs resource unmanage {{ item }}
+  with_items:
+    - openstack-nova-api
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+  ignore_errors: true
+
+- name: restart nova services
+  service: name={{ item }} state=restarted
+  with_items:
+    - openstack-nova-api
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+
+- name: manage nova services
+  command: pcs resource manage {{ item }}
+  with_items:
+    - openstack-nova-api
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+  ignore_errors: true
+
+- name: cleanup nova services
+  command: pcs resource cleanup {{ item }}
+  with_items:
+    - openstack-nova-api
+    - openstack-nova-scheduler
+    - openstack-nova-conductor
+  ignore_errors: true
