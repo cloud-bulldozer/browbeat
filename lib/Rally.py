@@ -112,7 +112,11 @@ class Rally:
                                     # Stop connmon at end of rally task
                                     if self.config['browbeat']['connmon']:
                                         self.connmon.stop_connmon()
-                                        self.connmon.move_connmon_results(result_dir, test_name)
+                                        try :
+                                            self.connmon.move_connmon_results(result_dir, test_name)
+                                        except:
+                                            self.logger.error("Connmon Result data missing, Connmon never started")
+                                            return False
                                         self.connmon.connmon_graphs(result_dir, test_name)
 
                                     # Find task id (if task succeeded in running)
