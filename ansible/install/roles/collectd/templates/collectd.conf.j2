@@ -1,0 +1,173 @@
+# Installed by Browbeat Ansible Installer
+
+# Interval default of 10s
+Interval 10.0
+
+# Allow collectd to log
+LoadPlugin syslog
+
+# Loaded Plugins:
+LoadPlugin write_graphite
+LoadPlugin cpu
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin exec
+LoadPlugin interface
+LoadPlugin load
+LoadPlugin match_regex
+LoadPlugin memory
+LoadPlugin numa
+LoadPlugin processes
+LoadPlugin swap
+LoadPlugin tail
+#LoadPlugin tcpconns
+LoadPlugin uptime
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"
+
+PreCacheChain "PreCache"
+<Chain "PreCache">
+  <Rule "ignore_tap">
+    <Match "regex">
+      Plugin "^interface$"
+      PluginInstance "^tap*"
+    </Match>
+    Target "stop"
+  </Rule>
+  Target "return"
+</Chain>
+
+# Graphite Host Configuration
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{ item.ip_address }}"
+    Port "2003"
+    Prefix "{{ item.prefix }}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>
+
+# Collectd to graphite w/ averageseries() in grafana shows % cpu without setting ValuesPercentage
+#<Plugin cpu>
+#  ReportByCpu true
+#  ReportByState true
+#  ValuesPercentage true
+#</Plugin>
+
+<Plugin df>
+  ValuesPercentage true
+</Plugin>
+
+<Plugin disk>
+  Disk "/^[hs]d[a-z]+[0-9]?$/"
+  IgnoreSelected false
+</Plugin>
+
+<Plugin exec>
+  Exec nobody "/usr/local/bin/collectd-redis.sh"
+</Plugin>
+
+<Plugin processes>
+  # Ceilometer
+  ProcessMatch "ceilometer-agent-central" "python.+ceilometer-agent-central"
+  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"
+  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"
+  ProcessMatch "ceilometer-alarm-evaluator" "python.+ceilometer-alarm-evaluator"
+  ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"
+  ProcessMatch "ceilometer-api" "python.+ceilometer-api"
+  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"
+
+  # Cinder
+  ProcessMatch "cinder-api" "python.+cinder-api"
+  ProcessMatch "cinder-scheduler" "python.+cinder-scheduler"
+  ProcessMatch "cinder-volume" "python.+cinder-volume"
+
+  # Glance
+  ProcessMatch "glance-api" "python.+glance-api"
+  ProcessMatch "glance-registry" "python.+glance-registry"
+
+  # Heat
+  ProcessMatch "heat-api" "python.+heat-api"
+  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"
+  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"
+  ProcessMatch "heat-engine" "python.+heat-engine"
+
+  # Ironic
+  ProcessMatch "ironic-api" "python.+ironic-api"
+  ProcessMatch "ironic-conductor" "python.+ironic-conductor"
+
+  # Keystone
+  ProcessMatch "keystone-all" "python.+keystone-all"
+
+  # Neutron
+  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"
+  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"
+  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"
+  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"
+  ProcessMatch "neutron-server" "python.+neutron-server"
+
+  # Nova Processes
+  ProcessMatch "nova-api" "python.+nova-api"
+  ProcessMatch "nova-cert" "python.+nova-cert"
+  ProcessMatch "nova-compute" "python.+nova-compute"
+  ProcessMatch "nova-conductor" "python.+nova-conductor"
+  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"
+  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"
+  ProcessMatch "nova-scheduler" "python.+nova-scheduler"
+
+  # Swift
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"
+  ProcessMatch "swift-account-server" "python.+swift-account-server"
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"
+  ProcessMatch "swift-container-server" "python.+swift-container-server"
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"
+  ProcessMatch "swift-object-server" "python.+swift-object-server"
+  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"
+
+  # Pacemaker
+  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"
+  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"
+  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"
+  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"
+  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"
+  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"
+  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"
+  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"
+
+  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  Process "corosync"
+  ProcessMatch "dnsmasq" "^dnsmasq.+"
+  ProcessMatch "dnsmasq-ironic" "/sbin/dnsmasq.+/etc/ironic-discoverd/dnsmasq.conf"
+  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"
+  Process "httpd"
+  Process "memcached"
+  Process "mongod"
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"
+  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"
+  Process "redis-server"
+  ProcessMatch "tuskar-api" "python.+tuskar-api"
+</Plugin>
+
+<Plugin swap>
+  ReportBytes true
+  ValuesPercentage true
+</Plugin>
+
+#<Plugin tcpconns>
+#  ListeningPorts true
+#</Plugin>

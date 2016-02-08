@@ -9,13 +9,16 @@
 - name: Install collectd agent
   yum: name=collectd state=present
 
-- name: Copy collectd.conf file
-  copy:
-    src=collectd.conf
+- name: Configure collectd.conf
+  template:
+    src=collectd.conf.j2
     dest=/etc/collectd.conf
     owner=root
     group=root
     mode=0644
+  with_items:
+    - ip_address: "{{ graphite_host }}"
+      prefix: "{{ graphite_prefix }}"
 
 - name: Copy collectd config files
   copy:
@@ -25,12 +28,8 @@
     group: root
     mode: 0644
   with_items:
-    - disk.conf
     - filter.conf
-    - processes.conf
-    - redis.conf
     - tail.conf
-    - tcpconns.conf
 
 - name: Copy collectd-redis.sh
   copy:
@@ -40,24 +39,12 @@
     group=root
     mode=0755
 
-- name: Configure collectd graphite.conf
-  template:
-    src=graphite.conf.j2
-    dest=/etc/collectd.d/graphite.conf
-    owner=root
-    group=root
-    mode=0644
-  with_items:
-    - ip_address: "{{ graphite_host }}"
-      prefix: "{{ graphite_prefix }}"
-
 - name: Setup collectd service
   service: name=collectd state=restarted enabled=yes
 
 #
 # Configure selinux bits
 #
-
 - name: Check for collectd permissive
   shell: semodule -l | grep -q permissive_collectd_t
   register: collectd_permissive
@@ -88,4 +75,3 @@
 - name: Set custom policy for collectd
   shell: semodule -i /root/custom-collectd.pp
   when: collectd_custom.rc != 0
-
