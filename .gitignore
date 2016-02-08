@@ -6,3 +6,5 @@ ansible/pbench-host-file
 
 # Prevent Results from sneaking into the git repo
 results/
+
+log/*
