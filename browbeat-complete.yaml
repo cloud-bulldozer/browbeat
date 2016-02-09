@@ -73,7 +73,7 @@ rally:
           enabled: true
           file: rally/keystone/keystone-create-list-user-cc.yml
     nova:
-      enabled: false
+      enabled: true
       concurrency:
         - 16
         - 32
