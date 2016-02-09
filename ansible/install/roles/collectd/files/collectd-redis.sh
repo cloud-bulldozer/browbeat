@@ -8,13 +8,13 @@ while true
 do
 
 info=$((echo info ; sleep 2) |nc -w 1 $HOSTNAME $PORT 2>&1)
-connected_clients=$(echo "$info" | egrep ^connected_clients| awk -F: '{ print $2 }')
-connected_slaves=$(echo "$info" | egrep ^connected_slaves| awk -F: '{ print $2 }')
-uptime=$(echo "$info" | egrep ^uptime_in_seconds| awk -F: '{ print $2 }')
-used_memory=$(echo "$info" | egrep ^used_memory:| awk -F: '{ print $2 }')
-changes_since_last_save=$(echo "$info" | egrep ^rdb_changes_since_last_save| awk -F: '{ print $2 }')
-total_commands_processed=$(echo "$info" | egrep ^total_commands_processed| awk -F: '{ print $2 }')
-keys=$(echo "$info" | egrep ^db0:keys| awk -F= '{ print $2 }' | awk -F, '{ print $1 }')
+connected_clients=$(echo "$info" | egrep ^connected_clients| awk -F: '{ print $2 }' | sed 's///g')
+connected_slaves=$(echo "$info" | egrep ^connected_slaves| awk -F: '{ print $2 }' | sed 's///g')
+uptime=$(echo "$info" | egrep ^uptime_in_seconds| awk -F: '{ print $2 }' | sed 's///g')
+used_memory=$(echo "$info" | egrep ^used_memory:| awk -F: '{ print $2 }' | sed 's///g')
+changes_since_last_save=$(echo "$info" | egrep ^rdb_changes_since_last_save| awk -F: '{ print $2 }' | sed 's///g')
+total_commands_processed=$(echo "$info" | egrep ^total_commands_processed| awk -F: '{ print $2 }' | sed 's///g')
+keys=$(echo "$info" | egrep ^db0:keys| awk -F= '{ print $2 }' | awk -F, '{ print $1 }' | sed 's///g')
 
 echo "PUTVAL $HOSTNAME/redis-$PORT/memcached_connections-clients interval=$INTERVAL N:$connected_clients"
 echo "PUTVAL $HOSTNAME/redis-$PORT/memcached_connections-slaves interval=$INTERVAL N:$connected_slaves"
@@ -26,3 +26,4 @@ echo "PUTVAL $HOSTNAME/redis-$PORT/memcached_items-db0 interval=$INTERVAL N:$key
 
 sleep "$INTERVAL"
 done
+
