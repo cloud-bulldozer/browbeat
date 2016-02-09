@@ -1,6 +1,7 @@
 from Connmon import Connmon
 from Pbench import Pbench
 from Tools import Tools
+import os
 import datetime
 import glob
 import logging
@@ -38,6 +39,16 @@ class Rally:
             cmd = "rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
                 task_args, test_name)
             self.tools.run_cmd(cmd)
+
+    def workload_logger(self,result_dir) :
+        base = result_dir.split('/')
+        if not os.path.isfile("{}/{}/browbeat-rally-run.log".format(base[0],base[1])) :
+            file = logging.FileHandler("{}/{}/browbeat-rally-run.log".format(base[0],base[1]))
+            file.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
+            file.setFormatter(formatter)
+            self.logger.addHandler(file)
+        return None
 
     def get_task_id(self, test_name):
         cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(test_name)
@@ -82,6 +93,7 @@ class Rally:
                                 self.config['browbeat']['results'], time_stamp, benchmark,
                                 scenario)
                             self.logger.debug("Created result directory: {}".format(result_dir))
+                            self.workload_logger(result_dir)
 
                             # Override concurrency/times
                             if 'concurrency' in scenario_args:

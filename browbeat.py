@@ -11,10 +11,15 @@ import ConfigParser, os
 
 # Setting up our logger
 _logger = logging.getLogger('browbeat')
-_logger.setLevel(logging.INFO)
+_logger.setLevel(logging.DEBUG)
 _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
+_dbg_file = logging.FileHandler('log/debug.log')
+_dbg_file.setLevel(logging.DEBUG)
+_dbg_file.setFormatter(_formatter)
 _ch = logging.StreamHandler()
+_ch.setLevel(logging.INFO)
 _ch.setFormatter(_formatter)
+_logger.addHandler(_dbg_file)
 _logger.addHandler(_ch)
 
 # import ansible
