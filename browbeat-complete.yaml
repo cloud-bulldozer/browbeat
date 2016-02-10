@@ -3,6 +3,7 @@ browbeat:
   results : results/
   sudo: true
   debug: false
+  rally_venv: /home/stack/browbeat-venv/bin/activate
   connmon: true
   rerun: 3
   pbench:
