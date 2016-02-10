@@ -9,6 +9,7 @@ LoadPlugin syslog
 # Loaded Plugins:
 LoadPlugin write_graphite
 LoadPlugin cpu
+LoadPlugin conntrack
 LoadPlugin df
 LoadPlugin disk
 LoadPlugin exec
@@ -65,7 +66,7 @@ PreCacheChain "PreCache"
 </Plugin>
 
 <Plugin disk>
-  Disk "/^[hs]d[a-z]+[0-9]?$/"
+  Disk "/^[hsv]d[a-z]+[0-9]?$/"
   IgnoreSelected false
 </Plugin>
 
