@@ -14,6 +14,9 @@ class Rally:
         self.config = config
         self.tools = Tools(self.config)
         self.connmon = Connmon(self.config)
+        self.error_count = 0
+        self.test_count = 0
+        self.scenario_count = 0
         if hosts is not None:
             self.pbench = Pbench(self.config, hosts)
 
@@ -50,9 +53,23 @@ class Rally:
             self.logger.addHandler(file)
         return None
 
+    def get_test_count(self):
+        return self.test_count
+
+    def get_error_count(self):
+        return self.error_count
+
+    def get_scenario_count(self):
+        return self.scenario_count
+
     def get_task_id(self, test_name):
         cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(test_name)
         return self.tools.run_cmd(cmd)
+
+    def _get_details(self):
+        self.logger.info("Current number of scenarios executed:{}".format(self.get_scenario_count()))
+        self.logger.info("Current number of test(s) executed:{}".format(self.get_test_count()))
+        self.logger.info("Current number of test failures:{}".format(self.get_error_count()))
 
     def gen_scenario_html(self, task_id, test_name):
         self.logger.info("Generating Rally HTML for task_id : {}".format(task_id))
@@ -78,6 +95,7 @@ class Rally:
                     self.logger.debug("Default Times: {}".format(def_times))
                     for scenario in sorted(scenarios):
                         if scenarios[scenario]['enabled']:
+                            self.scenario_count +=1
                             self.logger.info("Running Scenario: {}".format(scenario))
                             self.logger.debug("Scenario File: {}".format(
                                 scenarios[scenario]['file']))
@@ -107,6 +125,7 @@ class Rally:
                             for concurrency in concurrencies:
                                 scenario_args['concurrency'] = concurrency
                                 for run in range(self.config['browbeat']['rerun']):
+                                    self.test_count+=1
                                     test_name = "{}-browbeat-{}-{}-iteration-{}".format(time_stamp,
                                         scenario, concurrency, run)
 
@@ -137,6 +156,7 @@ class Rally:
                                         self.gen_scenario_html(task_id, test_name)
                                     else:
                                         self.logger.error("Cannot find task_id")
+                                        self.error_count.bit +=1
 
                                     for data in glob.glob("./{}*".format(test_name)):
                                         shutil.move(data, result_dir)
@@ -146,6 +166,7 @@ class Rally:
                                         shutil.copytree(result_dir,
                                             "{}/results/".format(pbench_results_dir))
                                         self.pbench.move_results()
+                                    self._get_details()
 
                         else:
                             self.logger.info("Skipping {} scenario enabled: false".format(scenario))
