@@ -156,7 +156,7 @@ class Rally:
                                         self.gen_scenario_html(task_id, test_name)
                                     else:
                                         self.logger.error("Cannot find task_id")
-                                        self.error_count.bit +=1
+                                        self.error_count +=1
 
                                     for data in glob.glob("./{}*".format(test_name)):
                                         shutil.move(data, result_dir)
