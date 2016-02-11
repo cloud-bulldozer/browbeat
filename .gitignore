@@ -8,3 +8,6 @@ ansible/pbench-host-file
 results/
 
 log/*
+
+#Swap files
+*.sw[po]
