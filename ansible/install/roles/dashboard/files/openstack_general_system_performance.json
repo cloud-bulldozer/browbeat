@@ -197,7 +197,7 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "bits",
+              "bytes",
               "short"
             ]
           },
@@ -528,8 +528,7 @@
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.$Disk.disk_ops.write, 'Write')",
-                "textEditor": false
+                "target": "alias($Cloud.$Node.$Disk.disk_ops.write, 'Write')"
               }
             ],
             "timeFrom": null,
@@ -603,8 +602,7 @@
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.$Disk.disk_octets.write, 'Write')",
-                "textEditor": false
+                "target": "alias($Cloud.$Node.$Disk.disk_octets.write, 'Write')"
               }
             ],
             "timeFrom": null,
@@ -909,8 +907,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.conntrack.conntrack-max, 'Max')",
-                "textEditor": false
+                "target": "alias($Cloud.$Node.conntrack.conntrack-max, 'Max')"
               },
               {
                 "refId": "B",
@@ -1078,7 +1075,7 @@
             "renderer": "flot",
             "seriesOverrides": [],
             "span": 12,
-            "stack": false,
+            "stack": true,
             "steppedLine": false,
             "targets": [
               {
@@ -1111,7 +1108,7 @@
             "title": "$Cloud - $Node - Processes State",
             "tooltip": {
               "shared": true,
-              "value_type": "cumulative"
+              "value_type": "individual"
             },
             "type": "graph",
             "x-axis": true,

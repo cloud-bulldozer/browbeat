@@ -52,6 +52,7 @@
     mode: 0744
   with_items:
     - openstack_general_system_performance.json
+    - openstack_cloud_system_performance_comparsion.json
 
 - name: Remove Existing Dashboards
   command: "curl -X DELETE -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' http://{{ graphite_host }}:3000/api/dashboards/db/{{ item }}"
@@ -62,6 +63,7 @@
     - "{{ graphite_prefix }}-all-nodes-disk"
     - "{{ graphite_prefix }}-all-nodes-network"
     - openstack-general-system-performance
+    - openstack-cloud-system-performance-comparsion
 
 
 - name: Upload Dashboards to Grafana
@@ -72,6 +74,7 @@
     - all_disk_graphs.json
     - all_network_graphs.json
     - openstack_general_system_performance.json
+    - openstack_cloud_system_performance_comparsion.json
 
 - name: Remove leftover json file(s)
   file: path={{ item }} state=absent
@@ -81,3 +84,4 @@
     - /home/stack/all_disk_graphs.json
     - /home/stack/all_network_graphs.json
     - /home/stack/openstack_general_system_performance.json
+    - /home/stack/openstack_cloud_system_performance_comparsion.json
