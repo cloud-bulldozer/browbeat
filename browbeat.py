@@ -4,7 +4,6 @@ import yaml
 import logging
 import sys
 sys.path.append('lib/')
-from Pbench import *
 from Tools import *
 from Rally import *
 import ConfigParser, os
@@ -32,7 +31,7 @@ except ImportError :
     exit(1)
 
 # Browbeat specific options
-_install_opts=['pbench','connmon','browbeat']
+_install_opts=['connmon','browbeat']
 _config_file = 'browbeat-config.yaml'
 _config = None
 
@@ -122,15 +121,10 @@ if __name__ == '__main__':
         else:
             _config=_load_config(_config_file)
         hosts_path=_config['ansible']['hosts']
-        if _config['browbeat']['pbench']['enabled'] :
-            pbench_hosts_path=_config['browbeat']['pbench']['hosts']
         if _cli_args.hosts :
             _logger.info("Loading new hosts file : %s"% _cli_args.hosts[0])
             hosts_path=_cli_args.hosts
 
-        if _config['browbeat']['pbench']['enabled'] :
-            hosts = ConfigParser.ConfigParser(allow_no_value=True)
-            hosts.read(pbench_hosts_path)
         tools = Tools(_config)
         rally = Rally(_config,hosts)
         rally.start_workloads()

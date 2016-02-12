@@ -1,5 +1,4 @@
 from Connmon import Connmon
-from Pbench import Pbench
 from Tools import Tools
 import os
 import datetime
@@ -18,8 +17,6 @@ class Rally:
         self.error_count = 0
         self.test_count = 0
         self.scenario_count = 0
-        if hosts is not None:
-            self.pbench = Pbench(self.config, hosts)
 
     def run_scenario(self, task_file, scenario_args, result_dir, test_name):
         self.logger.debug("--------------------------------")
@@ -30,21 +27,11 @@ class Rally:
         self.logger.debug("--------------------------------")
 
         from_ts = int(time.time() * 1000)
-        if self.config['browbeat']['pbench']['enabled']:
-            task_args = str(scenario_args).replace("'", "\\\"")
-            self.pbench.register_tools()
-            self.logger.info("Starting Scenario")
-            tool = "rally"
-            rally = self.tools.find_cmd(tool)
-            cmd = ("user-benchmark --config={1} -- \"./pbench/browbeat-run-rally.sh"
-                " {0} {1} \'{2}\'\"".format(task_file, test_name, task_args))
-            self.tools.run_cmd(cmd)
-        else:
-            task_args = str(scenario_args).replace("'", "\"")
-            cmd = "source {}; \\".format(self.config['browbeat']['rally_venv'])
-            cmd +="rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
-                task_args, test_name)
-            self.tools.run_cmd(cmd)
+        task_args = str(scenario_args).replace("'", "\"")
+        cmd = "source {}; \\".format(self.config['browbeat']['rally_venv'])
+        cmd +="rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
+            task_args, test_name)
+        self.tools.run_cmd(cmd)
         to_ts = int(time.time() * 1000)
 
         if 'grafana' in self.config and self.config['grafana']['enabled']:
@@ -175,11 +162,6 @@ class Rally:
                                     for data in glob.glob("./{}*".format(test_name)):
                                         shutil.move(data, result_dir)
 
-                                    if self.config['browbeat']['pbench']['enabled']:
-                                        pbench_results_dir = self.pbench.get_results_dir(time_stamp)
-                                        shutil.copytree(result_dir,
-                                            "{}/results/".format(pbench_results_dir))
-                                        self.pbench.move_results()
                                     self._get_details()
 
                         else:

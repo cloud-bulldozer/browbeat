@@ -6,22 +6,11 @@ browbeat:
   connmon: true
   rally_venv: /home/stack/browbeat-venv/bin/activate
   rerun: 1
-  pbench:
-    enabled: false
-    hosts: ansible/pbench-host-file
-    interval: 2
-    tools:
-        - mpstat
-        - iostat
-        - sar
-        - vmstat
-        - pidstat
   num_workers: None
 ansible:
   hosts: ansible/hosts
   install:
     connmon: ansible/install/connmon.yml
-    pbench: ansible/install/pbench.yml
     browbeat: ansible/install/browbeat.yml
   check: ansible/check/site.yml
   adjust:

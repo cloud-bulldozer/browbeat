@@ -1,0 +1,9 @@
+---
+# pbench repos, you must replace the internal to the correct repo to install pbench
+pbench_internal_repo_file_url: http://pbench.example.com/repo/yum.repos.d/pbench.repo
+pbench_repo_file_url: https://copr.fedoraproject.org/coprs/ndokos/pbench/repo/epel-7/ndokos-pbench-epel-7.repo
+configtools_repo_file_url: https://copr.fedoraproject.org/coprs/ndokos/configtools/repo/epel-7/ndokos-configtools-epel-7.repo
+
+# Enterprise Linux Repo name.  Copied from undercloud to controllers for
+# installing any pbench dependencies
+repo_name: rhos-release-rhel-7.2.repo

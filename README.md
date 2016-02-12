@@ -10,14 +10,12 @@ Table of Contents
       * [From your local machine:](#from-your-local-machine)
       * [(Optional) Install shaker:](#optional-install-shaker)
       * [(Optional) Install connmon:](#optional-install-connmon)
-      * [(Optional) Install pbench:](#optional-install-pbench)
       * [Run performance checks](#run-performance-checks)
       * [Run performance stress tests through browbeat on the undercloud:](#run-performance-stress-tests-through-browbeat-on-the-undercloud)
     * [Install Browbeat directly on undercloud:](#install-browbeat-directly-on-undercloud)
       * [From your undercloud:](#from-your-undercloud)
       * [(Optional) Install shaker:](#optional-install-shaker-1)
       * [(Optional) Install connmon:](#optional-install-connmon-1)
-      * [(Optional) Install pbench:](#optional-install-pbench-1)
       * [Run performance checks](#run-performance-checks-1)
       * [Run performance stress tests through browbeat:](#run-performance-stress-tests-through-browbeat)
 
@@ -71,12 +69,6 @@ $ ansible-playbook -i hosts install/shaker.yml
 $ ansible-playbook -i hosts install/connmon.yml
 ```
 
-### (Optional) Install pbench:
-```
-$ ansible-playbook -i hosts install/connmon.yml
-```
-* pbench install is under improvement at this time and likely requires additional setup to complete install.
-
 ### Run Overcloud checks
 ```
 $ ansible-playbook -i hosts check/site.yml
@@ -120,12 +112,6 @@ $ ssh undercloud-root
 ```
 [stack@ospd ansible]$ ansible-playbook -i hosts install/connmon.yml
 ```
-
-### (Optional) Install pbench:
-```
-[stack@ospd ansible]$ ansible-playbook -i hosts install/connmon.yml
-```
-* pbench install is under improvement at this time and likely requires additional setup to complete install.
 
 ### Run Overcloud checks
 ```
