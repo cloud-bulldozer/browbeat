@@ -6,6 +6,7 @@ import datetime
 import glob
 import logging
 import shutil
+import time
 
 
 class Rally:
@@ -28,6 +29,7 @@ class Rally:
         self.logger.debug("test_name: {}".format(test_name))
         self.logger.debug("--------------------------------")
 
+        from_ts = int(time.time() * 1000)
         if self.config['browbeat']['pbench']['enabled']:
             task_args = str(scenario_args).replace("'", "\\\"")
             self.pbench.register_tools()
@@ -42,6 +44,17 @@ class Rally:
             cmd = "rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
                 task_args, test_name)
             self.tools.run_cmd(cmd)
+        to_ts = int(time.time() * 1000)
+
+        if 'grafana' in self.config and self.config['grafana']['enabled']:
+            from_ts -= - 10000
+            to_ts += 10000
+            url = self.config['grafana']['url']
+            cloud_name = self.config['grafana']['cloud_name']
+            for dashboard in self.config['grafana']['dashboards']:
+                full_url = '{}{}?from={}&to={}&var-Cloud={}'.format(url, dashboard, from_ts, to_ts,
+                    cloud_name)
+                self.logger.info('{} - Grafana URL: {}'.format(test_name, full_url))
 
     def workload_logger(self,result_dir) :
         base = result_dir.split('/')

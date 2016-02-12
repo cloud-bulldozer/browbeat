@@ -26,6 +26,12 @@ ansible:
   adjust:
     workers: ansible/browbeat/adjustment.yml
     keystone-token: browbeat/keystone_token_type.yml
+grafana:
+  enabled: true
+  cloud_name: openstack
+  dashboards:
+    - openstack-general-system-performance
+  url: http://grafana-host.example.com:3000/dashboard/db/
 rally:
   benchmarks:
     cinder:
