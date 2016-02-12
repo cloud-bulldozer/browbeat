@@ -74,7 +74,8 @@ class Rally:
 
     def gen_scenario_html(self, task_id, test_name):
         self.logger.info("Generating Rally HTML for task_id : {}".format(task_id))
-        cmd = "rally task report {} --out {}.html".format(task_id, test_name)
+        cmd = "source {}; \\".format(self.config['rally']['venv'])
+        cmd += "rally task report {} --out {}.html".format(task_id, test_name)
         return self.tools.run_cmd(cmd)
 
     # Iterate through all the Rally scenarios to run.
