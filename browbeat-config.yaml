@@ -4,6 +4,7 @@ browbeat:
   sudo: true
   debug: false
   connmon: true
+  rally_venv: /home/stack/browbeat-venv/bin/activate
   rerun: 1
   pbench:
     enabled: false
