@@ -28,7 +28,7 @@ class Rally:
 
         from_ts = int(time.time() * 1000)
         task_args = str(scenario_args).replace("'", "\"")
-        cmd = "source {}; \\".format(self.config['browbeat']['rally_venv'])
+        cmd = "source {}; \\".format(self.config['rally']['venv'])
         cmd +="rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
             task_args, test_name)
         self.tools.run_cmd(cmd)

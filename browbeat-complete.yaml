@@ -2,11 +2,8 @@
 browbeat:
   results : results/
   sudo: true
-  debug: false
-  rally_venv: /home/stack/browbeat-venv/bin/activate
   connmon: true
   rerun: 3
-  num_workers: None
 ansible:
   hosts: ansible/hosts
   install:
@@ -14,8 +11,10 @@ ansible:
     browbeat: ansible/install/browbeat.yml
   check: ansible/check/site.yml
   adjust:
-    workers: ansible/browbeat/adjustment.yml
-    keystone-token: browbeat/keystone_token_type.yml
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
 grafana:
   enabled: true
   cloud_name: openstack
@@ -23,6 +22,7 @@ grafana:
     - openstack-general-system-performance
   url: http://grafana-host.example.com:3000/dashboard/db/
 rally:
+  venv: /home/stack/browbeat-venv/bin/activate
   benchmarks:
     cinder:
       enabled: true
