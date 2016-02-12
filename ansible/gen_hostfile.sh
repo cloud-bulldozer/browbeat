@@ -1,13 +1,12 @@
 #!/bin/bash
 if [ ! $# -ge 2 ]; then
-  echo "Usage: ./gen_hostfiles.sh <ospd_ip_address> <ssh_config_file> <OPTIONAL pbench_host_file> "
+  echo "Usage: ./gen_hostfiles.sh <ospd_ip_address> <ssh_config_file> "
   echo "Generates ssh config file to use OSP undercloud host as a jumpbox and creates ansible inventory file."
   exit
 fi
 ospd_ip_address=$1
 ansible_inventory_file='hosts'
 ssh_config_file=$2
-pbench_host_file=$3
 
 # "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${ospd_ip_address}" == "localhost" ]]; then
@@ -55,7 +54,6 @@ echo "    IdentityFile ~/.ssh/id_rsa" | tee -a ${ssh_config_file}
 echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
 echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
-echo "[hosts]" > ${pbench_host_file}
 compute_hn=()
 controller_hn=()
 ceph_hn=()
@@ -72,19 +70,13 @@ for line in $nodes; do
   ceph_hn+=("$host")
  fi
  echo "" | tee -a ${ssh_config_file}
- echo "# pbench specific configuration, force user to be root on target" | tee -a ${ssh_config_file}
- echo "Host ${IP}" | tee -a ${ssh_config_file}
- echo "    User root" | tee -a ${ssh_config_file}
- echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
  echo "    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa stack@${ospd_ip_address} -W ${IP}:22" | tee -a ${ssh_config_file}
  echo "    User heat-admin" | tee -a ${ssh_config_file}
  echo "    IdentityFile ~/.ssh/heat-admin-id_rsa" | tee -a ${ssh_config_file}
  echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
- echo "${IP}" >> ${pbench_host_file}
 done
-
 
 echo ""
 echo "---------------------------"
