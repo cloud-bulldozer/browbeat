@@ -79,6 +79,11 @@ class Rally:
         cmd += "rally task report --task {} --out {}.html".format(all_task_ids, test_name)
         return self.tools.run_cmd(cmd)
 
+    def gen_scenario_json(self, task_id, test_name):
+        cmd = "source {}; ".format(self.config['rally']['venv'])
+        cmd += "rally task results {} > {}.json".format(task_id, test_name)
+        return self.tools.run_cmd(cmd)
+
     # Iterate through all the Rally scenarios to run.
     # If rerun is > 1, execute the test the desired number of times.
     def start_workloads(self):
@@ -161,6 +166,7 @@ class Rally:
                                     if task_id:
                                         self.logger.info("Generating Rally HTML for task_id : {}".format(task_id))
                                         self.gen_scenario_html([task_id], test_name)
+                                        self.gen_scenario_json(task_id, test_name)
                                         results[run].append(task_id)
                                     else:
                                         self.logger.error("Cannot find task_id")
