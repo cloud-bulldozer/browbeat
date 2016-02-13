@@ -1,3 +1,2 @@
 ansible==1.9.4
 matplotlib
-rally

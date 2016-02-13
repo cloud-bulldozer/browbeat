@@ -22,15 +22,16 @@ grafana:
     - openstack-general-system-performance
   url: http://grafana-host.example.com:3000/dashboard/db/
 rally:
-  venv: /home/stack/browbeat-venv/bin/activate
+  venv: /home/stack/rally-venv/bin/activate
   benchmarks:
     cinder:
       enabled: true
       concurrency:
+        - 16
+        - 32
+        - 48
         - 64
-        - 128
-        - 256
-      times: 1024
+      times: 128
       scenarios:
         create-attach-volume-centos:
           enabled: true
@@ -51,7 +52,7 @@ rally:
         - 384
         - 448
         - 512
-      times: 5000
+      times: 10000
       scenarios:
         authentic-keystone:
           enabled: true
@@ -65,9 +66,15 @@ rally:
         create-list-tenant:
           enabled: true
           file: rally/keystone/keystone-create-list-tenant-cc.yml
+          times: 5000
+          concurrency:
+            - 256
         create-list-user:
           enabled: true
           file: rally/keystone/keystone-create-list-user-cc.yml
+          times: 5000
+          concurrency:
+            - 256
     nova:
       enabled: true
       concurrency:

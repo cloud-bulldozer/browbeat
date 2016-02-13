@@ -22,7 +22,7 @@ grafana:
     - openstack-general-system-performance
   url: http://grafana-host.example.com:3000/dashboard/db/
 rally:
-  venv: /home/stack/browbeat-venv/bin/activate
+  venv: /home/stack/rally-venv/bin/activate
   benchmarks:
     cinder:
       enabled: true

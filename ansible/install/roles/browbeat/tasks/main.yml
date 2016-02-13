@@ -3,7 +3,7 @@
 # Browbeat Install
 #
 
-- name: Install Browbeat dependencies
+- name: Install browbeat matplotlib dependencies
   yum: name={{ item }} state=present
   become: true
   with_items:
@@ -18,10 +18,13 @@
   become: true
   pip: name=virtualenv
 
-- name: Create virtualenv
+- name: Create browbeat virtualenv
   command: virtualenv /home/stack/browbeat-venv creates="/home/stack/browbeat-venv"
 
-- name: Clone Browbeat on undercloud
+- name: Create rally virtualenv
+  command: virtualenv /home/stack/rally-venv creates="/home/stack/rally-venv"
+
+- name: Clone browbeat on undercloud
   git: repo=https://github.com/jtaleric/browbeat.git dest=/home/stack/browbeat
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
@@ -33,15 +36,19 @@
   command: mv /home/stack/hosts /home/stack/browbeat/ansible/hosts
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
-- name: Install requirements.txt
+- name: Install requirements.txt into browbeat-venv
   become: true
   pip: requirements=/home/stack/browbeat/requirements.txt virtualenv=/home/stack/browbeat-venv
 
-- name: Setup Rally database
-  shell: . /home/stack/browbeat-venv/bin/activate; rally-manage db recreate
+- name: Install rally into rally-venv
+  become: true
+  pip: name=rally virtualenv=/home/stack/rally-venv
 
-- name: Setup Rally deployment
-  shell: . /home/stack/browbeat-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
+- name: Setup rally database
+  shell: . /home/stack/rally-venv/bin/activate; rally-manage db recreate
+
+- name: Setup rally deployment
+  shell: . /home/stack/rally-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
 
 #
 # Serve results out of httpd if results_in_httpd is set to true

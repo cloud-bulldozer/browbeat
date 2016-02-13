@@ -29,7 +29,7 @@ class Rally:
 
         from_ts = int(time.time() * 1000)
         task_args = str(scenario_args).replace("'", "\"")
-        cmd = "source {}; \\".format(self.config['rally']['venv'])
+        cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
             task_args, test_name)
         self.tools.run_cmd(cmd)
@@ -117,8 +117,7 @@ class Rally:
                                     scenario_args))
 
                             result_dir = self.tools.create_results_dir(
-                                self.config['browbeat']['results'], time_stamp, benchmark,
-                                scenario)
+                                self.config['browbeat']['results'], time_stamp, benchmark, scenario)
                             self.logger.debug("Created result directory: {}".format(result_dir))
                             self.workload_logger(result_dir)
 

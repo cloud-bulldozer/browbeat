@@ -84,8 +84,6 @@ $ ssh undercloud-root
 (browbeat-venv)[stack@ospd ~]$ cd browbeat/
 (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
 (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
-...
-(browbeat-venv)[stack@ospd browbeat]$ ./graphing/rallyplot.py test01
 ```
 
 ## Install Browbeat directly on undercloud:
@@ -125,9 +123,8 @@ Your Overcloud check output is located in check/bug_report.log
 (browbeat-venv)[stack@ospd ansible]$ cd ..
 (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat.cfg to control how many stress tests are run.
 (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
-...
-(browbeat-venv)[stack@ospd browbeat]$ ./graphing/rallyplot.py test01
 ```
+
 ## Contributing
 Contributions are most welcome! Pull requests need to be submitted using the gerrit code review system. Firstly, you need to login to GerritHub using your GitHub credentials and need to authorize GerritHub to access your account. Once you are logged in click you user name in the top-right corner, go to  'Settings' and under 'SSH Public Keys' you need to paste your public key. You can view your public key using:
 ```
