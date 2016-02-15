@@ -55,7 +55,7 @@
     - openstack_cloud_system_performance_comparsion.json
 
 - name: Remove Existing Dashboards
-  command: "curl -X DELETE -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' http://{{ graphite_host }}:3000/api/dashboards/db/{{ item }}"
+  command: "curl -X DELETE -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' http://{{ grafana_host }}:3000/api/dashboards/db/{{ item }}"
   when: overwrite_existing
   with_items:
     - "{{ graphite_prefix }}-all-nodes-cpu"
@@ -67,7 +67,7 @@
 
 
 - name: Upload Dashboards to Grafana
-  command: "curl -X POST -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' -d @{{ item }} http://{{ graphite_host }}:3000/api/dashboards/db"
+  command: "curl -X POST -H 'Authorization: Bearer {{ grafana_api_key }}' -H 'Content-Type: application/json' -d @{{ item }} http://{{ grafana_host }}:3000/api/dashboards/db"
   with_items:
     - all_cpu_graphs.json
     - all_memory_graphs.json

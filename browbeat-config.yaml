@@ -22,6 +22,8 @@ grafana:
     - openstack-general-system-performance
   url: http://grafana-host.example.com:3000/dashboard/db/
 rally:
+  sleep_before: 5
+  sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
   benchmarks:
     cinder:

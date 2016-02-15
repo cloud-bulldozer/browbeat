@@ -26,7 +26,8 @@
     group=root
     mode=0644
   with_items:
-    - ip_address: "{{ graphite_host }}"
+    - interval: "{{ collectd_interval }}"
+      ip_address: "{{ graphite_host }}"
       prefix: "{{ graphite_prefix }}"
 
 - name: Copy collectd config files

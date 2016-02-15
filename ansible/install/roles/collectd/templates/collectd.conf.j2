@@ -1,7 +1,7 @@
 # Installed by Browbeat Ansible Installer
 
-# Interval default of 10s
-Interval 10.0
+# Interval default is 10s
+Interval {{ item.interval }}
 
 # Allow collectd to log
 LoadPlugin syslog
@@ -83,6 +83,12 @@ PreCacheChain "PreCache"
   ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"
   ProcessMatch "ceilometer-api" "python.+ceilometer-api"
   ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"
+
+  # Ceph
+  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"
+  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"
+  ProcessMatch "diamond" "python.+diamond"
+  ProcessMatch "salt-minion" "python.+salt-minion"
 
   # Cinder
   ProcessMatch "cinder-api" "python.+cinder-api"

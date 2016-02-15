@@ -28,16 +28,18 @@ class Rally:
         self.logger.debug("--------------------------------")
 
         from_ts = int(time.time() * 1000)
+        if 'sleep_before' in self.config['rally']:
+            time.sleep(self.config['rally']['sleep_before'])
         task_args = str(scenario_args).replace("'", "\"")
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
             task_args, test_name)
         self.tools.run_cmd(cmd)
+        if 'sleep_after' in self.config['rally']:
+            time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
 
         if 'grafana' in self.config and self.config['grafana']['enabled']:
-            from_ts -= - 10000
-            to_ts += 10000
             url = self.config['grafana']['url']
             cloud_name = self.config['grafana']['cloud_name']
             for dashboard in self.config['grafana']['dashboards']:
