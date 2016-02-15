@@ -11,7 +11,9 @@ ssh_config_file=$2
 # "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${ospd_ip_address}" == "localhost" ]]; then
  cat ~stack/.ssh/id_rsa.pub >> ~stack/.ssh/authorized_keys
+ chmod 0600 ~stack/.ssh/authorized_keys
  sudo bash -c "cat ~stack/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys"
+ sudo bash -c "chmod 0600 /root/.ssh/authorized_keys"
 fi
 
 nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
