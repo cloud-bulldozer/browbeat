@@ -1,17 +1,23 @@
 {% set repetitions = repetitions or 2 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-  Authenticate.validate_nova: 
-    - 
-      args: 
+  Authenticate.validate_nova:
+    -
+      args:
         repetitions: {{repetitions}}
-      context: 
-        users: 
+      context:
+        users:
           project_domain: "default"
           resource_management_workers: 30
           tenants: 1
           user_domain: "default"
           users_per_tenant: 8
-      runner: 
+      runner:
         concurrency: {{concurrency}}
         times: {{times}}
         type: "constant"
+      sla:
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}
