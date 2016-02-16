@@ -35,6 +35,8 @@ rally:
         create-attach-volume-centos:
           enabled: false
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-attach-volume-cirros:
           enabled: true
           image_name: cirros
@@ -49,6 +51,8 @@ rally:
         authentic-keystone:
           enabled: true
           file: rally/keystone/authenticate-keystone-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         authentic-neutron:
           enabled: false
           file: rally/keystone/authenticate-neutron-cc.yml
@@ -70,6 +74,8 @@ rally:
         boot-list-centos:
           enabled: false
           file: rally/nova/nova-boot-list-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         boot-list-cirros:
           enabled: true
           image_name: cirros
@@ -84,6 +90,8 @@ rally:
         create-list-network:
           enabled: false
           file: rally/neutron/neutron-create-list-network-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-port:
           enabled: true
           file: rally/neutron/neutron-create-list-port-cc.yml

@@ -1,4 +1,6 @@
 {% set subnets_per_network = subnets_per_network or 2 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
   NeutronNetworks.create_and_list_subnets:
     -
@@ -21,3 +23,7 @@
             port: -1
             router: -1
             subnet: -1
+      sla:
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}

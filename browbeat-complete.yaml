@@ -38,11 +38,15 @@ rally:
         create-attach-volume-centos:
           enabled: true
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-attach-volume-cirros:
           enabled: true
           image_name: cirros
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           flavor_name: m1.tiny
+          sla_max_seconds: 30
+          sla_max_failure: 0
     keystone:
       enabled: true
       concurrency:
@@ -59,15 +63,23 @@ rally:
         authentic-keystone:
           enabled: true
           file: rally/keystone/authenticate-keystone-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         authentic-neutron:
           enabled: true
           file: rally/keystone/authenticate-neutron-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         authentic-nova:
           enabled: true
           file: rally/keystone/authenticate-nova-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-tenant:
           enabled: true
           file: rally/keystone/keystone-create-list-tenant-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
           times: 5000
           concurrency:
             - 256
@@ -77,6 +89,8 @@ rally:
           times: 5000
           concurrency:
             - 256
+          sla_max_seconds: 30
+          sla_max_failure: 0
     nova:
       enabled: true
       concurrency:
@@ -91,11 +105,15 @@ rally:
         boot-list-centos:
           enabled: true
           file: rally/nova/nova-boot-list-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         boot-list-cirros:
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-list-cc.yml
           flavor_name: m1.tiny
+          sla_max_seconds: 30
+          sla_max_failure: 0
     neutron:
       enabled: true
       concurrency:
@@ -108,15 +126,25 @@ rally:
         create-list-network:
           enabled: true
           file: rally/neutron/neutron-create-list-network-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-port:
           enabled: true
           file: rally/neutron/neutron-create-list-port-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-router:
           enabled: true
           file: rally/neutron/neutron-create-list-router-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-security-group:
           enabled: true
           file: rally/neutron/neutron-create-list-security-group-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         create-list-subnet:
           enabled: true
           file: rally/neutron/neutron-create-list-subnet-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
