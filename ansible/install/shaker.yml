@@ -3,10 +3,13 @@
 # Playbook to install shaker on undercloud/overcloud
 #
 
+- hosts: controller
+  remote_user: heat-admin
+  roles:
+  - shaker-check
+
 - hosts: undercloud
   remote_user: stack
-  vars:
-    ansible_become: true
   roles:
   - common
   - shaker

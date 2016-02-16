@@ -1,0 +1,11 @@
+---
+#
+# Tasks to check requirements for isntalling shaker
+#
+
+- name: Check for heat
+  service: name={{ item }} state=running
+  become: true
+  with_items:
+   - openstack-heat-api
+   - openstack-heat-engine

@@ -1,17 +1,34 @@
 ---
 #
-# Tasks to install shaker for datqa plane testing    
+# Tasks to install shaker for data plane testing
 #
 
-    - name: check for heat engine
-      service: name=openstack-heat-engine state=running
-    - name: check for heat api
-      service: name=openstack-heat-api state=running
-    - name: upgrade all packages
-      yum: name=* state=latest
-    - name: install pip
-      yum: name=python-pip state=present
-    - name: install development tools
-      yum: name="@Development tools" state=present
-    - name: install shaker
-      shell: pip install pyshaker
+- name: Install python development tools
+  yum: name=python-devel state=present
+  become: true
+
+- name: Install pip
+  become: true
+  easy_install: name=pip
+
+- name: Install virtualenv
+  become: true
+  pip: name=virtualenv
+
+- name: Create virtualenv
+  command: virtualenv /home/stack/shaker-venv creates="/home/stack/shaker-venv"
+
+- name: Install shaker
+  pip: name=pyshaker version=0.0.10 virtualenv=/home/stack/shaker-venv
+
+- name: Check for shaker port in iptables
+  shell: iptables -nvL | grep -q "dpt:"{{ shaker_port }}""
+  become: true
+  changed_when: false
+  register: shaker_iptables
+  ignore_errors: true
+
+- name: Open up shaker port in iptables
+  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport {{ shaker_port }} -j ACCEPT
+  become: true
+  when: shaker_iptables.rc == 1

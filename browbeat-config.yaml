@@ -9,6 +9,7 @@ ansible:
   install:
     connmon: ansible/install/connmon.yml
     browbeat: ansible/install/browbeat.yml
+    shaker: ansible/install/shaker.yml
   check: ansible/check/site.yml
   adjust:
     keystone_token: ansible/browbeat/adjustment-keystone-token.yml
@@ -16,6 +17,7 @@ ansible:
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
   grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  shaker_build: ansible/install/build_image.yml
 grafana:
   enabled: true
   cloud_name: openstack
@@ -27,6 +29,31 @@ grafana:
     enabled: true
     grafana_api_key: (Your API Key Here)
     snapshot_compute: false
+shaker:
+  enabled: true
+  server: (Address of machine running browbeat)
+  port: 5555
+  flavor: m1.small
+  venv: /home/stack/shaker-venv
+  scenarios:
+    l2:
+      enabled: true
+      density: 1
+      compute: 1
+      progression: linear
+      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+    l3-north-south:
+      enabled: false
+      placement: double_room
+      density: 1
+      compute: 1
+      progression: null
+      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+    l3-east-west:
+      enabled: false
+      density: 1
+      compute: 1
+      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
 rally:
   sleep_before: 5
   sleep_after: 5
