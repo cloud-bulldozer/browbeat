@@ -37,6 +37,13 @@ PreCacheChain "PreCache"
     </Match>
     Target "stop"
   </Rule>
+  <Rule "ignore_interfaces_q">
+    <Match "regex">
+      Plugin "^interface$"
+      PluginInstance "^q.*"
+    </Match>
+    Target "stop"
+  </Rule>
   Target "return"
 </Chain>
 

@@ -38,7 +38,6 @@
     group: root
     mode: 0644
   with_items:
-    - filter.conf
     - tail.conf
 
 - name: Copy collectd-redis.sh
