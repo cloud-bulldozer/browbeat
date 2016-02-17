@@ -1,0 +1,60 @@
+<html>
+<head>
+  <title>{{item}}</title>
+  <style type="text/css">
+    a:link    { color: #c00 }  /* unvisited */
+    a:visited { color: #0c0 }  /* visited */
+    a:hover   { color: #00c }  /* hovers */
+    a:active  { color: #ccc }  /* active */
+  </style>
+</head>
+<body style="background-color: rgb(22, 22, 22)">
+  <div style="color: rgb(255,255,255)">
+    <b>{{item}} - System Performance Snapshot</b>
+    <br>
+    Undercloud:
+    {% for host in groups['undercloud'] %}
+      <a href="../{{host}}">{{host}}</a>
+    {% endfor %}
+    <br>
+    Controllers:
+    {% for host in groups['controller'] %}
+      <a href="../{{host}}">{{host}}</a>
+    {% endfor %}
+    {% if snapshot_compute %}
+      <br>
+      Computes:
+      {% for host in groups['compute'] %}
+        <a href="../{{host}}">{{host}}</a>
+      {% endfor %}
+    {% endif %}
+  </div>
+  <br>
+  <a href="#disks">Disks</a> :
+  {% for disk in disks_in_group %}
+    <a href="#disk-{{disk}}">{{disk}}</a>
+  {% endfor %}
+  <br><br>
+  <a href="#interfaces">Interfaces</a> :
+  {% for interface in interfaces_in_group %}
+    <a href="#interface-{{interface}}">{{interface}}</a>
+  {% endfor %}
+  <br><br>
+  {% for panel in general_panels %}
+    <img src="{{item}}-{{panel.name}}.png"/><br>
+  {% endfor %}
+  <div id="disks">
+  {% for disk in disks_in_group %}
+    {% for panel in disk_panels %}
+      <div id="disk-{{disk}}">
+      <img src="{{item}}-{{panel.name}}-{{disk}}.png"/><br>
+    {% endfor %}
+  {% endfor %}
+  <div id="interfaces">
+  {% for interface in interfaces_in_group %}
+    {% for panel in interface_panels %}
+      <div id="interface-{{interface}}">
+      <img src="{{item}}-{{panel.name}}-{{interface}}.png"/><br>
+    {% endfor %}
+  {% endfor %}
+</html>

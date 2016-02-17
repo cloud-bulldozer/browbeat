@@ -15,12 +15,18 @@ ansible:
     neutron_l3: ansible/browbeat/adjustment-l3.yml
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
 grafana:
   enabled: true
   cloud_name: openstack
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
   dashboards:
     - openstack-general-system-performance
-  url: http://grafana-host.example.com:3000/dashboard/db/
+  snapshot:
+    enabled: true
+    grafana_api_key: (Your API Key Here)
+    snapshot_compute: false
 rally:
   sleep_before: 5
   sleep_after: 5

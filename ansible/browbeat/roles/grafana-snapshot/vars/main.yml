@@ -1,0 +1,95 @@
+---
+#
+# Grafana Snapshot vars
+#
+
+# Task prepends "disk-" prefix for you
+disks:
+  undercloud:
+    - vda
+  controller:
+    - sda
+    - sda2
+  compute:
+    - sda
+    - sda2
+
+disk_panels:
+  - panelId: 6
+    name: disk-iops
+  - panelId: 7
+    name: disk-throughput
+
+# Task prepends "interface-" prefix for you
+interfaces:
+  undercloud:
+    - br-ctlplane
+    # - br-int
+    - ens3
+    - ens7
+    - lo
+    # - ovs-system
+  controller:
+    - br-ex
+    - br-int
+    - br-tun
+    - br-vlan
+    - enp3s0f0
+    - enp3s0f1
+    - enp4s0f0
+    - enp4s0f1
+    # - ens1f0
+    # - ens1f1
+    - lo
+    # - ovs-system
+    - vlan201
+    - vlan202
+    - vlan203
+    - vlan204
+  compute:
+    - br-ex
+    - br-int
+    - br-tun
+    - br-vlan
+    - enp3s0f0
+    - enp3s0f1
+    - enp4s0f0
+    - enp4s0f1
+    # - ens1f0
+    # - ens1f1
+    - lo
+    # - ovs-system
+    - vlan201
+    - vlan202
+    - vlan203
+    - vlan204
+
+interface_panels:
+  - panelId: 9
+    name: network-pps
+  - panelId: 10
+    name: network-throughput
+
+general_panels:
+  - panelId: 1
+    name: all-cpu
+  - panelId: 2
+    name: memory-bytes
+  - panelId: 3
+    name: memory-percentage
+  - panelId: 4
+    name: swap-usage
+  - panelId: 11
+    name: conntrack
+  - panelId: 15
+    name: numa
+  - panelId: 16
+    name: irq
+  - panelId: 17
+    name: interrupts
+  - panelId: 18
+    name: load-uptime
+  - panelId: 19
+    name: processes
+  - panelId: 92
+    name: tail-errors

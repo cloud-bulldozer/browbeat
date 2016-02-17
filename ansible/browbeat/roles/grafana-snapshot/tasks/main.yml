@@ -1,0 +1,34 @@
+---
+#
+# Generate Snapshots
+#
+
+- name: Generate General Snapshots
+  shell: "mkdir -p /home/stack/browbeat/{{results_dir}}/{{item[0]}}/; curl -X GET -H 'Authorization: Bearer {{grafana_api_key}}' 'http://{{grafana_ip}}:{{grafana_port}}/render/dashboard-solo/db/openstack-general-system-performance?panelId={{item[1].panelId}}&from={{from}}&to={{to}}&var-Cloud={{var_cloud}}&var-Node={{item[0]}}_localdomain&var-Interface=interface-test&var-Disk=disk-sda&width=1200' > /home/stack/browbeat/{{results_dir}}/{{item[0]}}/{{item[0]}}-{{item[1].name}}.png"
+  with_nested:
+    - "{{ hosts_in_group }}"
+    - "{{ general_panels }}"
+
+- name: Generate Disk Snapshots
+  shell: "mkdir -p /home/stack/browbeat/{{results_dir}}/{{item[0]}}/;curl -X GET -H 'Authorization: Bearer {{grafana_api_key}}' 'http://{{grafana_ip}}:{{grafana_port}}/render/dashboard-solo/db/openstack-general-system-performance?panelId={{item[2].panelId}}&from={{from}}&to={{to}}&var-Cloud={{var_cloud}}&var-Node={{item[0]}}_localdomain&var-Interface=interface-test&var-Disk=disk-{{item[1]}}&width=1200' > /home/stack/browbeat/{{results_dir}}/{{item[0]}}/{{item[0]}}-{{item[2].name}}-{{item[1]}}.png"
+  with_nested:
+    - "{{ hosts_in_group }}"
+    - "{{ disks_in_group }}"
+    - "{{ disk_panels }}"
+
+- name: Generate Interface Snapshots
+  shell: "mkdir -p /home/stack/browbeat/{{results_dir}}/{{item[0]}}/;curl -X GET -H 'Authorization: Bearer {{grafana_api_key}}' 'http://{{grafana_ip}}:{{grafana_port}}/render/dashboard-solo/db/openstack-general-system-performance?panelId={{item[2].panelId}}&from={{from}}&to={{to}}&var-Cloud={{var_cloud}}&var-Node={{item[0]}}_localdomain&var-Interface=interface-{{item[1]}}&var-Disk=disk-sda&width=1200' > /home/stack/browbeat/{{results_dir}}/{{item[0]}}/{{item[0]}}-{{item[2].name}}-{{item[1]}}.png"
+  with_nested:
+    - "{{ hosts_in_group }}"
+    - "{{ interfaces_in_group }}"
+    - "{{ interface_panels }}"
+
+- name: Generate index.html per host
+  template:
+    src=index.html.j2
+    dest=/home/stack/browbeat/{{results_dir}}/{{item}}/index.html
+    owner=stack
+    group=stack
+    mode=0644
+  with_items:
+    - "{{groups[host_type]}}"
