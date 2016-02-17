@@ -14,19 +14,19 @@ LoadPlugin df
 LoadPlugin disk
 LoadPlugin exec
 LoadPlugin interface
+LoadPlugin irq
 LoadPlugin load
 LoadPlugin match_regex
 LoadPlugin memory
 LoadPlugin numa
 LoadPlugin processes
 LoadPlugin swap
+{% if 'controller' in group_names or 'undercloud' in group_names %}
 LoadPlugin tail
+{% endif %}
 #LoadPlugin tcpconns
 LoadPlugin turbostat
 LoadPlugin uptime
-
-# Include other collectd configuration files
-Include "/etc/collectd.d"
 
 PreCacheChain "PreCache"
 <Chain "PreCache">
@@ -61,7 +61,7 @@ PreCacheChain "PreCache"
   </Carbon>
 </Plugin>
 
-# Collectd to graphite w/ averageseries() in grafana shows % cpu without setting ValuesPercentage
+# Collectd to graphite uses derive type so no need for ValuesPercentage
 #<Plugin cpu>
 #  ReportByCpu true
 #  ReportByState true
@@ -77,9 +77,9 @@ PreCacheChain "PreCache"
   IgnoreSelected false
 </Plugin>
 
-<Plugin exec>
-  Exec nobody "/usr/local/bin/collectd-redis.sh"
-</Plugin>
+#<Plugin exec>
+#  Exec nobody "/usr/local/bin/collectd-redis.sh"
+#</Plugin>
 
 <Plugin processes>
   # Ceilometer
@@ -183,6 +183,89 @@ PreCacheChain "PreCache"
   ValuesPercentage true
 </Plugin>
 
+{% if 'controller' in group_names or 'undercloud' in group_names %}
+<Plugin "tail">
+  <File "/var/log/nova/nova-api.log">
+    Instance "nova-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-conductor.log">
+    Instance "nova-conductor"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-scheduler.log">
+    Instance "nova-scheduler"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/neutron/dhcp-agent.log">
+    Instance "neutron-dhcp-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+{% if 'controller' in group_names %}
+  <File "/var/log/neutron/l3-agent.log">
+    Instance "neutron-l3-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/metadata-agent.log">
+    Instance "neutron-metadata-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+{% endif %}
+  <File "/var/log/neutron/openvswitch-agent.log">
+    Instance "neutron-openvswitch-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/server.log">
+    Instance "neutron-server"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+</Plugin>
+{% endif %}
+
 #<Plugin tcpconns>
 #  ListeningPorts true
 #</Plugin>
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"

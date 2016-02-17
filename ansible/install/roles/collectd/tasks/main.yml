@@ -30,16 +30,6 @@
       ip_address: "{{ graphite_host }}"
       prefix: "{{ graphite_prefix }}"
 
-- name: Copy collectd config files
-  copy:
-    src: "{{ item }}"
-    dest: /etc/collectd.d/{{ item }}
-    owner: root
-    group: root
-    mode: 0644
-  with_items:
-    - tail.conf
-
 - name: Copy collectd-redis.sh
   copy:
     src=collectd-redis.sh
