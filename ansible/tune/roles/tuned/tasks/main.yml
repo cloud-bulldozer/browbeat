@@ -1,0 +1,9 @@
+---
+#
+# Sets correct tuned profile on each host
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1246645
+#
+
+- name: Set tuned profile
+  become: true
+  command: tuned-adm profile {{ tuned_profile }}

@@ -1,0 +1,9 @@
+---
+#
+# Removes 99-dhcp-all-interfaces.rules to prevent creating failed systemd resources
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1293712
+#
+
+- name: Remove 99-dhcp-all-interfaces.rules
+  become: true
+  file: path=/etc/udev/rules.d/99-dhcp-all-interfaces.rules state=absent

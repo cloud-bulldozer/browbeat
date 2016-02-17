@@ -1,0 +1,6 @@
+---
+#
+# Tuning vars for computes
+#
+
+tuned_profile: virtual-host

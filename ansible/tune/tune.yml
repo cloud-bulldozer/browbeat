@@ -1,0 +1,11 @@
+---
+#
+# Tunes overcloud for browbeat/performance
+#
+
+- hosts: controller:compute
+  gather_facts: false
+  remote_user: heat-admin
+  roles:
+    - udev_dhcp_all_interfaces
+    - tuned

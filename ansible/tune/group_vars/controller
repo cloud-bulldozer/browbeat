@@ -1,0 +1,6 @@
+---
+#
+# Tuning vars for controllers
+#
+
+tuned_profile: throughput-performance
