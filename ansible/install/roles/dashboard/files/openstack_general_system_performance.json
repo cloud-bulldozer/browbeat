@@ -937,6 +937,460 @@
         "showTitle": true,
         "title": "Network"
       },
+
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": 0,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 12,
+            "isNew": true,
+            "legend": {
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": false,
+              "total": false,
+              "values": true,
+              "alignAsTable": false,
+              "rightSide": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "SMI Count",
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(scale(aliasSub($Cloud.$Node.turbostat-cpu*.gauge-TSC, 'turbostat-', 'tsc-'), 1000000), 2)"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node.turbostat-cpu*.count), 'SMI Count')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Gauge TSC & SMI Count",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "hertz",
+              "short"
+            ],
+            "links": []
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 13,
+            "isNew": true,
+            "legend": {
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": false,
+              "total": false,
+              "values": true,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(scale(aliasSub($Cloud.$Node.turbostat-cpu*.frequency-average, 'turbostat-', ''), 1000000), 2)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - turbostat Freq Avg",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "hertz",
+              "short"
+            ],
+            "links": []
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 14,
+            "isNew": true,
+            "legend": {
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": false,
+              "total": false,
+              "values": true,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(scale($Cloud.$Node.turbostat-cpu*.frequency-busy, 1000000), 2)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - turbostat Freq Busy",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "hertz",
+              "short"
+            ],
+            "links": []
+          }
+        ],
+        "showTitle": true,
+        "title": "Turbostat"
+      },
+
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "title": "$Cloud - $Node - Numastat",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+            "id": 15,
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 1,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-interleave_hit, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              },
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-local_node, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              },
+              {
+                "refId": "C",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_foreign, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              },
+              {
+                "refId": "D",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_hit, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              },
+              {
+                "refId": "E",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_miss, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              },
+              {
+                "refId": "F",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-other_node, 'numa-', ''), 'vmpage_action-', ''), 2, 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          }
+        ],
+        "showTitle": true,
+        "title": "Numa"
+      },
+
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "title": "$Cloud - $Node - IRQ",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+            "id": 16,
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 1,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.irq.irq-[A-Z]*, 'irq-', ''), 3)",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": [],
+            "decimals": null
+          },
+          {
+            "title": "$Cloud - $Node - Interrupts",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+            "id": 17,
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 1,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": true,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node.irq.irq-[0-9]*), 'Interrupts')",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": [],
+            "decimals": null
+          }
+        ],
+        "showTitle": true,
+        "title": "IRQ"
+      },
+
       {
         "collapse": true,
         "editable": true,
@@ -961,7 +1415,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 12,
+            "id": 18,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1011,7 +1465,7 @@
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "$Cloud - $Node Load Averages / Uptime",
+            "title": "$Cloud - $Node - Load Averages / Uptime",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -1022,7 +1476,8 @@
             "y_formats": [
               "short",
               "s"
-            ]
+            ],
+            "decimals": 0
           }
         ],
         "showTitle": true,
@@ -1052,7 +1507,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 13,
+            "id": 19,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1137,7 +1592,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 14,
+            "id": 20,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1211,7 +1666,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 15,
+            "id": 21,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1367,7 +1822,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 16,
+            "id": 22,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1393,7 +1848,6 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-nova-api.ps_count.processes, 'Nova-Api Processes')"
               },
@@ -1484,7 +1938,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 17,
+            "id": 22,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1510,12 +1964,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_count.processes, 'Neutron-Server Processes')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_count.threads, 'Neutron-Server Threads')"
               },
@@ -1594,7 +2046,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 18,
+            "id": 23,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1620,12 +2072,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_count.processes, 'Keystone-all Processes')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_count.threads, 'Keystone-all Threads')"
               }
@@ -1664,7 +2114,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 19,
+            "id": 24,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1694,7 +2144,6 @@
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_count.processes, 'Cinder-Api Processes')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_count.threads, 'Cinder-Api Threads')"
               },
@@ -1749,7 +2198,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 20,
+            "id": 25,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1841,7 +2290,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 21,
+            "id": 26,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1917,7 +2366,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 22,
+            "id": 27,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2081,7 +2530,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 23,
+            "id": 28,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2197,7 +2646,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 24,
+            "id": 29,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2265,7 +2714,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 25,
+            "id": 30,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2349,7 +2798,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 26,
+            "id": 31,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2491,7 +2940,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 27,
+            "id": 32,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2653,7 +3102,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 28,
+            "id": 33,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2775,7 +3224,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 29,
+            "id": 34,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2889,7 +3338,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 30,
+            "id": 35,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2963,7 +3412,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 31,
+            "id": 36,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3053,7 +3502,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 32,
+            "id": 37,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3151,7 +3600,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 33,
+            "id": 38,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3233,7 +3682,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 34,
+            "id": 39,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3403,7 +3852,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 35,
+            "id": 40,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3525,7 +3974,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 36,
+            "id": 41,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3599,7 +4048,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 37,
+            "id": 42,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3689,7 +4138,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 38,
+            "id": 43,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3838,7 +4287,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 39,
+            "id": 44,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3995,7 +4444,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 40,
+            "id": 45,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4022,7 +4471,6 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-nova-api.ps_rss, 'Nova-Api RSS')"
               },
@@ -4113,7 +4561,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 41,
+            "id": 46,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4140,12 +4588,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_rss, 'Neutron-Server RSS')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_vm, 'Neutron-Server Virtual')"
               },
@@ -4224,7 +4670,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 42,
+            "id": 47,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4251,12 +4697,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_rss, 'Keystone-all RSS')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_vm, 'Keystone-all Virtual')"
               }
@@ -4295,7 +4739,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 43,
+            "id": 48,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4326,7 +4770,6 @@
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_rss, 'Cinder-Api RSS')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_vm, 'Cinder-Api Virtual')"
               },
@@ -4381,7 +4824,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 44,
+            "id": 49,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4474,7 +4917,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 45,
+            "id": 50,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4551,7 +4994,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 46,
+            "id": 51,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4716,7 +5159,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 47,
+            "id": 52,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4833,7 +5276,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 48,
+            "id": 53,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4902,7 +5345,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 49,
+            "id": 54,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4987,7 +5430,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 50,
+            "id": 55,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5129,7 +5572,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 51,
+            "id": 56,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5286,7 +5729,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 52,
+            "id": 57,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5313,7 +5756,6 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-nova-api.ps_pagefaults.majflt, 'Nova-Api Majflt')"
               },
@@ -5404,7 +5846,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 53,
+            "id": 58,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5431,12 +5873,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_pagefaults.majflt, 'Neutron-Server Majflt')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_pagefaults.minflt, 'Neutron-Server Minflt')"
               },
@@ -5515,7 +5955,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 54,
+            "id": 59,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5542,12 +5982,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_pagefaults.majflt, 'Keystone-all Majflt')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_pagefaults.minflt, 'Keystone-all Minflt')"
               }
@@ -5586,7 +6024,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 55,
+            "id": 60,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5617,7 +6055,6 @@
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_pagefaults.majflt, 'Cinder-Api Majflt')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_pagefaults.minflt, 'Cinder-Api Minflt')"
               },
@@ -5672,7 +6109,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 56,
+            "id": 61,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5765,7 +6202,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 57,
+            "id": 62,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5842,7 +6279,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 58,
+            "id": 63,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6007,7 +6444,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 59,
+            "id": 64,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6124,7 +6561,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 60,
+            "id": 65,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6193,7 +6630,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 61,
+            "id": 66,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6278,7 +6715,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 62,
+            "id": 67,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6420,7 +6857,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 63,
+            "id": 68,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6577,7 +7014,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 64,
+            "id": 69,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6604,7 +7041,6 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-nova-api.ps_disk_ops.read, 'Nova-Api Read')"
               },
@@ -6695,7 +7131,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 65,
+            "id": 70,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6722,12 +7158,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_disk_ops.read, 'Neutron-Server Read')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_disk_ops.write, 'Neutron-Server Write')"
               },
@@ -6806,7 +7240,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 66,
+            "id": 71,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6833,12 +7267,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_disk_ops.read, 'Keystone-all Read')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_disk_ops.write, 'Keystone-all Write')"
               }
@@ -6877,7 +7309,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 67,
+            "id": 72,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6908,7 +7340,6 @@
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_disk_ops.read, 'Cinder-Api Read')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-cinder-api.ps_disk_ops.write, 'Cinder-Api Write')"
               },
@@ -6963,7 +7394,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 68,
+            "id": 73,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7056,7 +7487,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 69,
+            "id": 74,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7133,7 +7564,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 70,
+            "id": 75,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7298,7 +7729,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 71,
+            "id": 76,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7415,7 +7846,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 72,
+            "id": 77,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7484,7 +7915,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 73,
+            "id": 78,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7569,7 +8000,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 74,
+            "id": 79,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7711,7 +8142,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 75,
+            "id": 80,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7868,7 +8299,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 76,
+            "id": 81,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7895,7 +8326,6 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-nova-api.ps_disk_octets.read, 'Nova-Api Read')"
               },
@@ -7986,7 +8416,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 77,
+            "id": 82,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8013,12 +8443,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_disk_octets.read, 'Neutron-Server Read')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-neutron-server.ps_disk_octets.write, 'Neutron-Server Write')"
               },
@@ -8097,7 +8525,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 78,
+            "id": 83,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8124,12 +8552,10 @@
             "steppedLine": false,
             "targets": [
               {
-                "hide": false,
                 "refId": "A",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_disk_octets.read, 'Keystone-all Read')"
               },
               {
-                "hide": false,
                 "refId": "B",
                 "target": "alias($Cloud.$Node.processes-keystone-all.ps_disk_octets.write, 'Keystone-all Write')"
               }
@@ -8168,7 +8594,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 79,
+            "id": 84,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8253,7 +8679,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 80,
+            "id": 85,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8346,7 +8772,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 81,
+            "id": 86,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8423,7 +8849,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 82,
+            "id": 87,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8588,7 +9014,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 83,
+            "id": 88,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8705,7 +9131,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 84,
+            "id": 89,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8774,7 +9200,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 85,
+            "id": 90,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8859,7 +9285,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 86,
+            "id": 91,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9001,7 +9427,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 87,
+            "id": 92,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
