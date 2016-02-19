@@ -183,8 +183,153 @@ PreCacheChain "PreCache"
   ValuesPercentage true
 </Plugin>
 
-{% if 'controller' in group_names or 'undercloud' in group_names %}
+
+# Tail plugin configuration
 <Plugin "tail">
+{% if 'undercloud' in group_names %}
+  <File "/var/log/keystone/keystone.log">
+    Instance "keystone"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/nova/nova-api.log">
+    Instance "nova-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-compute.log">
+    Instance "nova-compute"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-conductor.log">
+    Instance "nova-conductor"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-scheduler.log">
+    Instance "nova-scheduler"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/neutron/dhcp-agent.log">
+    Instance "neutron-dhcp-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/openvswitch-agent.log">
+    Instance "neutron-openvswitch-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/server.log">
+    Instance "neutron-server"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/ironic/ironic-api.log">
+    Instance "ironic-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/ironic/ironic-conductor.log">
+    Instance "ironic-conductor"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/heat/heat-api-cfn.log">
+    Instance "heat-api-cfn"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/heat/heat-api-cloudwatch.log">
+    Instance "heat-api-cloudwatch"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/heat/heat-api.log">
+    Instance "heat-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/heat/heat-engine.log">
+    Instance "heat-engine"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+{% endif %}
+{% if 'controller' in group_names %}
+  <File "/var/log/keystone/keystone.log">
+    Instance "keystone"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
   <File "/var/log/nova/nova-api.log">
     Instance "nova-api"
     <Match>
@@ -222,7 +367,6 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
-{% if 'controller' in group_names %}
   <File "/var/log/neutron/l3-agent.log">
     Instance "neutron-l3-agent"
     <Match>
@@ -241,7 +385,6 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
-{% endif %}
   <File "/var/log/neutron/openvswitch-agent.log">
     Instance "neutron-openvswitch-agent"
     <Match>
@@ -260,8 +403,60 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
-</Plugin>
+
+  <File "/var/log/cinder/api.log">
+    Instance "cinder-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/cinder/scheduler.log">
+    Instance "cinder-scheduler"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/cinder/volume.log">
+    Instance "cinder-volume"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
 {% endif %}
+{% if 'compute' in group_names %}
+  <File "/var/log/nova/nova-compute.log">
+    Instance "nova-compute"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/neutron/openvswitch-agent.log">
+    Instance "neutron-openvswitch-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+{% endif %}
+{% if 'ceph' in group_names %}
+  {# Add ceph logs to tail #}
+{% endif %}
+</Plugin>
 
 #<Plugin tcpconns>
 #  ListeningPorts true
