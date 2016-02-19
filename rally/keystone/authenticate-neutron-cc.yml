@@ -1,4 +1,5 @@
 {% set repetitions = repetitions or 2 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
@@ -18,6 +19,7 @@
         times: {{times}}
         type: "constant"
       sla:
+        max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}
         failure_rate:
           max: {{sla_max_failure}}

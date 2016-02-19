@@ -51,6 +51,7 @@ rally:
         authentic-keystone:
           enabled: true
           file: rally/keystone/authenticate-keystone-cc.yml
+          sla_max_avg_duration: 1
           sla_max_seconds: 30
           sla_max_failure: 0
         authentic-neutron:

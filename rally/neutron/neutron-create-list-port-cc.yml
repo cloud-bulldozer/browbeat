@@ -1,4 +1,5 @@
 {% set ports_per_network = ports_per_network or 4 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
@@ -22,6 +23,7 @@
             router: -1
             subnet: -1
       sla:
+        max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}
         failure_rate:
           max: {{sla_max_failure}}

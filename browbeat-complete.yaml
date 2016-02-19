@@ -63,16 +63,19 @@ rally:
         authentic-keystone:
           enabled: true
           file: rally/keystone/authenticate-keystone-cc.yml
+          sla_max_avg_duration: 6
           sla_max_seconds: 30
           sla_max_failure: 0
         authentic-neutron:
           enabled: true
           file: rally/keystone/authenticate-neutron-cc.yml
+          sla_max_avg_duration: 18
           sla_max_seconds: 30
           sla_max_failure: 0
         authentic-nova:
           enabled: true
           file: rally/keystone/authenticate-nova-cc.yml
+          sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
         create-list-tenant:
