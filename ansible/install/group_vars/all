@@ -8,15 +8,21 @@ dns_server: 8.8.8.8
 
 # Collectd interval (seconds)
 collectd_interval: 10
+
+# Run collectd on the compute nodes
+collectd_compute: false
+
 # epel Repository for collectd packages
 epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 # Graphite Server ip address (Collectd -> Graphite server)
 graphite_host: 1.1.1.1
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
+
 graphite_prefix: openstack
 
 # Grafana API Key (Used to upload Grafana dashboards)
 grafana_api_key: (Your Grafana API Key)
+
 # Grafana Server IP Address (Can be hosted on the Graphite server)
 grafana_host: 1.1.1.1

@@ -40,6 +40,15 @@
 
 - name: Setup collectd service
   service: name=collectd state=restarted enabled=yes
+  when: "'controller' in group_names"
+
+- name: Setup collectd service
+  service: name=collectd state=restarted enabled=yes
+  when: "'compute in group_names' and collectd_compute"
+
+- name: Stop collectd service
+  service: name=collectd state=stopped
+  when: "'compute in group_names' and not collectd_compute"
 
 #
 # Configure selinux bits
