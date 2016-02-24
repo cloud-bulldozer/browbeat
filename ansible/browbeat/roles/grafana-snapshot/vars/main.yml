@@ -19,6 +19,8 @@ disk_panels:
     name: disk-iops
   - panelId: 7
     name: disk-throughput
+  - panelId: 11
+    name: disk-io-time
 
 # Task prepends "interface-" prefix for you
 interfaces:
@@ -65,9 +67,9 @@ interfaces:
     - vlan204
 
 interface_panels:
-  - panelId: 9
+  - panelId: 13
     name: network-pps
-  - panelId: 10
+  - panelId: 14
     name: network-throughput
 
 general_panels:
@@ -79,17 +81,17 @@ general_panels:
     name: memory-percentage
   - panelId: 4
     name: swap-usage
-  - panelId: 11
-    name: conntrack
-  - panelId: 15
-    name: numa
   - panelId: 16
+    name: conntrack
+  - panelId: 20
+    name: numa
+  - panelId: 21
     name: irq
-  - panelId: 17
+  - panelId: 22
     name: interrupts
-  - panelId: 18
+  - panelId: 23
     name: load-uptime
-  - panelId: 19
+  - panelId: 24
     name: processes
-  - panelId: 92
+  - panelId: 98
     name: tail-errors

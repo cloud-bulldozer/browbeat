@@ -17,8 +17,8 @@ epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rp
 
 # Graphite Server ip address (Collectd -> Graphite server)
 graphite_host: 1.1.1.1
-# Graphite prefix / Cloud name used both with graphite and grafana dashboards
 
+# Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
 
 # Grafana API Key (Used to upload Grafana dashboards)
