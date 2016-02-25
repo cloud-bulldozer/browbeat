@@ -17,6 +17,96 @@
           "editable": true,
           "height": "250px",
           "panels": [
+    {% for host in groups['undercloud'] %}
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "leftLogBase": 1,
+                "leftMax": null,
+                "leftMin": null,
+                "rightLogBase": 1,
+                "rightMax": null,
+                "rightMin": null,
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
+              "id": {{panel_idx.value}},
+              "isNew": true,
+              "legend": {
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": true,
+                "min": true,
+                "rightSide": true,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [
+                {
+                  "alias": "RX",
+                  "transform": "negative-Y"
+                }
+              ],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "refId": "A",
+                  "target": "alias({{item.prefix}}.{{host}}.$Interface.if_packets.tx, 'TX')"
+                },
+                {
+                  "refId": "B",
+                  "target": "alias({{item.prefix}}.{{host}}.$Interface.if_packets.rx, 'RX')"
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "{{host}} - $Interface pps",
+              "tooltip": {
+                "shared": true,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "x-axis": true,
+              "y-axis": true,
+              "y_formats": [
+                "pps",
+                "short"
+              ]
+    {% if not loop.last %}
+            },
+    {% else %}
+            }
+    {% endif %}
+    {% endfor %}
+          ],
+          "title": "Undercloud Network pps",
+          "showTitle": true
+        },
+        {
+          "collapse": true,
+          "editable": true,
+          "height": "250px",
+          "panels": [
     {% for host in groups['controller'] %}
             {
               "aliasColors": {},
@@ -192,7 +282,96 @@
           "title": "Compute Nodes Network pps",
           "showTitle": true
         },
-
+        {
+          "collapse": true,
+          "editable": true,
+          "height": "250px",
+          "panels": [
+    {% for host in groups['undercloud'] %}
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "leftLogBase": 1,
+                "leftMax": null,
+                "leftMin": null,
+                "rightLogBase": 1,
+                "rightMax": null,
+                "rightMin": null,
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
+              "id": {{panel_idx.value}},
+              "isNew": true,
+              "legend": {
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": true,
+                "min": true,
+                "rightSide": true,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [
+                {
+                  "alias": "RX",
+                  "transform": "negative-Y"
+                }
+              ],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "refId": "A",
+                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.tx, 'TX')"
+                },
+                {
+                  "refId": "B",
+                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.rx, 'RX')"
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "{{host}} - $Interface Throughput",
+              "tooltip": {
+                "shared": true,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "x-axis": true,
+              "y-axis": true,
+              "y_formats": [
+                "Bps",
+                "short"
+              ]
+    {% if not loop.last %}
+            },
+    {% else %}
+            }
+    {% endif %}
+    {% endfor %}
+          ],
+          "title": "Undercloud Network Throughput",
+          "showTitle": true
+        },
         {
           "collapse": true,
           "editable": true,
@@ -283,7 +462,6 @@
           "title": "Controller Network Throughput",
           "showTitle": true
         },
-
         {
           "collapse": true,
           "editable": true,
@@ -374,7 +552,6 @@
           "title": "Compute Nodes Network Throughput",
           "showTitle": true
         }
-
       ],
       "time": {
         "from": "now-1h",
