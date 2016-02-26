@@ -1,4 +1,5 @@
 {% set panel_idx = {'value': 0} %}
+{% set osp_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
       "id": null,
@@ -12,12 +13,14 @@
       "hideControls": false,
       "sharedCrosshair": false,
       "rows": [
+{% for group in osp_groups %}
         {
           "collapse": true,
           "editable": true,
           "height": "250px",
           "panels": [
-    {% for host in groups['undercloud'] %}
+  {% if group in groups %}
+    {% for host in groups[group] %}
             {
               "aliasColors": {},
               "bars": false,
@@ -37,7 +40,7 @@
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
+      {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
               "id": {{panel_idx.value}},
               "isNew": true,
               "legend": {
@@ -71,16 +74,16 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}.$Interface.if_packets.tx, 'TX')"
+                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_packets.tx, 'TX')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}.$Interface.if_packets.rx, 'RX')"
+                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_packets.rx, 'RX')"
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "{{host}} - $Interface pps",
+              "title": "{{host}} - ${{group}}_interface pps",
               "tooltip": {
                 "shared": true,
                 "value_type": "cumulative"
@@ -92,22 +95,26 @@
                 "pps",
                 "short"
               ]
-    {% if not loop.last %}
+      {% if not loop.last %}
             },
-    {% else %}
+      {% else %}
             }
-    {% endif %}
+      {% endif %}
     {% endfor %}
+  {% endif %}
           ],
-          "title": "Undercloud Network pps",
+          "title": "{{group}} Network pps",
           "showTitle": true
         },
+{% endfor %}
+{% for group in osp_groups %}
         {
           "collapse": true,
           "editable": true,
           "height": "250px",
           "panels": [
-    {% for host in groups['controller'] %}
+  {% if group in groups %}
+    {% for host in groups[group] %}
             {
               "aliasColors": {},
               "bars": false,
@@ -127,7 +134,7 @@
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
+      {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
               "id": {{panel_idx.value}},
               "isNew": true,
               "legend": {
@@ -161,196 +168,16 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_packets.tx, 'TX')"
+                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_octets.tx, 'TX')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_packets.rx, 'RX')"
+                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_octets.rx, 'RX')"
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "{{host}} - $Interface pps",
-              "tooltip": {
-                "shared": true,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "x-axis": true,
-              "y-axis": true,
-              "y_formats": [
-                "pps",
-                "short"
-              ]
-    {% if not loop.last %}
-            },
-    {% else %}
-            }
-    {% endif %}
-    {% endfor %}
-          ],
-          "title": "Controller Network pps",
-          "showTitle": true
-        },
-        {
-          "collapse": true,
-          "editable": true,
-          "height": "250px",
-          "panels": [
-    {% for host in groups['compute'] %}
-            {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": null,
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "leftLogBase": 1,
-                "leftMax": null,
-                "leftMin": null,
-                "rightLogBase": 1,
-                "rightMax": null,
-                "rightMin": null,
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
-              "isNew": true,
-              "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
-                "max": true,
-                "min": true,
-                "rightSide": true,
-                "show": true,
-                "total": false,
-                "values": true
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [
-                {
-                  "alias": "RX",
-                  "transform": "negative-Y"
-                }
-              ],
-              "span": 12,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_packets.tx, 'TX')"
-                },
-                {
-                  "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_packets.rx, 'RX')"
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "{{host}} - $Interface pps",
-              "tooltip": {
-                "shared": true,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "x-axis": true,
-              "y-axis": true,
-              "y_formats": [
-                "pps",
-                "short"
-              ]
-    {% if not loop.last %}
-            },
-    {% else %}
-            }
-    {% endif %}
-    {% endfor %}
-          ],
-          "title": "Compute Nodes Network pps",
-          "showTitle": true
-        },
-        {
-          "collapse": true,
-          "editable": true,
-          "height": "250px",
-          "panels": [
-    {% for host in groups['undercloud'] %}
-            {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": null,
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "leftLogBase": 1,
-                "leftMax": null,
-                "leftMin": null,
-                "rightLogBase": 1,
-                "rightMax": null,
-                "rightMin": null,
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
-              "isNew": true,
-              "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
-                "max": true,
-                "min": true,
-                "rightSide": true,
-                "show": true,
-                "total": false,
-                "values": true
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [
-                {
-                  "alias": "RX",
-                  "transform": "negative-Y"
-                }
-              ],
-              "span": 12,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.tx, 'TX')"
-                },
-                {
-                  "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.rx, 'RX')"
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "{{host}} - $Interface Throughput",
+              "title": "{{host}} - ${{group}}_interface Throughput",
               "tooltip": {
                 "shared": true,
                 "value_type": "cumulative"
@@ -362,196 +189,22 @@
                 "Bps",
                 "short"
               ]
-    {% if not loop.last %}
+      {% if not loop.last %}
             },
-    {% else %}
+      {% else %}
             }
-    {% endif %}
+      {% endif %}
     {% endfor %}
+  {% endif %}
           ],
-          "title": "Undercloud Network Throughput",
+          "title": "{{group}} Network Throughput",
           "showTitle": true
+  {% if not loop.last %}
         },
-        {
-          "collapse": true,
-          "editable": true,
-          "height": "250px",
-          "panels": [
-    {% for host in groups['controller'] %}
-            {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": null,
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "leftLogBase": 1,
-                "leftMax": null,
-                "leftMin": null,
-                "rightLogBase": 1,
-                "rightMax": null,
-                "rightMin": null,
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
-              "isNew": true,
-              "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
-                "max": true,
-                "min": true,
-                "rightSide": true,
-                "show": true,
-                "total": false,
-                "values": true
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [
-                {
-                  "alias": "RX",
-                  "transform": "negative-Y"
-                }
-              ],
-              "span": 12,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.tx, 'TX')"
-                },
-                {
-                  "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.rx, 'RX')"
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "{{host}} - $Interface Throughput",
-              "tooltip": {
-                "shared": true,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "x-axis": true,
-              "y-axis": true,
-              "y_formats": [
-                "Bps",
-                "short"
-              ]
-    {% if not loop.last %}
-            },
-    {% else %}
-            }
-    {% endif %}
-    {% endfor %}
-          ],
-          "title": "Controller Network Throughput",
-          "showTitle": true
-        },
-        {
-          "collapse": true,
-          "editable": true,
-          "height": "250px",
-          "panels": [
-    {% for host in groups['compute'] %}
-            {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": null,
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "leftLogBase": 1,
-                "leftMax": null,
-                "leftMin": null,
-                "rightLogBase": 1,
-                "rightMax": null,
-                "rightMin": null,
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-    {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
-              "isNew": true,
-              "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
-                "max": true,
-                "min": true,
-                "rightSide": true,
-                "show": true,
-                "total": false,
-                "values": true
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [
-                {
-                  "alias": "RX",
-                  "transform": "negative-Y"
-                }
-              ],
-              "span": 12,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.tx, 'TX')"
-                },
-                {
-                  "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}_localdomain.$Interface.if_octets.rx, 'RX')"
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "{{host}} - $Interface Throughput",
-              "tooltip": {
-                "shared": true,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "x-axis": true,
-              "y-axis": true,
-              "y_formats": [
-                "Bps",
-                "short"
-              ]
-    {% if not loop.last %}
-            },
-    {% else %}
-            }
-    {% endif %}
-    {% endfor %}
-          ],
-          "title": "Compute Nodes Network Throughput",
-          "showTitle": true
+  {% else %}
         }
+  {% endif %}
+{% endfor %}
       ],
       "time": {
         "from": "now-1h",
@@ -585,21 +238,69 @@
       "templating": {
         "list": [
           {
-            "type": "query",
-            "datasource": null,
-            "refresh": true,
-            "name": "Interface",
-            "options": [],
-            "includeAll": false,
             "allFormat": "glob",
+            "current": {
+              "text": "interface-br-ctlplane",
+              "value": "interface-br-ctlplane"
+            },
+            "datasource": null,
+            "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "query": "{{item.prefix}}.*.interface-*",
+            "name": "undercloud_interface",
+            "options": [],
+            "query": "{{item.prefix}}.*undercloud*.interface-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
             "current": {
               "text": "interface-br-ex",
-              "value": "interface-br-ex",
-              "tags": []
-            }
+              "value": "interface-br-ex"
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "controller_interface",
+            "options": [],
+            "query": "{{item.prefix}}.*controller*.interface-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
+              "text": "None",
+              "value": "",
+              "isNone": true
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "ceph_interface",
+            "options": [],
+            "query": "{{item.prefix}}.*ceph*.interface-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
+              "text": "interface-br-ex",
+              "value": "interface-br-ex"
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "compute_interface",
+            "options": [],
+            "query": "{{item.prefix}}.*compute*.interface-*",
+            "refresh": true,
+            "type": "query"
           }
         ]
       },

@@ -1,6 +1,6 @@
 ---
 #
-# Install collectd for browbeat
+# Install/run collectd for browbeat
 #
 
 - name: Check for epel
@@ -10,10 +10,12 @@
 
 - name: Install epel repo
   command: rpm -ivh {{ epel_repo }}
+  become: true
   when: epel_installed.rc != 0
 
 - name: Install collectd rpms
   yum: name={{ item }} state=present
+  become: true
   with_items:
     - collectd
     - collectd-turbostat
@@ -25,6 +27,7 @@
     owner=root
     group=root
     mode=0644
+  become: true
   with_items:
     - interval: "{{ collectd_interval }}"
       ip_address: "{{ graphite_host }}"
@@ -37,49 +40,50 @@
     owner=root
     group=root
     mode=0755
-
-- name: Setup collectd service
-  service: name=collectd state=restarted enabled=yes
-  when: "'controller' in group_names"
-
-- name: Setup collectd service
-  service: name=collectd state=restarted enabled=yes
-  when: "'compute in group_names' and collectd_compute"
-
-- name: Stop collectd service
-  service: name=collectd state=stopped
-  when: "'compute in group_names' and not collectd_compute"
+  become: true
 
 #
 # Configure selinux bits
 #
 - name: Check for collectd permissive
   shell: semodule -l | grep -q permissive_collectd_t
+  become: true
   register: collectd_permissive
   ignore_errors: true
   changed_when: false
 
 - name: Set permissive for collectd
   shell: semanage permissive -a collectd_t
+  become: true
   when: collectd_permissive.rc != 0
 
 #
-# additional policy bits may be needed for exec
+# Additional policy bits may be needed for exec
 #
-- name: collectd policy customization
+- name: Collectd policy customization
   copy:
     src=custom-collectd.pp
     dest=/root/custom-collectd.pp
     owner=root
     group=root
     mode=644
+  become: true
 
 - name: Check for collectd custom
   shell: semodule -l | grep -q custom-collectd
+  become: true
   register: collectd_custom
   ignore_errors: true
   changed_when: false
 
 - name: Set custom policy for collectd
   shell: semodule -i /root/custom-collectd.pp
+  become: true
   when: collectd_custom.rc != 0
+
+#
+# Start collectd service
+#
+- name: Setup collectd service
+  service: name=collectd state=restarted enabled=true
+  become: true

@@ -9,7 +9,10 @@ dns_server: 8.8.8.8
 # Collectd interval (seconds)
 collectd_interval: 10
 
-# Run collectd on the compute nodes
+# Run collectd on specific nodes:
+collectd_undercloud: true
+collectd_controller: true
+collectd_ceph: true
 collectd_compute: false
 
 # epel Repository for collectd packages

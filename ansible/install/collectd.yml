@@ -1,19 +1,48 @@
 ---
 #
-# Playbook to install connmon on undercloud/overcloud
+# Playbook to install collectd on undercloud/overcloud
 #
+
 - hosts: undercloud
   remote_user: stack
-  vars:
-    ansible_become: true
   roles:
-  - common
-  - collectd
+    - { role: common, when: collectd_undercloud }
+    - { role: collectd, when: collectd_undercloud }
+  tasks:
+    - name: Collectd off if not collectd_undercloud
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_undercloud
 
-- hosts: controller:compute
+- hosts: controller
   remote_user: heat-admin
-  vars:
-    ansible_become: true
   roles:
-  - common
-  - collectd
+    - { role: common, when: collectd_controller }
+    - { role: collectd, when: collectd_controller }
+  tasks:
+    - name: Collectd off if not collectd_controller
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_controller
+
+- hosts: ceph
+  remote_user: heat-admin
+  roles:
+    - { role: common, when: collectd_ceph }
+    - { role: collectd, when: collectd_ceph }
+  tasks:
+    - name: Collectd off if not collectd_ceph
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_ceph
+
+- hosts: compute
+  remote_user: heat-admin
+  roles:
+    - { role: common, when: collectd_compute }
+    - { role: collectd, when: collectd_compute }
+  tasks:
+    - name: Collectd off if not collectd_compute
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_compute
