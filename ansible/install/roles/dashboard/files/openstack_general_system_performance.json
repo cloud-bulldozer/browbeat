@@ -156,6 +156,230 @@
             "pointradius": 5,
             "points": false,
             "renderer": "flot",
+            "repeat": "cpus0",
+            "scopedVars": {},
+            "seriesOverrides": [],
+            "span": null,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-system), 'System')",
+                "textEditor": false
+              },
+              {
+                "refId": "B",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-user), 'User')",
+                "textEditor": false
+              },
+              {
+                "refId": "C",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-nice), 'Nice')",
+                "textEditor": false
+              },
+              {
+                "refId": "D",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-steal), 'Steal')",
+                "textEditor": false
+              },
+              {
+                "refId": "E",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-softirq), 'SoftIRQ')",
+                "textEditor": false
+              },
+              {
+                "refId": "F",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-interrupt), 'Interrupt')",
+                "textEditor": false
+              },
+              {
+                "refId": "G",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-wait), 'Wait')",
+                "textEditor": false
+              },
+              {
+                "refId": "H",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus0.cpu-idle), 'Idle')",
+                "textEditor": false
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $cpus0",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Per CPU Logical CPU Core (0-9)"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 3,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": "cpus00",
+            "scopedVars": {},
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-system), 'System')",
+                "textEditor": false
+              },
+              {
+                "refId": "B",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-user), 'User')",
+                "textEditor": false
+              },
+              {
+                "refId": "C",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-nice), 'Nice')",
+                "textEditor": false
+              },
+              {
+                "refId": "D",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-steal), 'Steal')",
+                "textEditor": false
+              },
+              {
+                "refId": "E",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-softirq), 'SoftIRQ')",
+                "textEditor": false
+              },
+              {
+                "refId": "F",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-interrupt), 'Interrupt')",
+                "textEditor": false
+              },
+              {
+                "refId": "G",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-wait), 'Wait')",
+                "textEditor": false
+              },
+              {
+                "refId": "H",
+                "target": "alias(averageSeries($Cloud.$Node.$cpus00.cpu-idle), 'Idle')",
+                "textEditor": false
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - $cpus00",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Per CPU Logical CPU Core (10-99)"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 4,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
             "seriesOverrides": [],
             "span": 12,
             "stack": true,
@@ -220,7 +444,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 3,
+            "id": 5,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -340,7 +564,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 4,
+            "id": 6,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -413,7 +637,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 5,
+            "id": 7,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -491,7 +715,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 6,
+            "id": 8,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -565,7 +789,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 7,
+            "id": 9,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -639,7 +863,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 8,
+            "id": 10,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -713,7 +937,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 9,
+            "id": 11,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -783,7 +1007,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 10,
+            "id": 12,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -858,7 +1082,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 11,
+            "id": 13,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -932,7 +1156,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 12,
+            "id": 14,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1019,7 +1243,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 13,
+            "id": 15,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1093,7 +1317,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 14,
+            "id": 16,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1167,7 +1391,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 15,
+            "id": 17,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1241,7 +1465,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 16,
+            "id": 18,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1328,7 +1552,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 17,
+            "id": 19,
             "isNew": true,
             "legend": {
               "alignAsTable": false,
@@ -1402,7 +1626,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 18,
+            "id": 20,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1467,7 +1691,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 19,
+            "id": 21,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1541,7 +1765,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 20,
+            "id": 22,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1636,7 +1860,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 21,
+            "id": 23,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1703,7 +1927,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 22,
+            "id": 24,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1779,7 +2003,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 23,
+            "id": 25,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1871,7 +2095,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 24,
+            "id": 26,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -1956,7 +2180,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 25,
+            "id": 27,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2030,7 +2254,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 26,
+            "id": 28,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2186,7 +2410,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 27,
+            "id": 29,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2302,7 +2526,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 28,
+            "id": 30,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2410,7 +2634,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 29,
+            "id": 31,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2478,7 +2702,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 30,
+            "id": 32,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2562,7 +2786,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 31,
+            "id": 33,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2654,7 +2878,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 32,
+            "id": 34,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2730,7 +2954,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 33,
+            "id": 35,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -2894,7 +3118,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 34,
+            "id": 36,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3010,7 +3234,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 35,
+            "id": 37,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3078,7 +3302,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 36,
+            "id": 38,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3162,7 +3386,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 37,
+            "id": 39,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3303,7 +3527,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 38,
+            "id": 40,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3465,7 +3689,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 39,
+            "id": 41,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3587,7 +3811,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 40,
+            "id": 42,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3701,7 +3925,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 41,
+            "id": 43,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3775,7 +3999,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 42,
+            "id": 44,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3865,7 +4089,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 43,
+            "id": 45,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3963,7 +4187,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 44,
+            "id": 46,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4045,7 +4269,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 45,
+            "id": 47,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4215,7 +4439,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 46,
+            "id": 48,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4337,7 +4561,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 47,
+            "id": 49,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4411,7 +4635,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 48,
+            "id": 50,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4501,7 +4725,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 49,
+            "id": 51,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4648,7 +4872,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 50,
+            "id": 52,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4805,7 +5029,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 51,
+            "id": 53,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4922,7 +5146,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 52,
+            "id": 54,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5031,7 +5255,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 53,
+            "id": 55,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5100,7 +5324,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 54,
+            "id": 56,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5185,7 +5409,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 55,
+            "id": 57,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5278,7 +5502,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 56,
+            "id": 58,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5355,7 +5579,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 57,
+            "id": 59,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5520,7 +5744,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 58,
+            "id": 60,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5637,7 +5861,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 59,
+            "id": 61,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5706,7 +5930,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 60,
+            "id": 62,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5791,7 +6015,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 61,
+            "id": 63,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5933,7 +6157,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 62,
+            "id": 64,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6090,7 +6314,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 63,
+            "id": 65,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6207,7 +6431,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 64,
+            "id": 66,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6316,7 +6540,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 65,
+            "id": 67,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6385,7 +6609,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 66,
+            "id": 68,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6470,7 +6694,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 67,
+            "id": 69,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6563,7 +6787,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 68,
+            "id": 70,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6640,7 +6864,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 69,
+            "id": 71,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6805,7 +7029,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 70,
+            "id": 72,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6922,7 +7146,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 71,
+            "id": 73,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6991,7 +7215,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 72,
+            "id": 74,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7076,7 +7300,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 73,
+            "id": 75,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7218,7 +7442,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 74,
+            "id": 76,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7375,7 +7599,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 75,
+            "id": 77,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7492,7 +7716,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 76,
+            "id": 78,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7601,7 +7825,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 77,
+            "id": 79,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7670,7 +7894,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 78,
+            "id": 80,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7755,7 +7979,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 79,
+            "id": 81,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7848,7 +8072,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 80,
+            "id": 82,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7925,7 +8149,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 81,
+            "id": 83,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8090,7 +8314,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 82,
+            "id": 84,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8207,7 +8431,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 83,
+            "id": 85,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8276,7 +8500,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 84,
+            "id": 86,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8361,7 +8585,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 85,
+            "id": 87,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8503,7 +8727,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 86,
+            "id": 88,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8660,7 +8884,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 87,
+            "id": 89,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8777,7 +9001,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 88,
+            "id": 90,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8886,7 +9110,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 89,
+            "id": 91,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8955,7 +9179,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 90,
+            "id": 92,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9040,7 +9264,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 91,
+            "id": 93,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9133,7 +9357,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 92,
+            "id": 94,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9210,7 +9434,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 93,
+            "id": 95,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9375,7 +9599,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 94,
+            "id": 96,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9492,7 +9716,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 95,
+            "id": 97,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9561,7 +9785,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 96,
+            "id": 98,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9646,7 +9870,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 97,
+            "id": 99,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9788,7 +10012,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 98,
+            "id": 100,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9950,6 +10174,41 @@
           "name": "Disk",
           "options": [],
           "query": "$Cloud.$Node.disk-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "All",
+            "value": "{cpu-0,cpu-1,cpu-2,cpu-3,cpu-4,cpu-5,cpu-6,cpu-7,cpu-8,cpu-9}"
+          },
+          "datasource": null,
+          "hideLabel": true,
+          "includeAll": true,
+          "label": "",
+          "multi": true,
+          "multiFormat": "glob",
+          "name": "cpus0",
+          "options": [],
+          "query": "$Cloud.$Node.cpu-[0-9]",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "All",
+            "value": "{cpu-10,cpu-11,cpu-12,cpu-13,cpu-14,cpu-15,cpu-16,cpu-17,cpu-18,cpu-19,cpu-20,cpu-21,cpu-22,cpu-23}"
+          },
+          "datasource": null,
+          "hideLabel": true,
+          "includeAll": true,
+          "multi": true,
+          "multiFormat": "glob",
+          "name": "cpus00",
+          "options": [],
+          "query": "$Cloud.$Node.cpu-[1-9][0-9]",
           "refresh": true,
           "type": "query"
         }
