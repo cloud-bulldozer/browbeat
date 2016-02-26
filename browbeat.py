@@ -6,6 +6,7 @@ import sys
 sys.path.append('lib/')
 from Tools import *
 from Rally import *
+from Shaker import *
 import ConfigParser, os
 
 # Setting up our logger
@@ -31,7 +32,7 @@ except ImportError :
     exit(1)
 
 # Browbeat specific options
-_install_opts=['connmon','browbeat']
+_install_opts=['connmon','browbeat', 'shaker']
 _config_file = 'browbeat-config.yaml'
 _config = None
 
@@ -92,10 +93,19 @@ if __name__ == '__main__':
             hosts_path=_cli_args.hosts
         if _cli_args.install[0] == 'all' :
             for tool in _install_opts:
-                _run_playbook(_config['ansible']['install'][tool],hosts_path)
+                if tool == "shaker":
+                    _run_playbook(_config['ansible']['install']['shaker'],hosts_path)
+                    _run_playbook(_config['ansible']['shaker_build'],hosts_path)
+                else:
+                    _run_playbook(_config['ansible']['install'][tool],hosts_path)
 
         elif _cli_args.install[0] in _install_opts :
-            _run_playbook(_config['ansible']['install'][_cli_args.install[0]],hosts_path)
+            if _cli_args.install[0] == "shaker":
+                _run_playbook(_config['ansible']['install']['shaker'],hosts_path)
+                _run_playbook(_config['ansible']['shaker_build'],hosts_path)
+            else:
+                _run_playbook(_config['ansible']['install'][_cli_args.install[0]],hosts_path)
+
 
 #
 # Overcloud check
@@ -128,3 +138,7 @@ if __name__ == '__main__':
         tools = Tools(_config)
         rally = Rally(_config,hosts)
         rally.start_workloads()
+        if _config['shaker']['enabled']:
+            shaker = Shaker(_config)
+            shaker.run_shaker()
+

@@ -26,3 +26,9 @@ grafana_api_key: (Your Grafana API Key)
 
 # Grafana Server IP Address (Can be hosted on the Graphite server)
 grafana_host: 1.1.1.1
+
+# Port for Shaker (5555 should suffice)
+shaker_port: 5555
+
+# Should choose m1.small or larger
+shaker_flavor: m1.small
