@@ -30,6 +30,9 @@ grafana_api_key: (Your Grafana API Key)
 # Grafana Server IP Address (Can be hosted on the Graphite server)
 grafana_host: 1.1.1.1
 
+# Dashboards - Batch number of hosts per row for all-{cpu, memory, disk, network} dashboards
+dashboards_batch: 20
+
 # Port for Shaker (5555 should suffice)
 shaker_port: 5555
 

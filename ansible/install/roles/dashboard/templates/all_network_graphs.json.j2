@@ -1,5 +1,5 @@
-{% set panel_idx = {'value': 0} %}
-{% set osp_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
+{% set vars = {'panel_idx': 0, 'inital': 0, 'initial2': 0} %}
+{% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
       "id": null,
@@ -13,14 +13,20 @@
       "hideControls": false,
       "sharedCrosshair": false,
       "rows": [
-{% for group in osp_groups %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if vars.inital == 0 %}
+         {% if vars.update({'inital': (vars.inital + 1)}) %} {% endif %}
+      {% else %}
+        },
+      {% endif %}
         {
           "collapse": true,
           "editable": true,
           "height": "250px",
           "panels": [
-  {% if group in groups %}
-    {% for host in groups[group] %}
+      {% for index, host in batched_hosts %}
             {
               "aliasColors": {},
               "bars": false,
@@ -40,8 +46,8 @@
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-      {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+              "id": {{vars.panel_idx}},
               "isNew": true,
               "legend": {
                 "alignAsTable": true,
@@ -95,26 +101,39 @@
                 "pps",
                 "short"
               ]
-      {% if not loop.last %}
-            },
-      {% else %}
+      {% if loop.last %}
             }
+      {% else %}
+            },
       {% endif %}
+      {% endfor %}
+          ],
+      {% if 'undercloud' in group %}
+          "title": "{{group}} Network pps",
+      {% else %}
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network pps",
+      {% endif %}
+          "showTitle": true
     {% endfor %}
   {% endif %}
-          ],
-          "title": "{{group}} Network pps",
-          "showTitle": true
+  {% if loop.last %}
         },
+  {% endif %}
 {% endfor %}
-{% for group in osp_groups %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if vars.initial2 == 0 %}
+         {% if vars.update({'initial2': (vars.initial2 + 1)}) %} {% endif %}
+      {% else %}
+        },
+      {% endif %}
         {
           "collapse": true,
           "editable": true,
           "height": "250px",
           "panels": [
-  {% if group in groups %}
-    {% for host in groups[group] %}
+      {% for index, host in batched_hosts %}
             {
               "aliasColors": {},
               "bars": false,
@@ -134,8 +153,8 @@
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-      {% if panel_idx.update({'value': (panel_idx.value + 1)}) %} {% endif %}
-              "id": {{panel_idx.value}},
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+              "id": {{vars.panel_idx}},
               "isNew": true,
               "legend": {
                 "alignAsTable": true,
@@ -189,19 +208,22 @@
                 "Bps",
                 "short"
               ]
-      {% if not loop.last %}
-            },
-      {% else %}
+      {% if loop.last %}
             }
+      {% else %}
+            },
       {% endif %}
+      {% endfor %}
+          ],
+      {% if 'undercloud' in group %}
+          "title": "{{group}} Disk Throughput",
+      {% else %}
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network Throughput",
+      {% endif %}
+          "showTitle": true
     {% endfor %}
   {% endif %}
-          ],
-          "title": "{{group}} Network Throughput",
-          "showTitle": true
-  {% if not loop.last %}
-        },
-  {% else %}
+  {% if loop.last %}
         }
   {% endif %}
 {% endfor %}
