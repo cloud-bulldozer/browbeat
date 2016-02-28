@@ -1066,7 +1066,6 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
-            "decimals": 1,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -1537,6 +1536,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 0,
@@ -1676,6 +1676,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 0,
@@ -1844,7 +1845,6 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
-            "decimals": null,
             "editable": true,
             "error": false,
             "fill": 0,
@@ -1911,7 +1911,6 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
-            "decimals": null,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -1987,7 +1986,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
-            "decimals": 0,
+            "decimals": 1,
             "editable": true,
             "error": false,
             "fill": 0,
@@ -3345,11 +3344,11 @@
               },
               {
                 "refId": "E",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.processes, 'Dnsmasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.processes, 'Dnsmasq - Ironic Processes')"
               },
               {
                 "refId": "F",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.threads, 'DnsMasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_count.threads, 'DnsMasq - Ironic Threads')"
               }
             ],
             "timeFrom": null,
@@ -3387,6 +3386,98 @@
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
             "id": 39,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_count.processes, 'Ceph-OSD Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_count.threads, 'Ceph-OSD Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_count.processes, 'Ceph-Mon Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_count.threads, 'Ceph-Mon Threads')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_count.processes, 'Salt-Minion Processes')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_count.threads, 'Salt-Minion Threads')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_count.processes, 'Diamond Processes')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_count.threads, 'Diamond Threads')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": false,
+            "y-axis": false,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 40,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3512,6 +3603,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -3527,7 +3619,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 40,
+            "id": 41,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3674,6 +3766,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -3689,7 +3782,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 41,
+            "id": 42,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3796,6 +3889,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -3811,7 +3905,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 42,
+            "id": 43,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3910,6 +4004,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -3925,7 +4020,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 43,
+            "id": 44,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -3984,6 +4079,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -3999,7 +4095,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 44,
+            "id": 45,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4074,6 +4170,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4089,7 +4186,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 45,
+            "id": 46,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4172,6 +4269,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4187,7 +4285,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 46,
+            "id": 47,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4254,6 +4352,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4269,7 +4368,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 47,
+            "id": 48,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4424,6 +4523,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4439,7 +4539,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 48,
+            "id": 49,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4546,6 +4646,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4561,7 +4662,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 49,
+            "id": 50,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4620,6 +4721,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4635,7 +4737,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 50,
+            "id": 51,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4684,11 +4786,11 @@
               },
               {
                 "refId": "F",
-                "target": "alias(divideSeries(scale($Cloud.$Node.processes-dnsmasq-ironic.ps_cputime.syst, 0.0001), #A), 'Dnsmasq - Ironic')"
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-dnsmasq-ironic.ps_cputime.syst, 0.0001), #A), 'Dnsmasq - Ironic System')"
               },
               {
                 "refId": "G",
-                "target": "alias(divideSeries(scale($Cloud.$Node.processes-dnsmasq-ironic.ps_cputime.user, 0.0001), #A), 'DnsMasq - Ironic')"
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-dnsmasq-ironic.ps_cputime.user, 0.0001), #A), 'DnsMasq - Ironic User')"
               }
             ],
             "timeFrom": null,
@@ -4710,6 +4812,7 @@
             "aliasColors": {},
             "bars": false,
             "datasource": null,
+            "decimals": 2,
             "editable": true,
             "error": false,
             "fill": 1,
@@ -4725,7 +4828,106 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 51,
+            "id": 52,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "hide": true,
+                "refId": "A",
+                "target": "alias(sumSeries(offset(scale($Cloud.$Node.cpu-*.cpu-idle, 0), 1)), 'cores')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-ceph-osd.ps_cputime.syst, 0.0001), #A), 'Ceph-OSD System')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-ceph-osd.ps_cputime.user, 0.0001), #A), 'Ceph-OSD User')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-ceph-mon.ps_cputime.syst, 0.0001), #A), 'Ceph-Mon System')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-ceph-mon.ps_cputime.user, 0.0001), #A), 'Ceph-Mon User')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-salt-minion.ps_cputime.syst, 0.0001), #A), 'Salt-Minion System')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-salt-minion.ps_cputime.user, 0.0001), #A), 'Salt-Minion User')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-diamond.ps_cputime.syst, 0.0001), #A), 'Diamond System')"
+              },
+              {
+                "refId": "I",
+                "target": "alias(divideSeries(scale($Cloud.$Node.processes-diamond.ps_cputime.user, 0.0001), #A), 'Diamond User')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 2,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 53,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -4872,7 +5074,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 52,
+            "id": 54,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5029,7 +5231,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 53,
+            "id": 55,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5146,7 +5348,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 54,
+            "id": 56,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5255,7 +5457,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 55,
+            "id": 57,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5324,7 +5526,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 56,
+            "id": 58,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5409,7 +5611,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 57,
+            "id": 59,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5502,7 +5704,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 58,
+            "id": 60,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5579,7 +5781,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 59,
+            "id": 61,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5744,7 +5946,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 60,
+            "id": 62,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5861,7 +6063,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 61,
+            "id": 63,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5930,7 +6132,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 62,
+            "id": 64,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -5974,11 +6176,11 @@
               },
               {
                 "refId": "E",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_rss, 'Dnsmasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_rss, 'Dnsmasq - Ironic RSS')"
               },
               {
                 "refId": "F",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_vm, 'DnsMasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_vm, 'DnsMasq - Ironic Virtual')"
               }
             ],
             "timeFrom": null,
@@ -6015,7 +6217,100 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 63,
+            "id": 65,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_rss, 'Ceph-OSD RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_vm, 'Ceph-OSD Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_rss, 'Ceph-Mon RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_vm, 'Ceph-Mon Virtual')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_rss, 'Salt-Minion RSS')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_vm, 'Salt-Minion Virtual')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_rss, 'Diamond RSS')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_vm, 'Diamond Virtual')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 66,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6157,7 +6452,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 64,
+            "id": 67,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6314,7 +6609,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 65,
+            "id": 68,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6431,7 +6726,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 66,
+            "id": 69,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6540,7 +6835,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 67,
+            "id": 70,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6609,7 +6904,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 68,
+            "id": 71,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6694,7 +6989,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 69,
+            "id": 72,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6787,7 +7082,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 70,
+            "id": 73,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -6864,7 +7159,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 71,
+            "id": 74,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7029,7 +7324,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 72,
+            "id": 75,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7146,7 +7441,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 73,
+            "id": 76,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7215,7 +7510,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 74,
+            "id": 77,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7259,11 +7554,11 @@
               },
               {
                 "refId": "E",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_pagefaults.majflt, 'Dnsmasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_pagefaults.majflt, 'Dnsmasq - Ironic Majflt')"
               },
               {
                 "refId": "F",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_pagefaults.minflt, 'DnsMasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_pagefaults.minflt, 'DnsMasq - Ironic Minflt')"
               }
             ],
             "timeFrom": null,
@@ -7300,7 +7595,100 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 75,
+            "id": 78,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_pagefaults.majflt, 'Ceph-OSD Majflt')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_pagefaults.minflt, 'Ceph-OSD Minflt')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_pagefaults.majflt, 'Ceph-Mon Majflt')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_pagefaults.minflt, 'Ceph-Mon Minflt')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_pagefaults.majflt, 'Salt-Minion Majflt')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_pagefaults.minflt, 'Salt-Minion Minflt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_pagefaults.majflt, 'Diamond Majflt')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_pagefaults.minflt, 'Diamond Minflt')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 79,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7442,7 +7830,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 76,
+            "id": 80,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7599,7 +7987,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 77,
+            "id": 81,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7716,7 +8104,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 78,
+            "id": 82,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7825,7 +8213,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 79,
+            "id": 83,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7894,7 +8282,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 80,
+            "id": 84,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -7979,7 +8367,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 81,
+            "id": 85,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8072,7 +8460,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 82,
+            "id": 86,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8149,7 +8537,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 83,
+            "id": 87,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8314,7 +8702,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 84,
+            "id": 88,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8431,7 +8819,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 85,
+            "id": 89,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8500,7 +8888,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 86,
+            "id": 90,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8544,11 +8932,11 @@
               },
               {
                 "refId": "E",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_ops.read, 'Dnsmasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_ops.read, 'Dnsmasq - Ironic Read')"
               },
               {
                 "refId": "F",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_ops.write, 'DnsMasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_ops.write, 'DnsMasq - Ironic Write')"
               }
             ],
             "timeFrom": null,
@@ -8585,7 +8973,100 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 87,
+            "id": 91,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.read, 'Ceph-OSD Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.write, 'Ceph-OSD Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.read, 'Ceph-Mon Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.write, 'Ceph-Mon Write')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_disk_ops.read, 'Salt-Minion Read')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_disk_ops.write, 'Salt-Minion Write')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_disk_ops.read, 'Diamond Read')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_disk_ops.write, 'Diamond Write')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "iops",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 92,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8727,7 +9208,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 88,
+            "id": 93,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -8884,7 +9365,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 89,
+            "id": 94,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9001,7 +9482,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 90,
+            "id": 95,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9110,7 +9591,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 91,
+            "id": 96,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9179,7 +9660,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 92,
+            "id": 97,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9264,7 +9745,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 93,
+            "id": 98,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9357,7 +9838,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 94,
+            "id": 99,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9434,7 +9915,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 95,
+            "id": 100,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9599,7 +10080,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 96,
+            "id": 101,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9716,7 +10197,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 97,
+            "id": 102,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9785,7 +10266,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 98,
+            "id": 103,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -9829,11 +10310,11 @@
               },
               {
                 "refId": "E",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_octets.read, 'Dnsmasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_octets.read, 'Dnsmasq - Ironic Read')"
               },
               {
                 "refId": "F",
-                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_octets.write, 'DnsMasq - Ironic')"
+                "target": "alias($Cloud.$Node.processes-dnsmasq-ironic.ps_disk_octets.write, 'DnsMasq - Ironic Write')"
               }
             ],
             "timeFrom": null,
@@ -9870,7 +10351,100 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 99,
+            "id": 104,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.read, 'Ceph-OSD Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.write, 'Ceph-OSD Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.read, 'Ceph-Mon Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.write, 'Ceph-Mon Write')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_disk_octets.read, 'Salt-Minion Read')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.processes-salt-minion.ps_disk_octets.write, 'Salt-Minion Write')"
+              },
+              {
+                "refId": "G",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_disk_octets.read, 'Diamond Read')"
+              },
+              {
+                "refId": "H",
+                "target": "alias($Cloud.$Node.processes-diamond.ps_disk_octets.write, 'Diamond Write')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - Ceph",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 105,
             "isNew": true,
             "legend": {
               "alignAsTable": true,
@@ -10012,7 +10586,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 100,
+            "id": 106,
             "isNew": true,
             "legend": {
               "alignAsTable": true,

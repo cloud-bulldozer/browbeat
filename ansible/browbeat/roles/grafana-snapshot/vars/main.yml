@@ -93,5 +93,5 @@ general_panels:
     name: load-uptime
   - panelId: 26
     name: processes
-  - panelId: 100
+  - panelId: 106
     name: tail-errors
