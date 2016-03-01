@@ -16,6 +16,7 @@ ansible:
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
   grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  shaker_build: ansible/install/shaker_build.yml
 grafana:
   enabled: true
   cloud_name: openstack

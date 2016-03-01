@@ -32,7 +32,7 @@ except ImportError :
     exit(1)
 
 # Browbeat specific options
-_install_opts=['connmon','browbeat', 'shaker']
+_install_opts = ['connmon', 'browbeat', 'shaker-build']
 _config_file = 'browbeat-config.yaml'
 _config = None
 
@@ -70,8 +70,8 @@ if __name__ == '__main__':
             help='Run the Browbeat Overcloud Checks')
     _cli.add_argument('-w','--workloads',action='store_true',
             help='Run the Browbeat workloads')
-    _cli.add_argument('-i','--install',nargs=1,choices=_install_opts,dest='install',
-            help='Install Browbeat Tools')
+    _cli.add_argument('-i', '--install', nargs=1, choices=_install_opts, dest='install',
+            help='Install/Setup Browbeat Tools/Workloads')
     _cli.add_argument('--debug',action='store_true',
             help='Enable Debug messages')
     _cli_args = _cli.parse_args()
@@ -93,15 +93,13 @@ if __name__ == '__main__':
             hosts_path=_cli_args.hosts
         if _cli_args.install[0] == 'all' :
             for tool in _install_opts:
-                if tool == "shaker":
-                    _run_playbook(_config['ansible']['install']['shaker'],hosts_path)
+                if tool == 'shaker-build':
                     _run_playbook(_config['ansible']['shaker_build'],hosts_path)
                 else:
                     _run_playbook(_config['ansible']['install'][tool],hosts_path)
 
         elif _cli_args.install[0] in _install_opts :
-            if _cli_args.install[0] == "shaker":
-                _run_playbook(_config['ansible']['install']['shaker'],hosts_path)
+            if _cli_args.install[0] == 'shaker-build':
                 _run_playbook(_config['ansible']['shaker_build'],hosts_path)
             else:
                 _run_playbook(_config['ansible']['install'][_cli_args.install[0]],hosts_path)

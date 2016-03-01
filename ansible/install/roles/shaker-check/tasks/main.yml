@@ -1,6 +1,6 @@
 ---
 #
-# Tasks to check requirements for isntalling shaker
+# Tasks to check requirements for installing shaker
 #
 
 - name: Check for heat
