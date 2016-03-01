@@ -76,7 +76,6 @@ class Shaker:
         cmd = ("{}; {}").format(cmd_1, cmd_2)
         self.tools.run_cmd(cmd)
         self.scenarios_count += 1
-        print os.path.join(result_dir,test_name)
         if os.path.isfile(os.path.join(result_dir,test_name + "." + "html")):
             self.logger.info("Completed Scenario: {}".format(scenario))
             self.logger.info("Saved report to: {}".format(os.path.join(result_dir, test_name + "." + "html")))

@@ -29,6 +29,7 @@ grafana:
     grafana_api_key: (Your API Key Here)
     snapshot_compute: false
 rally:
+  enabled: true
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate

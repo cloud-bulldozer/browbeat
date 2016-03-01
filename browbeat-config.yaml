@@ -54,6 +54,7 @@ shaker:
       compute: 1
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
 rally:
+  enabled: true
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
