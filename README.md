@@ -20,17 +20,15 @@ Table of Contents
       * [Run performance stress tests through browbeat:](#run-performance-stress-tests-through-browbeat)
 
 # Browbeat
-This started as a project to help determine the number of database connections a given OpenStack deployment uses. It has since
-grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the
-overcloud.
+This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the overcloud.
 
 # Before running browbeat
 * Execute the ansible/gen_hostfile.sh script (builds the ssh config)
-* Install Tools (rally , shaker, connmon, etc)
-* Configure browbeat.cfg to match your tests
+* Install Tools (connmon, collectd, graphite, grafana)
+* Configure browbeat-config.yaml to match your tests
 
 # How to run Browbeat?
-On the Red Hat OpenStack Director host, as the Stack user jump into a venv w/ Rally and you simply run:
+On the Red Hat OpenStack Director host, as the Stack user jump into the browbeat venv and you simply run:
 
     ./browbeat.py --help
 
@@ -57,11 +55,14 @@ $ cd browbeat/ansible
 $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 $ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 $ ansible-playbook -i hosts install/browbeat.yml
+$ vi install/group_vars/all # Edit shaker subnet/start/end/gw settings
+$ ansible-playbook -i hosts install/shaker_network.yml
+$ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
-### (Optional) Install shaker:
+### (Optional) Install collectd:
 ```
-$ ansible-playbook -i hosts install/shaker.yml
+$ ansible-playbook -i hosts install/collectd.yml
 ```
 
 ### (Optional) Install connmon:
@@ -99,11 +100,14 @@ $ ssh undercloud-root
 [stack@ospd ansible]$ sudo pip install ansible
 [stack@ospd ansible]$ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
+[stack@ospd ansible]$ vi install/group_vars/all # Edit shaker subnet/start/end/gw settings
+[stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_network.yml
+[stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
-### (Optional) Install shaker:
+### (Optional) Install collectd:
 ```
-[stack@ospd ansible]$ ansible-playbook -i hosts install/shaker.yml
+[stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
 ```
 
 ### (Optional) Install connmon:

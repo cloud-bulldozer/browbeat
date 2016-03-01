@@ -1,12 +1,17 @@
 ---
 #
-# Playbook to install browbeat on undercloud
+# Playbook to install Browbeat (Rally + Shaker) on undercloud
 #
+
+- hosts: controller
+  remote_user: heat-admin
+  roles:
+    - shaker-check
 
 - hosts: undercloud
   remote_user: stack
   vars:
     results_in_httpd: true
   roles:
-  - common
-  - browbeat
+    - common
+    - browbeat

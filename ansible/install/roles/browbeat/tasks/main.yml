@@ -3,6 +3,10 @@
 # Browbeat Install
 #
 
+- name: Install python development tools
+  yum: name=python-devel state=present
+  become: true
+
 - name: Install browbeat matplotlib dependencies
   yum: name={{ item }} state=present
   become: true
@@ -11,18 +15,21 @@
     - libpng-devel
 
 - name: Install pip
-  become: true
   easy_install: name=pip
+  become: true
 
 - name: Install virtualenv
-  become: true
   pip: name=virtualenv
+  become: true
 
 - name: Create browbeat virtualenv
   command: virtualenv /home/stack/browbeat-venv creates="/home/stack/browbeat-venv"
 
 - name: Create rally virtualenv
   command: virtualenv /home/stack/rally-venv creates="/home/stack/rally-venv"
+
+- name: Create shaker virtualenv
+  command: virtualenv /home/stack/shaker-venv creates="/home/stack/shaker-venv"
 
 - name: Clone browbeat on undercloud
   git: repo=https://github.com/jtaleric/browbeat.git dest=/home/stack/browbeat
@@ -37,18 +44,33 @@
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
 - name: Install requirements.txt into browbeat-venv
-  become: true
   pip: requirements=/home/stack/browbeat/requirements.txt virtualenv=/home/stack/browbeat-venv
+  become: true
 
 - name: Install rally into rally-venv
-  become: true
   pip: name=rally virtualenv=/home/stack/rally-venv
+  become: true
 
 - name: Setup rally database
   shell: . /home/stack/rally-venv/bin/activate; rally-manage db recreate
 
 - name: Setup rally deployment
   shell: . /home/stack/rally-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
+
+- name: Install shaker
+  pip: name=pyshaker version=0.0.10 virtualenv=/home/stack/shaker-venv
+
+- name: Check for shaker port in iptables
+  shell: iptables -nvL | grep -q "dpt:"{{ shaker_port }}""
+  become: true
+  changed_when: false
+  register: shaker_iptables
+  ignore_errors: true
+
+- name: Open up shaker port in iptables
+  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport {{ shaker_port }} -j ACCEPT
+  become: true
+  when: shaker_iptables.rc == 1
 
 #
 # Serve results out of httpd if results_in_httpd is set to true

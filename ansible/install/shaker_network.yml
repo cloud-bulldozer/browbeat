@@ -1,0 +1,9 @@
+---
+#
+# Playbook for shaker-network
+#
+
+- hosts: undercloud
+  remote_user: stack
+  roles:
+    - shaker-network
