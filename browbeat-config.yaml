@@ -54,10 +54,35 @@ shaker:
       compute: 1
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
 rally:
+  enabled: true
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
   benchmarks:
+    authenticate:
+      enabled: true
+      concurrency:
+        - 64
+      times: 500
+      scenarios:
+        authentic-keystone:
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+          sla_max_avg_duration: 6
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        authentic-neutron:
+          enabled: false
+          file: rally/authenticate/validate_neutron-cc.yml
+          sla_max_avg_duration: 18
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        authentic-nova:
+          enabled: false
+          file: rally/authenticate/validate_nova-cc.yml
+          sla_max_avg_duration: 12
+          sla_max_seconds: 30
+          sla_max_failure: 0
     cinder:
       enabled: true
       concurrency:
@@ -74,30 +99,21 @@ rally:
           image_name: cirros
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           flavor_name: m1.tiny
-    keystone:
+    keystonebasic:
       enabled: true
       concurrency:
-        - 64
-      times: 500
+        - 10
+      times: 100
       scenarios:
-        authentic-keystone:
+        create-and-list-tenants:
+          enabled: false
+          file: rally/keystonebasic/create_and_list_tenants-cc.yml
+        create-and-list-users:
           enabled: true
-          file: rally/keystone/authenticate-keystone-cc.yml
-          sla_max_avg_duration: 1
+          file: rally/keystonebasic/create_and_list_users-cc.yml
+          sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
-        authentic-neutron:
-          enabled: false
-          file: rally/keystone/authenticate-neutron-cc.yml
-        authentic-nova:
-          enabled: false
-          file: rally/keystone/authenticate-nova-cc.yml
-        create-list-tenant:
-          enabled: false
-          file: rally/keystone/keystone-create-list-tenant-cc.yml
-        create-list-user:
-          enabled: false
-          file: rally/keystone/keystone-create-list-user-cc.yml
     nova:
       enabled: true
       concurrency:
