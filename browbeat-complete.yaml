@@ -34,6 +34,37 @@ rally:
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
   benchmarks:
+    authenticate:
+      enabled: true
+      concurrency:
+        - 64
+        - 128
+        - 192
+        - 256
+        - 320
+        - 384
+        - 448
+        - 512
+      times: 10000
+      scenarios:
+        authentic-keystone:
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+          sla_max_avg_duration: 6
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        authentic-neutron:
+          enabled: true
+          file: rally/authenticate/validate_neutron-cc.yml
+          sla_max_avg_duration: 18
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        authentic-nova:
+          enabled: true
+          file: rally/authenticate/validate_nova-cc.yml
+          sla_max_avg_duration: 12
+          sla_max_seconds: 30
+          sla_max_failure: 0
     cinder:
       enabled: true
       concurrency:
@@ -55,48 +86,23 @@ rally:
           flavor_name: m1.tiny
           sla_max_seconds: 30
           sla_max_failure: 0
-    keystone:
+    keystonebasic:
       enabled: true
       concurrency:
-        - 64
-        - 128
-        - 192
         - 256
-        - 320
-        - 384
-        - 448
-        - 512
-      times: 10000
+      times: 5000
       scenarios:
-        authentic-keystone:
+        create-and-list-tenants:
           enabled: true
-          file: rally/keystone/authenticate-keystone-cc.yml
-          sla_max_avg_duration: 6
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        authentic-neutron:
-          enabled: true
-          file: rally/keystone/authenticate-neutron-cc.yml
-          sla_max_avg_duration: 18
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        authentic-nova:
-          enabled: true
-          file: rally/keystone/authenticate-nova-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        create-list-tenant:
-          enabled: true
-          file: rally/keystone/keystone-create-list-tenant-cc.yml
+          file: rally/keystonebasic/create_and_list_tenants-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
           times: 5000
           concurrency:
             - 256
-        create-list-user:
+        create-and-list-users:
           enabled: true
-          file: rally/keystone/keystone-create-list-user-cc.yml
+          file: rally/keystonebasic/create_and_list_users-cc.yml
           times: 5000
           concurrency:
             - 256
