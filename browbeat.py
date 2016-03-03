@@ -4,6 +4,7 @@ import yaml
 import logging
 import sys
 sys.path.append('lib/')
+from PerfKit import PerfKit
 from Tools import *
 from Rally import *
 from Shaker import *
@@ -33,7 +34,7 @@ except ImportError :
 
 # Browbeat specific options
 _install_opts = ['connmon', 'browbeat', 'shaker-build']
-_workload_opts = ['rally', 'shaker']
+_workload_opts = ['perfkit', 'rally', 'shaker']
 _config_file = 'browbeat-config.yaml'
 _config = None
 
@@ -59,7 +60,10 @@ def _run_playbook(path, hosts, only_tag=None, skip_tag=None):
     return play.run()
 
 def _run_workload_provider(provider, ansible_hosts=None):
-    if provider == "rally":
+    if provider == "perfkit":
+        perfkit = PerfKit(_config)
+        perfkit.start_workloads()
+    elif provider == "rally":
         rally = Rally(_config, ansible_hosts)
         rally.start_workloads()
     elif provider == "shaker":

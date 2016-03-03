@@ -18,6 +18,8 @@ Table of Contents
       * [(Optional) Install connmon:](#optional-install-connmon-1)
       * [Run performance checks](#run-performance-checks-1)
       * [Run performance stress tests through browbeat:](#run-performance-stress-tests-through-browbeat)
+  * [Running PerfKitBenchmarker](#running-perfkitbenchmarker)
+  * [Contributing](#contributing)
 
 # Browbeat
 This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the overcloud.
@@ -55,8 +57,8 @@ $ cd browbeat/ansible
 $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 $ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 $ ansible-playbook -i hosts install/browbeat.yml
-$ vi install/group_vars/all # Edit shaker subnet/start/end/gw settings
-$ ansible-playbook -i hosts install/shaker_network.yml
+$ vi install/group_vars/all # Edit browbeat subnet/start/end/gw settings
+$ ansible-playbook -i hosts install/browbeat_network.yml
 $ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
@@ -100,8 +102,8 @@ $ ssh undercloud-root
 [stack@ospd ansible]$ sudo pip install ansible
 [stack@ospd ansible]$ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
-[stack@ospd ansible]$ vi install/group_vars/all # Edit shaker subnet/start/end/gw settings
-[stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_network.yml
+[stack@ospd ansible]$ vi install/group_vars/all # Edit browbeat public/private subnet/start/end/gw settings
+[stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml
 [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
@@ -129,7 +131,18 @@ Your Overcloud check output is located in check/bug_report.log
 (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
 ```
 
-## Contributing
+# Running PerfKitBenchmarker
+
+Work is on-going to utilize PerfKitBenchmarker as a workload provider to browbeat.  Many benchmarks work out of the box with browbeat.  You must ensure that your network is setup correctly to run those benchmarks and you will need to configure the settings in ansible/install/group_vars/all for browbeat public/private networks. Currently  tested benchmarks include: bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, netperf, mesh_network, mongodb_ycsb, ping, and sysbench_oltp.
+
+To run browbeat's PerfKit Benchmarks, you can start by viewing the tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml. You must add them to your specific browbeat config yaml file or enable/disable the benchmarks you wish to run in the default config file (browbeat-config.yaml).  There are many flags exposed in the configuration files to tune how those benchmarks run.  Additional flags are exposed in the soruce code of PerfKitBenchmarker available: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker
+
+Example running only PerfKitBenchmarker benchmarks with browbeat from browbeat-config.yaml:
+```
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w perfkit -s browbeat-config.yaml
+```
+
+# Contributing
 Contributions are most welcome! Pull requests need to be submitted using the gerrit code review system. Firstly, you need to login to GerritHub using your GitHub credentials and need to authorize GerritHub to access your account. Once you are logged in click you user name in the top-right corner, go to  'Settings' and under 'SSH Public Keys' you need to paste your public key. You can view your public key using:
 ```
 $ cat ~/.ssh/id_\{r or d\}sa.pub

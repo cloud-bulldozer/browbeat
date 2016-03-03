@@ -25,6 +25,9 @@
 - name: Create browbeat virtualenv
   command: virtualenv "{{ browbeat_venv }}" creates=""{{ browbeat_venv }}""
 
+- name: Create perfkit virtualenv
+  command: virtualenv "{{ perfkit_venv }}" creates=""{{ perfkit_venv }}""
+
 - name: Create rally virtualenv
   command: virtualenv "{{ rally_venv }}" creates=""{{ rally_venv }}""
 
@@ -46,6 +49,15 @@
 - name: Install requirements.txt into browbeat-venv
   pip: requirements="{{ browbeat_path }}"/requirements.txt virtualenv=""{{ browbeat_venv }}""
   become: true
+
+- name: Clone PerfKitBenchmarker on undercloud
+  git: repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git dest="{{ perfkit_venv }}"/PerfKitBenchmarker
+
+- name: Install PerfKitBenchmarker requirements into perfkit-venv
+  pip: requirements="{{ perfkit_venv }}"/PerfKitBenchmarker/requirements.txt virtualenv="{{ perfkit_venv }}"
+
+- name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
+  pip: requirements="{{ perfkit_venv }}"/PerfKitBenchmarker/requirements-openstack.txt virtualenv="{{ perfkit_venv }}"
 
 - name: Install rally into rally-venv
   pip: name=rally virtualenv="{{ rally_venv }}"

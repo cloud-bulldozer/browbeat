@@ -1,9 +1,0 @@
----
-#
-# Playbook for shaker-network
-#
-
-- hosts: undercloud
-  remote_user: "{{ local_remote_user }}"
-  roles:
-    - shaker-network

@@ -28,6 +28,23 @@ grafana:
     enabled: true
     grafana_api_key: (Your API Key Here)
     snapshot_compute: false
+perfkit:
+  enabled: true
+  sleep_before: 0
+  sleep_after: 0
+  venv: /home/stack/perfkit-venv/bin/activate
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_public_network: browbeat_public
+    openstack_private_network: browbeat_private
+  benchmarks:
+    - name: fio-centos-m1-small
+      enabled: false
+      benchmarks: fio
+      data_disk_size: 4
 shaker:
   enabled: true
   server: (Address of machine running browbeat)
