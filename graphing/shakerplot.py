@@ -125,6 +125,9 @@ def main():
     shakerplot_path = os.path.dirname(os.path.realpath(__file__))
     results_path = os.path.join(shakerplot_path.replace('graphing',
                                 'results'), args.result_dir)
+    if not os.path.isdir(results_path):
+        print "ERROR Directory doesn't exist"
+        exit(1)
     for root, dirs, files in os.walk(results_path, topdown=False):
         for name in files:
             if name.endswith('.json'):

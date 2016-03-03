@@ -50,6 +50,7 @@ shaker:
   server: (Address of machine running browbeat)
   port: 5555
   flavor: m1.small
+  join_timeout: 600
   venv: /home/stack/shaker-venv
   scenarios:
     l2:
@@ -57,6 +58,7 @@ shaker:
       density: 1
       compute: 1
       progression: linear
+      time: 60
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
     l3-north-south:
       enabled: false
@@ -64,11 +66,13 @@ shaker:
       density: 1
       compute: 1
       progression: null
+      time: 60
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
     l3-east-west:
       enabled: false
       density: 1
       compute: 1
+      time: 60
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
 rally:
   enabled: true

@@ -8,9 +8,9 @@
   tasks:
     - name: build shaker image
       shell: >
-             source "{{ overcloudrc }}"; source "{{ shaker_venv }}";
+             source {{ overcloudrc }}; source {{ shaker_venv }}/bin/activate;
              shaker-image-builder --flavor-name {{ shaker_flavor }} --image-builder-template
-             "{{ shaker_centos }}"
+             {{ shaker_centos }}
              --os-region-name regionOne
       become: true
       register: image_result

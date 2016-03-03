@@ -11,10 +11,6 @@ local_remote_user: stack
 # The Overcloud RC file
 overcloudrc: /home/stack/overcloudrc
 
-# The default Shaker
-shaker_venv: /home/stack/shakershaker-venv-venv/bin/activate
-shaker_centos: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml
-
 # The default Browbeat
 browbeat_venv: /home/stack/browbeat-venv
 
@@ -26,6 +22,9 @@ shaker_venv: /home/stack/shaker-venv
 
 # The default PerfKit venv:
 perfkit_venv: /home/stack/perfkit-venv
+
+# Shaker centos image builder template
+shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
 
 # Guest images for the Over cloud
 centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2

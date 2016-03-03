@@ -3,6 +3,7 @@ import yaml
 import logging
 import datetime
 import os
+import json
 
 class Shaker:
     def __init__(self, config):
@@ -42,6 +43,7 @@ class Shaker:
       default_density = 1
       default_compute = 1
       default_progression = "linear"
+      default_time = 60
       if "placement" in config['shaker']['scenarios'][scenario]:
           data['deployment']['accommodation'][1] = config['shaker']['scenarios'][scenario]['placement']
       else:
@@ -59,33 +61,56 @@ class Shaker:
       else:
           data['execution']['progression'] = default_progression
       data['execution']['tests']=[d for d in data['execution']['tests'] if d.get('class') == "iperf_graph"]
+      if "time" in config['shaker']['scenarios'][scenario]:
+          data['execution']['tests'][0]['time'] = config['shaker']['scenarios'][scenario]['time']
+      else:
+          data['execution']['tests'][0]['time'] = default_time
       with open(fname, 'w') as yaml_file:
           yaml_file.write( yaml.dump(data, default_flow_style=False))
+
+    def get_uuidlist(self,data):
+        uuidlist = []
+        for key in data['records'].iterkeys():
+            uuidlist.append(key)
+        return uuidlist
+
+    def result_check(self, result_dir, test_name, scenario):
+        outputfile = os.path.join(result_dir,test_name + "." + "json")
+        error = False
+        with open (outputfile) as data_file:
+            data = json.load(data_file)
+        uuidlist=self.get_uuidlist(data)
+        for uuid in uuidlist:
+            if data['records'][uuid]['status'] != "ok":
+                 error = True
+        if error:
+            self.logger.error("Failed scenario: {}".format(scenario))
+            self.logger.error("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
+            self.fail_scenarios += 1
+        else:
+            self.logger.info("Completed Scenario: {}".format(scenario))
+            self.logger.info("Saved report to: {}".format(os.path.join(result_dir, test_name + "." + "html")))
+            self.logger.info("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
+            self.pass_scenarios += 1
+
 
     def run_scenario(self, filename, result_dir, test_name, scenario):
         server_endpoint = self.config['shaker']['server']
         port_no = self.config['shaker']['port']
         flavor = self.config['shaker']['flavor']
         venv = self.config['shaker']['venv']
+        timeout = self.config['shaker']['join_timeout']
         cmd_1 = ("source {}/bin/activate; source /home/stack/overcloudrc").format(venv)
         cmd_2=("shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}"
-               " --os-region-name regionOne --no-report-on-error"
+               " --os-region-name regionOne --agent-join-timeout {6}"
                " --report {4}/{5}.html --output {4}/{5}.json"
                " --debug > {4}/{5}.log 2>&1").format(server_endpoint,
-               port_no, flavor, filename, result_dir, test_name)
+               port_no, flavor, filename, result_dir, test_name, timeout)
         cmd = ("{}; {}").format(cmd_1, cmd_2)
         self.tools.run_cmd(cmd)
         self.scenarios_count += 1
-        if os.path.isfile(os.path.join(result_dir,test_name + "." + "html")):
-            self.logger.info("Completed Scenario: {}".format(scenario))
-            self.logger.info("Saved report to: {}".format(os.path.join(result_dir, test_name + "." + "html")))
-            self.logger.info("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
-            self.pass_scenarios += 1
+        self.result_check(result_dir, test_name, scenario)
 
-        else:
-            self.logger.error("Failed scenario: {}".format(scenario))
-            self.logger.error("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
-            self.fail_scenarios += 1
 
     def run_shaker(self):
         self.logger.info("Starting Shaker workloads")
