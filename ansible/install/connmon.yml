@@ -4,7 +4,7 @@
 #
 
 - hosts: undercloud
-  remote_user: stack
+  remote_user: "{{ local_remote_user }}"
   vars:
     ansible_become: true
     undercloud: true
@@ -13,7 +13,7 @@
   - connmon
 
 - hosts: controller
-  remote_user: heat-admin
+  remote_user: "{{ host_remote_user }}"
   vars:
     ansible_become: true
     undercloud: false

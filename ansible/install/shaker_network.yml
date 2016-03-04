@@ -4,6 +4,6 @@
 #
 
 - hosts: undercloud
-  remote_user: stack
+  remote_user: "{{ local_remote_user }}"
   roles:
     - shaker-network

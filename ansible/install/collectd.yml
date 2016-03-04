@@ -4,7 +4,7 @@
 #
 
 - hosts: undercloud
-  remote_user: stack
+  remote_user: "{{ local_remote_user }}"
   roles:
     - { role: common, when: collectd_undercloud }
     - { role: collectd, when: collectd_undercloud }
@@ -15,7 +15,7 @@
       when: not collectd_undercloud
 
 - hosts: controller
-  remote_user: heat-admin
+  remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_controller }
     - { role: collectd, when: collectd_controller }
@@ -26,7 +26,7 @@
       when: not collectd_controller
 
 - hosts: ceph
-  remote_user: heat-admin
+  remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_ceph }
     - { role: collectd, when: collectd_ceph }
@@ -37,7 +37,7 @@
       when: not collectd_ceph
 
 - hosts: compute
-  remote_user: heat-admin
+  remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_compute }
     - { role: collectd, when: collectd_compute }

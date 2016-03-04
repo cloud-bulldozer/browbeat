@@ -4,13 +4,13 @@
 #
 
 - hosts: undercloud
-  remote_user: stack
+  remote_user: "{{ local_remote_user }}"
   tasks:
     - name: build shaker image
       shell: >
-             source /home/stack/overcloudrc; source /home/stack/shaker-venv/bin/activate;
+             source "{{ overcloudrc }}"; source "{{ shaker_venv }}";
              shaker-image-builder --flavor-name {{ shaker_flavor }} --image-builder-template
-             /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml
+             "{{ shaker_centos }}"
              --os-region-name regionOne
       become: true
       register: image_result

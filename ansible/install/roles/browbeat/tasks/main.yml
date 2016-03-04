@@ -23,42 +23,42 @@
   become: true
 
 - name: Create browbeat virtualenv
-  command: virtualenv /home/stack/browbeat-venv creates="/home/stack/browbeat-venv"
+  command: virtualenv "{{ browbeat_venv }}" creates=""{{ browbeat_venv }}""
 
 - name: Create rally virtualenv
-  command: virtualenv /home/stack/rally-venv creates="/home/stack/rally-venv"
+  command: virtualenv "{{ rally_venv }}" creates=""{{ rally_venv }}""
 
 - name: Create shaker virtualenv
-  command: virtualenv /home/stack/shaker-venv creates="/home/stack/shaker-venv"
+  command: virtualenv "{{ shaker_venv }}" creates=""{{ shaker_venv }}""
 
 - name: Clone browbeat on undercloud
-  git: repo=https://github.com/jtaleric/browbeat.git dest=/home/stack/browbeat
+  git: repo=https://github.com/jtaleric/browbeat.git dest="{{ home_dir }}"/browbeat
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
 - name: Generate hosts and ~/.ssh/config on undercloud
-  shell: . /home/stack/stackrc; /home/stack/browbeat/ansible/gen_hostfile.sh localhost /home/stack/.ssh/config
+  shell: . "{{ home_dir }}"/stackrc; "{{ home_dir }}"/browbeat/ansible/gen_hostfile.sh localhost "{{ home_dir }}"/.ssh/config
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
 - name: Move hosts file to correct location
-  command: mv /home/stack/hosts /home/stack/browbeat/ansible/hosts
+  command: mv "{{ home_dir }}"/hosts "{{ home_dir }}"/browbeat/ansible/hosts
   when: "'localhost' not in '{{ inventory_hostname }}'"
 
 - name: Install requirements.txt into browbeat-venv
-  pip: requirements=/home/stack/browbeat/requirements.txt virtualenv=/home/stack/browbeat-venv
+  pip: requirements="{{ browbeat_path }}"/requirements.txt virtualenv=""{{ browbeat_venv }}""
   become: true
 
 - name: Install rally into rally-venv
-  pip: name=rally virtualenv=/home/stack/rally-venv
+  pip: name=rally virtualenv="{{ rally_venv }}"
   become: true
 
 - name: Setup rally database
-  shell: . /home/stack/rally-venv/bin/activate; rally-manage db recreate
+  shell: . "{{ rally_venv}}"/bin/activate; rally-manage db recreate
 
 - name: Setup rally deployment
-  shell: . /home/stack/rally-venv/bin/activate; . /home/stack/overcloudrc; rally deployment create --fromenv --name overcloud
+  shell: . "{{ rally_venv }}"/bin/activate; . "{{ overcloudrc }}"; rally deployment create --fromenv --name overcloud
 
 - name: Install shaker
-  pip: name=pyshaker version=0.0.10 virtualenv=/home/stack/shaker-venv
+  pip: name=pyshaker version=0.0.10 virtualenv=""{{ shaker_venv }}""
 
 - name: Check for shaker port in iptables
   shell: iptables -nvL | grep -q "dpt:"{{ shaker_port }}""
@@ -77,8 +77,8 @@
 #
 
 - name: Setup browbeat.conf in /etc/httpd/conf.d
-  copy:
-    src: 00-browbeat.conf
+  template:
+    src: 00-browbeat.conf.j2
     dest: /etc/httpd/conf.d/00-browbeat.conf
     owner: root
     group: root
@@ -106,8 +106,8 @@
   become: true
   when: results_in_httpd
 
-- name: Allow httpd to serve content in /home/stack
-  file: path=/home/stack state=directory mode=0755
+- name: Allow httpd to serve content in "{{ home_dir }}"
+  file: path="{{ home_dir }}" state=directory mode=0755
   when: results_in_httpd
 
 #
@@ -115,42 +115,42 @@
 #
 
 - name: Fetch cirros image
-  get_url: url={{ cirros_image_url }} dest=/home/stack/cirros.img
+  get_url: url={{ cirros_image_url }} dest="{{ home_dir }}"/cirros.img
 
 - name: Determine is cirros image exists
-  shell: . /home/stack/overcloudrc; glance image-list | grep "cirros"
+  shell: . "{{ overcloudrc }}"; glance image-list | grep "cirros"
   register: cirros_image_exists
   ignore_errors: true
   changed_when: false
 
 - name: Upload cirros image into cloud (OSP8)
-  shell: . /home/stack/overcloudrc; glance image-create --name cirros --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/cirros.img
+  shell: . "{{ overcloudrc }}"; glance image-create --name cirros --visibility public --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/cirros.img
   when: "'cirros' not in '{{ cirros_image_exists.stdout }}'"
   register: cirros_image_osp8
   ignore_errors: true
 
 - name: Upload cirros image into cloud (OSP7)
-  shell: . /home/stack/overcloudrc; glance image-create --name cirros --is-public true --disk-format=qcow2 --container-format=bare < /home/stack/cirros.img
+  shell: . "{{ overcloudrc }}"; glance image-create --name cirros --is-public true --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/cirros.img
   when: "'cirros' not in '{{ cirros_image_exists.stdout }}' and not cirros_image_osp8.rc == 0"
   ignore_errors: true
 
 
 - name: Fetch centos7 image
-  get_url: url={{ centos_image_url }} dest=/home/stack/centos7.qcow2
+  get_url: url={{ centos_image_url }} dest="{{ home_dir }}"/centos7.qcow2
 
 - name: Determine is centos7 image exists
-  shell: . /home/stack/overcloudrc; glance image-list | grep "centos7"
+  shell: . "{{ overcloudrc }}"; glance image-list | grep "centos7"
   register: centos7_image_exists
   ignore_errors: true
   changed_when: false
 
 - name: Upload centos7 image into cloud (OSP8)
-  shell: . /home/stack/overcloudrc; glance image-create --name centos7 --visibility public --disk-format=qcow2 --container-format=bare < /home/stack/centos7.qcow2
+  shell: . "{{ overcloudrc }}"; glance image-create --name centos7 --visibility public --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/centos7.qcow2
   when: "'centos7' not in '{{ centos7_image_exists.stdout }}'"
   register: centos7_image_osp8
   ignore_errors: true
 
 - name: Upload centos7 image into cloud (OSP7)
-  shell: . /home/stack/overcloudrc; glance image-create --name centos7 --is-public true --disk-format=qcow2 --container-format=bare < /home/stack/centos7.qcow2
+  shell: . "{{ overcloudrc }}"; glance image-create --name centos7 --is-public true --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/centos7.qcow2
   when: "'centos7' not in '{{ centos7_image_exists.stdout }}' and not centos7_image_osp8.rc == 0"
   ignore_errors: true

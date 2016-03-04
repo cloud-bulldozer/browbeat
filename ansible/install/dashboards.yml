@@ -5,7 +5,7 @@
 
 - hosts: undercloud
   gather_facts: false
-  remote_user: stack
+  remote_user: "{{ local_remote_user }}"
   vars:
     overwrite_existing: true
   roles:

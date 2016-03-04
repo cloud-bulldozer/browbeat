@@ -87,3 +87,7 @@
 - name: Setup collectd service
   service: name=collectd state=restarted enabled=true
   become: true
+
+- name: Disable EPEL
+  yum: disablerepo=epel
+  become: true

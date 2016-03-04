@@ -15,13 +15,11 @@
 
 - name: Configure Connmon Host IP Address
   template:
-    src=connmon.cfg.j2
-    dest=/etc/connmon.cfg
-    owner=root
-    group=root
-    mode=0644
-  with_items:
-    - ip_address: "{{ connmon_host }}"
+    src: connmon.cfg.j2
+    dest: /etc/connmon.cfg
+    owner: root
+    group: root
+    mode: 0644
 
 # To remove the screen session: screen -X -S connmond kill
 - name: Run connmond in screen session on undercloud
@@ -30,7 +28,7 @@
   changed_when: false
 
 - name: Change connmon result owner
-  command: chown stack:stack /tmp/connmon_results.csv
+  command: chown "{{ local_remote_user }}":"{{ local_remote_user }}" /tmp/connmon_results.csv
   when: undercloud
   changed_when: false
   ignore_errors: true

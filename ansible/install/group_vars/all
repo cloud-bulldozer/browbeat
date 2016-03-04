@@ -1,9 +1,37 @@
 ---
+
+browbeat_path: /home/stack/browbeat
+home_dir: /home/stack
+
+# Login user for the remote hosts
+host_remote_user: heat-admin
+# Login user for the local/jump machine
+local_remote_user: stack
+
+# The Overcloud RC file
+overcloudrc: /home/stack/overcloudrc
+
+# The default Shaker
+shaker_venv: /home/stack/shakershaker-venv-venv/bin/activate
+shaker_centos: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml
+
+# The default Browbeat
+browbeat_venv: /home/stack/browbeat-venv
+
+# The default Rally venv
+rally_venv: /home/stack/rally-venv
+
+# The default Shaker venv
+shaker_venv: /home/stack/shaker-venv
+
+# Guest images for the Over cloud
 centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 cirros_image_url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 
+# Host where connmond will be running
 connmon_host: 192.0.2.1
 
+# DNS Server to add
 dns_server: 8.8.8.8
 
 # Collectd interval (seconds)

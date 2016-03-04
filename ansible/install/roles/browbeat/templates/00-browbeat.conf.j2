@@ -4,8 +4,8 @@
 Listen 9000
 <VirtualHost *:9000>
   ServerName browbeat-results
-  DocumentRoot "/home/stack/browbeat/results"
-  <Directory  "/home/stack/browbeat/results">
+  DocumentRoot "{{ browbeat_path }}/results"
+  <Directory  "{{ browbeat_path }}/results">
     Options Indexes FollowSymLinks
     IndexOptions NameWidth=*
     AllowOverride None
