@@ -114,6 +114,19 @@ if [[ ${#ceph_hn} -gt 0 ]]; then
   echo "${ceph}" | tee -a ${ansible_inventory_file}
  done
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[graphite]" | tee -a ${ansible_inventory_file}
+echo "## example host entry." | tee -a ${ansible_inventory_file}
+echo "#host-01" | tee -a ${ansible_inventory_file}
+echo "" | tee -a ${ansible_inventory_file}
+echo "[grafana]" | tee -a ${ansible_inventory_file}
+echo "## example host entry." | tee -a ${ansible_inventory_file}
+echo "#host-02" | tee -a ${ansible_inventory_file}
+
+echo "---------------------------"
+echo "IMPORTANT: If you plan on deploying graphite and grafana, update hosts and make sure"
+echo "           the [graphite] and [grafana] hosts entries are updated with valid hosts."
+echo "           You will need to have passwordless access to root on these hosts."
 echo "---------------------------"
 
 # Before referencing a host in ~/.ssh/config, ensure correct permissions on ssh config file

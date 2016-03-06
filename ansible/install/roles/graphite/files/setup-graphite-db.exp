@@ -1,0 +1,32 @@
+#!/usr/bin/expect
+#
+# non-interactive setup of the initial graphite.db sqlite3 database
+#
+# if run manually, the following is the expected output.
+# Would you like to create one now? (yes/no): yes
+# Username (leave blank to use 'root'): 
+# Email address:
+# Password:
+# Password (again):
+# Superuser created successfully.
+# Installing custom SQL ...
+# Installing indexes ...
+# Installed 0 object(s) from 0 fixture(s)
+
+set timeout 20
+set superuser [lindex $argv 0]
+set password [lindex $argv 1]
+spawn /usr/lib/python2.7/site-packages/graphite/manage.py syncdb
+expect "Would you like to create one now? (yes/no):"
+send "yes\r";
+expect "Username (leave blank to use 'root'):"
+send "$superuser\r";
+expect "Email address:"
+send "\r";
+expect "Password:"
+send "$password\r";
+expect "Password (again):"
+send "$password\r";
+
+interact
+
