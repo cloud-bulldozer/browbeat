@@ -6,6 +6,8 @@ Playbooks for:
 * Install Browbeat
 * Install collectd
 * Install connmon
+* Install graphite service
+* Install grafana service
 * Install grafana dashboards
 * Install shaker
 * Check overcloud for performance issues
@@ -48,6 +50,17 @@ correct params are passed
 Install Connmon
 ```
 # ansible-playbook -i hosts install/connmon.yml
+```
+
+Install graphite service
+```
+# ansible-playbook -i hosts install/graphite.yml
+```
+
+Install grafana service
+* Default user is admin/admin and the graphite data source will need to be defined.
+```
+# ansible-playbook -i hosts install/grafana.yml
 ```
 
 Install Grafana Dashboards (Requires a Grafana Server)

@@ -1,0 +1,9 @@
+---
+#
+# Playbook to install graphite-web
+#
+
+- hosts: graphite
+  remote_user: root
+  roles:
+    - { role: graphite }

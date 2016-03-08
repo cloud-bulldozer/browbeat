@@ -1,0 +1,122 @@
+---
+#
+# Install/run graphite-web for browbeat
+#
+
+- name: Check for epel
+  shell: rpm -qa | grep -q epel-release
+  ignore_errors: true
+  register: epel_installed
+
+- name: Install epel repo
+  command: rpm -ivh {{ epel_repo }}
+  become: true
+  when: epel_installed.rc != 0
+
+- name: Install graphite rpms
+  yum: name={{ item }} state=present
+  become: true
+  with_items:
+    - graphite-web
+    - python-carbon
+    - expect
+
+# moved to grafana specific playbook
+#    - https://grafanarel.s3.amazonaws.com/builds/grafana-2.6.0-1.x86_64.rpm
+
+- name: Check for graphite.db sqlite
+  shell: ls /var/lib/graphite-web/graphite.db
+  ignore_errors: true
+  register: graphite_db_installed
+
+- name: Copy setup-graphite-db.exp
+  copy:
+    src=setup-graphite-db.exp
+    dest=/root/setup-graphite-db.exp
+    owner=root
+    group=root
+    mode=0755
+  become: true
+
+- name: Create initial graphite db
+  shell: /root/setup-graphite-db.exp {{ graphite_username }} {{ graphite_password }} && chown apache:apache /var/lib/graphite-web/graphite.db
+  become: true
+  when: graphite_db_installed.rc != 0
+  register: apache_needs_restart
+
+- name: copy httpd graphite-web config
+  copy:
+    src=graphite-web.conf
+    dest=/etc/httpd/conf.d/graphite-web.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: apache_needs_restart
+
+
+# Start graphite-web service
+
+- name: Setup httpd service
+  service: name=httpd state=started enabled=true
+  become: true
+
+# disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
+
+- name: disable firewalld
+  service: name=firewalld state=stopped enabled=false
+  become: true
+
+# remove silly welcome from apache (if it exists)
+- name: Remove httpd welcome config
+  become: true
+  file: path=/etc/httpd/conf.d/welcome.conf state=absent
+  register: apache_needs_restart
+
+- name: Bounce Apache
+  service: name=httpd state=restarted enabled=true
+  become: true
+  when: apache_needs_restart.changed
+
+#
+# setup the python-carbon service
+#
+
+- name: Setup carbon-cache service
+  service: name=carbon-cache state=started enabled=true
+  become: true
+
+- name: copy carbon storage schema config
+  copy:
+    src=storage-schemas.conf
+    dest=/etc/carbon/storage-schemas.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: carbon_cache_needs_restart
+
+- name: copy carbon storage aggregation config
+  copy:
+    src=storage-aggregation.conf
+    dest=/etc/carbon/storage-aggregation.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: carbon_cache_needs_restart
+
+- name: copy carbon config
+  copy:
+    src=carbon.conf
+    dest=/etc/carbon/carbon.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: carbon_cache_needs_restart
+
+- name: bounce carbon cache
+  service: name=carbon-cache state=restarted enabled=true
+  become: true
+  when: carbon_cache_needs_restart.changed

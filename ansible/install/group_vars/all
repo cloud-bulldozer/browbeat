@@ -58,6 +58,10 @@ grafana_api_key: (Your Grafana API Key)
 # Grafana Server IP Address (Can be hosted on the Graphite server)
 grafana_host: 1.1.1.1
 
+# Graphite username and password for login on the dashboard
+graphite_username: root
+graphite_password: calvin
+
 # Dashboards - Batch number of hosts per row for all-{cpu, memory, disk, network} dashboards
 dashboards_batch: 20
 
