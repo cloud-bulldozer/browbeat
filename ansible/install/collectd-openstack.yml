@@ -7,7 +7,7 @@
   remote_user: "{{ local_remote_user }}"
   roles:
     - { role: common, when: collectd_undercloud }
-    - { role: collectd, when: collectd_undercloud }
+    - { role: collectd-openstack, when: collectd_undercloud }
   tasks:
     - name: Collectd off if not collectd_undercloud
       service: name=collectd state=stopped enabled=false
@@ -18,7 +18,7 @@
   remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_controller }
-    - { role: collectd, when: collectd_controller }
+    - { role: collectd-openstack, when: collectd_controller }
   tasks:
     - name: Collectd off if not collectd_controller
       service: name=collectd state=stopped enabled=false
@@ -29,7 +29,7 @@
   remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_ceph }
-    - { role: collectd, when: collectd_ceph }
+    - { role: collectd-openstack, when: collectd_ceph }
   tasks:
     - name: Collectd off if not collectd_ceph
       service: name=collectd state=stopped enabled=false
@@ -40,7 +40,7 @@
   remote_user: "{{ host_remote_user }}"
   roles:
     - { role: common, when: collectd_compute }
-    - { role: collectd, when: collectd_compute }
+    - { role: collectd-openstack, when: collectd_compute }
   tasks:
     - name: Collectd off if not collectd_compute
       service: name=collectd state=stopped enabled=false

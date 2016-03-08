@@ -1,0 +1,94 @@
+---
+#
+# Install/run collectd for browbeat
+#
+
+- name: Check for epel
+  shell: rpm -qa | grep -q epel-release
+  ignore_errors: true
+  register: epel_installed
+
+- name: Install epel repo
+  command: rpm -ivh {{ epel_repo }}
+  become: true
+  when: epel_installed.rc != 0
+
+- name: Install collectd rpms
+  yum: name={{ item }} state=present
+  become: true
+  with_items:
+    - collectd
+    - collectd-turbostat
+
+- name: Configure collectd.conf
+  template:
+    src=collectd.conf.j2
+    dest=/etc/collectd.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  with_items:
+    - interval: "{{ collectd_interval }}"
+      ip_address: "{{ graphite_host }}"
+      prefix: "{{ graphite_prefix }}"
+
+- name: Copy collectd-redis.sh
+  copy:
+    src=collectd-redis.sh
+    dest=/usr/local/bin/collectd-redis.sh
+    owner=root
+    group=root
+    mode=0755
+  become: true
+
+#
+# Configure selinux bits
+#
+- name: Check for collectd permissive
+  shell: semodule -l | grep -q permissive_collectd_t
+  become: true
+  register: collectd_permissive
+  ignore_errors: true
+  changed_when: false
+
+- name: Set permissive for collectd
+  shell: semanage permissive -a collectd_t
+  become: true
+  when: collectd_permissive.rc != 0
+
+#
+# Additional policy bits may be needed for exec
+#
+- name: Collectd policy customization
+  copy:
+    src=custom-collectd.pp
+    dest=/root/custom-collectd.pp
+    owner=root
+    group=root
+    mode=644
+  become: true
+
+- name: Check for collectd custom
+  shell: semodule -l | grep -q custom-collectd
+  become: true
+  register: collectd_custom
+  ignore_errors: true
+  changed_when: false
+
+- name: Set custom policy for collectd
+  shell: semodule -i /root/custom-collectd.pp
+  become: true
+  when: collectd_custom.rc != 0
+
+#
+# Start collectd service
+#
+- name: Setup collectd service
+  service: name=collectd state=restarted enabled=true
+  become: true
+
+- name: Disable EPEL
+  shell: rpm -e epel-release
+  ignore_errors: true
+  become: true

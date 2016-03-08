@@ -1,0 +1,10 @@
+---
+#
+# Generic Playbook to install collectd on generic machines
+#
+
+- hosts: nodes
+  remote_user: root
+  roles:
+    - common
+    - collectd-generic
