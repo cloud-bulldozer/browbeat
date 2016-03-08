@@ -1,0 +1,98 @@
+# Complete set of PerfKit Benchmarks run from Browbeat
+browbeat:
+  results : results/
+  sudo: true
+  connmon: false
+  rerun: 3
+ansible:
+  hosts: ansible/hosts
+  install:
+    connmon: ansible/install/connmon.yml
+    browbeat: ansible/install/browbeat.yml
+  check: ansible/check/site.yml
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  shaker_build: ansible/install/shaker_build.yml
+grafana:
+  enabled: false
+  cloud_name: openstack
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    grafana_api_key: (Your API Key Here)
+    snapshot_compute: false
+perfkit:
+  enabled: true
+  sleep_before: 0
+  sleep_after: 0
+  venv: /home/stack/perfkit-venv/bin/activate
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_public_network: browbeat_public
+    openstack_private_network: browbeat_private
+  benchmarks:
+    - name: bonnie-centos-m1-small
+      enabled: false
+      benchmarks: bonnie++
+      data_disk_size: 20
+      image: centos7
+      machine_type: m1.small
+      os_type: rhel
+      openstack_image_username: centos
+      openstack_public_network: browbeat_public
+      openstack_private_network: browbeat_private
+    - name: cluster_boot-centos-m1-small
+      enabled: false
+      benchmarks: cluster_boot
+      config_override: "cluster_boot.vm_groups.default.vm_count=4"
+    - name: copy_throughput-cp-centos-m1-small
+      enabled: false
+      benchmarks: copy_throughput
+      copy_benchmark_mode: cp
+      data_disk_size: 20
+    - name: copy_throughput-dd-centos-m1-small
+      enabled: false
+      benchmarks: copy_throughput
+      copy_benchmark_mode: dd
+      data_disk_size: 20
+    - name: copy_throughput-scp-centos-m1-small
+      enabled: false
+      benchmarks: copy_throughput
+      copy_benchmark_mode: scp
+      data_disk_size: 20
+    - name: fio-centos-m1-small
+      enabled: false
+      benchmarks: fio
+      data_disk_size: 4
+    - name: iperf-centos-m1-small
+      enabled: false
+      benchmarks: iperf
+    - name: mesh_network-centos-m1-small
+      enabled: false
+      benchmarks: mesh_network
+      num_vms: 3
+    # selinux affects this benchmark:
+    - name: mongodb_ycsb-centos-m1-small
+      enabled: false
+      benchmarks: mongodb_ycsb
+      data_disk_size: 20
+      num_striped_disks: 1
+      ycsb_client_vms: 1
+      mongodb_writeconcern: acknowledged
+    - name: ping-centos-m1-small
+      enabled: false
+      benchmarks: ping
+    - name: sysbench_oltp-centos-m1-small
+      enabled: false
+      benchmarks: sysbench_oltp
+      data_disk_size: 20

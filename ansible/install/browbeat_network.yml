@@ -1,0 +1,11 @@
+---
+#
+# Playbook for browbeat-network
+#
+# Creates public and private network for use with Perfkit and Shaker
+#
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  roles:
+    - browbeat-network

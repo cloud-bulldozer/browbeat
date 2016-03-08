@@ -24,6 +24,9 @@ rally_venv: /home/stack/rally-venv
 # The default Shaker venv
 shaker_venv: /home/stack/shaker-venv
 
+# The default PerfKit venv:
+perfkit_venv: /home/stack/perfkit-venv
+
 # Guest images for the Over cloud
 centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 cirros_image_url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
@@ -71,12 +74,19 @@ shaker_port: 5555
 # Should choose m1.small or larger
 shaker_flavor: m1.small
 
-# Automates creating a public network that shaker can build its image off of
-shaker_public_subnet: 1.1.1.1/22
-shaker_pool_start: 1.1.1.1
-shaker_pool_end: 1.1.1.1
-shaker_pool_gw: 1.1.1.1
+# Automates creating a public network that perfkit and shaker utilize
+browbeat_pub_net_name: browbeat_public
+browbeat_pub_subnet: 1.1.1.1/22
+browbeat_pub_pool_start: 1.1.1.1
+browbeat_pub_pool_end: 1.1.1.1
+browbeat_pub_pool_gw: 1.1.1.1
 
-# Defaults here should not require changing
-shaker_network_name: shaker_public
-shaker_router_name: shaker_router
+# Browbeat private subnet
+browbeat_pri_net_name: browbeat_private
+browbeat_pri_subnet: 172.16.10.0/24
+browbeat_pri_pool_start: 172.16.10.2
+browbeat_pri_pool_end: 172.16.10.100
+browbeat_pri_pool_gw: 172.16.10.1
+browbeat_pri_pool_dns: 8.8.8.8
+
+browbeat_router_name: browbeat_router
