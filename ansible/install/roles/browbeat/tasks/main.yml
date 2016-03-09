@@ -23,54 +23,59 @@
   become: true
 
 - name: Create browbeat virtualenv
-  command: virtualenv "{{ browbeat_venv }}" creates=""{{ browbeat_venv }}""
+  command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
 
 - name: Create perfkit virtualenv
-  command: virtualenv "{{ perfkit_venv }}" creates=""{{ perfkit_venv }}""
+  command: virtualenv {{ perfkit_venv }} creates={{ perfkit_venv }}
 
 - name: Create rally virtualenv
-  command: virtualenv "{{ rally_venv }}" creates=""{{ rally_venv }}""
+  command: virtualenv {{ rally_venv }} creates={{ rally_venv }}
 
 - name: Create shaker virtualenv
-  command: virtualenv "{{ shaker_venv }}" creates=""{{ shaker_venv }}""
+  command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
+
+- name: Determine if browbeat directory exists already
+  stat: path={{ home_dir }}/browbeat
+  register: browbeat_exists
+
+- debug: msg="Browbeat directory exists already."
+  when: browbeat_exists.stat.isdir is defined and browbeat_exists.stat.isdir
 
 - name: Clone browbeat on undercloud
-  git: repo=https://github.com/jtaleric/browbeat.git dest="{{ home_dir }}"/browbeat
-  when: "'localhost' not in '{{ inventory_hostname }}'"
+  git: repo=https://github.com/jtaleric/browbeat.git dest={{ home_dir }}/browbeat
+  when: browbeat_exists.stat.isdir is undefined
 
 - name: Generate hosts and ~/.ssh/config on undercloud
-  shell: . "{{ home_dir }}"/stackrc; "{{ home_dir }}"/browbeat/ansible/gen_hostfile.sh localhost "{{ home_dir }}"/.ssh/config
-  when: "'localhost' not in '{{ inventory_hostname }}'"
+  shell: . {{ home_dir }}/stackrc; {{ home_dir }}/browbeat/ansible/gen_hostfile.sh localhost {{ home_dir }}/.ssh/config
 
 - name: Move hosts file to correct location
-  command: mv "{{ home_dir }}"/hosts "{{ home_dir }}"/browbeat/ansible/hosts
-  when: "'localhost' not in '{{ inventory_hostname }}'"
+  command: mv {{ home_dir }}/hosts {{ home_dir }}/browbeat/ansible/hosts
 
 - name: Install requirements.txt into browbeat-venv
-  pip: requirements="{{ browbeat_path }}"/requirements.txt virtualenv=""{{ browbeat_venv }}""
+  pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
   become: true
 
 - name: Clone PerfKitBenchmarker on undercloud
-  git: repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git dest="{{ perfkit_venv }}"/PerfKitBenchmarker
+  git: repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git dest={{ perfkit_venv }}/PerfKitBenchmarker
 
 - name: Install PerfKitBenchmarker requirements into perfkit-venv
-  pip: requirements="{{ perfkit_venv }}"/PerfKitBenchmarker/requirements.txt virtualenv="{{ perfkit_venv }}"
+  pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements.txt virtualenv={{ perfkit_venv }}
 
 - name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
-  pip: requirements="{{ perfkit_venv }}"/PerfKitBenchmarker/requirements-openstack.txt virtualenv="{{ perfkit_venv }}"
+  pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements-openstack.txt virtualenv={{ perfkit_venv }}
 
 - name: Install rally into rally-venv
-  pip: name=rally virtualenv="{{ rally_venv }}"
+  pip: name=rally virtualenv={{ rally_venv }}
   become: true
 
 - name: Setup rally database
-  shell: . "{{ rally_venv}}"/bin/activate; rally-manage db recreate
+  shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate
 
 - name: Setup rally deployment
-  shell: . "{{ rally_venv }}"/bin/activate; . "{{ overcloudrc }}"; rally deployment create --fromenv --name overcloud
+  shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
 
 - name: Install shaker
-  pip: name=pyshaker version=0.0.10 virtualenv=""{{ shaker_venv }}""
+  pip: name=pyshaker version=0.0.10 virtualenv={{ shaker_venv }}
 
 - name: Check for shaker port in iptables
   shell: iptables -nvL | grep -q "dpt:"{{ shaker_port }}""
@@ -123,46 +128,36 @@
   when: results_in_httpd
 
 #
-# Nova boot image tasks
+# Obtain and upload images for use with browbeat
 #
 
-- name: Fetch cirros image
-  get_url: url={{ cirros_image_url }} dest="{{ home_dir }}"/cirros.img
+- name: Fetch image
+  get_url: url={{ images[item].url }} dest={{ home_dir }}/{{ item }}
+  with_items: "{{ images }}"
 
-- name: Determine is cirros image exists
-  shell: . "{{ overcloudrc }}"; glance image-list | grep "cirros"
-  register: cirros_image_exists
+- name: Determine if image exists
+  shell: . {{ overcloudrc }}; glance image-list | grep '{{ item }}'
+  register: image_exists
   ignore_errors: true
   changed_when: false
+  with_items: "{{ images }}"
 
-- name: Upload cirros image into cloud (OSP8)
-  shell: . "{{ overcloudrc }}"; glance image-create --name cirros --visibility public --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/cirros.img
-  when: "'cirros' not in '{{ cirros_image_exists.stdout }}'"
-  register: cirros_image_osp8
+- name: Remove image from dictionary of images if image exists
+  set_fact: images="{{ images|dict_remove(item[0]) }}"
+  when: "'{{ item[0] }}' in '{{ item[1].stdout }}'"
+  with_nested:
+    - "{{ images }}"
+    - "{{ image_exists.results }}"
+
+- name: Upload image into cloud (OSP8)
+  shell: . {{ overcloudrc }}; glance image-create --name {{ item }} --visibility public --disk-format=qcow2 --container-format=bare < {{ home_dir }}/{{ item }}
+  register: image_osp8
   ignore_errors: true
+  with_items: "{{ images }}"
 
-- name: Upload cirros image into cloud (OSP7)
-  shell: . "{{ overcloudrc }}"; glance image-create --name cirros --is-public true --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/cirros.img
-  when: "'cirros' not in '{{ cirros_image_exists.stdout }}' and not cirros_image_osp8.rc == 0"
+- name: Upload image into cloud (OSP7)
+  shell: . {{ overcloudrc }}; glance image-create --name {{ item.item }} --is-public true --disk-format=qcow2 --container-format=bare < {{ home_dir }}/{{ item.item }}
+  when: not item.rc == 0
   ignore_errors: true
+  with_items: "{{ image_osp8.results }}"
 
-
-- name: Fetch centos7 image
-  get_url: url={{ centos_image_url }} dest="{{ home_dir }}"/centos7.qcow2
-
-- name: Determine is centos7 image exists
-  shell: . "{{ overcloudrc }}"; glance image-list | grep "centos7"
-  register: centos7_image_exists
-  ignore_errors: true
-  changed_when: false
-
-- name: Upload centos7 image into cloud (OSP8)
-  shell: . "{{ overcloudrc }}"; glance image-create --name centos7 --visibility public --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/centos7.qcow2
-  when: "'centos7' not in '{{ centos7_image_exists.stdout }}'"
-  register: centos7_image_osp8
-  ignore_errors: true
-
-- name: Upload centos7 image into cloud (OSP7)
-  shell: . "{{ overcloudrc }}"; glance image-create --name centos7 --is-public true --disk-format=qcow2 --container-format=bare < "{{ home_dir }}"/centos7.qcow2
-  when: "'centos7' not in '{{ centos7_image_exists.stdout }}' and not centos7_image_osp8.rc == 0"
-  ignore_errors: true

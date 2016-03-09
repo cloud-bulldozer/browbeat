@@ -11,7 +11,7 @@ local_remote_user: stack
 # The Overcloud RC file
 overcloudrc: /home/stack/overcloudrc
 
-# The default Browbeat
+# The default Browbeat venv
 browbeat_venv: /home/stack/browbeat-venv
 
 # The default Rally venv
@@ -26,9 +26,12 @@ perfkit_venv: /home/stack/perfkit-venv
 # Shaker centos image builder template
 shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
 
-# Guest images for the Over cloud
-centos_image_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-cirros_image_url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+# Guest images for the Overcloud
+images:
+  centos7:
+    url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+  cirros:
+    url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 
 # Host where connmond will be running
 connmon_host: 192.0.2.1
