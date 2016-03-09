@@ -28,10 +28,6 @@
     group=root
     mode=0644
   become: true
-  with_items:
-    - interval: "{{ collectd_interval }}"
-      ip_address: "{{ graphite_host }}"
-      prefix: "{{ graphite_prefix }}"
 
 #
 # Configure selinux bits
