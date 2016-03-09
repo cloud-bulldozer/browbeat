@@ -25,7 +25,7 @@
   remote_user: stack
   vars:
     host_type: controller
-    host_suffix: "_localdomain"
+    host_suffix: ""
     hosts_in_group: groups['controller']
     disks_in_group: "{{disks['controller']}}"
     interfaces_in_group: "{{interfaces['controller']}}"
@@ -37,7 +37,7 @@
   remote_user: stack
   vars:
     host_type: compute
-    host_suffix: "_localdomain"
+    host_suffix: ""
     hosts_in_group: groups['compute']
     disks_in_group: "{{disks['compute']}}"
     interfaces_in_group: "{{interfaces['compute']}}"
