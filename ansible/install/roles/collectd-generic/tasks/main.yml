@@ -1,6 +1,6 @@
 ---
 #
-# Install/run collectd for browbeat
+# Install/run collectd for browbeat (Generic)
 #
 
 - name: Check for epel
@@ -22,7 +22,7 @@
 
 - name: Configure collectd.conf
   template:
-    src=collectd.conf.j2
+    src={{config_type}}.collectd.conf.j2
     dest=/etc/collectd.conf
     owner=root
     group=root
@@ -39,10 +39,12 @@
   ignore_errors: true
   changed_when: false
 
+# This command is not always found?
 - name: Set permissive for collectd
   shell: semanage permissive -a collectd_t
   become: true
   when: collectd_permissive.rc != 0
+  ignore_errors: true
 
 #
 # Additional policy bits may be needed for exec

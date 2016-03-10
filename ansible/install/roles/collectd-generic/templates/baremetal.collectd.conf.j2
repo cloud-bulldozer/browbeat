@@ -1,0 +1,65 @@
+# Installed by Browbeat Ansible Installer
+# Config type: {{config_type}}
+
+# Interval default is 10s
+Interval {{collectd_interval}}
+
+# Hostname for this machine, if not defined, use gethostname(2) system call
+Hostname "{{inventory_hostname}}"
+
+# Allow collectd to log
+LoadPlugin syslog
+
+# Loaded Plugins:
+LoadPlugin write_graphite
+LoadPlugin cpu
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin interface
+LoadPlugin irq
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin numa
+LoadPlugin processes
+LoadPlugin swap
+LoadPlugin turbostat
+LoadPlugin uptime
+
+# Graphite Host Configuration
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{graphite_host}}"
+    Port "2003"
+    Prefix "{{graphite_prefix}}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>
+
+<Plugin df>
+  ValuesPercentage true
+</Plugin>
+
+<Plugin disk>
+  Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  IgnoreSelected false
+</Plugin>
+
+<Plugin processes>
+  # Example, collect on all httpd processes:
+  Process "httpd"
+
+  # Collect on collectd process
+  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+</Plugin>
+
+<Plugin swap>
+  ReportBytes true
+  ValuesPercentage true
+</Plugin>
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"

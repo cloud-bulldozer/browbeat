@@ -1,4 +1,5 @@
 # Installed by Browbeat Ansible Installer
+# Config type: {{config_type}}
 
 # Interval default is 10s
 Interval {{collectd_interval}}
@@ -24,10 +25,7 @@ LoadPlugin memory
 LoadPlugin numa
 LoadPlugin processes
 LoadPlugin swap
-{% if 'controller' in group_names or 'undercloud' in group_names %}
 LoadPlugin tail
-{% endif %}
-#LoadPlugin tcpconns
 LoadPlugin turbostat
 LoadPlugin uptime
 
@@ -63,13 +61,6 @@ PreCacheChain "PreCache"
     EscapeCharacter "_"
   </Carbon>
 </Plugin>
-
-# Collectd to graphite uses derive type so no need for ValuesPercentage
-#<Plugin cpu>
-#  ReportByCpu true
-#  ReportByState true
-#  ValuesPercentage true
-#</Plugin>
 
 <Plugin df>
   ValuesPercentage true
@@ -186,143 +177,8 @@ PreCacheChain "PreCache"
   ValuesPercentage true
 </Plugin>
 
-
 # Tail plugin configuration
 <Plugin "tail">
-{% if 'undercloud' in group_names %}
-  <File "/var/log/keystone/keystone.log">
-    Instance "keystone"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-  <File "/var/log/nova/nova-api.log">
-    Instance "nova-api"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/nova/nova-compute.log">
-    Instance "nova-compute"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/nova/nova-conductor.log">
-    Instance "nova-conductor"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/nova/nova-scheduler.log">
-    Instance "nova-scheduler"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-  <File "/var/log/neutron/dhcp-agent.log">
-    Instance "neutron-dhcp-agent"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/neutron/openvswitch-agent.log">
-    Instance "neutron-openvswitch-agent"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/neutron/server.log">
-    Instance "neutron-server"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-  <File "/var/log/ironic/ironic-api.log">
-    Instance "ironic-api"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/ironic/ironic-conductor.log">
-    Instance "ironic-conductor"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-  <File "/var/log/heat/heat-api-cfn.log">
-    Instance "heat-api-cfn"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/heat/heat-api-cloudwatch.log">
-    Instance "heat-api-cloudwatch"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/heat/heat-api.log">
-    Instance "heat-api"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-  <File "/var/log/heat/heat-engine.log">
-    Instance "heat-engine"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-{% endif %}
-{% if 'controller' in group_names %}
   <File "/var/log/keystone/keystone.log">
     Instance "keystone"
     <Match>
@@ -434,36 +290,7 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
-{% endif %}
-{% if 'compute' in group_names %}
-  <File "/var/log/nova/nova-compute.log">
-    Instance "nova-compute"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-
-  <File "/var/log/neutron/openvswitch-agent.log">
-    Instance "neutron-openvswitch-agent"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "total"
-    </Match>
-  </File>
-{% endif %}
-{% if 'ceph' in group_names %}
-  {# Add ceph logs to tail #}
-{% endif %}
 </Plugin>
-
-#<Plugin tcpconns>
-#  ListeningPorts true
-#</Plugin>
 
 # Include other collectd configuration files
 Include "/etc/collectd.d"

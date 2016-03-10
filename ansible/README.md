@@ -1,15 +1,19 @@
+Table of Contents
+=================
+
+- [Ansible for Browbeat](#)
+    - [To use](#)
+    - [Ansible Installers](#)
+    - [Performance Check](#)
+    - [Performance Tune](#)
+    - [Adjust your overcloud](#)
+
 # Ansible for Browbeat
 
-Currently we only support Ansible 1.9.4.
+Currently we support Ansible 1.9.4 within browbeat-venv and ansible 2.0 for installation.
 
 Playbooks for:
-* Install Browbeat
-* Install collectd
-* Install connmon
-* Install graphite service
-* Install grafana service
-* Install grafana dashboards
-* Install shaker
+* Installing Browbeat, collectd, connmon, graphite, grafana, and grafana dashboards
 * Check overcloud for performance issues
 * Tune overcloud for performance (Experimental)
 * Adjust number of workers for cinder/keystone/neutron/nova
@@ -30,65 +34,64 @@ Then run gen_hosts.sh script to generate your overcloud's hosts file for ansible
 ```
 # ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 ```
-**Review the hosts file the script generates.
+*Review the hosts file the script generates.
 
 
-## Ansible Installers:
+## Ansible Installers
 
-Install Browbeat
+##### Install Browbeat
+Image upload requires Ansible 2.0
 ```
+# vi install/group_vars/all  # Edit ansible vars file (Installation parameters)
 # ansible-playbook -i hosts install/browbeat.yml
 ```
 
-Install Collectd Agent (Requires a Graphite Server)
+##### Install Collectd Agent (Requires a Graphite Server)
 Prior to installing the agent, please review the install/group_vars/all to ensure the
-correct params are passed
+correct parameters are passed
 ```
-# ansible-playbook -i hosts install/collectd
+# ansible-playbook -i hosts install/collectd-openstack.yml
 ```
+To install collectd on everything other than Openstack machines, view the [README for collectd-generic](README.collectd-generic.md).
 
-Install Connmon
+##### Install Connmon
+Requires Ansible 2.0
 ```
 # ansible-playbook -i hosts install/connmon.yml
 ```
 
-Install graphite service
+##### Install graphite service
 ```
 # ansible-playbook -i hosts install/graphite.yml
 ```
 
-Install grafana service
-* Default user is admin/admin and the graphite data source will need to be defined.
+##### Install grafana service
+Default user is admin/admin and the graphite data source will need to be defined.
 ```
 # ansible-playbook -i hosts install/grafana.yml
 ```
 
-Install Grafana Dashboards (Requires a Grafana Server)
-* Review install/group_vars/all before deploying the grafana dashboards
+##### Install Grafana Dashboards (Requires a Grafana Server)
+Review install/group_vars/all before deploying the grafana dashboards
 ```
 # ansible-playbook -i hosts install/dashboards.yml
 ```
 
-Install Shaker
-```
-# ansible-playbook -i hosts install/shaker.yml
-```
-
-## Performance Checks:
+## Performance Check
 
 Run the check playbook to identify common performance issues:
 ```
 # ansible-playbook -i hosts check/site.yml
 ```
 
-## Performance Tune:
+## Performance Tune
 
 Run the tune playbook to tune your OSPd deployed cloud for performance:
 ```
 # ansible-playbook -i hosts tune/tune.yml
 ```
 
-## Adjust your overcloud:
+## Adjust your overcloud
 
 To modify the number of workers each service is running:
 ```

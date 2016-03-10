@@ -5,6 +5,8 @@
 
 - hosts: undercloud
   remote_user: "{{ local_remote_user }}"
+  vars:
+    config_type: undercloud
   roles:
     - { role: common, when: collectd_undercloud }
     - { role: collectd-openstack, when: collectd_undercloud }
@@ -16,6 +18,8 @@
 
 - hosts: controller
   remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: controller
   roles:
     - { role: common, when: collectd_controller }
     - { role: collectd-openstack, when: collectd_controller }
@@ -27,6 +31,8 @@
 
 - hosts: ceph
   remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: ceph
   roles:
     - { role: common, when: collectd_ceph }
     - { role: collectd-openstack, when: collectd_ceph }
@@ -38,6 +44,8 @@
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: compute
   roles:
     - { role: common, when: collectd_compute }
     - { role: collectd-openstack, when: collectd_compute }
