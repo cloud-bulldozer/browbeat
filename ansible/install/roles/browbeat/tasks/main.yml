@@ -64,6 +64,12 @@
 - name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
   pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements-openstack.txt virtualenv={{ perfkit_venv }}
 
+- name: Install MySQl Tuner
+  git: repo=https://github.com/major/MySQLTuner-perl.git dest={{ home_dir }}/MySQLTuner-perl
+
+- name: Copy the MYSQl Tuner script into browbeat
+  command: cp {{ home_dir }}/MySQLTuner-perl/mysqltuner.pl {{ browbeat_path }}/ansible/check
+
 - name: Install rally into rally-venv
   pip: name=rally virtualenv={{ rally_venv }}
   become: true

@@ -1,0 +1,16 @@
+# MYSQL Tuner Report
+
+{% for host in groups['undercloud'] %}
+-------------------------------------------
+| Results for host : {{ host }}
+-------------------------------------------
+{{hostvars[host]['mysql_out']['stdout']}}
+{% endfor %}
+
+
+{% for host in groups['controller'] %}
+-------------------------------------------
+| Results for host : {{ host }}
+-------------------------------------------
+{{hostvars[host]['mysql_out']['stdout']}}
+{% endfor %}

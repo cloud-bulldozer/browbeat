@@ -63,3 +63,8 @@
   register: rabbit_partitioned
   changed_when: no
   failed_when: rabbit_partitioned.rc == 0
+
+- name: Run MySQL Tuner script
+  script: mysqltuner.pl --nocolor
+  register: mysql_out
+
