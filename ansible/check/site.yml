@@ -3,6 +3,15 @@
 # Playbook to check OSP install for common performance tuning issues
 #
 
+- hosts: undercloud
+  remote_user: stack
+  roles:
+  - common
+  - controller
+  - keystone
+  - neutron
+  - nova
+
 - hosts: controller
   remote_user: heat-admin
   roles:
