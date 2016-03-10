@@ -41,6 +41,24 @@ perfkit:
     openstack_public_network: browbeat_public
     openstack_private_network: browbeat_private
   benchmarks:
+    - name: aerospike-centos-m1-small
+      enabled: false
+      benchmarks: aerospike
+    - name: block_storage_workload-centos-m1-small
+      enabled: false
+      benchmarks: block_storage_workload
+      data_disk_size: 20
+      workload_mode: logging
+    - name: block_storage_workload-centos-m1-small
+      enabled: false
+      benchmarks: block_storage_workload
+      data_disk_size: 20
+      workload_mode: database
+    - name: block_storage_workload-centos-m1-small
+      enabled: true
+      benchmarks: block_storage_workload
+      data_disk_size: 20
+      workload_mode: streaming
     - name: bonnie-centos-m1-small
       enabled: false
       benchmarks: bonnie++
@@ -74,6 +92,14 @@ perfkit:
       enabled: false
       benchmarks: fio
       data_disk_size: 4
+    - name: fio-centos-m1-small-10m
+      enabled: false
+      benchmarks: fio
+      data_disk_size: 10
+      config_override: "fio.vm_groups.default.vm_count=2"
+      fio_generate_scenarios: all
+      fio_run_for_minutes: 10
+      fio_working_set_size: 4
     - name: iperf-centos-m1-small
       enabled: false
       benchmarks: iperf
@@ -81,7 +107,6 @@ perfkit:
       enabled: false
       benchmarks: mesh_network
       num_vms: 3
-    # selinux affects this benchmark:
     - name: mongodb_ycsb-centos-m1-small
       enabled: false
       benchmarks: mongodb_ycsb
@@ -89,10 +114,35 @@ perfkit:
       num_striped_disks: 1
       ycsb_client_vms: 1
       mongodb_writeconcern: acknowledged
+    - name: netperf-centos-m1-small
+      enabled: false
+      benchmarks: netperf
+    - name: object_storage_service-centos-m1-small
+      enabled: false
+      benchmarks: object_storage_service
+      storage: OpenStack
+      object_storage_scenario: all
+      openstack_swift_insecure: true
+      data_disk_size: 10
     - name: ping-centos-m1-small
       enabled: false
       benchmarks: ping
+    - name: redis-centos-m1-small
+      enabled: false
+      benchmarks: redis
+      redis_clients: 2
+    - name: redis_ycsb-centos-m1-small
+      enabled: false
+      benchmarks: redis_ycsb
+      ycsb_client_vms: 2
+    - name: scimark2-centos-m1-small
+      enabled: false
+      benchmarks: scimark2
     - name: sysbench_oltp-centos-m1-small
       enabled: false
       benchmarks: sysbench_oltp
       data_disk_size: 20
+    - name: unixbench-centos-m1-small
+      enabled: false
+      benchmarks: unixbench
+      data_disk_size: 10
