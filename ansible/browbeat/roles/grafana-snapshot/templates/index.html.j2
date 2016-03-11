@@ -21,7 +21,7 @@
     {% for host in groups['controller'] %}
       <a href="../{{host}}">{{host}}</a>
     {% endfor %}
-    {% if snapshot_compute %}
+    {% if snapshot_compute is defined and snapshot_compute %}
       <br>
       Computes:
       {% for host in groups['compute'] %}
