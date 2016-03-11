@@ -1,7 +1,7 @@
 {
   "dashboard": {
     "id": null,
-    "title": "Openstack Cloud System Performance Comparsion",
+    "title": "Cloud System Performance Comparsion",
     "tags": [],
     "style": "dark",
     "timezone": "browser",

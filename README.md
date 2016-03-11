@@ -1,25 +1,27 @@
 Table of Contents
 =================
 
-  * [Browbeat](#browbeat)
-  * [Before running browbeat](#before-running-browbeat)
-  * [How to run Browbeat?](#how-to-run-browbeat)
-  * [What is necessary?](#what-is-necessary)
-  * [Detailed Install, Check and Run](#detailed-install-check-and-run)
-    * [Install Browbeat from your local machine](#install-browbeat-from-your-local-machine)
-      * [From your local machine:](#from-your-local-machine)
-      * [(Optional) Install shaker:](#optional-install-shaker)
-      * [(Optional) Install connmon:](#optional-install-connmon)
-      * [Run performance checks](#run-performance-checks)
-      * [Run performance stress tests through browbeat on the undercloud:](#run-performance-stress-tests-through-browbeat-on-the-undercloud)
-    * [Install Browbeat directly on undercloud:](#install-browbeat-directly-on-undercloud)
-      * [From your undercloud:](#from-your-undercloud)
-      * [(Optional) Install shaker:](#optional-install-shaker-1)
-      * [(Optional) Install connmon:](#optional-install-connmon-1)
-      * [Run performance checks](#run-performance-checks-1)
-      * [Run performance stress tests through browbeat:](#run-performance-stress-tests-through-browbeat)
-  * [Running PerfKitBenchmarker](#running-perfkitbenchmarker)
-  * [Contributing](#contributing)
+- [Browbeat](#)
+- [Before running browbeat](#)
+- [How to run Browbeat?](#)
+- [What is necessary?](#)
+- [Detailed Install, Check and Run](#)
+  - [Install Browbeat from your local machine](#)
+    - [From your local machine](#)
+    - [(Optional) Install collectd](#)
+    - [(Optional) Install collectd->graphite dashboards](#)
+    - [(Optional) Install connmon](#)
+    - [Run Overcloud checks](#)
+    - [Run performance stress tests through browbeat on the undercloud](#)
+  - [Install Browbeat directly on undercloud](#)
+    - [From your undercloud](#)
+    - [(Optional) Install collectd](#)
+    - [(Optional) Install collectd->graphite dashboards](#)
+    - [(Optional) Install connmon](#)
+    - [Run Overcloud checks](#)
+    - [Run performance stress tests through browbeat](#)
+- [Running PerfKitBenchmarker](#)
+- [Contributing](#)
 
 # Browbeat
 This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the overcloud.
@@ -49,7 +51,7 @@ Installing Browbeat and running the Overcloud checks can be performed either fro
 
 ## Install Browbeat from your local machine
 
-### From your local machine:
+### From your local machine
 ```
 $ ssh-copy-id stack@<undercloud-ip>
 $ git clone https://github.com/jtaleric/browbeat.git
@@ -62,12 +64,17 @@ $ ansible-playbook -i hosts install/browbeat_network.yml
 $ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
-### (Optional) Install collectd:
+### (Optional) Install collectd
 ```
 $ ansible-playbook -i hosts install/collectd.yml
 ```
 
-### (Optional) Install connmon:
+### (Optional) Install collectd->graphite dashboards
+```
+$ ansible-playbook -i hosts install/dashboards-openstack.yml
+```
+
+### (Optional) Install connmon
 ```
 $ ansible-playbook -i hosts install/connmon.yml
 ```
@@ -89,9 +96,9 @@ $ ssh undercloud-root
 (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
 ```
 
-## Install Browbeat directly on undercloud:
+## Install Browbeat directly on undercloud
 
-### From your undercloud:
+### From your undercloud
 ```
 $ ssh undercloud-root
 [root@ospd ~]# su - stack
@@ -107,12 +114,17 @@ $ ssh undercloud-root
 [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
-### (Optional) Install collectd:
+### (Optional) Install collectd
 ```
 [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
 ```
 
-### (Optional) Install connmon:
+### (Optional) Install collectd->graphite dashboards
+```
+[stack@ospd ansible]$ ansible-playbook -i hosts install/dashboards-openstack.yml
+```
+
+### (Optional) Install connmon
 ```
 [stack@ospd ansible]$ ansible-playbook -i hosts install/connmon.yml
 ```
@@ -123,7 +135,7 @@ $ ssh undercloud-root
 ```
 Your Overcloud check output is located in check/bug_report.log
 
-### Run performance stress tests through browbeat:
+### Run performance stress tests through browbeat
 ```
 [stack@ospd ansible]$ . ../../browbeat-venv/bin/activate
 (browbeat-venv)[stack@ospd ansible]$ cd ..

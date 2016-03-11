@@ -1,11 +1,11 @@
-{% set vars = {'panel_idx': 0, 'inital': 0} %}
+{% set vars = {'panel_idx': 0, 'initial': 0} %}
 {% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
       "id": null,
-      "title": "{{item.prefix}} - All Nodes CPU",
+      "title": "{{dashboard_cloud_name}} - All Nodes CPU",
       "tags": [
-        "{{item.prefix}}"
+        "{{dashboard_cloud_name}}"
       ],
       "style": "dark",
       "timezone": "browser",
@@ -16,8 +16,8 @@
 {% for group in dashboard_groups %}
   {% if group in groups %}
     {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
-      {% if vars.inital == 0 %}
-         {% if vars.update({'inital': (vars.inital + 1)}) %} {% endif %}
+      {% if vars.initial == 0 %}
+         {% if vars.update({'initial': (vars.initial + 1)}) %} {% endif %}
       {% else %}
         },
       {% endif %}
@@ -75,35 +75,35 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-system), 'System')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-system), 'System')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-user), 'User')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-user), 'User')"
                 },
                 {
                   "refId": "C",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-nice), 'Nice')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-nice), 'Nice')"
                 },
                 {
                   "refId": "D",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-steal), 'Steal')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-steal), 'Steal')"
                 },
                 {
                   "refId": "E",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')"
                 },
                 {
                   "refId": "F",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')"
                 },
                 {
                   "refId": "G",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-wait), 'Wait')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-wait), 'Wait')"
                 },
                 {
                   "refId": "H",
-                  "target": "alias(averageSeries({{item.prefix}}.{{host}}.cpu-*.cpu-idle), 'Idle')"
+                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-idle), 'Idle')"
                 }
               ],
               "timeFrom": null,
@@ -181,11 +181,11 @@
         {
           "icon": "external link",
           "tags": [
-            "{{item.prefix}}"
+            "{{dashboard_cloud_name}}"
           ],
           "type": "dashboards",
           "asDropdown": true,
-          "title": "{{item.prefix}} Dashboards"
+          "title": "{{dashboard_cloud_name}} Dashboards"
         }
       ],
       "overwrite": true

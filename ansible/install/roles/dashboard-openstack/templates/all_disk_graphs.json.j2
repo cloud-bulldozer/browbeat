@@ -1,11 +1,11 @@
-{% set vars = {'panel_idx': 0, 'inital': 0, 'initial2': 0} %}
+{% set vars = {'panel_idx': 0, 'initial': 0, 'initial2': 0} %}
 {% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
       "id": null,
-      "title": "{{item.prefix}} - All Nodes Network",
+      "title": "{{dashboard_cloud_name}} - All Nodes Disk",
       "tags": [
-        "{{item.prefix}}"
+        "{{dashboard_cloud_name}}"
       ],
       "style": "dark",
       "timezone": "browser",
@@ -16,8 +16,8 @@
 {% for group in dashboard_groups %}
   {% if group in groups %}
     {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
-      {% if vars.inital == 0 %}
-         {% if vars.update({'inital': (vars.inital + 1)}) %} {% endif %}
+      {% if vars.initial == 0 %}
+         {% if vars.update({'initial': (vars.initial + 1)}) %} {% endif %}
       {% else %}
         },
       {% endif %}
@@ -70,7 +70,7 @@
               "renderer": "flot",
               "seriesOverrides": [
                 {
-                  "alias": "RX",
+                  "alias": "Write",
                   "transform": "negative-Y"
                 }
               ],
@@ -80,16 +80,16 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_packets.tx, 'TX')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_ops.read, 'Read')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_packets.rx, 'RX')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_ops.write, 'Write')"
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "{{host}} - ${{group}}_interface pps",
+              "title": "{{host}} - ${{group}}_disk iops",
               "tooltip": {
                 "shared": true,
                 "value_type": "cumulative"
@@ -98,7 +98,7 @@
               "x-axis": true,
               "y-axis": true,
               "y_formats": [
-                "pps",
+                "iops",
                 "short"
               ]
       {% if loop.last %}
@@ -109,9 +109,9 @@
       {% endfor %}
           ],
       {% if 'undercloud' in group %}
-          "title": "{{group}} Network pps",
+          "title": "{{group}} Disk iops",
       {% else %}
-          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network pps",
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Disk iops",
       {% endif %}
           "showTitle": true
     {% endfor %}
@@ -177,7 +177,7 @@
               "renderer": "flot",
               "seriesOverrides": [
                 {
-                  "alias": "RX",
+                  "alias": "Write",
                   "transform": "negative-Y"
                 }
               ],
@@ -187,16 +187,16 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_octets.tx, 'TX')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_octets.read, 'Read')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}.${{group}}_interface.if_octets.rx, 'RX')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_octets.write, 'Write')"
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "{{host}} - ${{group}}_interface Throughput",
+              "title": "{{host}} - ${{group}}_disk Throughput",
               "tooltip": {
                 "shared": true,
                 "value_type": "cumulative"
@@ -218,7 +218,7 @@
       {% if 'undercloud' in group %}
           "title": "{{group}} Disk Throughput",
       {% else %}
-          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network Throughput",
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Disk Throughput",
       {% endif %}
           "showTitle": true
     {% endfor %}
@@ -262,32 +262,32 @@
           {
             "allFormat": "glob",
             "current": {
-              "text": "interface-br-ctlplane",
-              "value": "interface-br-ctlplane"
+              "text": "disk-vda",
+              "value": "disk-vda"
             },
             "datasource": null,
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "undercloud_interface",
+            "name": "undercloud_disk",
             "options": [],
-            "query": "{{item.prefix}}.*undercloud*.interface-*",
+            "query": "{{dashboard_cloud_name}}.*undercloud*.disk-*",
             "refresh": true,
             "type": "query"
           },
           {
             "allFormat": "glob",
             "current": {
-              "text": "interface-br-ex",
-              "value": "interface-br-ex"
+              "text": "disk-sda",
+              "value": "disk-sda"
             },
             "datasource": null,
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "controller_interface",
+            "name": "controller_disk",
             "options": [],
-            "query": "{{item.prefix}}.*controller*.interface-*",
+            "query": "{{dashboard_cloud_name}}.*controller*.disk-*",
             "refresh": true,
             "type": "query"
           },
@@ -302,25 +302,25 @@
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "ceph_interface",
+            "name": "ceph_disk",
             "options": [],
-            "query": "{{item.prefix}}.*ceph*.interface-*",
+            "query": "{{dashboard_cloud_name}}.*ceph*.disk-*",
             "refresh": true,
             "type": "query"
           },
           {
             "allFormat": "glob",
             "current": {
-              "text": "interface-br-ex",
-              "value": "interface-br-ex"
+              "text": "disk-sda",
+              "value": "disk-sda"
             },
             "datasource": null,
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "compute_interface",
+            "name": "compute_disk",
             "options": [],
-            "query": "{{item.prefix}}.*compute*.interface-*",
+            "query": "{{dashboard_cloud_name}}.*compute*.disk-*",
             "refresh": true,
             "type": "query"
           }
@@ -330,16 +330,16 @@
         "list": []
       },
       "schemaVersion": 8,
-      "version": 5,
+      "version": 3,
       "links": [
         {
           "icon": "external link",
           "tags": [
-            "{{item.prefix}}"
+            "{{dashboard_cloud_name}}"
           ],
           "type": "dashboards",
           "asDropdown": true,
-          "title": "{{item.prefix}} Dashboards"
+          "title": "{{dashboard_cloud_name}} Dashboards"
         }
       ],
       "overwrite": true

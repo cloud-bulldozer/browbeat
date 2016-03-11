@@ -48,6 +48,7 @@ LoadPlugin uptime
 </Plugin>
 
 <Plugin processes>
+  # Appliance processes
   ProcessMatch "evm_server.rb" ".*evm_server\.rb$"
   ProcessMatch "evm_watchdog.rb" "/bin/evm_watchdog.rb"
   Process "evm:dbsync:replicate"
@@ -63,9 +64,11 @@ LoadPlugin uptime
   ProcessMatch "MiqWebServiceWorker" "MiqWebServiceWorker.*"
   ProcessMatch "MiqReplicationWorker" "MiqReplicationWorker.*"
   ProcessMatch "MiqEmsMetricsProcessorWorker" "MiqEmsMetricsProcessorWorker.*"
-  Processmatch "MiqSmartProxyWorker" "MiqSmartProxyWorker.*"
-  Processmatch "MiqVimBrokerWorker" "MiqVimBrokerWorker.*"
-  Processmatch "MiqEmsRefreshCoreWorker" "MiqEmsRefreshCoreWorker.*"
+  ProcessMatch "MiqSmartProxyWorker" "MiqSmartProxyWorker.*"
+  ProcessMatch "MiqVimBrokerWorker" "MiqVimBrokerWorker.*"
+  ProcessMatch "MiqEmsRefreshCoreWorker" "MiqEmsRefreshCoreWorker.*"
+  ProcessMatch "MiqVmdbStorageBridgeWorker" "MiqVmdbStorageBridgeWorker.*"
+
 
   # Provider Refresh Workers:
   ProcessMatch "Vmware::InfraManager::RefreshWorker" "Vmware::InfraManager::RefreshWorker.*"
@@ -75,19 +78,29 @@ LoadPlugin uptime
   ProcessMatch "MiqEmsRefreshWorkerVmware" "MiqEmsRefreshWorkerVmware.*"
   ProcessMatch "MiqEmsRefreshWorkerRedhat" "MiqEmsRefreshWorkerRedhat.*"
   ProcessMatch "MiqEmsRefreshWorkerMicrosoft" "MiqEmsRefreshWorkerMicrosoft.*"
+
+  ProcessMatch "AnsibleTower::ConfigurationManager::RefreshWorker" "AnsibleTower::ConfigurationManager::RefreshWorker.*"
   ProcessMatch "Foreman::ConfigurationManager::RefreshWorker" "Foreman::ConfigurationManager::RefreshWorker.*"
   ProcessMatch "Foreman::ProvisioningManager::RefreshWorker" "Foreman::ProvisioningManager::RefreshWorker.*"
   ProcessMatch "MiqEmsRefreshWorkerForemanConfiguration" "MiqEmsRefreshWorkerForemanConfiguration.*"
   ProcessMatch "MiqEmsRefreshWorkerForemanProvisioning" "MiqEmsRefreshWorkerForemanProvisioning.*"
+
   ProcessMatch "Amazon::CloudManager::RefreshWorker" "Amazon::CloudManager::RefreshWorker.*"
   ProcessMatch "Azure::CloudManager::RefreshWorker" "Azure::CloudManager::RefreshWorker.*"
+  ProcessMatch "Google::CloudManager::RefreshWorker" "Google::CloudManager::RefreshWorker.*"
   ProcessMatch "Openstack::CloudManager::RefreshWorker" "Openstack::CloudManager::RefreshWorker.*"
   ProcessMatch "MiqEmsRefreshWorkerAmazon" "MiqEmsRefreshWorkerAmazon.*"
   ProcessMatch "MiqEmsRefreshWorkerOpenstack" "MiqEmsRefreshWorkerOpenstack.*"
+
   ProcessMatch "Atomic::ContainerManager::RefreshWorker" "Atomic::ContainerManager::RefreshWorker.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::RefreshWorker" "AtomicEnterprise::ContainerManager::RefreshWorker.*"
+  ProcessMatch "Hawkular::MiddlewareManager::RefreshWorker" "Hawkular::MiddlewareManager::RefreshWorker.*"
   ProcessMatch "Kubernetes::ContainerManager::RefreshWorker" "Kubernetes::ContainerManager::RefreshWorker.*"
   ProcessMatch "Openshift::ContainerManager::RefreshWorker" "Openshift::ContainerManager::RefreshWorker.*"
   ProcessMatch "OpenshiftEnterprise::ContainerManager::RefreshWorker" "OpenshiftEnterprise::ContainerManager::RefreshWorker.*"
+  ProcessMatch "MiqNetappRefreshWorker" "MiqNetappRefreshWorker.*"
+  ProcessMatch "MiqSmisRefreshWorker" "MiqSmisRefreshWorker.*"
+
 
   # Provider EventCatcher Workers:
   ProcessMatch "Vmware::InfraManager::EventCatcher" "Vmware::InfraManager::EventCatcher.*"
@@ -95,29 +108,40 @@ LoadPlugin uptime
   ProcessMatch "Openstack::InfraManager::EventCatcher" "Openstack::InfraManager::EventCatcher.*"
   ProcessMatch "MiqEventCatcherVmware" "MiqEventCatcherVmware.*"
   ProcessMatch "MiqEventCatcherRedhat" "MiqEventCatcherRedhat.*"
+
   ProcessMatch "Amazon::CloudManager::EventCatcher" "Amazon::CloudManager::EventCatcher.*"
   ProcessMatch "Azure::CloudManager::EventCatcher" "Azure::CloudManager::EventCatcher.*"
   ProcessMatch "Openstack::CloudManager::EventCatcher" "Openstack::CloudManager::EventCatcher.*"
   ProcessMatch "MiqEventCatcherAmazon" "MiqEventCatcherAmazon.*"
   ProcessMatch "MiqEventCatcherOpenstack" "MiqEventCatcherOpenstack.*"
+
   ProcessMatch "Atomic::ContainerManager::EventCatcher" "Atomic::ContainerManager::EventCatcher.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::EventCatcher" "AtomicEnterprise::ContainerManager::EventCatcher.*"
   ProcessMatch "Kubernetes::ContainerManager::EventCatcher" "Kubernetes::ContainerManager::EventCatcher.*"
   ProcessMatch "Openshift::ContainerManager::EventCatcher" "Openshift::ContainerManager::EventCatcher.*"
   ProcessMatch "OpenshiftEnterprise::ContainerManager::EventCatcher" "OpenshiftEnterprise::ContainerManager::EventCatcher.*"
 
+
   # Provider MetricsCollector Workers:
   ProcessMatch "Vmware::InfraManager::MetricsCollectorWorker" "Vmware::InfraManager::MetricsCollectorWorker.*"
   ProcessMatch "Redhat::InfraManager::MetricsCollectorWorker" "Redhat::InfraManager::MetricsCollectorWorker.*"
+  ProcessMatch "Openstack::InfraManager::MetricsCollectorWorker" "Openstack::InfraManager::MetricsCollectorWorker.*"
   ProcessMatch "MiqEmsMetricsCollectorWorkerVmware" "MiqEmsMetricsCollectorWorkerVmware.*"
   ProcessMatch "MiqEmsMetricsCollectorWorkerRedhat" "MiqEmsMetricsCollectorWorkerRedhat.*"
+
   ProcessMatch "Amazon::CloudManager::MetricsCollectorWorker" "Amazon::CloudManager::MetricsCollectorWorker.*"
   ProcessMatch "Openstack::CloudManager::MetricsCollectorWorker" "Openstack::CloudManager::MetricsCollectorWorker.*"
   ProcessMatch "MiqEmsMetricsCollectorWorkerAmazon" "MiqEmsMetricsCollectorWorkerAmazon.*"
   ProcessMatch "MiqEmsMetricsCollectorWorkerOpenstack" "MiqEmsMetricsCollectorWorkerOpenstack.*"
+
   ProcessMatch "Atomic::ContainerManager::MetricsCollectorWorker" "Atomic::ContainerManager::MetricsCollectorWorker.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::MetricsCollectorWorker" "AtomicEnterprise::ContainerManager::MetricsCollectorWorker.*"
   ProcessMatch "Kubernetes::ContainerManager::MetricsCollectorWorker" "Kubernetes::ContainerManager::MetricsCollectorWorker.*"
   ProcessMatch "Openshift::ContainerManager::MetricsCollectorWorker" "Openshift::ContainerManager::MetricsCollectorWorker.*"
   ProcessMatch "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker" "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker.*"
+
+  ProcessMatch "MiqStorageMetricsCollectorWorker" "MiqStorageMetricsCollectorWorker.*"
+
 
   ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
   Process "httpd"

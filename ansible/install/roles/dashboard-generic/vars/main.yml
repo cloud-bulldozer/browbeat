@@ -1,0 +1,788 @@
+---
+#
+# Vars to generate Per-Process component of Generic Dashboards
+#
+
+per_process_metrics:
+  - name: "Process/Thread Counts"
+    y1units: "short"
+    metrics:
+      - name: "Processes"
+        query: ".ps_count.processes"
+      - name: "Threads"
+        query: ".ps_count.threads"
+  - name: "Process CPU"
+    y1units: "percent"
+    metrics:
+      - name: "System"
+        query: ".ps_cputime.syst"
+      - name: "User"
+        query: ".ps_cputime.user"
+  - name: "Process Memory"
+    y1units: "bits"
+    metrics:
+      - name: "RSS"
+        query: ".ps_rss"
+      - name: "Virtual"
+        query: ".ps_vm"
+  - name: "Process Page Faults"
+    y1units: "short"
+    metrics:
+      - name: "Majflt"
+        query: ".ps_pagefaults.majflt"
+      - name: "Minflt"
+        query: ".ps_pagefaults.minflt"
+  - name: "Process IOPs(Estimated via SYSCALLS)"
+    y1units: "iops"
+    metrics:
+      - name: "Read"
+        query: ".ps_disk_ops.read"
+      - name: "Write"
+        query: ".ps_disk_ops.write"
+  - name: "Process IO Throughput(Estimated via SYSCALLS)"
+    y1units: "bytes"
+    metrics:
+      - name: "Read"
+        query: ".ps_disk_octets.read"
+      - name: "Write"
+        query: ".ps_disk_octets.write"
+
+per_process_panels:
+  Baremetal:
+    - name: "httpd"
+      processes:
+        - httpd
+    - name: "Collectd"
+      processes:
+        - collectd
+  Guest:
+    - name: "httpd"
+      processes:
+        - httpd
+    - name: "Collectd"
+      processes:
+        - collectd
+  # This list aims to be comprehensive to all CFME Workers/Processes
+  CFME:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "Collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    # VMware Additional Workers:
+    - name: "MiqVimBrokerWorker"
+      processes:
+        - MiqVimBrokerWorker
+    - name: "MiqEmsRefreshCoreWorker"
+      processes:
+        - MiqEmsRefreshCoreWorker
+    - name: "MiqVmdbStorageBridgeWorker"
+      processes:
+        - MiqVmdbStorageBridgeWorker
+    # Refresh Workers:
+    - name: "Vmware::InfraManager::RefreshWorker"
+      processes:
+        - "Vmware::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerVmware"
+    - name: "Redhat::InfraManager::RefreshWorker"
+      processes:
+        - "Redhat::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerRedhat"
+    - name: "Microsoft::InfraManager::RefreshWorker"
+      processes:
+        - "Microsoft::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerMicrosoft"
+    - name: "Openstack::InfraManager::RefreshWorker"
+      processes:
+        - "Openstack::InfraManager::RefreshWorker"
+    - name: "AnsibleTower::ConfigurationManager::RefreshWorker"
+      processes:
+        - "AnsibleTower::ConfigurationManager::RefreshWorker"
+    - name: "Foreman RefreshWorkers"
+      processes:
+        - "Foreman::ConfigurationManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerForemanConfiguration"
+        - "Foreman::ProvisioningManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerForemanProvisioning"
+    - name: "Amazon::CloudManager::RefreshWorker"
+      processes:
+        - "Amazon::CloudManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerAmazon"
+    - name: "Azure::CloudManager::RefreshWorker"
+      processes:
+        - "Azure::CloudManager::RefreshWorker"
+    - name: "Google::CloudManager::RefreshWorker"
+      processes:
+        - "Google::CloudManager::RefreshWorker"
+    - name: "Openstack::CloudManager::RefreshWorker"
+      processes:
+        - "Openstack::CloudManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerOpenstack"
+    - name: "Atomic::ContainerManager::RefreshWorker"
+      processes:
+        - "Atomic::ContainerManager::RefreshWorker"
+    - name: "AtomicEnterprise::ContainerManager::RefreshWorker"
+      processes:
+        - "AtomicEnterprise::ContainerManager::RefreshWorker"
+    - name: "Hawkular::MiddlewareManager::RefreshWorker"
+      processes:
+        - "Hawkular::MiddlewareManager::RefreshWorker"
+    - name: "Kubernetes::ContainerManager::RefreshWorker"
+      processes:
+        - "Kubernetes::ContainerManager::RefreshWorker"
+    - name: "Openshift::ContainerManager::RefreshWorker"
+      processes:
+        - "Openshift::ContainerManager::RefreshWorker"
+    - name: "OpenshiftEnterprise::ContainerManager::RefreshWorker"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::RefreshWorker"
+    - name: "MiqNetappRefreshWorker"
+      processes:
+        - "MiqNetappRefreshWorker"
+    - name: "MiqSmisRefreshWorker"
+      processes:
+        - "MiqSmisRefreshWorker"
+    # Event Catchers:
+    - name: "Vmware::InfraManager::EventCatcher"
+      processes:
+        - "Vmware::InfraManager::EventCatcher"
+        - "MiqEventCatcherVmware"
+    - name: "Redhat::InfraManager::EventCatcher"
+      processes:
+        - "Redhat::InfraManager::EventCatcher"
+        - "MiqEventCatcherRedhat"
+    - name: "Openstack::InfraManager::EventCatcher"
+      processes:
+        - "Openstack::InfraManager::EventCatcher"
+    - name: "Amazon::CloudManager::EventCatcher"
+      processes:
+        - "Amazon::CloudManager::EventCatcher"
+        - "MiqEventCatcherAmazon"
+    - name: "Azure::CloudManager::EventCatcher"
+      processes:
+        - "Azure::CloudManager::EventCatcher"
+    - name: "Openstack::CloudManager::EventCatcher"
+      processes:
+        - "Openstack::CloudManager::EventCatcher"
+        - "MiqEventCatcherOpenstack"
+    - name: "Atomic::ContainerManager::EventCatcher"
+      processes:
+        - "Atomic::ContainerManager::EventCatcher"
+    - name: "AtomicEnterprise::ContainerManager::EventCatcher"
+      processes:
+        - "AtomicEnterprise::ContainerManager::EventCatcher"
+    - name: "Kubernetes::ContainerManager::EventCatcher"
+      processes:
+        - "Kubernetes::ContainerManager::EventCatcher"
+    - name: "Openshift::ContainerManager::EventCatcher"
+      processes:
+        - "Openshift::ContainerManager::EventCatcher"
+    - name: "OpenshiftEnterprise::ContainerManager::EventCatcher"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::EventCatcher"
+    # Metrics Collector Workers
+    - name: "Vmware::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Vmware::InfraManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerVmware"
+    - name: "Redhat::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Redhat::InfraManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerRedhat"
+    - name: "Openstack::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Openstack::InfraManager::MetricsCollectorWorker"
+    - name: "Amazon::CloudManager::MetricsCollectorWorker"
+      processes:
+        - "Amazon::CloudManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerAmazon"
+    - name: "Openstack::CloudManager::MetricsCollectorWorker"
+      processes:
+        - "Openstack::CloudManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerOpenstack"
+    - name: "Atomic::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Atomic::ContainerManager::MetricsCollectorWorker"
+    - name: "AtomicEnterprise::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "AtomicEnterprise::ContainerManager::MetricsCollectorWorker"
+    - name: "Kubernetes::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Kubernetes::ContainerManager::MetricsCollectorWorker"
+    - name: "Openshift::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Openshift::ContainerManager::MetricsCollectorWorker"
+    - name: "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker"
+    - name: "MiqStorageMetricsCollectorWorker"
+      processes:
+        - "MiqStorageMetricsCollectorWorker"
+  CFME-Amazon:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "Amazon::CloudManager::RefreshWorker"
+      processes:
+        - "Amazon::CloudManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerAmazon"
+    - name: "Amazon::CloudManager::EventCatcher"
+      processes:
+        - "Amazon::CloudManager::EventCatcher"
+        - "MiqEventCatcherAmazon"
+    - name: "Amazon::CloudManager::MetricsCollectorWorker"
+      processes:
+        - "Amazon::CloudManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerAmazon"
+  CFME-Azure:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "Azure::CloudManager::RefreshWorker"
+      processes:
+        - "Azure::CloudManager::RefreshWorker"
+    - name: "Azure::CloudManager::EventCatcher"
+      processes:
+        - "Azure::CloudManager::EventCatcher"
+  CFME-Containers:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    # Refresh Workers:
+    - name: "Atomic::ContainerManager::RefreshWorker"
+      processes:
+        - "Atomic::ContainerManager::RefreshWorker"
+    - name: "AtomicEnterprise::ContainerManager::RefreshWorker"
+      processes:
+        - "AtomicEnterprise::ContainerManager::RefreshWorker"
+    - name: "Hawkular::MiddlewareManager::RefreshWorker"
+      processes:
+        - "Hawkular::MiddlewareManager::RefreshWorker"
+    - name: "Kubernetes::ContainerManager::RefreshWorker"
+      processes:
+        - "Kubernetes::ContainerManager::RefreshWorker"
+    - name: "Openshift::ContainerManager::RefreshWorker"
+      processes:
+        - "Openshift::ContainerManager::RefreshWorker"
+    - name: "OpenshiftEnterprise::ContainerManager::RefreshWorker"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::RefreshWorker"
+    # Event Catchers:
+    - name: "Atomic::ContainerManager::EventCatcher"
+      processes:
+        - "Atomic::ContainerManager::EventCatcher"
+    - name: "AtomicEnterprise::ContainerManager::EventCatcher"
+      processes:
+        - "AtomicEnterprise::ContainerManager::EventCatcher"
+    - name: "Kubernetes::ContainerManager::EventCatcher"
+      processes:
+        - "Kubernetes::ContainerManager::EventCatcher"
+    - name: "Openshift::ContainerManager::EventCatcher"
+      processes:
+        - "Openshift::ContainerManager::EventCatcher"
+    - name: "OpenshiftEnterprise::ContainerManager::EventCatcher"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::EventCatcher"
+    # Metrics Collector Workers
+    - name: "Atomic::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Atomic::ContainerManager::MetricsCollectorWorker"
+    - name: "AtomicEnterprise::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "AtomicEnterprise::ContainerManager::MetricsCollectorWorker"
+    - name: "Kubernetes::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Kubernetes::ContainerManager::MetricsCollectorWorker"
+    - name: "Openshift::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "Openshift::ContainerManager::MetricsCollectorWorker"
+    - name: "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker"
+      processes:
+        - "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker"
+  CFME-Microsoft:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "Microsoft::InfraManager::RefreshWorker"
+      processes:
+        - "Microsoft::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerMicrosoft"
+  CFME-Openstack:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "Openstack::InfraManager::RefreshWorker"
+      processes:
+        - "Openstack::InfraManager::RefreshWorker"
+    - name: "Openstack::CloudManager::RefreshWorker"
+      processes:
+        - "Openstack::CloudManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerOpenstack"
+    - name: "Openstack::InfraManager::EventCatcher"
+      processes:
+        - "Openstack::InfraManager::EventCatcher"
+    - name: "Openstack::CloudManager::EventCatcher"
+      processes:
+        - "Openstack::CloudManager::EventCatcher"
+        - "MiqEventCatcherOpenstack"
+    - name: "Openstack::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Openstack::InfraManager::MetricsCollectorWorker"
+    - name: "Openstack::CloudManager::MetricsCollectorWorker"
+      processes:
+        - "Openstack::CloudManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerOpenstack"
+  CFME-RedHat:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "Redhat::InfraManager::RefreshWorker"
+      processes:
+        - "Redhat::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerRedhat"
+    - name: "Redhat::InfraManager::EventCatcher"
+      processes:
+        - "Redhat::InfraManager::EventCatcher"
+        - "MiqEventCatcherRedhat"
+    - name: "Redhat::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Redhat::InfraManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerRedhat"
+  CFME-VMware:
+    - name: "Summerized"
+      processes:
+        - ruby
+        - postgres
+        - httpd
+    - name: "Memcached"
+      processes:
+        - memcached
+    - name: "collectd"
+      processes:
+        - collectd
+    - name: "Appliance"
+      processes:
+        - evm_server.rb
+        - evm_watchdog.rb
+        - appliance_console.rb
+    - name: "MiqGenericWorker"
+      processes:
+        - MiqGenericWorker
+    - name: "MiqPriorityWorker"
+      processes:
+        - MiqPriorityWorker
+    - name: "MiqScheduleWorker"
+      processes:
+        - MiqScheduleWorker
+    - name: "MiqUiWorker"
+      processes:
+        - MiqUiWorker
+    - name: "MiqWebServiceWorker"
+      processes:
+        - MiqWebServiceWorker
+    - name: "MiqReportingWorker"
+      processes:
+        - MiqReportingWorker
+    - name: "MiqEventHandler"
+      processes:
+        - MiqEventHandler
+    - name: "MiqSmartProxyWorker"
+      processes:
+        - MiqSmartProxyWorker
+    - name: "MiqReplicationWorker"
+      processes:
+        - MiqReplicationWorker
+        - "evm:dbsync:replicate"
+    - name: "MiqEmsMetricsProcessorWorker"
+      processes:
+        - MiqEmsMetricsProcessorWorker
+    - name: "MiqVimBrokerWorker"
+      processes:
+        - MiqVimBrokerWorker
+    - name: "MiqEmsRefreshCoreWorker"
+      processes:
+        - MiqEmsRefreshCoreWorker
+    - name: "Vmware::InfraManager::RefreshWorker"
+      processes:
+        - "Vmware::InfraManager::RefreshWorker"
+        - "MiqEmsRefreshWorkerVmware"
+    - name: "Vmware::InfraManager::EventCatcher"
+      processes:
+        - "Vmware::InfraManager::EventCatcher"
+        - "MiqEventCatcherVmware"
+    - name: "Vmware::InfraManager::MetricsCollectorWorker"
+      processes:
+        - "Vmware::InfraManager::MetricsCollectorWorker"
+        - "MiqMetricsCollectorWorkerVmware"
+  Graphite:
+    - name: "Summerized"
+      processes:
+        - carbon-cache
+        - grafana-server
+        - httpd
+    - name: "Carbon"
+      processes:
+        - carbon-cache
+    - name: "Grafana"
+      processes:
+        - grafana-server
+    - name: "httpd"
+      processes:
+        - httpd
+    - name: "Collectd"
+      processes:
+        - collectd
+  Satellite6:
+    - name: "Summerized"
+      processes:
+        - httpd
+        - ruby
+    - name: "DynFlow"
+      processes:
+        - dynflow_executor
+        - dynflow_executor_monitor
+    - name: "ElasticSearch"
+      processes:
+        - Elasticsearch
+    - name: "Foreman-SmartProxy"
+      processes:
+        - Foreman-SmartProxy
+    - name: "Mongodb"
+      processes:
+        - Mongodb
+    - name: "Passenger"
+      processes:
+        - Passenger-Forman
+        - Passenger-Puppet
+        - PassengerHelperAgent
+        - PassengerLoggingAgent
+        - PassengerWatchdog
+    - name: "Postgres"
+      processes:
+        - postgres
+    - name: "Pulp"
+      processes:
+        - Pulp-Scheduler
+        - Pulp-Resource-Manager
+        - Pulp-Resource-Worker
+    - name: "Puppet-Agent"
+      processes:
+        - Puppet-Agent
+    - name: "Qpidd Dispatch Router"
+      processes:
+        - qdrouterd
+    - name: "Qpidd"
+      processes:
+        - qpidd
+    - name: "Tomcat"
+      processes:
+        - Tomcat
+    - name: "Collectd"
+      processes:
+        - collectd

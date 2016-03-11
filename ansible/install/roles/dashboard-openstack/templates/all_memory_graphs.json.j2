@@ -1,11 +1,11 @@
-{% set vars = {'panel_idx': 0, 'inital': 0} %}
+{% set vars = {'panel_idx': 0, 'initial': 0} %}
 {% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
       "id": null,
-      "title": "{{item.prefix}} - All Nodes Memory",
+      "title": "{{dashboard_cloud_name}} - All Nodes Memory",
       "tags": [
-        "{{item.prefix}}"
+        "{{dashboard_cloud_name}}"
       ],
       "style": "dark",
       "timezone": "browser",
@@ -16,8 +16,8 @@
 {% for group in dashboard_groups %}
   {% if group in groups %}
     {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
-      {% if vars.inital == 0 %}
-         {% if vars.update({'inital': (vars.inital + 1)}) %} {% endif %}
+      {% if vars.initial == 0 %}
+         {% if vars.update({'initial': (vars.initial + 1)}) %} {% endif %}
       {% else %}
         },
       {% endif %}
@@ -75,27 +75,27 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-slab_unrecl, 'Slab Unrecl')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-slab_unrecl, 'Slab Unrecl')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-used, 'Used')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-used, 'Used')"
                 },
                 {
                   "refId": "C",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-buffered, 'Buffered')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-buffered, 'Buffered')"
                 },
                 {
                   "refId": "D",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-slab_recl, 'Slab Recl')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-slab_recl, 'Slab Recl')"
                 },
                 {
                   "refId": "E",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-cached, 'Cached')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-cached, 'Cached')"
                 },
                 {
                   "refId": "F",
-                  "target": "alias({{item.prefix}}.{{host}}.memory.memory-free, 'Free')"
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.memory.memory-free, 'Free')"
                 }
               ],
               "timeFrom": null,
@@ -173,11 +173,11 @@
         {
           "icon": "external link",
           "tags": [
-            "{{item.prefix}}"
+            "{{dashboard_cloud_name}}"
           ],
           "type": "dashboards",
           "asDropdown": true,
-          "title": "{{item.prefix}} Dashboards"
+          "title": "{{dashboard_cloud_name}} Dashboards"
         }
       ],
       "overwrite": true

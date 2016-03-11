@@ -23,9 +23,6 @@ shaker_venv: /home/stack/shaker-venv
 # The default PerfKit venv:
 perfkit_venv: /home/stack/perfkit-venv
 
-# Shaker centos image builder template
-shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
-
 # Guest images for the Overcloud
 images:
   centos7:
@@ -33,57 +30,69 @@ images:
   cirros:
     url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
 
-# Host where connmond will be running
-connmon_host: 192.0.2.1
-
 # DNS Server to add
 dns_server: 8.8.8.8
 
-# Collectd interval (seconds)
-collectd_interval: 10
+# epel Repository for collectd packages
+epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-# Run collectd on specific nodes:
+# Host where connmond will be running
+connmon_host: 192.0.2.1
+
+########################################
+# Collectd Configuration
+########################################
+# Interval in seconds
+collectd_interval: 10
+# Run collectd on specific openstack nodes:
 collectd_undercloud: true
 collectd_controller: true
 collectd_ceph: true
 collectd_compute: false
 
-# epel Repository for collectd packages
-epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-
+########################################
+# Graphite Configuration
+########################################
 # Graphite Server ip address (Collectd -> Graphite server)
 graphite_host: 1.1.1.1
-
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
-
-# Grafana API Key (Used to upload Grafana dashboards)
-grafana_api_key: (Your Grafana API Key)
-
-# Grafana Server IP Address (Can be hosted on the Graphite server)
-grafana_host: 1.1.1.1
-
 # Graphite username and password for login on the dashboard
 graphite_username: root
 graphite_password: calvin
 
-# Dashboards - Batch number of hosts per row for all-{cpu, memory, disk, network} dashboards
+########################################
+# Grafana Dashboarding Configuration
+########################################
+# Grafana Server IP Address/Port (Can be hosted on the Graphite server)
+grafana_host: 1.1.1.1
+grafana_port: 3000
+grafana_api_key: (Your Grafana API Key)
+# Batch number of hosts per row for all-{cpu, memory, disk, network} openstack dashboards
 dashboards_batch: 20
+# For use with all-{cpu, memory, disk, network} openstack dashboards, uses the graphite prefix to create dashboards for specific openstack cloud
+dashboard_cloud_name: "{{graphite_prefix}}"
 
+########################################
+# Shaker Configuration
+########################################
 # Port for Shaker (5555 should suffice)
 shaker_port: 5555
-
 # Should choose m1.small or larger
 shaker_flavor: m1.small
+# Shaker centos image builder template
+shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
 
-# Automates creating a public network that perfkit and shaker utilize
+########################################
+# Browbeat Network Configuration
+########################################
+# Public network that perfkit and shaker utilize
 browbeat_pub_net_name: browbeat_public
 browbeat_pub_subnet: 1.1.1.1/22
 browbeat_pub_pool_start: 1.1.1.1
 browbeat_pub_pool_end: 1.1.1.1
 browbeat_pub_pool_gw: 1.1.1.1
-
-# Browbeat private subnet
+# Private subnet
 browbeat_pri_net_name: browbeat_private
 browbeat_pri_subnet: 172.16.10.0/24
 browbeat_pri_pool_start: 172.16.10.2

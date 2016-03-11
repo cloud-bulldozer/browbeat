@@ -1,0 +1,12 @@
+---
+#
+# Builds dashboards based on your ansible hosts for Openstack
+#
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_connection: local
+    overwrite_existing: true
+  roles:
+    - dashboard-openstack

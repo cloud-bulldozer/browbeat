@@ -1,0 +1,37 @@
+---
+#
+# Builds and uploads dashboards to your grafana server for several host types
+#
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_connection: local
+    overwrite_existing: true
+    dashboards:
+      - template_name: baremetal
+        process_list_name: Baremetal
+      - template_name: guest
+        process_list_name: Guest
+      - template_name: cfme
+        process_list_name: CFME
+      # - template_name: cfme
+      #   process_list_name: CFME-Amazon
+      # - template_name: cfme
+      #   process_list_name: CFME-Azure
+      - template_name: cfme
+        process_list_name: CFME-Containers
+      - template_name: cfme
+        process_list_name: CFME-Microsoft
+      - template_name: cfme
+        process_list_name: CFME-Openstack
+      - template_name: cfme
+        process_list_name: CFME-RedHat
+      - template_name: cfme
+        process_list_name: CFME-VMware
+      - template_name: graphite
+        process_list_name: Graphite
+      - template_name: satellite6
+        process_list_name: Satellite6
+  roles:
+    - dashboard-generic
