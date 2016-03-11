@@ -133,7 +133,7 @@ Your Overcloud check output is located in check/bug_report.log
 
 # Running PerfKitBenchmarker
 
-Work is on-going to utilize PerfKitBenchmarker as a workload provider to browbeat.  Many benchmarks work out of the box with browbeat.  You must ensure that your network is setup correctly to run those benchmarks and you will need to configure the settings in ansible/install/group_vars/all for browbeat public/private networks. Currently  tested benchmarks include: bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, netperf, mesh_network, mongodb_ycsb, ping, and sysbench_oltp.
+Work is on-going to utilize PerfKitBenchmarker as a workload provider to browbeat.  Many benchmarks work out of the box with browbeat.  You must ensure that your network is setup correctly to run those benchmarks and you will need to configure the settings in ansible/install/group_vars/all for browbeat public/private networks. Currently  tested benchmarks include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, mesh_network, mongodb_ycsb, netperf, object_storage_service, ping, scimark2, and sysbench_oltp.
 
 To run browbeat's PerfKit Benchmarks, you can start by viewing the tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml. You must add them to your specific browbeat config yaml file or enable/disable the benchmarks you wish to run in the default config file (browbeat-config.yaml).  There are many flags exposed in the configuration files to tune how those benchmarks run.  Additional flags are exposed in the soruce code of PerfKitBenchmarker available: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker
 
