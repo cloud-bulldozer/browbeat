@@ -1,15 +1,18 @@
 from Tools import Tools
+from Grafana import Grafana
 import yaml
 import logging
 import datetime
 import os
 import json
+import time
 
 class Shaker:
     def __init__(self, config):
         self.logger=logging.getLogger('browbeat.Shaker')
         self.config = config
         self.tools = Tools(self.config)
+        self.grafana = Grafana(self.config)
         self.fail_scenarios =  0
         self.pass_scenarios = 0
         self.scenarios_count = 0
@@ -107,10 +110,19 @@ class Shaker:
                " --debug > {4}/{5}.log 2>&1").format(server_endpoint,
                port_no, flavor, filename, result_dir, test_name, timeout)
         cmd = ("{}; {}").format(cmd_1, cmd_2)
+        from_ts = int(time.time() * 1000)
+        if 'sleep_before' in self.config['shaker']:
+            time.sleep(self.config['shaker']['sleep_before'])
         self.tools.run_cmd(cmd)
         self.scenarios_count += 1
         self.result_check(result_dir, test_name, scenario)
-
+        if 'sleep_after' in self.config['shaker']:
+            time.sleep(self.config['shaker']['sleep_after'])
+        to_ts = int(time.time() * 1000)
+        #Snapshotting
+        self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
+        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def run_shaker(self):
         self.logger.info("Starting Shaker workloads")

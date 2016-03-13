@@ -2,7 +2,7 @@
 browbeat:
   results : results/
   sudo: true
-  connmon: true
+  connmon: false
   rerun: 3
 ansible:
   hosts: ansible/hosts
@@ -189,6 +189,8 @@ shaker:
   port: 5555
   flavor: m1.small
   join_timeout: 600
+  sleep_before: 5
+  sleep_after: 5
   venv: /home/stack/shaker-venv
   scenarios:
     l2-4-1:

@@ -2,7 +2,7 @@
 browbeat:
   results : results/
   sudo: true
-  connmon: true
+  connmon: false
   rerun: 1
 ansible:
   hosts: ansible/hosts
@@ -47,10 +47,12 @@ perfkit:
       data_disk_size: 4
 shaker:
   enabled: true
-  server: (Address of machine running browbeat)
+  server: (Address of machine running browbeat-Undercloud)
   port: 5555
   flavor: m1.small
   join_timeout: 600
+  sleep_before: 5
+  sleep_after: 5
   venv: /home/stack/shaker-venv
   scenarios:
     l2:

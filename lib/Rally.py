@@ -1,6 +1,7 @@
 from Connmon import Connmon
 from Tools import Tools
 from collections import OrderedDict
+from Grafana import Grafana
 import datetime
 import glob
 import logging
@@ -16,6 +17,7 @@ class Rally:
         self.config = config
         self.tools = Tools(self.config)
         self.connmon = Connmon(self.config)
+        self.grafana = Grafana(self.config)
         self.error_count = 0
         self.test_count = 0
         self.scenario_count = 0
@@ -40,34 +42,9 @@ class Rally:
             time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
 
-        if 'grafana' in self.config and self.config['grafana']['enabled']:
-            grafana_ip = self.config['grafana']['grafana_ip']
-            grafana_port = self.config['grafana']['grafana_port']
-            url = 'http://{}:{}/dashboard/db/'.format(grafana_ip, grafana_port)
-            cloud_name = self.config['grafana']['cloud_name']
-            for dashboard in self.config['grafana']['dashboards']:
-                full_url = '{}{}?from={}&to={}&var-Cloud={}'.format(url, dashboard, from_ts, to_ts,
-                    cloud_name)
-                self.logger.info('{} - Grafana URL: {}'.format(test_name, full_url))
-            if self.config['grafana']['snapshot']['enabled']:
-                hosts_file = self.config['ansible']['hosts']
-                playbook = self.config['ansible']['grafana_snapshot']
-                extra_vars = 'grafana_ip={} '.format(grafana_ip)
-                extra_vars += 'grafana_port={} '.format(grafana_port)
-                extra_vars += 'grafana_api_key={} '.format(self.config['grafana']['snapshot']['grafana_api_key'])
-                extra_vars += 'from={} '.format(from_ts)
-                extra_vars += 'to={} '.format(to_ts)
-                extra_vars += 'results_dir={}/{} '.format(result_dir, test_name)
-                extra_vars += 'var_cloud={} '.format(cloud_name)
-                if self.config['grafana']['snapshot']['snapshot_compute']:
-                    extra_vars += 'snapshot_compute=true '
-                snapshot_cmd = 'ansible-playbook -i {} {} -e "{}"'.format(hosts_file, playbook,
-                    extra_vars)
-                subprocess_cmd = ['ansible-playbook', '-i', hosts_file, playbook, '-e',
-                    '{}'.format(extra_vars)]
-                self.logger.info('Snapshot command: {}'.format(snapshot_cmd))
-                snapshot_log = open('{}/snapshot.log'.format(result_dir), 'a+')
-                subprocess.Popen(subprocess_cmd, stdout=snapshot_log, stderr=subprocess.STDOUT)
+        self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
+        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def workload_logger(self, result_dir):
         base = result_dir.split('/')
