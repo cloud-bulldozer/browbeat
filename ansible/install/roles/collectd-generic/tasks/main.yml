@@ -16,9 +16,7 @@
 - name: Install collectd rpms
   yum: name={{ item }} state=present
   become: true
-  with_items:
-    - collectd
-    - collectd-turbostat
+  with_items: "{{collectd_packages[config_type]}}"
 
 - name: Configure collectd.conf
   template:

@@ -21,6 +21,7 @@ LoadPlugin load
 LoadPlugin memory
 LoadPlugin numa
 LoadPlugin processes
+# LoadPlugin postgresql
 LoadPlugin swap
 LoadPlugin turbostat
 LoadPlugin uptime
@@ -47,6 +48,14 @@ LoadPlugin uptime
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
   IgnoreSelected false
 </Plugin>
+
+# <Plugin postgresql>
+#     <Database foreman>
+#       Host "localhost"
+#       Port "5432"
+#       User "root"
+#     </Database>
+# </Plugin>
 
 <Plugin processes>
   # DynFlow
