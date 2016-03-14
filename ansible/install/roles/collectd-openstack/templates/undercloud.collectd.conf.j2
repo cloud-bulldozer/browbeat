@@ -22,6 +22,7 @@ LoadPlugin irq
 LoadPlugin load
 LoadPlugin match_regex
 LoadPlugin memory
+LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
 LoadPlugin swap
@@ -69,6 +70,49 @@ PreCacheChain "PreCache"
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
   IgnoreSelected false
+</Plugin>
+
+<Plugin mysql>
+  <Database "ceilometer">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "glance">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "heat">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "ironic">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "keystone">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "neutron">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "nova">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "tuskar">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
 </Plugin>
 
 <Plugin processes>

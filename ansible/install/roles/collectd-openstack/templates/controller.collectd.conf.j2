@@ -22,6 +22,7 @@ LoadPlugin irq
 LoadPlugin load
 LoadPlugin match_regex
 LoadPlugin memory
+LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
 LoadPlugin swap
@@ -74,6 +75,39 @@ PreCacheChain "PreCache"
 #<Plugin exec>
 #  Exec nobody "/usr/local/bin/collectd-redis.sh"
 #</Plugin>
+
+<Plugin mysql>
+  <Database "cinder">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "glance">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "heat">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "keystone">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "nova">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+  <Database "ovs_neutron">
+    Host "localhost"
+    Socket "/var/lib/mysql/mysql.sock"
+    InnodbStats true
+  </Database>
+</Plugin>
 
 <Plugin processes>
   # Ceilometer

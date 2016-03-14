@@ -19,6 +19,7 @@
   with_items:
     - collectd
     - collectd-turbostat
+    - collectd-mysql
 
 - name: Configure collectd.conf
   template:
