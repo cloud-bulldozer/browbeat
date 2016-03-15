@@ -2,7 +2,7 @@
 browbeat:
   results : results/
   sudo: true
-  connmon: true
+  connmon: false
   rerun: 3
 ansible:
   hosts: ansible/hosts
@@ -50,6 +50,9 @@ rally:
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
+  plugins:
+      - netcreate-boot: rally/rally-plugins/netcreate-boot
+      - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
   benchmarks:
     authenticate:
       enabled: true
@@ -79,6 +82,23 @@ rally:
         authentic-nova:
           enabled: true
           file: rally/authenticate/validate_nova-cc.yml
+          sla_max_avg_duration: 12
+          sla_max_seconds: 30
+          sla_max_failure: 0
+    plugins:
+      enabled: true
+      concurrency:
+        - 16
+        - 32
+        - 48
+        - 64
+      times: 128
+      scenarios:
+        netcreate-boot:
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
           sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
