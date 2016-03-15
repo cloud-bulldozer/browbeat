@@ -1,0 +1,23 @@
+---
+#
+# Vars for collectd-generic
+#
+
+collectd_packages:
+  baremetal:
+    - collectd
+    - collectd-turbostat
+  guest:
+    - collectd
+  cfme:
+    - collectd
+  cfme-vmdb:
+    - collectd
+    - collectd-postgresql
+  graphite:
+    - collectd
+    - collectd-turbostat
+  satellite6:
+    - collectd
+    - collectd-turbostat
+    - collectd-postgresql

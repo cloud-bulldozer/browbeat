@@ -6,6 +6,7 @@
 #
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="baremetal"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="guest"
+# ansible-playbook -i hosts install/collectd-generic.yml --tags="cfme-vmdb"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="cfme"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="graphite"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="satellite6"
@@ -28,6 +29,16 @@
     - collectd-generic
   tags: guest
 
+# Cloud Forms Database appliances
+- hosts: cfme-vmdb
+  remote_user: root
+  vars:
+    config_type: cfme-vmdb
+  roles:
+    - collectd-generic
+  tags: cfme-vmdb
+
+# Cloud Forms Worker appliances
 - hosts: cfme
   remote_user: root
   vars:
