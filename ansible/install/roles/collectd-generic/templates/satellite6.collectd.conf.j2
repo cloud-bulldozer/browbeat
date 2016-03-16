@@ -21,7 +21,7 @@ LoadPlugin load
 LoadPlugin memory
 LoadPlugin numa
 LoadPlugin processes
-# LoadPlugin postgresql
+LoadPlugin postgresql
 LoadPlugin swap
 LoadPlugin turbostat
 LoadPlugin unixsock
@@ -58,18 +58,52 @@ LoadPlugin uptime
   IgnoreSelected false
 </Plugin>
 
-# <Plugin postgresql>
-#     <Database foreman>
-#       Host "localhost"
-#       Port "5432"
-#       User "root"
-#     </Database>
-# </Plugin>
+<Plugin postgresql>
+  <Database candlepin>
+    Host "localhost"
+    Port "5432"
+    User "candlepin"
+    Password "{{satellite_candlepin_password.stdout|ini_value}}"
+    # Predefined:
+    Query backends
+    Query transactions
+    Query queries
+    Query table_states
+    Query disk_io
+    Query disk_usage
+  </Database>
+  <Database foreman>
+    Host "localhost"
+    Port "5432"
+    User "foreman"
+    Password "{{satellite_foreman_password.stdout}}"
+    # Predefined:
+    Query backends
+    Query transactions
+    Query queries
+    Query table_states
+    Query disk_io
+    Query disk_usage
+  </Database>
+  <Database gutterball>
+    Host "localhost"
+    Port "5432"
+    User "gutterball"
+    Password "gutterball"
+    # Predefined:
+    Query backends
+    Query transactions
+    Query queries
+    Query table_states
+    Query disk_io
+    Query disk_usage
+  </Database>
+</Plugin>
 
 <Plugin processes>
   # DynFlow
-  Process "dynflow_executor"
-  Process "dynflow_executor_monitor"
+  ProcessMatch "dynflow_executor" "dynflow.+executor$"
+  ProcessMatch "dynflow_executor_monitor" "dynflow.+executor.+monitor$"
 
   # Elasticsearch
   ProcessMatch "Elasticsearch" ".*elasticsearch.*"
@@ -83,9 +117,9 @@ LoadPlugin uptime
   # Passenger
   ProcessMatch "Passenger-Forman" "Passenger.+RackApp:.+/usr/share/foreman"
   ProcessMatch "Passenger-Puppet" "Passenger.+RackApp:.+/etc/puppet/rack"
-  Process "PassengerHelperAgent"
-  Process "PassengerLoggingAgent"
-  Process "PassengerWatchdog"
+  ProcessMatch "PassengerHelperAgent" "PassengerHelperAgent"
+  ProcessMatch "PassengerLoggingAgent" "PassengerLoggingAgent"
+  ProcessMatch "PassengerWatchdog" "PassengerWatchdog"
 
   # Postgres database
   ProcessMatch "postgres" "postgres.*"
@@ -107,6 +141,10 @@ LoadPlugin uptime
 
   # Tomcat
   ProcessMatch "Tomcat" ".*tomcat.*"
+
+  # Other background tasks
+  ProcessMatch "Trends:Counter" "/opt/rh/ruby193/root/usr/bin/ruby.+/opt/rh/ruby193/root/usr/bin/rake.+trends:counter"
+  ProcessMatch "LDAP:Refresh_usergroups" "/opt/rh/ruby193/root/usr/bin/ruby.+/opt/rh/ruby193/root/usr/bin/rake.+ldap:refresh_usergroups"
 
   Process "ruby"
 

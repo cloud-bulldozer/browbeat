@@ -21,6 +21,12 @@ def hosts_to_dictionary(arg):
     return dictionary
 
 
+def ini_value(key_value):
+    """Strips key= from key=value from ini configuration data"""
+    equals_idx = key_value.index('=') + 1
+    return key_value[equals_idx:]
+
+
 def to_grafana_refid(number):
     """Convert a number to a string starting at character a and incrementing.  This only accounts
     for a to zz, anything greater than zz is probably too much to graph anyway."""
@@ -39,6 +45,7 @@ class FilterModule(object):
     def filters(self):
       return {
         'dict_remove': dict_remove,
+        'ini_value': ini_value,
         'hosts_to_dictionary': hosts_to_dictionary,
         'to_grafana_refid': to_grafana_refid,
         }

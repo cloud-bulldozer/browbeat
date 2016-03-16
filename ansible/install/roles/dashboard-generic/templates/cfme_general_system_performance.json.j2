@@ -1869,7 +1869,7 @@
         "collapse": true,
         "panels": [
           {
-            "title": "$Cloud - $Node - vmdb_production Size",
+            "title": "$Cloud - $Node - Database Sizes",
             "error": false,
             "span": 12,
             "editable": true,
@@ -1927,7 +1927,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.postgresql-vmdb_production.pg_db_size, 'Size')"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_db_size, 'postgresql-', ''), 2)"
               }
             ],
             "aliasColors": {},
@@ -1993,7 +1993,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.postgresql-vmdb_production.pg_numbackends, 'Connected Clients')"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_numbackends, 'postgresql-', ''), 2)"
               }
             ],
             "aliasColors": {},
@@ -2001,7 +2001,7 @@
             "links": []
           },
           {
-            "title": "$Cloud - $Node - Block Access",
+            "title": "$Cloud - $Node - Heap/Index/Toast Activity",
             "error": false,
             "span": 12,
             "editable": true,
@@ -2059,7 +2059,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.$Node.postgresql-vmdb_production.pg_blks-*, 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-vmdb_production.pg_blks-*, 'pg_blks-', ''), 3)"
               }
             ],
             "aliasColors": {},
@@ -2067,7 +2067,7 @@
             "links": []
           },
           {
-            "title": "$Cloud - $Node - Block Access",
+            "title": "$Cloud - $Node - Tuple Operations",
             "error": false,
             "span": 12,
             "editable": true,
@@ -2125,7 +2125,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.$Node.postgresql-vmdb_production.pg_n_tup_*, 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-vmdb_production.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
               }
             ],
             "aliasColors": {},
@@ -2191,7 +2191,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.$Node.postgresql-vmdb_production.pg_scan-*, 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-vmdb_production.pg_scan-*, 'pg_scan-', ''), 3)"
               }
             ],
             "aliasColors": {},
@@ -2199,13 +2199,14 @@
             "links": []
           },
           {
-            "title": "$Cloud - $Node - Commits",
+            "title": "$Cloud - $Node - Commits/Rollbacks",
             "error": false,
             "span": 12,
             "editable": true,
             "type": "graph",
             "isNew": true,
-            "id": 381,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "datasource": null,
             "renderer": "flot",
             "x-axis": true,
@@ -2256,7 +2257,11 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.$Node.postgresql-vmdb_production.pg_xact-*, 3)"
+                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-commit, 'postgresql-', ''), 2), '$', '-commit')"
+              },
+              {
+                "refId": "B",
+                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-rollback, 'postgresql-', ''), 2), '$', '-rollback')"
               }
             ],
             "aliasColors": {},
@@ -2332,7 +2337,7 @@
         ],
         "showTitle": true
       },
-     {
+      {
         "collapse": true,
         "editable": true,
         "height": "250px",

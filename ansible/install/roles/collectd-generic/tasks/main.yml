@@ -18,6 +18,16 @@
   become: true
   with_items: "{{collectd_packages[config_type]}}"
 
+- name: Get Candlepin PostgresDB Password
+  command: grep "jpa.config.hibernate.connection.password" /etc/candlepin/candlepin.conf
+  register: satellite_candlepin_password
+  when: "'{{config_type}}' == 'satellite6'"
+
+- name: Get Foreman PostgresDB Password
+  shell: grep "password" /etc/foreman/database.yml | awk '{print $2}' | tr -d '"'
+  register: satellite_foreman_password
+  when: "'{{config_type}}' == 'satellite6'"
+
 - name: Configure collectd.conf
   template:
     src={{config_type}}.collectd.conf.j2

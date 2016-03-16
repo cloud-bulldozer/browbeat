@@ -2291,6 +2291,613 @@
     {% endfor %}
 {# End Loop over per-process options here #}
       {
+        "title": "Postgresql",
+        "height": "250px",
+        "editable": true,
+        "collapse": true,
+        "panels": [
+          {
+            "title": "$Cloud - $Node - Database Sizes",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bits",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 1,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_db_size, 'postgresql-', ''), 2)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Connected Clients",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_numbackends, 'postgresql-', ''), 2)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Foreman Heap/Index/Toast Activity",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-foreman.pg_blks-*, 'pg_blks-', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Candlepin Heap/Index/Toast Activity",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-candlepin.pg_blks-*, 'pg_blks-', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Gutterball Heap/Index/Toast Activity",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-gutterball.pg_blks-*, 'pg_blks-', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Foreman Tuple Operations",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-foreman.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Candlepin Tuple Operations",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-candlepin.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Gutterball Tuple Operations",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-gutterball.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "$Cloud - $Node - Commits/Rollbacks",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "rightSide": true,
+              "alignAsTable": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-commit, 'postgresql-', ''), 2), '$', '-commit')"
+              },
+              {
+                "refId": "B",
+                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-rollback, 'postgresql-', ''), 2), '$', '-rollback')"
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          }
+        ],
+        "showTitle": true
+      },
+      {
         "collapse": true,
         "editable": true,
         "height": "200px",

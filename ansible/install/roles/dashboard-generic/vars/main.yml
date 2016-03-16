@@ -755,7 +755,7 @@ per_process_panels:
         - Foreman-SmartProxy
     - name: "Mongodb"
       processes:
-        - Mongodb
+        - mongod
     - name: "Passenger"
       processes:
         - Passenger-Forman
@@ -783,6 +783,10 @@ per_process_panels:
     - name: "Tomcat"
       processes:
         - Tomcat
+    - name: "Background Tasks"
+      processes:
+        - "Trends:Counter"
+        - "LDAP:Refresh_usergroups"
     - name: "Collectd"
       processes:
         - collectd
