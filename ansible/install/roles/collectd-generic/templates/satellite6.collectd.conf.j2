@@ -24,7 +24,16 @@ LoadPlugin processes
 # LoadPlugin postgresql
 LoadPlugin swap
 LoadPlugin turbostat
+LoadPlugin unixsock
 LoadPlugin uptime
+
+# Open unix domain socket for collectdctl
+<Plugin unixsock>
+  SocketFile "/var/run/collectd-unixsock"
+  SocketGroup "collectd"
+  SocketPerms "0770"
+  DeleteSocket true
+</Plugin>
 
 # Graphite Host Configuration
 <Plugin write_graphite>

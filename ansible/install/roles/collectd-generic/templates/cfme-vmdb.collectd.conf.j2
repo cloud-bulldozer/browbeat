@@ -26,7 +26,7 @@ LoadPlugin tail
 LoadPlugin unixsock
 LoadPlugin uptime
 
-# Allow collectdctl for debugging
+# Open unix domain socket for collectdctl
 <Plugin unixsock>
   SocketFile "/var/run/collectd-unixsock"
   SocketGroup "collectd"
