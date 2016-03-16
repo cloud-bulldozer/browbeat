@@ -1,0 +1,18 @@
+#
+## Heat connmon tasks
+##
+#
+- name: Check for connmon in heat.conf
+  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/heat/heat.conf
+  register: heat_mysql
+  ignore_errors: true
+  changed_when: false
+
+- name: Enable Connmon in heat.conf
+  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/heat/heat.conf
+  when: heat_mysql.rc == 0
+  notify:
+    - unmanage heat services
+    - restart heat services
+    - manage heat services
+    - cleanup heat services
