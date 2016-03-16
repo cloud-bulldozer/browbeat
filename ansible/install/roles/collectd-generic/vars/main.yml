@@ -17,6 +17,9 @@ collectd_packages:
   graphite:
     - collectd
     - collectd-turbostat
+  ose:
+    - collectd
+    - collectd-turbostat
   satellite6:
     - collectd
     - collectd-turbostat

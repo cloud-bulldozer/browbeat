@@ -31,6 +31,8 @@
         process_list_name: CFME-VMware
       - template_name: graphite
         process_list_name: Graphite
+      - template_name: ose
+        process_list_name: OpenShift-Enterprise
       - template_name: satellite6
         process_list_name: Satellite6
   roles:

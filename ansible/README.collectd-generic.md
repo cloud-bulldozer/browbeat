@@ -38,6 +38,9 @@ x.x.x.x # An ip address of a Red Hat Cloud Forms appliance or ManageIQ appliance
 [graphite]
 x.x.x.x # An ip address of a Graphite/Grafana Server
 
+[ose]
+x.x.x.x # An ip address of a Red Hat Openshift Enterprise Node
+
 [satellite6]
 x.x.x.x # An ip address of a Red Hat Satellite 6 Server
 ```

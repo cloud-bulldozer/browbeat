@@ -738,6 +738,28 @@ per_process_panels:
     - name: "Collectd"
       processes:
         - collectd
+  OpenShift-Enterprise:
+    - name: "OpenShift"
+      processes:
+        - "openshift master"
+        - "openshift node"
+    - name: "Open vSwitch Server"
+      processes:
+        - "ovsdb-server monitor"
+        - "ovsdb-server"
+    - name: "Open vSwitchd"
+      processes:
+        - "ovsdb-vswitchd monitor"
+        - "ovsdb-vswitchd"
+    - name: "Docker"
+      processes:
+        - "docker daemon"
+    - name: "pods"
+      processes:
+        - "pod"
+    - name: "Collectd"
+      processes:
+        - collectd
   Satellite6:
     - name: "Summerized"
       processes:
