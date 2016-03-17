@@ -108,6 +108,100 @@
               "percent",
               "short"
             ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-system), 'System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-user), 'User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-nice), 'Nice')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-steal), 'Steal')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-softirq), 'SoftIRQ')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-interrupt), 'Interrupt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-wait), 'Wait')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(sumSeries($Cloud.$Node.cpu-*.cpu-idle), 'Idle')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - All CPUs Sum",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
           }
         ],
         "showTitle": true,
@@ -174,35 +268,35 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-system), 'System')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-system, 'System')"
               },
               {
                 "refId": "B",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-user), 'User')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-user, 'User')"
               },
               {
                 "refId": "C",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-nice), 'Nice')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-nice, 'Nice')"
               },
               {
                 "refId": "D",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-steal), 'Steal')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-steal, 'Steal')"
               },
               {
                 "refId": "E",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-softirq), 'SoftIRQ')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-softirq, 'SoftIRQ')"
               },
               {
                 "refId": "F",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-interrupt), 'Interrupt')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-interrupt, 'Interrupt')"
               },
               {
                 "refId": "G",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-wait), 'Wait')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-wait, 'Wait')"
               },
               {
                 "refId": "H",
-                "target": "alias(averageSeries($Cloud.$Node.$cpu0.cpu-idle), 'Idle')"
+                "target": "alias($Cloud.$Node.$cpu0.cpu-idle, 'Idle')"
               }
             ],
             "timeFrom": null,
