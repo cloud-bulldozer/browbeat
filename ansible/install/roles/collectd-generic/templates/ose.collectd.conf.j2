@@ -15,6 +15,7 @@ LoadPlugin write_graphite
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
+# LoadPlugin exec
 LoadPlugin interface
 LoadPlugin irq
 LoadPlugin load
@@ -57,10 +58,16 @@ LoadPlugin uptime
   IgnoreSelected false
 </Plugin>
 
+# <Plugin exec>
+#   Exec "nobody:root" "/usr/local/bin/ose-metrics.py"
+# </Plugin>
+
 <Plugin processes>
   # Openshift Master
   ProcessMatch "openshift master" "/usr/bin/openshift.+start.+master"
   ProcessMatch "openshift node" "/usr/bin/openshift.+start.+node"
+
+  ProcessMatch "etcd" "/usr/bin/etcd"
 
   ProcessMatch "ovsdb-server monitor" "ovsdb-server.+monitoring"
   ProcessMatch "ovsdb-server" "ovsdb-server.+/etc/openvswitch/conf.db"

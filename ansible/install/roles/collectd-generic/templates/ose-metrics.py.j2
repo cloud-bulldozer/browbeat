@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+import requests
+import time
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+interval = {{collectd_interval}}
+hostname = "{{inventory_hostname}}"
+
+while True:
+  time_stamp = int(time.time())
+  next_start = time_stamp + interval
+  r = requests.get('https://127.0.0.1:8443/metrics', cert=('/etc/origin/master/admin.crt', '/etc/origin/master/admin.key'), verify=False)
+  for values in [ line.strip() for line in r.text.splitlines()]:
+    if '#' not in values[0] and '{' not in values:
+      metric_name = values.split(' ')[0]
+      metric_value = values.split(' ')[1]
+      print 'PUTVAL {0}/ose/gauge-{1} {2}:{3}'.format(hostname, metric_name, time_stamp, metric_value)
+  endtime = time.time()
+  if endtime < next_start:
+    time.sleep(next_start - endtime)

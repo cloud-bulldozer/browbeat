@@ -743,6 +743,9 @@ per_process_panels:
       processes:
         - "openshift master"
         - "openshift node"
+    - name: "etcd"
+      processes:
+        - etcd
     - name: "Open vSwitch Server"
       processes:
         - "ovsdb-server monitor"

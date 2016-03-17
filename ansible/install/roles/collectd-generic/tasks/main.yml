@@ -28,6 +28,20 @@
   register: satellite_foreman_password
   when: "'{{config_type}}' == 'satellite6'"
 
+# - name: Copy ose-metrics.py
+#   template:
+#     src=ose-metrics.py.j2
+#     dest=/usr/local/bin/ose-metrics.py
+#     owner=root
+#     group=root
+#     mode=0755
+#   become: true
+#   when: "'{{config_type}}' == 'ose'"
+
+# - name: Allow group read to /etc/origin/master/admin.key
+#   file: path=/etc/origin/master/admin.key mode=0640
+#   when: "'{{config_type}}' == 'ose'"
+
 - name: Configure collectd.conf
   template:
     src={{config_type}}.collectd.conf.j2
