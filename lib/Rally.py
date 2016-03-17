@@ -34,9 +34,18 @@ class Rally:
         if 'sleep_before' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_before'])
         task_args = str(scenario_args).replace("'", "\"")
+        plugins = []
+        if "plugins" in self.config['rally']:
+            if len(self.config['rally']['plugins']) > 0 :
+                for plugin in self.config['rally']['plugins'] :
+                    for name in plugin :
+                        plugins.append(plugin[name])
+        plugin_string = ""
+        if len(plugins) > 0 :
+            plugin_string = "--plugin-paths {}".format(",".join(plugins))
         cmd = "source {}; ".format(self.config['rally']['venv'])
-        cmd += "rally task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(task_file,
-            task_args, test_name)
+        cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(plugin_string,
+                task_file,task_args, test_name)
         self.tools.run_cmd(cmd)
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
