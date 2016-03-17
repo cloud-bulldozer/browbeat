@@ -18,6 +18,24 @@
   become: true
   with_items: "{{collectd_packages[config_type]}}"
 
+
+#
+# CFME specific configuration steps
+#
+- name: Copy cfme-http.conf for apache monitoring
+  copy:
+    src=cfme-http.conf
+    dest=/etc/httpd/conf.d/cfme-http.conf
+    owner=root
+    group=root
+    mode=0644
+  when: "'cfme' in '{{config_type}}'"
+  notify:
+    - restart httpd
+
+#
+# Satellite6 specific configuration steps
+#
 - name: Get Candlepin PostgresDB Password
   command: grep "jpa.config.hibernate.connection.password" /etc/candlepin/candlepin.conf
   register: satellite_candlepin_password
@@ -28,6 +46,10 @@
   register: satellite_foreman_password
   when: "'{{config_type}}' == 'satellite6'"
 
+
+#
+# OSE specific configuration
+#
 # - name: Copy ose-metrics.py
 #   template:
 #     src=ose-metrics.py.j2

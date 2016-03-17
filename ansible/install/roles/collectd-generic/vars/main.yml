@@ -11,9 +11,11 @@ collectd_packages:
     - collectd
   cfme:
     - collectd
+    - collectd-apache
   cfme-vmdb:
     - collectd
     - collectd-postgresql
+    - collectd-apache
   graphite:
     - collectd
     - collectd-turbostat

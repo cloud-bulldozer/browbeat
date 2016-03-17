@@ -12,6 +12,7 @@ LoadPlugin syslog
 
 # Loaded Plugins:
 LoadPlugin write_graphite
+LoadPlugin apache
 LoadPlugin cpu
 LoadPlugin df
 LoadPlugin disk
@@ -45,6 +46,12 @@ LoadPlugin uptime
     AlwaysAppendDS false
     EscapeCharacter "_"
   </Carbon>
+</Plugin>
+
+<Plugin apache>
+  <Instance "status">
+    URL "http://127.0.0.1/mod_status?auto"
+  </Instance>
 </Plugin>
 
 <Plugin df>
