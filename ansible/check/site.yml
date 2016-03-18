@@ -39,9 +39,9 @@
   become: false
   name: Generating bug report
   tasks:
-    - local_action: template src=templates/bug_report.j2 dest=./bug_report.log
+    - local_action: template src=templates/bug_report.j2 dest={{result_dir}}/bug_report.log
       become: false
-    - local_action: template src=templates/mysql_report.j2 dest=./mysql_report.log
+    - local_action: template src=templates/mysql_report.j2 dest={{result_dir}}/mysql_report.log
       become: false
-    - replace: dest=mysql_report.log regexp='\[([^\s+]+)' replace=''
-    - replace: dest=mysql_report.log regexp='\r' replace=''
+    - replace: dest={{result_dir}}/mysql_report.log regexp='\[([^\s+]+)' replace=''
+    - replace: dest={{result_dir}}/mysql_report.log regexp='\r' replace=''

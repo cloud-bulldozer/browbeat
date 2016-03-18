@@ -67,4 +67,4 @@
 - name: Run MySQL Tuner script
   script: mysqltuner.pl --nocolor
   register: mysql_out
-
+  ignore_errors: yes

@@ -1,2 +1,3 @@
 ---
 # vi:syntax=yaml
+result_dir: "{{inventory_dir}}/../results"
