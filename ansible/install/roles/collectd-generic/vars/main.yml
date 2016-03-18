@@ -12,6 +12,10 @@ collectd_packages:
   cfme:
     - collectd
     - collectd-apache
+  cfme-all-in-one:
+    - collectd
+    - collectd-postgresql
+    - collectd-apache
   cfme-vmdb:
     - collectd
     - collectd-postgresql

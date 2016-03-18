@@ -55,6 +55,7 @@ collectd_compute: false
 ########################################
 # Graphite Server ip address (Collectd -> Graphite server)
 graphite_host: 1.1.1.1
+graphite_port: 80
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
 # Graphite username and password for login on the dashboard
@@ -67,7 +68,8 @@ graphite_password: calvin
 # Grafana Server IP Address/Port (Can be hosted on the Graphite server)
 grafana_host: 1.1.1.1
 grafana_port: 3000
-grafana_api_key: (Your Grafana API Key)
+grafana_username: admin
+grafana_password: admin
 # Batch number of hosts per row for all-{cpu, memory, disk, network} openstack dashboards
 dashboards_batch: 20
 # For use with all-{cpu, memory, disk, network} openstack dashboards, uses the graphite prefix to create dashboards for specific openstack cloud

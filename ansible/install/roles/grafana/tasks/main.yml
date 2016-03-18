@@ -19,6 +19,14 @@
   with_items:
     - https://grafanarel.s3.amazonaws.com/builds/grafana-2.6.0-1.x86_64.rpm
 
+- name: Set grafana server port
+  ini_file:
+    dest=/etc/grafana/grafana.ini
+    section=server
+    option=http_port
+    value={{grafana_port}}
+  become: true
+
 # disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
 
 - name: disable firewalld
@@ -28,8 +36,35 @@
 #
 # setup the grafana-server service
 #
-
 - name: Setup grafana-server service
   service: name=grafana-server state=started enabled=true
   become: true
 
+- name: Wait for grafana to be ready
+  wait_for: host={{grafana_host}} port={{grafana_port}} delay=5 timeout=30
+
+#
+# Add graphite server as a default datasource
+#
+- name: Ensure {{role_path}}/files directory exists
+  file: path={{role_path}}/files state=directory
+  connection: local
+
+- name: Create data_source.json
+  template:
+    src: data_source.json.j2
+    dest: "{{role_path}}/files/data_source.json"
+  connection: local
+
+- name: Create Data Source on grafana server
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/data_source.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/datasources"
+  connection: local
+
+- name: Remove leftover json file
+  file: path={{role_path}}/files/data_source.json state=absent
+  connection: local
+
+- name: Disable EPEL
+  shell: rpm -e epel-release
+  ignore_errors: true
+  become: true

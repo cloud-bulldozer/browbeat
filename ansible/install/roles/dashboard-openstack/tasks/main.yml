@@ -14,7 +14,7 @@
     - all_network_graphs
 
 - name: Remove Existing Dashboards
-  command: "curl -X DELETE -H 'Authorization: Bearer {{grafana_api_key}}' -H 'Content-Type: application/json' http://{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
   when: overwrite_existing
   with_items:
     - "{{dashboard_cloud_name}}-all-nodes-cpu"
@@ -25,7 +25,7 @@
     - cloud-system-performance-comparsion
 
 - name: Upload Dashboards to Grafana
-  command: "curl -X POST -H 'Authorization: Bearer {{grafana_api_key}}' -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
   with_items:
     - "{{role_path}}/files/all_cpu_graphs.json"
     - "{{role_path}}/files/all_memory_graphs.json"

@@ -44,9 +44,9 @@
   when: graphite_db_installed.rc != 0
   register: apache_needs_restart
 
-- name: copy httpd graphite-web config
-  copy:
-    src=graphite-web.conf
+- name: Setup httpd graphite-web config
+  template:
+    src=graphite-web.conf.j2
     dest=/etc/httpd/conf.d/graphite-web.conf
     owner=root
     group=root
@@ -120,3 +120,8 @@
   service: name=carbon-cache state=restarted enabled=true
   become: true
   when: carbon_cache_needs_restart.changed
+
+- name: Disable EPEL
+  shell: rpm -e epel-release
+  ignore_errors: true
+  become: true

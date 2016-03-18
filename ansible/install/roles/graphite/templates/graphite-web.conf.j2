@@ -1,6 +1,8 @@
 # Graphite Web Basic mod_wsgi vhost
-
-<VirtualHost *:80>
+{% if graphite_port != 80 %}
+Listen {{graphite_port}}
+{% endif %}
+<VirtualHost *:{{graphite_port}}>
     DocumentRoot "/usr/share/graphite/webapp"
     ErrorLog /var/log/httpd/graphite-web-error.log
     CustomLog /var/log/httpd/graphite-web-access.log common
@@ -9,7 +11,7 @@
     # Header set Access-Control-Allow-Methods "GET, OPTIONS"
     # Header set Access-Control-Allow-Headers "origin, authorization, accept"
     # Header set Access-Control-Allow-Credentials true
-   
+
     WSGIScriptAlias / /usr/share/graphite/graphite-web.wsgi
     WSGIImportScript /usr/share/graphite/graphite-web.wsgi process-group=%{GLOBAL} application-group=%{GLOBAL}
 

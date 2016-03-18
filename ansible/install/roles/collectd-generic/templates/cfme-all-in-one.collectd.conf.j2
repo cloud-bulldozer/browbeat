@@ -1,0 +1,415 @@
+# Installed by Browbeat Ansible Installer
+# Config type: {{config_type}}
+
+# Interval default is 10s
+Interval {{collectd_interval}}
+
+# Hostname for this machine, if not defined, use gethostname(2) system call
+Hostname "{{inventory_hostname}}"
+
+# Allow collectd to log
+LoadPlugin syslog
+
+# Loaded Plugins:
+LoadPlugin write_graphite
+LoadPlugin apache
+LoadPlugin cpu
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin interface
+LoadPlugin irq
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin processes
+LoadPlugin postgresql
+LoadPlugin swap
+LoadPlugin tail
+LoadPlugin unixsock
+LoadPlugin uptime
+
+# Open unix domain socket for collectdctl
+<Plugin unixsock>
+  SocketFile "/var/run/collectd-unixsock"
+  SocketGroup "collectd"
+  SocketPerms "0770"
+  DeleteSocket true
+</Plugin>
+
+# Graphite Host Configuration
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{graphite_host}}"
+    Port "2003"
+    Prefix "{{graphite_prefix}}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>
+
+<Plugin apache>
+  <Instance "status">
+    URL "http://127.0.0.1/mod_status?auto"
+  </Instance>
+</Plugin>
+
+<Plugin df>
+  ValuesPercentage true
+</Plugin>
+
+<Plugin disk>
+  Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  IgnoreSelected false
+</Plugin>
+
+<Plugin postgresql>
+  <Query miq_queue_by_state>
+    Statement "select state,count(*) from miq_queue group by state"
+    <Result>
+      Type gauge
+      InstancePrefix "state"
+      InstancesFrom "state"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_zone>
+    Statement "select zone,count(*) from miq_queue group by zone"
+    <Result>
+      Type gauge
+      InstancePrefix "zone"
+      InstancesFrom "zone"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_role>
+    Statement "select role,count(*) from miq_queue group by role"
+    <Result>
+      Type gauge
+      InstancePrefix "role"
+      InstancesFrom "role"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_priority>
+    Statement "select priority,count(*) from miq_queue group by priority"
+    <Result>
+      Type gauge
+      InstancePrefix "priority"
+      InstancesFrom "priority"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_name>
+    Statement "select queue_name,count(*) from miq_queue group by queue_name"
+    <Result>
+      Type gauge
+      InstancePrefix "queue"
+      InstancesFrom "queue_name"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_class>
+    Statement "select class_name,count(*) from miq_queue group by class_name"
+    <Result>
+      Type gauge
+      InstancePrefix "class"
+      InstancesFrom "class_name"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_by_method>
+    Statement "select method_name,count(*) from miq_queue group by method_name"
+    <Result>
+      Type gauge
+      InstancePrefix "method"
+      InstancesFrom "method_name"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query miq_queue_qcm>
+    Statement "select REPLACE(CONCAT(queue_name, '-',class_name,'-',method_name), 'ManageIQ::Providers::', '') as queue,count(*) from miq_queue group by queue_name,class_name,method_name"
+    <Result>
+      Type gauge
+      InstancePrefix "all"
+      InstancesFrom "queue"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Query row_stats>
+    Statement "SELECT sum(n_tup_ins) AS inserts, sum(n_tup_upd) AS updates, sum(n_tup_del) AS deletes FROM pg_stat_user_tables"
+    <Result>
+      Type derive
+      InstancePrefix "rows_inserted"
+      ValuesFrom "inserts"
+    </Result>
+    <Result>
+      Type derive
+      InstancePrefix "rows_updated"
+      ValuesFrom "updates"
+    </Result>
+    <Result>
+      Type derive
+      InstancePrefix "rows_deleted"
+      ValuesFrom "deletes"
+    </Result>
+  </Query>
+  <Database vmdb_production>
+    Host "localhost"
+    Port "5432"
+    User "root"
+    Password "smartvm"
+    # Predefined:
+    Query backends
+    Query transactions
+    Query queries
+    Query query_plans
+    Query table_states
+    Query disk_io
+    Query disk_usage
+    # Defined in Query blocks:
+    Query miq_queue_by_state
+    Query miq_queue_by_zone
+    Query miq_queue_by_role
+    Query miq_queue_by_priority
+    Query miq_queue_by_name
+    Query miq_queue_by_class
+    Query miq_queue_by_method
+    Query miq_queue_qcm
+    Query row_stats
+  </Database>
+</Plugin>
+
+<Plugin processes>
+  # Appliance processes
+  ProcessMatch "evm_server.rb" ".*evm_server\.rb$"
+  ProcessMatch "evm_watchdog.rb" "/bin/evm_watchdog.rb"
+  Process "evm:dbsync:replicate"
+  Process "appliance_console.rb"
+
+  # Workers
+  ProcessMatch "MiqEventHandler" ".*MiqEventHandler.*"
+  ProcessMatch "MiqGenericWorker" "MiqGenericWorker.*"
+  ProcessMatch "MiqPriorityWorker" "MiqPriorityWorker.*"
+  ProcessMatch "MiqReportingWorker" "MiqReportingWorker.*"
+  ProcessMatch "MiqScheduleWorker" "MiqScheduleWorker.*"
+  ProcessMatch "MiqUiWorker" "MiqUiWorker.*"
+  ProcessMatch "MiqWebServiceWorker" "MiqWebServiceWorker.*"
+  ProcessMatch "MiqReplicationWorker" "MiqReplicationWorker.*"
+  ProcessMatch "MiqEmsMetricsProcessorWorker" "MiqEmsMetricsProcessorWorker.*"
+  ProcessMatch "MiqSmartProxyWorker" "MiqSmartProxyWorker.*"
+  ProcessMatch "MiqVimBrokerWorker" "MiqVimBrokerWorker.*"
+  ProcessMatch "MiqEmsRefreshCoreWorker" "MiqEmsRefreshCoreWorker.*"
+  ProcessMatch "MiqVmdbStorageBridgeWorker" "MiqVmdbStorageBridgeWorker.*"
+
+
+  # Provider Refresh Workers:
+  ProcessMatch "Vmware::InfraManager::RefreshWorker" "Vmware::InfraManager::RefreshWorker.*"
+  ProcessMatch "Redhat::InfraManager::RefreshWorker" "Redhat::InfraManager::RefreshWorker.*"
+  ProcessMatch "Microsoft::InfraManager::RefreshWorker" "Microsoft::InfraManager::RefreshWorker.*"
+  ProcessMatch "Openstack::InfraManager::RefreshWorker" "Openstack::InfraManager::RefreshWorker.*"
+  ProcessMatch "MiqEmsRefreshWorkerVmware" "MiqEmsRefreshWorkerVmware.*"
+  ProcessMatch "MiqEmsRefreshWorkerRedhat" "MiqEmsRefreshWorkerRedhat.*"
+  ProcessMatch "MiqEmsRefreshWorkerMicrosoft" "MiqEmsRefreshWorkerMicrosoft.*"
+
+  ProcessMatch "AnsibleTower::ConfigurationManager::RefreshWorker" "AnsibleTower::ConfigurationManager::RefreshWorker.*"
+  ProcessMatch "Foreman::ConfigurationManager::RefreshWorker" "Foreman::ConfigurationManager::RefreshWorker.*"
+  ProcessMatch "Foreman::ProvisioningManager::RefreshWorker" "Foreman::ProvisioningManager::RefreshWorker.*"
+  ProcessMatch "MiqEmsRefreshWorkerForemanConfiguration" "MiqEmsRefreshWorkerForemanConfiguration.*"
+  ProcessMatch "MiqEmsRefreshWorkerForemanProvisioning" "MiqEmsRefreshWorkerForemanProvisioning.*"
+
+  ProcessMatch "Amazon::CloudManager::RefreshWorker" "Amazon::CloudManager::RefreshWorker.*"
+  ProcessMatch "Azure::CloudManager::RefreshWorker" "Azure::CloudManager::RefreshWorker.*"
+  ProcessMatch "Google::CloudManager::RefreshWorker" "Google::CloudManager::RefreshWorker.*"
+  ProcessMatch "Openstack::CloudManager::RefreshWorker" "Openstack::CloudManager::RefreshWorker.*"
+  ProcessMatch "MiqEmsRefreshWorkerAmazon" "MiqEmsRefreshWorkerAmazon.*"
+  ProcessMatch "MiqEmsRefreshWorkerOpenstack" "MiqEmsRefreshWorkerOpenstack.*"
+
+  ProcessMatch "Atomic::ContainerManager::RefreshWorker" "Atomic::ContainerManager::RefreshWorker.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::RefreshWorker" "AtomicEnterprise::ContainerManager::RefreshWorker.*"
+  ProcessMatch "Hawkular::MiddlewareManager::RefreshWorker" "Hawkular::MiddlewareManager::RefreshWorker.*"
+  ProcessMatch "Kubernetes::ContainerManager::RefreshWorker" "Kubernetes::ContainerManager::RefreshWorker.*"
+  ProcessMatch "Openshift::ContainerManager::RefreshWorker" "Openshift::ContainerManager::RefreshWorker.*"
+  ProcessMatch "OpenshiftEnterprise::ContainerManager::RefreshWorker" "OpenshiftEnterprise::ContainerManager::RefreshWorker.*"
+  ProcessMatch "MiqNetappRefreshWorker" "MiqNetappRefreshWorker.*"
+  ProcessMatch "MiqSmisRefreshWorker" "MiqSmisRefreshWorker.*"
+
+
+  # Provider EventCatcher Workers:
+  ProcessMatch "Vmware::InfraManager::EventCatcher" "Vmware::InfraManager::EventCatcher.*"
+  ProcessMatch "Redhat::InfraManager::EventCatcher" "Redhat::InfraManager::EventCatcher.*"
+  ProcessMatch "Openstack::InfraManager::EventCatcher" "Openstack::InfraManager::EventCatcher.*"
+  ProcessMatch "MiqEventCatcherVmware" "MiqEventCatcherVmware.*"
+  ProcessMatch "MiqEventCatcherRedhat" "MiqEventCatcherRedhat.*"
+
+  ProcessMatch "Amazon::CloudManager::EventCatcher" "Amazon::CloudManager::EventCatcher.*"
+  ProcessMatch "Azure::CloudManager::EventCatcher" "Azure::CloudManager::EventCatcher.*"
+  ProcessMatch "Openstack::CloudManager::EventCatcher" "Openstack::CloudManager::EventCatcher.*"
+  ProcessMatch "MiqEventCatcherAmazon" "MiqEventCatcherAmazon.*"
+  ProcessMatch "MiqEventCatcherOpenstack" "MiqEventCatcherOpenstack.*"
+
+  ProcessMatch "Atomic::ContainerManager::EventCatcher" "Atomic::ContainerManager::EventCatcher.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::EventCatcher" "AtomicEnterprise::ContainerManager::EventCatcher.*"
+  ProcessMatch "Kubernetes::ContainerManager::EventCatcher" "Kubernetes::ContainerManager::EventCatcher.*"
+  ProcessMatch "Openshift::ContainerManager::EventCatcher" "Openshift::ContainerManager::EventCatcher.*"
+  ProcessMatch "OpenshiftEnterprise::ContainerManager::EventCatcher" "OpenshiftEnterprise::ContainerManager::EventCatcher.*"
+
+
+  # Provider MetricsCollector Workers:
+  ProcessMatch "Vmware::InfraManager::MetricsCollectorWorker" "Vmware::InfraManager::MetricsCollectorWorker.*"
+  ProcessMatch "Redhat::InfraManager::MetricsCollectorWorker" "Redhat::InfraManager::MetricsCollectorWorker.*"
+  ProcessMatch "Openstack::InfraManager::MetricsCollectorWorker" "Openstack::InfraManager::MetricsCollectorWorker.*"
+  ProcessMatch "MiqEmsMetricsCollectorWorkerVmware" "MiqEmsMetricsCollectorWorkerVmware.*"
+  ProcessMatch "MiqEmsMetricsCollectorWorkerRedhat" "MiqEmsMetricsCollectorWorkerRedhat.*"
+
+  ProcessMatch "Amazon::CloudManager::MetricsCollectorWorker" "Amazon::CloudManager::MetricsCollectorWorker.*"
+  ProcessMatch "Openstack::CloudManager::MetricsCollectorWorker" "Openstack::CloudManager::MetricsCollectorWorker.*"
+  ProcessMatch "MiqEmsMetricsCollectorWorkerAmazon" "MiqEmsMetricsCollectorWorkerAmazon.*"
+  ProcessMatch "MiqEmsMetricsCollectorWorkerOpenstack" "MiqEmsMetricsCollectorWorkerOpenstack.*"
+
+  ProcessMatch "Atomic::ContainerManager::MetricsCollectorWorker" "Atomic::ContainerManager::MetricsCollectorWorker.*"
+  ProcessMatch "AtomicEnterprise::ContainerManager::MetricsCollectorWorker" "AtomicEnterprise::ContainerManager::MetricsCollectorWorker.*"
+  ProcessMatch "Kubernetes::ContainerManager::MetricsCollectorWorker" "Kubernetes::ContainerManager::MetricsCollectorWorker.*"
+  ProcessMatch "Openshift::ContainerManager::MetricsCollectorWorker" "Openshift::ContainerManager::MetricsCollectorWorker.*"
+  ProcessMatch "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker" "OpenshiftEnterprise::ContainerManager::MetricsCollectorWorker.*"
+
+  ProcessMatch "MiqStorageMetricsCollectorWorker" "MiqStorageMetricsCollectorWorker.*"
+
+  ProcessMatch "carbon-cache" "python.+carbon-cache"
+  Process "grafana-server"
+  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  Process "httpd"
+  Process "memcached"
+  ProcessMatch "postgres" "postgres.*"
+  # Catch all-other ruby processes:
+  Process "ruby"
+</Plugin>
+
+<Plugin swap>
+  ReportBytes true
+  ValuesPercentage true
+</Plugin>
+
+<Plugin "tail">
+  <File "/var/www/miq/vmdb/log/api.log">
+    Instance "api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/appliance_console.log">
+    Instance "appliance_console"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/audit.log">
+    Instance "audit"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/automation.log">
+    Instance "automation"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/aws.log">
+    Instance "aws"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/evm.log">
+    Instance "evm"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/fog.log">
+    Instance "fog"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/kubernetes.log">
+    Instance "kubernetes"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/policy.log">
+    Instance "policy"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/production.log">
+    Instance "production"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/rhevm.log">
+    Instance "rhevm"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/scvmm.log">
+    Instance "scvmm"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/www/miq/vmdb/log/vim.log">
+    Instance "vim"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+</Plugin>
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"
