@@ -1,0 +1,31 @@
+---
+#
+## Heat handlers for browbeat install connmon
+##
+#
+- name: unmanage heat services
+  command: pcs resource unmanage {{ item }}
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-engine
+  ignore_errors: true
+
+- name: restart heat services
+  service: name={{ item }} state=restarted
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-engine
+
+- name: manage heat services
+  command: pcs resource manage {{ item }}
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-engine
+  ignore_errors: true
+
+- name: cleanup heat services
+  command: pcs resource cleanup {{ item }}
+  with_items:
+    - openstack-heat-api
+    - openstack-heat-engine
+  ignore_errors: true
