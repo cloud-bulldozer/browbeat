@@ -4,7 +4,10 @@ Collectd configurations are built for these types of machines:
 * baremetal
 * guest
 * cfme
+* cfme-vmdb
+* cfme-all-in-one
 * graphite/grafana
+* ose
 * satellite6
 
 To install collectd agent and configure collectd to send metrics to your Graphite server, simply add the host to your ansible inventory file under the correct group.
@@ -35,6 +38,12 @@ x.x.x.x # An ip adddress or fqdn or specificed vm in ~/.ssh/config
 [cfme]
 x.x.x.x # An ip address of a Red Hat Cloud Forms appliance or ManageIQ appliance
 
+[cfme-vmdb]
+x.x.x.x # An ip address of a Red Hat Cloud Forms appliance with vmdb
+
+[cfme-all-in-one]
+x.x.x.x # An ip address of a Red Hat Cloud Forms appliance or ManageIQ appliance with Graphite and Grafana
+
 [graphite]
 x.x.x.x # An ip address of a Graphite/Grafana Server
 
@@ -45,7 +54,7 @@ x.x.x.x # An ip address of a Red Hat Openshift Enterprise Node
 x.x.x.x # An ip address of a Red Hat Satellite 6 Server
 ```
 
-Example run the collectd-generic playbook on the above specified cfme machine:
+Example running the collectd-generic playbook on the above specified cfme machine:
 ```
 # ansible-playbook -i hosts install/collectd-generic.yml --tags "cfme"
 ```

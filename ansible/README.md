@@ -1,12 +1,12 @@
 Table of Contents
 =================
 
-- [Ansible for Browbeat](#)
-    - [To use](#)
-    - [Ansible Installers](#)
-    - [Performance Check](#)
-    - [Performance Tune](#)
-    - [Adjust your overcloud](#)
+- [Ansible for Browbeat](#ansible-for-browbeat)
+    - [Getting Started](#getting-started)
+    - [Ansible Installers](#ansible-installers)
+    - [Performance Check](#performance-check)
+    - [Performance Tune](#performance-tune)
+    - [Adjust your overcloud](#adjust-your-overcloud)
 
 # Ansible for Browbeat
 
@@ -23,7 +23,7 @@ Playbooks for:
 * Adjust nova greenlet_pool_size / max_overflow
 
 
-## To use
+## Getting Started
 
 Install your public key into stack's authorized_keys
 ```
@@ -47,8 +47,7 @@ Image upload requires Ansible 2.0
 ```
 
 ##### Install Collectd Agent (Requires a Graphite Server)
-Prior to installing the agent, please review the install/group_vars/all to ensure the
-correct parameters are passed
+Prior to installing the agent, please review install/group_vars/all file to ensure the correct parameters are passed.
 ```
 # ansible-playbook -i hosts install/collectd-openstack.yml
 ```
@@ -66,7 +65,7 @@ Requires Ansible 2.0
 ```
 
 ##### Install grafana service
-Default user is admin/admin and the graphite data source will need to be defined.
+Prior to installing grafana, please review install/group_vars/all file and your ansible inventory file
 ```
 # ansible-playbook -i hosts install/grafana.yml
 ```
@@ -74,7 +73,7 @@ Default user is admin/admin and the graphite data source will need to be defined
 ##### Install Grafana Dashboards (Requires a Grafana Server)
 Review install/group_vars/all before deploying the grafana dashboards
 ```
-# ansible-playbook -i hosts install/dashboards.yml
+# ansible-playbook -i hosts install/dashboards-openstack.yml
 ```
 
 ## Performance Check
@@ -97,7 +96,7 @@ To modify the number of workers each service is running:
 ```
 # ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=8"
 ```
-Nova and Keystone will be running 8 workers per service.
+Openstack services will be running 8 workers per service.
 
 To modify number of workers each service is running and ensure Keystone is deployed in eventlet:
 ```
@@ -111,10 +110,10 @@ To run Keystone in httpd, change keystone_deployment to httpd:
 
 To switch to fernet tokens:
 ```
-# ansible-playbook -i hosts browbeat/keystone_token_type.yml -e "token_provider=fernet"
+# ansible-playbook -i hosts browbeat/adjustment-keystone-token.yml -e "token_provider=fernet"
 ```
 
 To switch to UUID tokens:
 ```
-# ansible-playbook -i hosts browbeat/keystone_token_type.yml -e "token_provider=uuid"
+# ansible-playbook -i hosts browbeat/adjustment-keystone-token.yml -e "token_provider=uuid"
 ```
