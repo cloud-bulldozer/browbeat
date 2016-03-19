@@ -1,27 +1,27 @@
 Table of Contents
 =================
 
-- [Browbeat](#)
-- [Before running browbeat](#)
-- [How to run Browbeat?](#)
-- [What is necessary?](#)
-- [Detailed Install, Check and Run](#)
-  - [Install Browbeat from your local machine](#)
-    - [From your local machine](#)
-    - [(Optional) Install collectd](#)
-    - [(Optional) Install collectd->graphite dashboards](#)
-    - [(Optional) Install connmon](#)
-    - [Run Overcloud checks](#)
-    - [Run performance stress tests through browbeat on the undercloud](#)
-  - [Install Browbeat directly on undercloud](#)
-    - [From your undercloud](#)
-    - [(Optional) Install collectd](#)
-    - [(Optional) Install collectd->graphite dashboards](#)
-    - [(Optional) Install connmon](#)
-    - [Run Overcloud checks](#)
-    - [Run performance stress tests through browbeat](#)
-- [Running PerfKitBenchmarker](#)
-- [Contributing](#)
+- [Browbeat](#browbeat)
+- [Before running browbeat](#before-running-browbeat)
+- [How to run Browbeat?](#how-to-run-browbeat)
+- [What is necessary?](#what-is-necessary)
+- [Detailed Install, Check and Run](#detailed-install-check-and-run)
+  - [Install Browbeat from your local machine](#install-browbeat-from-your-local-machine)
+    - [From your local machine](#from-your-local-machine)
+    - [(Optional) Install collectd](#optional-install-collectd)
+    - [(Optional) Install collectd->graphite dashboards](#optional-install-collectd-graphite-dashboards)
+    - [(Optional) Install connmon](#optional-install-connmon)
+    - [Run Overcloud checks](#run-overcloud-checks)
+    - [Run performance stress tests through browbeat on the undercloud](#run-performance-stress-tests-through-browbeat-on-the-undercloud)
+  - [Install Browbeat directly on undercloud](#install-browbeat-directly-on-undercloud)
+    - [From your undercloud](#from-your-undercloud)
+    - [(Optional) Install collectd](#optional-install-collectd)
+    - [(Optional) Install collectd->graphite dashboards](#optional-install-collectd-graphite-dashboards)
+    - [(Optional) Install connmon](#optional-install-connmon)
+    - [Run Overcloud checks](#run-overcloud-checks)
+    - [Run performance stress tests through browbeat](#run-performance-stress-tests-through-browbeat)
+- [Running PerfKitBenchmarker](#running-perfkitbenchmarker)
+- [Contributing](#contributing)
 
 # Browbeat
 This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the overcloud.
@@ -34,7 +34,8 @@ This started as a project to help determine the number of database connections a
 # How to run Browbeat?
 On the Red Hat OpenStack Director host, as the Stack user jump into the browbeat venv and you simply run:
 
-    ./browbeat.py --help
+    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py --help
+
 
 # What is necessary?
 * Red Hat OpenStack Director
@@ -59,7 +60,7 @@ $ cd browbeat/ansible
 $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 $ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 $ ansible-playbook -i hosts install/browbeat.yml
-$ vi install/group_vars/all # Edit browbeat subnet/start/end/gw settings
+$ vi install/group_vars/all # Edit browbeat network settings
 $ ansible-playbook -i hosts install/browbeat_network.yml
 $ ansible-playbook -i hosts install/shaker_build.yml
 ```
@@ -109,7 +110,7 @@ $ ssh undercloud-root
 [stack@ospd ansible]$ sudo pip install ansible
 [stack@ospd ansible]$ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
-[stack@ospd ansible]$ vi install/group_vars/all # Edit browbeat public/private subnet/start/end/gw settings
+[stack@ospd ansible]$ vi install/group_vars/all # Edit browbeat network settings
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml
 [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 ```
