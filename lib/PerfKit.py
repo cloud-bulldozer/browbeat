@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import time
 
+
 class PerfKit:
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.PerfKit')
@@ -97,7 +98,6 @@ class PerfKit:
         self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
         self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
-
 
     def start_workloads(self):
         self.logger.info("Starting PerfKitBenchmarker Workloads.")

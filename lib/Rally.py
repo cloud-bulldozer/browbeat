@@ -94,9 +94,8 @@ class Rally:
         cmd += "rally task results {} > {}.json".format(task_id, test_name)
         return self.tools.run_cmd(cmd)
 
-    # Iterate through all the Rally scenarios to run.
-    # If rerun is > 1, execute the test the desired number of times.
     def start_workloads(self):
+        """Iterates through all rally scenarios in browbeat yaml config file"""
         results = OrderedDict()
         self.logger.info("Starting Rally workloads")
         time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -104,50 +103,51 @@ class Rally:
         benchmarks = self.config.get('rally')['benchmarks']
         if len(benchmarks) > 0:
             for benchmark in benchmarks:
-                if benchmarks[benchmark]['enabled']:
-                    self.logger.info("Benchmark: {}".format(benchmark))
+                if benchmark['enabled']:
+                    self.logger.info("Benchmark: {}".format(benchmark['name']))
 
-                    scenarios = benchmarks[benchmark]['scenarios']
-                    def_concurrencies = benchmarks[benchmark]['concurrency']
-                    def_times = benchmarks[benchmark]['times']
+                    scenarios = benchmark['scenarios']
+                    def_concurrencies = benchmark['concurrency']
+                    def_times = benchmark['times']
                     self.logger.debug("Default Concurrencies: {}".format(def_concurrencies))
                     self.logger.debug("Default Times: {}".format(def_times))
-                    for scenario in sorted(scenarios):
-                        if scenarios[scenario]['enabled']:
+                    for scenario in scenarios:
+                        if scenario['enabled']:
                             self.scenario_count += 1
-                            self.logger.info("Running Scenario: {}".format(scenario))
-                            self.logger.debug("Scenario File: {}".format(
-                                scenarios[scenario]['file']))
+                            scenario_name = scenario['name']
+                            scenario_file = scenario['file']
+                            self.logger.info("Running Scenario: {}".format(scenario_name))
+                            self.logger.debug("Scenario File: {}".format(scenario_file))
 
-                            scenario_args = dict(scenarios[scenario])
-                            del scenario_args['enabled']
-                            del scenario_args['file']
-                            if len(scenario_args) > 0:
-                                self.logger.debug("Overriding Scenario Args: {}".format(
-                                    scenario_args))
+                            del scenario['enabled']
+                            del scenario['file']
+                            del scenario['name']
+                            if len(scenario) > 0:
+                                self.logger.debug("Overriding Scenario Args: {}".format(scenario))
 
                             result_dir = self.tools.create_results_dir(
-                                self.config['browbeat']['results'], time_stamp, benchmark, scenario)
+                                self.config['browbeat']['results'], time_stamp, benchmark['name'],
+                                scenario_name)
                             self.logger.debug("Created result directory: {}".format(result_dir))
                             self.workload_logger(result_dir)
 
                             # Override concurrency/times
-                            if 'concurrency' in scenario_args:
-                                concurrencies = scenario_args['concurrency']
-                                del scenario_args['concurrency']
+                            if 'concurrency' in scenario:
+                                concurrencies = scenario['concurrency']
+                                del scenario['concurrency']
                             else:
                                 concurrencies = def_concurrencies
-                            if 'times' not in scenario_args:
-                                scenario_args['times'] = def_times
+                            if 'times' not in scenario:
+                                scenario['times'] = def_times
 
                             for concurrency in concurrencies:
-                                scenario_args['concurrency'] = concurrency
+                                scenario['concurrency'] = concurrency
                                 for run in range(self.config['browbeat']['rerun']):
                                     if run not in results:
                                         results[run] = []
                                     self.test_count += 1
                                     test_name = "{}-browbeat-{}-{}-iteration-{}".format(time_stamp,
-                                        scenario, concurrency, run)
+                                        scenario_name, concurrency, run)
 
                                     if not result_dir:
                                         self.logger.error("Failed to create result directory")
@@ -157,8 +157,8 @@ class Rally:
                                     if self.config['browbeat']['connmon']:
                                         self.connmon.start_connmon()
 
-                                    self.run_scenario(scenarios[scenario]['file'], scenario_args,
-                                        result_dir, test_name)
+                                    self.run_scenario(scenario_file, scenario, result_dir,
+                                        test_name)
 
                                     # Stop connmon at end of rally task
                                     if self.config['browbeat']['connmon']:
@@ -187,15 +187,15 @@ class Rally:
                                     self._get_details()
 
                         else:
-                            self.logger.info("Skipping {} scenario enabled: false".format(scenario))
+                            self.logger.info("Skipping {} scenario enabled: false".format(scenario_name))
                 else:
-                    self.logger.info("Skipping {} benchmarks enabled: false".format(benchmark))
+                    self.logger.info("Skipping {} benchmarks enabled: false".format(benchmark['name']))
             self.logger.debug("Creating Combined Rally Reports")
             for run in results:
                 combined_html_name = 'all-rally-run-{}'.format(run)
                 self.gen_scenario_html(results[run], combined_html_name)
-                shutil.move('{}.html'.format(combined_html_name),
-                    '{}/{}'.format(self.config['browbeat']['results'], time_stamp))
-
+                if os.path.isfile('{}.html'.format(combined_html_name)):
+                    shutil.move('{}.html'.format(combined_html_name),
+                        '{}/{}'.format(self.config['browbeat']['results'], time_stamp))
         else:
             self.logger.error("Config file contains no rally benchmarks.")

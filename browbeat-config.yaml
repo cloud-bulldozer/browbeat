@@ -81,98 +81,111 @@ rally:
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
   benchmarks:
-    authenticate:
+    - name: authenticate
       enabled: true
       concurrency:
         - 64
       times: 500
       scenarios:
-        authentic-keystone:
+        - name: authentic-keystone
           enabled: true
           file: rally/authenticate/keystone-cc.yml
           sla_max_avg_duration: 6
           sla_max_seconds: 30
           sla_max_failure: 0
-        authentic-neutron:
+        - name: authentic-neutron
           enabled: false
           file: rally/authenticate/validate_neutron-cc.yml
           sla_max_avg_duration: 18
           sla_max_seconds: 30
           sla_max_failure: 0
-        authentic-nova:
+        - name: authentic-nova
           enabled: false
           file: rally/authenticate/validate_nova-cc.yml
           sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
-    cinder:
+    - name: cinder
       enabled: true
       concurrency:
         - 2
       times: 6
       scenarios:
-        create-attach-volume-centos:
+        - name: create-attach-volume-centos
           enabled: false
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
-        create-attach-volume-cirros:
+        - name: create-attach-volume-cirros
           enabled: true
           image_name: cirros
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           flavor_name: m1.tiny
-    keystonebasic:
+    - name: keystonebasic
       enabled: true
       concurrency:
         - 10
       times: 100
       scenarios:
-        create-and-list-tenants:
+        - name: create-and-list-tenants
           enabled: false
           file: rally/keystonebasic/create_and_list_tenants-cc.yml
-        create-and-list-users:
+        - name: create-and-list-users
           enabled: true
           file: rally/keystonebasic/create_and_list_users-cc.yml
           sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
-    nova:
-      enabled: true
-      concurrency:
-        - 8
-      times: 10
-      scenarios:
-        boot-list-centos:
-          enabled: false
-          file: rally/nova/nova-boot-list-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        boot-list-cirros:
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-list-cc.yml
-          flavor_name: m1.tiny
-    neutron:
+    - name: neutron
       enabled: true
       concurrency:
         - 8
       times: 100
       scenarios:
-        create-list-network:
+        - name: create-list-network
           enabled: false
           file: rally/neutron/neutron-create-list-network-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
-        create-list-port:
+        - name: create-list-port
           enabled: true
           file: rally/neutron/neutron-create-list-port-cc.yml
-        create-list-router:
+        - name: create-list-router
           enabled: false
           file: rally/neutron/neutron-create-list-router-cc.yml
-        create-list-security-group:
+        - name: create-list-security-group
           enabled: false
           file: rally/neutron/neutron-create-list-security-group-cc.yml
-        create-list-subnet:
+        - name: create-list-subnet
           enabled: false
           file: rally/neutron/neutron-create-list-subnet-cc.yml
+    - name: nova
+      enabled: true
+      concurrency:
+        - 8
+      times: 10
+      scenarios:
+        - name: boot-list-centos
+          enabled: false
+          file: rally/nova/nova-boot-list-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: boot-list-cirros
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-boot-list-cc.yml
+          flavor_name: m1.tiny
+    - name: plugins
+      enabled: true
+      concurrency:
+        - 8
+      times: 10
+      scenarios:
+        - name: netcreate-boot
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
