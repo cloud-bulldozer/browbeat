@@ -17,11 +17,31 @@ if [[ "${ospd_ip_address}" == "localhost" ]]; then
 fi
 
 nodes=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
-
+if [ ${#nodes} -lt 1 ]; then
+    echo "ERROR: nova list failed to execute properly, please check the openstack-nova-api on the undercloud."
+    exit 1
+fi
 controller_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Controller | grep physical_resource_id" | awk '{print $4}')
+if [ ${#controller_id} -lt 1 ]; then
+   echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
 compute_id=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-show overcloud Compute | grep physical_resource_id" | awk '{print $4}')
+if [ ${#controller_id} -lt 1 ]; then
+   echo "Error: Compute ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
 controller_ids=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-list ${controller_id} | grep -i controller" | awk '{print $2}')
+if [ ${#controller_id} -lt 1 ]; then
+   echo "Error: Controller IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
 compute_ids=$(ssh -t -o "StrictHostKeyChecking no" stack@${ospd_ip_address} ". ~/stackrc; heat resource-list ${compute_id} | grep -i compute" | awk '{print $2}')
+if [ ${#controller_id} -lt 1 ]; then
+   echo "Error: Compute IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
+
 
 controller_uuids=()
 for controller in ${controller_ids}
