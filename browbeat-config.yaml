@@ -25,7 +25,7 @@ grafana:
   dashboards:
     - openstack-general-system-performance
   snapshot:
-    enabled: true
+    enabled: false
     grafana_api_key: (Your API Key Here)
     snapshot_compute: false
 perfkit:

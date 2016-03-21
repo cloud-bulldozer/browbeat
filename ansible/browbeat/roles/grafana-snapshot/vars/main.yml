@@ -85,7 +85,7 @@ general_panels:
     name: swap-usage
   - panelId: 19
     name: conntrack
-  - panelId: 23
+  - panelId: 25
     name: numa
   - panelId: 26
     name: irq
