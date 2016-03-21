@@ -37,8 +37,8 @@ class Shaker:
         self.logger.info("Total number of scenarios failed: {}".format(self.fail_scenarios))
 
 
-    def set_scenario(self, config, scenario):
-      fname = config['shaker']['scenarios'][scenario]['file']
+    def set_scenario(self, scenario):
+      fname = scenario['file']
       stream = open(fname, 'r')
       data = yaml.load(stream)
       stream.close()
@@ -47,25 +47,25 @@ class Shaker:
       default_compute = 1
       default_progression = "linear"
       default_time = 60
-      if "placement" in config['shaker']['scenarios'][scenario]:
-          data['deployment']['accommodation'][1] = config['shaker']['scenarios'][scenario]['placement']
+      if "placement" in scenario:
+          data['deployment']['accommodation'][1] = scenario['placement']
       else:
           data['deployment']['accommodation'][1] = default_placement
-      if "density" in config['shaker']['scenarios'][scenario]:
-          data['deployment']['accommodation'][2]['density'] = config['shaker']['scenarios'][scenario]['density']
+      if "density" in scenario:
+          data['deployment']['accommodation'][2]['density'] = scenario['density']
       else:
           data['deployment']['accommodation'][2]['density'] = default_density
-      if "compute" in config['shaker']['scenarios'][scenario]:
-          data['deployment']['accommodation'][3]['compute_nodes'] = config['shaker']['scenarios'][scenario]['compute']
+      if "compute" in scenario:
+          data['deployment']['accommodation'][3]['compute_nodes'] = scenario['compute']
       else:
           data['deployment']['accommodation'][3]['compute_nodes'] = default_compute
-      if "progression" in config['shaker']['scenarios'][scenario]:
-          data['execution']['progression'] = config['shaker']['scenarios'][scenario]['progression']
+      if "progression" in scenario:
+          data['execution']['progression'] = scenario['progression']
       else:
           data['execution']['progression'] = default_progression
       data['execution']['tests']=[d for d in data['execution']['tests'] if d.get('class') == "iperf_graph"]
-      if "time" in config['shaker']['scenarios'][scenario]:
-          data['execution']['tests'][0]['time'] = config['shaker']['scenarios'][scenario]['time']
+      if "time" in scenario:
+          data['execution']['tests'][0]['time'] = scenario['time']
       else:
           data['execution']['tests'][0]['time'] = default_time
       with open(fname, 'w') as yaml_file:
@@ -87,17 +87,18 @@ class Shaker:
             if data['records'][uuid]['status'] != "ok":
                  error = True
         if error:
-            self.logger.error("Failed scenario: {}".format(scenario))
+            self.logger.error("Failed scenario: {}".format(scenario['name']))
             self.logger.error("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
             self.fail_scenarios += 1
         else:
-            self.logger.info("Completed Scenario: {}".format(scenario))
+            self.logger.info("Completed Scenario: {}".format(scenario['name']))
             self.logger.info("Saved report to: {}".format(os.path.join(result_dir, test_name + "." + "html")))
             self.logger.info("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
             self.pass_scenarios += 1
 
 
-    def run_scenario(self, filename, result_dir, test_name, scenario):
+    def run_scenario(self, scenario, result_dir, test_name):
+        filename = scenario['file']
         server_endpoint = self.config['shaker']['server']
         port_no = self.config['shaker']['port']
         flavor = self.config['shaker']['flavor']
@@ -128,28 +129,29 @@ class Shaker:
         self.logger.info("Starting Shaker workloads")
         time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
-        _scenarios=self.config.get('shaker')['scenarios']
+        scenarios=self.config.get('shaker')['scenarios']
         self.shaker_checks()
-        scen_length=len(_scenarios)
+        scen_length=len(scenarios)
         scen_enabled = 0
         if scen_length > 0:
-            for scenario in sorted(_scenarios):
-                 if _scenarios[scenario]['enabled']:
+            for scenario in scenarios:
+                 if scenario['enabled']:
                      scen_enabled += 1
-                     self.logger.info("Scenario: {}".format(scenario))
-                     self.set_scenario(self.config, scenario)
+                     self.logger.info("Scenario: {}".format(scenario['name']))
+                     self.set_scenario(scenario)
                      self.logger.debug("Set Scenario File: {}".format(
-                                _scenarios[scenario]['file']))
+                                        scenario['file']))
                      result_dir = self.tools.create_results_dir(
                                 self.config['browbeat']['results'], time_stamp, "shaker",
-                                scenario)
+                                scenario['name'])
                      time_stamp1 = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
                      test_name = "{}-browbeat-{}-{}".format(time_stamp1,
-                                        "shaker", scenario)
-                     self.run_scenario(_scenarios[scenario]['file'], result_dir, test_name, scenario)
+                                        "shaker", scenario['name'])
+                     self.run_scenario(scenario, result_dir, test_name)
                      self.get_stats()
                  else:
-                     self.logger.info("Skipping {} as scenario enabled: false".format(scenario))
+                     self.logger.info("Skipping {} as scenario enabled: false".format(scenario['name']))
             self.final_stats(scen_enabled)
         else:
             self.logger.error("Configuration file contains no shaker scenarios")
+
