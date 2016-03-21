@@ -21,6 +21,10 @@
     group: root
     mode: 0644
 
+- name: Install Screen for connmon
+  yum: name=screen state=latest
+  when: undercloud
+
 # To remove the screen session: screen -X -S connmond kill
 - name: Run connmond in screen session on undercloud
   command: screen -d -S connmond -m connmond
