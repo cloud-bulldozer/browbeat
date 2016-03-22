@@ -51,10 +51,10 @@ rally:
   sleep_after: 5
   venv: /home/stack/rally-venv/bin/activate
   plugins:
-      - netcreate-boot: rally/rally-plugins/netcreate-boot
-      - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
   benchmarks:
-    authenticate:
+    - name: authenticate
       enabled: true
       concurrency:
         - 64
@@ -67,25 +67,25 @@ rally:
         - 512
       times: 10000
       scenarios:
-        authentic-keystone:
+        - name: authentic-keystone
           enabled: true
           file: rally/authenticate/keystone-cc.yml
           sla_max_avg_duration: 6
           sla_max_seconds: 30
           sla_max_failure: 0
-        authentic-neutron:
+        - name: authentic-neutron
           enabled: true
           file: rally/authenticate/validate_neutron-cc.yml
           sla_max_avg_duration: 18
           sla_max_seconds: 30
           sla_max_failure: 0
-        authentic-nova:
+        - name: authentic-nova
           enabled: true
           file: rally/authenticate/validate_nova-cc.yml
           sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
-    plugins:
+    - name: cinder
       enabled: true
       concurrency:
         - 16
@@ -94,42 +94,25 @@ rally:
         - 64
       times: 128
       scenarios:
-        netcreate-boot:
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    cinder:
-      enabled: true
-      concurrency:
-        - 16
-        - 32
-        - 48
-        - 64
-      times: 128
-      scenarios:
-        create-attach-volume-centos:
+        - name: create-attach-volume-centos
           enabled: true
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
-        create-attach-volume-cirros:
+        - name: create-attach-volume-cirros
           enabled: true
           image_name: cirros
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           flavor_name: m1.tiny
           sla_max_seconds: 30
           sla_max_failure: 0
-    keystonebasic:
+    - name: keystonebasic
       enabled: true
       concurrency:
         - 256
       times: 5000
       scenarios:
-        create-and-list-tenants:
+        - name: create-and-list-tenants
           enabled: true
           file: rally/keystonebasic/create_and_list_tenants-cc.yml
           sla_max_seconds: 30
@@ -137,7 +120,7 @@ rally:
           times: 5000
           concurrency:
             - 256
-        create-and-list-users:
+        - name: create-and-list-users
           enabled: true
           file: rally/keystonebasic/create_and_list_users-cc.yml
           times: 5000
@@ -145,7 +128,41 @@ rally:
             - 256
           sla_max_seconds: 30
           sla_max_failure: 0
-    nova:
+    - name: neutron
+      enabled: true
+      concurrency:
+        - 16
+        - 32
+        - 48
+        - 64
+      times: 500
+      scenarios:
+        - name: create-list-network
+          enabled: true
+          file: rally/neutron/neutron-create-list-network-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-list-port
+          enabled: true
+          file: rally/neutron/neutron-create-list-port-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-list-router
+          enabled: true
+          file: rally/neutron/neutron-create-list-router-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-list-security-group
+          enabled: true
+          file: rally/neutron/neutron-create-list-security-group-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-list-subnet
+          enabled: true
+          file: rally/neutron/neutron-create-list-subnet-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+    - name: nova
       enabled: true
       concurrency:
         - 16
@@ -156,50 +173,33 @@ rally:
         - 96
       times: 128
       scenarios:
-        boot-list-centos:
+        - name: boot-list-centos
           enabled: true
           file: rally/nova/nova-boot-list-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
-        boot-list-cirros:
+        - name: boot-list-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-list-cc.yml
           flavor_name: m1.tiny
           sla_max_seconds: 30
           sla_max_failure: 0
-    neutron:
+    - name: plugins
       enabled: true
       concurrency:
         - 16
         - 32
         - 48
         - 64
-      times: 500
+      times: 128
       scenarios:
-        create-list-network:
+        - name: netcreate-boot
           enabled: true
-          file: rally/neutron/neutron-create-list-network-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        create-list-port:
-          enabled: true
-          file: rally/neutron/neutron-create-list-port-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        create-list-router:
-          enabled: true
-          file: rally/neutron/neutron-create-list-router-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        create-list-security-group:
-          enabled: true
-          file: rally/neutron/neutron-create-list-security-group-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        create-list-subnet:
-          enabled: true
-          file: rally/neutron/neutron-create-list-subnet-cc.yml
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
 #shaker scenarios require atleast 2 compute nodes

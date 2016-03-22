@@ -79,7 +79,7 @@ if __name__ == '__main__':
     _cli=argparse.ArgumentParser(description="Browbeat automated scripts")
     _cli.add_argument('-n','--hosts',nargs=1,
             help='Provide Ansible hosts file to use. Default is ansible/hosts')
-    _cli.add_argument('-s','--setup',nargs=1,
+    _cli.add_argument('-s', '--setup', nargs='?', default = _config_file,
             help='Provide Setup YAML for browbeat. Default is ./browbeat-config.yaml')
     _cli.add_argument('-c','--check',action='store_true',
             help='Run the Browbeat Overcloud Checks')
@@ -98,10 +98,7 @@ if __name__ == '__main__':
 # Install Tool(s)
 #
     if _cli_args.install :
-        if _cli_args.setup :
-            _config=_load_config(_cli_args.setup[0])
-        else:
-            _config=_load_config(_config_file)
+        _config=_load_config(_cli_args.setup)
         hosts_path=_config['ansible']['hosts']
         if _cli_args.hosts :
             _logger.info("Loading new hosts file : %s"% _cli_args.hosts[0])
@@ -124,10 +121,7 @@ if __name__ == '__main__':
 # Overcloud check
 #
     if _cli_args.check :
-        if _cli_args.setup :
-            _config=_load_config(_cli_args.setup[0])
-        else:
-            _config=_load_config(_config_file)
+        _config=_load_config(_cli_args.setup)
         hosts_path=_config['ansible']['hosts']
         if _cli_args.hosts :
             _logger.info("Loading new hosts file : %s"% _cli_args.hosts[0])
@@ -137,10 +131,7 @@ if __name__ == '__main__':
 
     # Run workloads:
     hosts = None
-    if _cli_args.setup :
-        _config = _load_config(_cli_args.setup[0])
-    else:
-        _config = _load_config(_config_file)
+    _config = _load_config(_cli_args.setup)
     hosts_path = _config['ansible']['hosts']
 
     # Default to all workloads
