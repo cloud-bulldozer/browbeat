@@ -55,14 +55,14 @@ shaker:
   sleep_after: 5
   venv: /home/stack/shaker-venv
   scenarios:
-    l2:
+    - name: l2
       enabled: true
       density: 1
       compute: 1
       progression: linear
       time: 60
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
-    l3-north-south:
+    - name: l3-north-south
       enabled: false
       placement: double_room
       density: 1
@@ -70,7 +70,7 @@ shaker:
       progression: null
       time: 60
       file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
-    l3-east-west:
+    - name: l3-east-west
       enabled: false
       density: 1
       compute: 1
