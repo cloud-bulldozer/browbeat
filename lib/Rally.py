@@ -2,6 +2,7 @@ from Connmon import Connmon
 from Tools import Tools
 from collections import OrderedDict
 from Grafana import Grafana
+from WorkloadBase import WorkloadBase
 import datetime
 import glob
 import logging
@@ -10,20 +11,20 @@ import shutil
 import subprocess
 import time
 
+class Rally(WorkloadBase):
 
-class Rally:
-
-    def __init__(self, config):
+    def __init__(self, config, hosts=None):
         self.logger = logging.getLogger('browbeat.Rally')
         self.config = config
         self.tools = Tools(self.config)
         self.connmon = Connmon(self.config)
         self.grafana = Grafana(self.config)
         self.error_count = 0
+        self.pass_count = 0
         self.test_count = 0
         self.scenario_count = 0
 
-    def run_scenario(self, task_file, scenario_args, result_dir, test_name):
+    def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark):
         self.logger.debug("--------------------------------")
         self.logger.debug("task_file: {}".format(task_file))
         self.logger.debug("scenario_args: {}".format(scenario_args))
@@ -45,38 +46,31 @@ class Rally:
         if len(plugins) > 0:
             plugin_string = "--plugin-paths {}".format(",".join(plugins))
         cmd = "source {}; ".format(self.config['rally']['venv'])
-        cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(plugin_string,
-                                                                                    task_file, task_args, test_name)
+        cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(
+            plugin_string, task_file,task_args, test_name)
+        from_time = time.time()
         self.tools.run_cmd(cmd)
+        to_time = time.time()
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
-
+        return (from_time, to_time)
         self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
         self.grafana.log_snapshot_playbook_cmd(
             from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
-    def workload_logger(self, result_dir):
-        base = result_dir.split('/')
-        if not os.path.isfile("{}/{}/browbeat-rally-run.log".format(base[0], base[1])):
-            file = logging.FileHandler(
-                "{}/{}/browbeat-rally-run.log".format(base[0], base[1]))
-            file.setLevel(logging.DEBUG)
-            formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
-            file.setFormatter(formatter)
-            self.logger.addHandler(file)
-        return None
+    def update_tests(self):
+        self.test_count += 1
 
-    def get_test_count(self):
-        return self.test_count
+    def update_pass_tests(self):
+        self.pass_count += 1
 
-    def get_error_count(self):
-        return self.error_count
+    def update_fail_tests(self):
+        self.error_count += 1
 
-    def get_scenario_count(self):
-        return self.scenario_count
+    def update_scenarios(self):
+        self.scenario_count += 1
 
     def get_task_id(self, test_name):
         cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(
@@ -84,12 +78,12 @@ class Rally:
         return self.tools.run_cmd(cmd)
 
     def _get_details(self):
-        self.logger.info("Current number of scenarios executed:{}".format(
-            self.get_scenario_count()))
         self.logger.info(
-            "Current number of test(s) executed:{}".format(self.get_test_count()))
-        self.logger.info("Current number of test failures:{}".format(
-            self.get_error_count()))
+            "Current number of Rally scenarios executed:{}".format(
+                self.scenario_count))
+        self.logger.info("Current number of Rally tests executed:{}".format(self.test_count))
+        self.logger.info("Current number of Rally tests passed:{}".format(self.pass_count))
+        self.logger.info("Current number of Rally test failures:{}".format(self.error_count))
 
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
@@ -114,7 +108,6 @@ class Rally:
             for benchmark in benchmarks:
                 if benchmark['enabled']:
                     self.logger.info("Benchmark: {}".format(benchmark['name']))
-
                     scenarios = benchmark['scenarios']
                     def_concurrencies = benchmark['concurrency']
                     def_times = benchmark['times']
@@ -123,7 +116,8 @@ class Rally:
                     self.logger.debug("Default Times: {}".format(def_times))
                     for scenario in scenarios:
                         if scenario['enabled']:
-                            self.scenario_count += 1
+                            self.update_scenarios()
+                            self.update_total_scenarios()
                             scenario_name = scenario['name']
                             scenario_file = scenario['file']
                             self.logger.info(
@@ -142,9 +136,9 @@ class Rally:
                                 self.config['browbeat'][
                                     'results'], time_stamp, benchmark['name'],
                                 scenario_name)
-                            self.logger.debug(
-                                "Created result directory: {}".format(result_dir))
-                            self.workload_logger(result_dir)
+                            self.logger.debug("Created result directory: {}".format(result_dir))
+                            workload = self.__class__.__name__
+                            self.workload_logger(result_dir, workload)
 
                             # Override concurrency/times
                             if 'concurrency' in scenario:
@@ -160,9 +154,10 @@ class Rally:
                                 for run in range(self.config['browbeat']['rerun']):
                                     if run not in results:
                                         results[run] = []
-                                    self.test_count += 1
-                                    test_name = "{}-browbeat-{}-{}-iteration-{}".format(time_stamp,
-                                                                                        scenario_name, concurrency, run)
+                                    self.update_tests()
+                                    self.update_total_tests()
+                                    test_name = "{}-browbeat-{}-{}-iteration-{}".format(
+                                        time_stamp, scenario_name, concurrency, run)
 
                                     if not result_dir:
                                         self.logger.error(
@@ -173,8 +168,9 @@ class Rally:
                                     if self.config['connmon']['enabled']:
                                         self.connmon.start_connmon()
 
-                                    self.run_scenario(
-                                        scenario_file, scenario, result_dir, test_name)
+                                    from_time,to_time = self.run_scenario(
+                                        scenario_file, scenario, result_dir, test_name,
+                                        benchmark['name'])
 
                                     # Stop connmon at end of rally task
                                     if self.config['connmon']['enabled']:
@@ -184,26 +180,39 @@ class Rally:
                                                 result_dir, test_name)
                                         except:
                                             self.logger.error(
-                                                "Connmon Result data missing, Connmon never started")
+                                                "Connmon Result data missing, \
+                                                Connmon never started")
                                             return False
-                                        self.connmon.connmon_graphs(
-                                            result_dir, test_name)
+                                        self.connmon.connmon_graphs(result_dir, test_name)
+                                    new_test_name = test_name.split('-')
+                                    new_test_name = new_test_name[3:]
+                                    new_test_name = "-".join(new_test_name)
 
                                     # Find task id (if task succeeded in
                                     # running)
                                     task_id = self.get_task_id(test_name)
                                     if task_id:
                                         self.logger.info(
-                                            "Generating Rally HTML for task_id : {}".format(task_id))
+                                            "Generating Rally HTML for task_id : {}".
+                                            format(task_id))
                                         self.gen_scenario_html(
                                             [task_id], test_name)
                                         self.gen_scenario_json(
                                             task_id, test_name)
                                         results[run].append(task_id)
+                                        self.update_pass_tests()
+                                        self.update_total_pass_tests()
+                                        self.get_time_dict(
+                                            to_time, from_time, benchmark['name'], new_test_name,
+                                            workload, "pass")
+
                                     else:
-                                        self.logger.error(
-                                            "Cannot find task_id")
-                                        self.error_count += 1
+                                        self.logger.error("Cannot find task_id")
+                                        self.update_fail_tests()
+                                        self.update_total_fail_tests()
+                                        self.get_time_dict(
+                                            to_time, from_time, benchmark['name'], new_test_name,
+                                            workload, "fail")
 
                                     for data in glob.glob("./{}*".format(test_name)):
                                         shutil.move(data, result_dir)

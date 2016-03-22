@@ -2,10 +2,13 @@
 from lib.PerfKit import PerfKit
 from lib.Rally import Rally
 from lib.Shaker import Shaker
+from lib.WorkloadBase import WorkloadBase
 import argparse
 import logging
 import sys
 import yaml
+import datetime
+import os
 from pykwalify import core as pykwalify_core
 from pykwalify import errors as pykwalify_errors
 
@@ -14,14 +17,13 @@ _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
 
 
-
 def _load_config(path, _logger):
     try:
         stream = open(path, 'r')
     except IOError:
         _logger.error("Configuration file {} passed is missing".format(path))
         exit(1)
-    config=yaml.load(stream)
+    config = yaml.load(stream)
     stream.close()
     validate_yaml(config, _logger)
     return config
@@ -56,10 +58,14 @@ def _run_workload_provider(provider, config):
 def main():
     parser = argparse.ArgumentParser(
         description="Browbeat Performance and Scale testing for Openstack")
-    parser.add_argument('-s', '--setup', nargs='?', default=_config_file,
+    parser.add_argument(
+        '-s',
+        '--setup',
+        nargs='?',
+        default=_config_file,
         help='Provide Browbeat YAML configuration file. Default is ./{}'.format(_config_file))
     parser.add_argument('workloads', nargs='*', help='Browbeat workload(s). Takes a space separated'
-        ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
+                        ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
     parser.add_argument('--debug', action='store_true', help='Enable Debug messages')
     _cli_args = parser.parse_args()
 
@@ -96,6 +102,8 @@ def main():
             _logger.error("If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
         exit(1)
     else:
+        time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        _logger.info("Browbeat test suite kicked off")
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:
@@ -103,9 +111,14 @@ def main():
                     _run_workload_provider(wkld_provider, _config)
                 else:
                     _logger.warning("{} is not enabled in {}".format(wkld_provider,
-                        _cli_args.setup))
+                                                                     _cli_args.setup))
             else:
                 _logger.error("{} is missing in {}".format(wkld_provider, _cli_args.setup))
+        result_dir = _config['browbeat']['results']
+        WorkloadBase.print_report(result_dir, time_stamp)
+        _logger.info("Saved browbeat result summary to {}".format(
+            os.path.join(result_dir,time_stamp + '.' + 'report')))
+        WorkloadBase.print_summary()
 
 if __name__ == '__main__':
     sys.exit(main())
