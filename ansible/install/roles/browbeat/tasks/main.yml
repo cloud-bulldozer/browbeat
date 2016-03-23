@@ -70,6 +70,14 @@
 - name: Copy the MYSQl Tuner script into browbeat
   command: cp {{ home_dir }}/MySQLTuner-perl/mysqltuner.pl {{ browbeat_path }}/ansible/check
 
+- name: Install functools32 into rally-venv
+  pip: name=functools32 virtualenv={{ rally_venv }}
+  become: true
+
+- name: Install functools32 into rally-venv
+  pip: name=funcsigs virtualenv={{ rally_venv }}
+  become: true
+
 - name: Install rally into rally-venv
   pip: name=rally virtualenv={{ rally_venv }}
   become: true
