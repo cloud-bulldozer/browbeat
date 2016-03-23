@@ -1,3 +1,5 @@
 ---
 # vi:syntax=yaml
 result_dir: "{{inventory_dir}}/../results"
+
+mysql_tuner_script: https://raw.githubusercontent.com/major/MySQLTuner-perl/master/mysqltuner.pl

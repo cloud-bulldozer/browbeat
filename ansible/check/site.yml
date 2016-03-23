@@ -3,7 +3,17 @@
 # Playbook to check OSP install for common performance tuning issues
 #
 
+- hosts: localhost
+  name: Get MySQL Tuner Script
+  gather_facts: false
+  vars:
+    ansible_connection: local
+  tasks:
+    - name: Get MySQL Tuner Script
+      get_url: url={{mysql_tuner_script}} dest={{playbook_dir}}
+
 - hosts: undercloud
+  name: Checking Undercloud for common Performance Issues
   remote_user: stack
   roles:
   - common
@@ -13,6 +23,7 @@
   - nova
 
 - hosts: controller
+  name: Checking Controller Nodes for common Performance Issues
   remote_user: heat-admin
   roles:
   - common
@@ -22,6 +33,7 @@
   - nova
 
 - hosts: compute
+  name: Checking Compute Nodes for common Performance Issues
   remote_user: heat-admin
   roles:
   - common
@@ -29,6 +41,7 @@
   - nova
 
 - hosts: ceph
+  name: Checking Ceph Hosts for common Performance Issues
   remote_user: heat-admin
   roles:
   - common
