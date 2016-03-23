@@ -52,7 +52,7 @@ class PerfKit:
         if os.path.exists("/tmp/perfkitbenchmarker/run_browbeat"):
             shutil.rmtree("/tmp/perfkitbenchmarker/run_browbeat")
 
-        if self.config['browbeat']['connmon']:
+        if self.config['connmon']['enabled']:
             self.connmon.start_connmon()
 
         # Run PerfKit
@@ -69,7 +69,7 @@ class PerfKit:
         to_ts = int(time.time() * 1000)
 
         # Stop connmon at end of perfkit task
-        if self.config['browbeat']['connmon']:
+        if self.config['connmon']['enabled']:
             self.connmon.stop_connmon()
             try:
                 self.connmon.move_connmon_results(result_dir, test_name)

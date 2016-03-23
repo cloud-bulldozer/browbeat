@@ -1,22 +1,18 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
   results : results/
-  sudo: true
-  connmon: false
   rerun: 1
 ansible:
   hosts: ansible/hosts
-  install:
-    connmon: ansible/install/connmon.yml
-    browbeat: ansible/install/browbeat.yml
-  check: ansible/check/site.yml
   adjust:
     keystone_token: ansible/browbeat/adjustment-keystone-token.yml
     neutron_l3: ansible/browbeat/adjustment-l3.yml
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
   grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
-  shaker_build: ansible/install/shaker_build.yml
+connmon:
+  enabled: false
+  sudo: true
 grafana:
   enabled: true
   cloud_name: openstack

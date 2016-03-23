@@ -14,7 +14,7 @@ class Connmon :
         connmond=self.tools.find_cmd(tool)
         if not connmond :
             self.logger.error("Unable to find {}".format(tool))
-        as_sudo = self.config['browbeat']['sudo']
+        as_sudo = self.config['connmon']['sudo']
         cmd = ""
         if as_sudo :
             cmd +="sudo "

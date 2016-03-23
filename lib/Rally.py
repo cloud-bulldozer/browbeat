@@ -12,7 +12,7 @@ import time
 
 
 class Rally:
-    def __init__(self, config, hosts=None):
+    def __init__(self, config):
         self.logger = logging.getLogger('browbeat.Rally')
         self.config = config
         self.tools = Tools(self.config)
@@ -154,14 +154,13 @@ class Rally:
                                         exit(1)
 
                                     # Start connmon before rally
-                                    if self.config['browbeat']['connmon']:
+                                    if self.config['connmon']['enabled']:
                                         self.connmon.start_connmon()
 
-                                    self.run_scenario(scenario_file, scenario, result_dir,
-                                        test_name)
+                                    self.run_scenario(scenario_file, scenario, result_dir, test_name)
 
                                     # Stop connmon at end of rally task
-                                    if self.config['browbeat']['connmon']:
+                                    if self.config['connmon']['enabled']:
                                         self.connmon.stop_connmon()
                                         try:
                                             self.connmon.move_connmon_results(result_dir, test_name)
