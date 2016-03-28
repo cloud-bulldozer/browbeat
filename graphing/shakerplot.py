@@ -8,20 +8,26 @@ import sys
 
 def getiter(prog_dict):
     density = prog_dict['deployment']['accommodation'][2]['density']
+    compute = prog_dict['deployment']['accommodation'][3]['compute_nodes']
+    iterval = density*compute
+    if(prog_dict['deployment']['accommodation'][0]=="pair" and
+                 prog_dict['deployment']['accommodation'][1]=="single_room"):
+        iterval //=2
     iterlist = []
     if prog_dict['execution']['progression'] in ['arithmetic', 'linear',
                                                  'linear_progression']:
-        iterlist = range(1,density+1)
+        iterlist = range(1,iterval+1)
     elif prog_dict['execution']['progression'] in ['geometric', 'quadratic',
                                                    'quadratic_progression']:
-        iterlist = [density]
-        while density > 1:
-            density //= 2
-            iterlist.append(density)
+        iterlist = [iterval]
+        while iterval > 1:
+            iterval //= 2
+            iterlist.append(iterval)
             iterlist.reverse()
     elif prog_dict['execution']['progression'] == None:
-        iterlist.append(density)
+        iterlist.append(iterval)
     return iterlist
+
 
 def get_uuidlist(data):
     uuidlist = []
@@ -56,10 +62,6 @@ def generate_aggregated_graphs(data, fname):
                         for index in range(time1-1):
                             countlist[index] += ((data['records'][uuid]
                                          ['samples'][index][1])/math.pow(10,6))
-                    else:
-                        print ("No data for test uuid {} with agent {} and"
-                               "concurrency {}").format(uuid,
-                               data['records'][uuid]['agent'], concur)
             plt.xlabel('Time in seconds')
             plt.ylabel('Throughput in Mbps')
             plt.title('Aggregated Throuhput for concurrencies \non node\n{}'.format(
@@ -96,10 +98,6 @@ def generate_perinstance_graphs(data, fname):
                             if data['records'][uuid]['status'] == "ok":
                                 resultlist[index] = ((data['records'][uuid]
                                         ['samples'][index][1])/math.pow(10,6))
-                            else:
-                                print ("No data for test uuid {} with agent {} and"
-                                       "concurrency {}").format(uuid,
-                                       data['records'][uuid]['agent'], concur)
                         plt.xlabel('Time in seconds')
                         plt.ylabel('Throughput in Mbps')
                         plt.title('Throughput for {} \non node \n{}'.format(
