@@ -84,6 +84,7 @@ shaker_port: 5555
 shaker_flavor: m1.small
 # Shaker centos image builder template
 shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
+shaker_region: regionOne
 
 ########################################
 # Browbeat Network Configuration
