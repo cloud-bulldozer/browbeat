@@ -185,8 +185,8 @@ LoadPlugin uptime
   # Appliance processes
   ProcessMatch "evm_server.rb" ".*evm_server\.rb$"
   ProcessMatch "evm_watchdog.rb" "/bin/evm_watchdog.rb"
-  Process "evm:dbsync:replicate"
-  Process "appliance_console.rb"
+  ProcessMatch "evm:dbsync:replicate" ".*evm:dbsync:replicate$"
+  ProcessMatch "appliance_console.rb" ".*appliance_console.rb$"
 
   # Workers
   ProcessMatch "MiqEventHandler" ".*MiqEventHandler.*"

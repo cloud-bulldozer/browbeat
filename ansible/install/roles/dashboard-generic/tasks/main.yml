@@ -6,7 +6,7 @@
 - name: Remove existing dashboards
   command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
   when: overwrite_existing
-  with_items: dashboards
+  with_items: "{{dashboards}}"
 
 - name: Ensure {{role_path}}/files directory exists
   file: path={{role_path}}/files state=directory
@@ -15,12 +15,12 @@
   template:
     src: "{{item.template_name}}_general_system_performance.json.j2"
     dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
-  with_items: dashboards
+  with_items: "{{dashboards}}"
 
 - name: Upload dashboards to grafana
   command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items: dashboards
+  with_items: "{{dashboards}}"
 
 - name: Remove leftover json file(s)
   file: path={{role_path}}/files/{{item.process_list_name}}_general_system_performance.json state=absent
-  with_items: dashboards
+  with_items: "{{dashboards}}"
