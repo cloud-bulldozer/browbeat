@@ -18,8 +18,8 @@ class Shaker:
         self.scenarios_count = 0
 
     def shaker_checks(self):
-        cmd="source /home/stack/overcloudrc; glance image-list | grep shaker-image"
-        if self.tools.run_cmd(cmd) == None:
+        cmd="source /home/stack/overcloudrc; glance image-list | grep -w shaker-image"
+        if self.tools.run_cmd(cmd) == "":
             self.logger.error("Shaker Image is not built, try again")
             exit(1)
         else:
