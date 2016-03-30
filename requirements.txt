@@ -2,4 +2,4 @@ ansible
 matplotlib
 python-dateutil==2.4.2
 pykwalify
-
+elasticsearch

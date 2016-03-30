@@ -2,6 +2,17 @@
 browbeat:
   results : results/
   rerun: 1
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: hardware-metadata.json
+    - name: os-metadata
+      file: os-metadata.json
+    - name: software-metadata
+      file: software-metadata.json
 ansible:
   hosts: ansible/hosts
   adjust:
@@ -42,7 +53,7 @@ perfkit:
       data_disk_size: 4
 shaker:
   enabled: true
-  server: (Address of machine running browbeat-Undercloud)
+  server: 1.1.1.1
   port: 5555
   flavor: m1.small
   join_timeout: 600
