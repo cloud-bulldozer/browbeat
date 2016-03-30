@@ -22,9 +22,16 @@
 - name: Set grafana server port
   ini_file:
     dest=/etc/grafana/grafana.ini
-    section=server
-    option=http_port
-    value={{grafana_port}}
+    section={{item.section}}
+    option={{item.option}}
+    value={{item.value}}
+  with_items:
+    - section: server
+      option: http_port
+      value: "{{grafana_port}}"
+    - section: auth.anonymous
+      option: enabled
+      value: true
   become: true
 
 # disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
