@@ -187,7 +187,7 @@ class Rally:
                                     self._get_details()
 
                         else:
-                            self.logger.info("Skipping {} scenario enabled: false".format(scenario_name))
+                            self.logger.info("Skipping {} scenario enabled: false".format(scenario['name']))
                 else:
                     self.logger.info("Skipping {} benchmarks enabled: false".format(benchmark['name']))
             self.logger.debug("Creating Combined Rally Reports")
