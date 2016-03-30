@@ -212,6 +212,7 @@ shaker:
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/shaker-venv
+  shaker_region: regionOne
   scenarios:
     - name: l2-4-1
       enabled: true

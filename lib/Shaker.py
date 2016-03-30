@@ -103,13 +103,14 @@ class Shaker:
         port_no = self.config['shaker']['port']
         flavor = self.config['shaker']['flavor']
         venv = self.config['shaker']['venv']
+        shaker_region = self.config['shaker']['shaker_region']
         timeout = self.config['shaker']['join_timeout']
         cmd_1 = ("source {}/bin/activate; source /home/stack/overcloudrc").format(venv)
         cmd_2=("shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}"
-               " --os-region-name regionOne --agent-join-timeout {6}"
+               " --os-region-name {7} --agent-join-timeout {6}"
                " --report {4}/{5}.html --output {4}/{5}.json"
                " --debug > {4}/{5}.log 2>&1").format(server_endpoint,
-               port_no, flavor, filename, result_dir, test_name, timeout)
+               port_no, flavor, filename, result_dir, test_name, timeout, shaker_region)
         cmd = ("{}; {}").format(cmd_1, cmd_2)
         from_ts = int(time.time() * 1000)
         if 'sleep_before' in self.config['shaker']:
