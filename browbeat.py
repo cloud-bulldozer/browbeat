@@ -6,17 +6,37 @@ import argparse
 import logging
 import sys
 import yaml
+from pykwalify import core as pykwalify_core
+from pykwalify import errors as pykwalify_errors
 
 _workload_opts = ['perfkit', 'rally', 'shaker']
 _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
 
 
-def _load_config(config_file):
-    with open(config_file, 'r') as stream_conf_file:
-        config = yaml.load(stream_conf_file)
+
+def _load_config(path, _logger):
+    try:
+        stream = open(path, 'r')
+    except IOError:
+        _logger.error("Configuration file {} passed is missing".format(path))
+        exit(1)
+    config=yaml.load(stream)
+    stream.close()
+    validate_yaml(config, _logger)
     return config
 
+def validate_yaml(config, _logger):
+    _logger.info("Validating the configuration file passed by the user")
+    stream = open("lib/validate.yaml", 'r')
+    schema = yaml.load(stream)
+    check = pykwalify_core.Core(source_data=config, schema_data=schema)
+    try:
+        check.validate(raise_exception=True)
+        _logger.info("Validation successful")
+    except pykwalify_errors.SchemaError as e:
+        _logger.error("Schema Validation failed")
+        raise Exception('File does not conform to schema: {}'.format(e))
 
 def _run_workload_provider(provider, config):
     _logger = logging.getLogger('browbeat')
@@ -61,7 +81,7 @@ def main():
     _logger.debug("CLI Args: {}".format(_cli_args))
 
     # Load Browbeat yaml config file:
-    _config = _load_config(_cli_args.setup)
+    _config = _load_config(_cli_args.setup, _logger)
 
     # Default to all workloads
     if _cli_args.workloads == []:
