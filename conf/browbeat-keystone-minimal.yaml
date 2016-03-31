@@ -23,7 +23,6 @@ grafana:
     - openstack-general-system-performance
   snapshot:
     enabled: false
-    grafana_api_key: (Your API Key Here)
     snapshot_compute: false
 rally:
   enabled: true

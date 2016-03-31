@@ -3,42 +3,48 @@
 # Snapshot Dashboard
 #
 # Example Usage:
-# ansible-playbook -i hosts browbeat/snapshot-general-performance-dashboard.yml -e "grafana_ip=1.1.1.1 grafana_port=3000 grafana_api_key=<apikey> from=1455649200000 to=1455656400000 results_dir=results/ var_cloud=openstack"
+# ansible-playbook -i hosts browbeat/snapshot-general-performance-dashboard.yml -e "grafana_ip=1.1.1.1 grafana_port=3000 from=1455649200000 to=1455656400000 results_dir=results/ var_cloud=openstack"
 #
 # Append snapshot_compute=true to run snapshots against computes.
 #
 
-- hosts: undercloud
+- hosts: localhost
   gather_facts: false
   remote_user: stack
   vars:
+    ansible_connection: local
+    ansible_python_interpreter: "/usr/bin/python"
     host_type: undercloud
     host_suffix: ""
-    hosts_in_group: groups['undercloud']
+    hosts_in_group: "{{groups['undercloud']}}"
     disks_in_group: "{{disks['undercloud']}}"
     interfaces_in_group: "{{interfaces['undercloud']}}"
   roles:
     - grafana-snapshot
 
-- hosts: undercloud
+- hosts: localhost
   gather_facts: false
   remote_user: stack
   vars:
+    ansible_connection: local
+    ansible_python_interpreter: "/usr/bin/python"
     host_type: controller
     host_suffix: ""
-    hosts_in_group: groups['controller']
+    hosts_in_group: "{{groups['controller']}}"
     disks_in_group: "{{disks['controller']}}"
     interfaces_in_group: "{{interfaces['controller']}}"
   roles:
     - grafana-snapshot
 
-- hosts: undercloud
+- hosts: localhost
   gather_facts: false
   remote_user: stack
   vars:
+    ansible_connection: local
+    ansible_python_interpreter: "/usr/bin/python"
     host_type: compute
     host_suffix: ""
-    hosts_in_group: groups['compute']
+    hosts_in_group: "{{groups['compute']}}"
     disks_in_group: "{{disks['compute']}}"
     interfaces_in_group: "{{interfaces['compute']}}"
   roles:

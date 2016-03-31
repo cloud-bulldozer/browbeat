@@ -15,7 +15,6 @@ class Grafana:
     def get_extra_vars(self, from_ts, to_ts, result_dir, test_name):
         extra_vars = 'grafana_ip={} '.format(self.config['grafana']['grafana_ip'])
         extra_vars += 'grafana_port={} '.format(self.config['grafana']['grafana_port'])
-        extra_vars += 'grafana_api_key={} '.format(self.config['grafana']['snapshot']['grafana_api_key'])
         extra_vars += 'from={} '.format(from_ts)
         extra_vars += 'to={} '.format(to_ts)
         extra_vars += 'results_dir={}/{} '.format(result_dir, test_name)
