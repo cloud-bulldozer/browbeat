@@ -8,5 +8,21 @@
   vars:
     ansible_connection: local
     overwrite_existing: true
+    dashboards:
+      - template_name: openstack
+        template_node_type: undercloud
+        process_list_name: Openstack-Undercloud
+      - template_name: openstack
+        template_node_type: controller
+        process_list_name: Openstack-Controller
+      - template_name: openstack
+        template_node_type: compute
+        process_list_name: Openstack-Compute
+      - template_name: openstack
+        template_node_type: ceph
+        process_list_name: Openstack-Ceph
+      - template_name: openstack
+        template_node_type: "*"
+        process_list_name: Openstack
   roles:
     - dashboard-openstack
