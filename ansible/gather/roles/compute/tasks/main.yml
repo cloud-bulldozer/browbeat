@@ -1,0 +1,13 @@
+---
+#
+# Compute Tasks for gathering facts
+#
+- name: Get ovs version
+  shell: ovs-vswitchd --version | grep vSwitch | awk {'print$4'}
+  register: ovs_version
+
+- name: Set ovs version fact
+  set_fact:
+    openstack_ovs_version: "{{ ovs_version.stdout }}"
+
+

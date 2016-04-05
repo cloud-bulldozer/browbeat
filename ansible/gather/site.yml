@@ -1,0 +1,32 @@
+---
+- hosts: compute
+  remote_user: "{{ host_remote_user }}"
+  become: true
+  roles:
+    - compute
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  become: true
+  roles:
+    - nova
+    - neutron
+    - mysql
+    - rabbitmq
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  become: true
+  roles:
+    - undercloud
+
+
+- hosts: localhost
+  become: true
+  tasks:
+  - name: Dump all vars
+    local_action: template src=dump_facts.j2 dest={{ browbeat_path }}/machine_facts.json
+  - name: Generate metadata jsons
+    shell : python {{ browbeat_path }}/lib/Metadata.py {{ browbeat_path }}
+
+
