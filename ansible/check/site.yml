@@ -17,7 +17,7 @@
   remote_user: stack
   roles:
   - common
-  - controller
+  - undercloud
   - keystone
   - neutron
   - nova
