@@ -13,7 +13,7 @@ Table of Contents
 Currently we support Ansible 1.9.4 within browbeat-venv and ansible 2.0 for installation.
 
 Playbooks for:
-* Installing Browbeat, collectd, connmon, graphite, grafana, and grafana dashboards
+* Installing Browbeat, collectd, connmon, ELK stack and clients, graphite, grafana, and grafana dashboards
 * Check overcloud for performance issues
 * Tune overcloud for performance (Experimental)
 * Adjust number of workers for cinder/keystone/neutron/nova
@@ -58,7 +58,15 @@ Requires Ansible 2.0
 ```
 # ansible-playbook -i hosts install/connmon.yml
 ```
-
+##### Install ELK Stack
+```
+ansible-playbook -i hosts install/elk.yml
+```
+##### Install ELK Clients
+```
+ansible-playbook -i hosts install/elk-openstack-client.yml --extra-vars 'elk_server=X.X.X.X'
+```
+  - elk_server variable will be generated after the ELK stack playbook runs
 ##### Install graphite service
 ```
 # ansible-playbook -i hosts install/graphite.yml
