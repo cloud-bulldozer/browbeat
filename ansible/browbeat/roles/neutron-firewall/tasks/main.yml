@@ -1,0 +1,18 @@
+- name: Configure the firewall driver
+  ini_file:
+    dest: "{{ item.file }}"
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { file: /etc/neutron/plugins/ml2/ml2_conf.ini, section: securitygroup, option: firewall_driver, value: "{{ driver }}" }
+    - { file: /etc/neutron/plugins/ml2/openvswitch_agent.ini, section: securitygroup, option: firewall_driver, value: "{{ driver }}" }
+  notify:
+    - unmanage neutron services
+    - restart neutron services
+    - manage neutron services
+    - cleanup neutron services
+
+
