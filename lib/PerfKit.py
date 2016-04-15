@@ -11,6 +11,7 @@ import time
 
 
 class PerfKit:
+
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.PerfKit')
         self.config = config
@@ -22,9 +23,12 @@ class PerfKit:
         self.scenario_count = 0
 
     def _log_details(self):
-        self.logger.info("Current number of scenarios executed: {}".format(self.scenario_count))
-        self.logger.info("Current number of test(s) executed: {}".format(self.test_count))
-        self.logger.info("Current number of test failures: {}".format(self.error_count))
+        self.logger.info(
+            "Current number of scenarios executed: {}".format(self.scenario_count))
+        self.logger.info(
+            "Current number of test(s) executed: {}".format(self.test_count))
+        self.logger.info(
+            "Current number of test failures: {}".format(self.error_count))
 
     def run_benchmark(self, benchmark_config, result_dir, test_name, cloud_type="OpenStack"):
         self.logger.debug("--------------------------------")
@@ -37,15 +41,16 @@ class PerfKit:
         if 'enabled' in benchmark_config:
             del benchmark_config['enabled']
         cmd = ("source /home/stack/overcloudrc; source {0}; "
-            "/home/stack/perfkit-venv/PerfKitBenchmarker/pkb.py "
-            "--cloud={1} --run_uri=browbeat".format(self.config['perfkit']['venv'], cloud_type))
+               "/home/stack/perfkit-venv/PerfKitBenchmarker/pkb.py "
+               "--cloud={1} --run_uri=browbeat".format(self.config['perfkit']['venv'], cloud_type))
         # Add default parameters as necessary
         for default_item, value in self.config['perfkit']['default'].iteritems():
             if default_item not in benchmark_config:
                 benchmark_config[default_item] = value
         for parameter, value in benchmark_config.iteritems():
             if not parameter == 'name':
-                self.logger.debug("Parameter: {}, Value: {}".format(parameter, value))
+                self.logger.debug(
+                    "Parameter: {}, Value: {}".format(parameter, value))
                 cmd += " --{}={}".format(parameter, value)
 
         # Remove any old results
@@ -62,7 +67,8 @@ class PerfKit:
         self.logger.info("Running Perfkit Command: {}".format(cmd))
         stdout_file = open("{}/pkb.stdout.log".format(result_dir), 'w')
         stderr_file = open("{}/pkb.stderr.log".format(result_dir), 'w')
-        process = subprocess.Popen(cmd, shell=True, stdout=stdout_file, stderr=stderr_file)
+        process = subprocess.Popen(
+            cmd, shell=True, stdout=stdout_file, stderr=stderr_file)
         process.communicate()
         if 'sleep_after' in self.config['perfkit']:
             time.sleep(self.config['perfkit']['sleep_after'])
@@ -75,7 +81,8 @@ class PerfKit:
                 self.connmon.move_connmon_results(result_dir, test_name)
                 self.connmon.connmon_graphs(result_dir, test_name)
             except:
-                self.logger.error("Connmon Result data missing, Connmon never started")
+                self.logger.error(
+                    "Connmon Result data missing, Connmon never started")
 
         # Determine success
         try:
@@ -86,7 +93,8 @@ class PerfKit:
                     self.logger.error("Benchmark failed.")
                     self.error_count += 1
         except IOError:
-            self.logger.error("File missing: {}/pkb.stderr.log".format(result_dir))
+            self.logger.error(
+                "File missing: {}/pkb.stderr.log".format(result_dir))
 
         # Copy all results
         for perfkit_file in glob.glob("/tmp/perfkitbenchmarker/run_browbeat/*"):
@@ -96,7 +104,8 @@ class PerfKit:
 
         # Grafana integration
         self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
-        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.log_snapshot_playbook_cmd(
+            from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def start_workloads(self):
@@ -113,10 +122,12 @@ class PerfKit:
                         self.test_count += 1
                         result_dir = self.tools.create_results_dir(
                             self.config['browbeat']['results'], time_stamp, benchmark['name'], run)
-                        test_name = "{}-{}-{}".format(time_stamp, benchmark['name'], run)
+                        test_name = "{}-{}-{}".format(time_stamp,
+                                                      benchmark['name'], run)
                         self.run_benchmark(benchmark, result_dir, test_name)
                         self._log_details()
                 else:
-                    self.logger.info("Skipping {} benchmark, enabled: false".format(benchmark['name']))
+                    self.logger.info(
+                        "Skipping {} benchmark, enabled: false".format(benchmark['name']))
         else:
             self.logger.error("Config file contains no perfkit benchmarks.")

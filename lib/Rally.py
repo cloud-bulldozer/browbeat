@@ -12,6 +12,7 @@ import time
 
 
 class Rally:
+
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.Rally')
         self.config = config
@@ -36,31 +37,34 @@ class Rally:
         task_args = str(scenario_args).replace("'", "\"")
         plugins = []
         if "plugins" in self.config['rally']:
-            if len(self.config['rally']['plugins']) > 0 :
-                for plugin in self.config['rally']['plugins'] :
-                    for name in plugin :
+            if len(self.config['rally']['plugins']) > 0:
+                for plugin in self.config['rally']['plugins']:
+                    for name in plugin:
                         plugins.append(plugin[name])
         plugin_string = ""
-        if len(plugins) > 0 :
+        if len(plugins) > 0:
             plugin_string = "--plugin-paths {}".format(",".join(plugins))
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(plugin_string,
-                task_file,task_args, test_name)
+                                                                                    task_file, task_args, test_name)
         self.tools.run_cmd(cmd)
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
 
         self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
-        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.log_snapshot_playbook_cmd(
+            from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def workload_logger(self, result_dir):
         base = result_dir.split('/')
         if not os.path.isfile("{}/{}/browbeat-rally-run.log".format(base[0], base[1])):
-            file = logging.FileHandler("{}/{}/browbeat-rally-run.log".format(base[0], base[1]))
+            file = logging.FileHandler(
+                "{}/{}/browbeat-rally-run.log".format(base[0], base[1]))
             file.setLevel(logging.DEBUG)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
             file.setFormatter(formatter)
             self.logger.addHandler(file)
         return None
@@ -75,18 +79,23 @@ class Rally:
         return self.scenario_count
 
     def get_task_id(self, test_name):
-        cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(test_name)
+        cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(
+            test_name)
         return self.tools.run_cmd(cmd)
 
     def _get_details(self):
-        self.logger.info("Current number of scenarios executed:{}".format(self.get_scenario_count()))
-        self.logger.info("Current number of test(s) executed:{}".format(self.get_test_count()))
-        self.logger.info("Current number of test failures:{}".format(self.get_error_count()))
+        self.logger.info("Current number of scenarios executed:{}".format(
+            self.get_scenario_count()))
+        self.logger.info(
+            "Current number of test(s) executed:{}".format(self.get_test_count()))
+        self.logger.info("Current number of test failures:{}".format(
+            self.get_error_count()))
 
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
         cmd = "source {}; ".format(self.config['rally']['venv'])
-        cmd += "rally task report --task {} --out {}.html".format(all_task_ids, test_name)
+        cmd += "rally task report --task {} --out {}.html".format(
+            all_task_ids, test_name)
         return self.tools.run_cmd(cmd)
 
     def gen_scenario_json(self, task_id, test_name):
@@ -109,26 +118,32 @@ class Rally:
                     scenarios = benchmark['scenarios']
                     def_concurrencies = benchmark['concurrency']
                     def_times = benchmark['times']
-                    self.logger.debug("Default Concurrencies: {}".format(def_concurrencies))
+                    self.logger.debug(
+                        "Default Concurrencies: {}".format(def_concurrencies))
                     self.logger.debug("Default Times: {}".format(def_times))
                     for scenario in scenarios:
                         if scenario['enabled']:
                             self.scenario_count += 1
                             scenario_name = scenario['name']
                             scenario_file = scenario['file']
-                            self.logger.info("Running Scenario: {}".format(scenario_name))
-                            self.logger.debug("Scenario File: {}".format(scenario_file))
+                            self.logger.info(
+                                "Running Scenario: {}".format(scenario_name))
+                            self.logger.debug(
+                                "Scenario File: {}".format(scenario_file))
 
                             del scenario['enabled']
                             del scenario['file']
                             del scenario['name']
                             if len(scenario) > 0:
-                                self.logger.debug("Overriding Scenario Args: {}".format(scenario))
+                                self.logger.debug(
+                                    "Overriding Scenario Args: {}".format(scenario))
 
                             result_dir = self.tools.create_results_dir(
-                                self.config['browbeat']['results'], time_stamp, benchmark['name'],
+                                self.config['browbeat'][
+                                    'results'], time_stamp, benchmark['name'],
                                 scenario_name)
-                            self.logger.debug("Created result directory: {}".format(result_dir))
+                            self.logger.debug(
+                                "Created result directory: {}".format(result_dir))
                             self.workload_logger(result_dir)
 
                             # Override concurrency/times
@@ -147,37 +162,47 @@ class Rally:
                                         results[run] = []
                                     self.test_count += 1
                                     test_name = "{}-browbeat-{}-{}-iteration-{}".format(time_stamp,
-                                        scenario_name, concurrency, run)
+                                                                                        scenario_name, concurrency, run)
 
                                     if not result_dir:
-                                        self.logger.error("Failed to create result directory")
+                                        self.logger.error(
+                                            "Failed to create result directory")
                                         exit(1)
 
                                     # Start connmon before rally
                                     if self.config['connmon']['enabled']:
                                         self.connmon.start_connmon()
 
-                                    self.run_scenario(scenario_file, scenario, result_dir, test_name)
+                                    self.run_scenario(
+                                        scenario_file, scenario, result_dir, test_name)
 
                                     # Stop connmon at end of rally task
                                     if self.config['connmon']['enabled']:
                                         self.connmon.stop_connmon()
                                         try:
-                                            self.connmon.move_connmon_results(result_dir, test_name)
+                                            self.connmon.move_connmon_results(
+                                                result_dir, test_name)
                                         except:
-                                            self.logger.error("Connmon Result data missing, Connmon never started")
+                                            self.logger.error(
+                                                "Connmon Result data missing, Connmon never started")
                                             return False
-                                        self.connmon.connmon_graphs(result_dir, test_name)
+                                        self.connmon.connmon_graphs(
+                                            result_dir, test_name)
 
-                                    # Find task id (if task succeeded in running)
+                                    # Find task id (if task succeeded in
+                                    # running)
                                     task_id = self.get_task_id(test_name)
                                     if task_id:
-                                        self.logger.info("Generating Rally HTML for task_id : {}".format(task_id))
-                                        self.gen_scenario_html([task_id], test_name)
-                                        self.gen_scenario_json(task_id, test_name)
+                                        self.logger.info(
+                                            "Generating Rally HTML for task_id : {}".format(task_id))
+                                        self.gen_scenario_html(
+                                            [task_id], test_name)
+                                        self.gen_scenario_json(
+                                            task_id, test_name)
                                         results[run].append(task_id)
                                     else:
-                                        self.logger.error("Cannot find task_id")
+                                        self.logger.error(
+                                            "Cannot find task_id")
                                         self.error_count += 1
 
                                     for data in glob.glob("./{}*".format(test_name)):
@@ -186,15 +211,17 @@ class Rally:
                                     self._get_details()
 
                         else:
-                            self.logger.info("Skipping {} scenario enabled: false".format(scenario['name']))
+                            self.logger.info(
+                                "Skipping {} scenario enabled: false".format(scenario['name']))
                 else:
-                    self.logger.info("Skipping {} benchmarks enabled: false".format(benchmark['name']))
+                    self.logger.info(
+                        "Skipping {} benchmarks enabled: false".format(benchmark['name']))
             self.logger.debug("Creating Combined Rally Reports")
             for run in results:
                 combined_html_name = 'all-rally-run-{}'.format(run)
                 self.gen_scenario_html(results[run], combined_html_name)
                 if os.path.isfile('{}.html'.format(combined_html_name)):
                     shutil.move('{}.html'.format(combined_html_name),
-                        '{}/{}'.format(self.config['browbeat']['results'], time_stamp))
+                                '{}/{}'.format(self.config['browbeat']['results'], time_stamp))
         else:
             self.logger.error("Config file contains no rally benchmarks.")
