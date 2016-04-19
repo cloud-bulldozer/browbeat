@@ -3,15 +3,8 @@
 # Install/run collectd for browbeat (Generic)
 #
 
-- name: Check for epel
-  shell: rpm -qa | grep -q epel-release
-  ignore_errors: true
-  register: epel_installed
-
-- name: Install epel repo
-  command: rpm -ivh {{ epel_repo }}
-  become: true
-  when: epel_installed.rc != 0
+- name: Check for EPEL repo
+  yum: name=epel-release state=present
 
 - name: Install collectd rpms
   yum: name={{ item }} state=present
@@ -121,7 +114,8 @@
   service: name=collectd state=restarted enabled=true
   become: true
 
-- name: Disable EPEL
-  shell: rpm -e epel-release
-  ignore_errors: true
-  become: true
+- name: Disable EPEL Repo
+  ini_file: dest=/etc/yum.repos.d/epel.repo
+    section=epel
+    option=enabled
+    value=0
