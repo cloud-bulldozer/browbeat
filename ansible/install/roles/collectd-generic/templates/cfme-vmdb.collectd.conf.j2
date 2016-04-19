@@ -184,6 +184,7 @@ LoadPlugin uptime
 <Plugin processes>
   # Appliance processes
   ProcessMatch "evm_server.rb" ".*evm_server\.rb$"
+  ProcessMatch "MIQServer" ".*MIQ.*Server$"
   ProcessMatch "evm_watchdog.rb" "/bin/evm_watchdog.rb"
   ProcessMatch "evm:dbsync:replicate" ".*evm:dbsync:replicate$"
   ProcessMatch "appliance_console.rb" ".*appliance_console.rb$"
@@ -196,6 +197,9 @@ LoadPlugin uptime
   ProcessMatch "MiqScheduleWorker" "MiqScheduleWorker.*"
   ProcessMatch "MiqUiWorker" "MiqUiWorker.*"
   ProcessMatch "MiqWebServiceWorker" "MiqWebServiceWorker.*"
+  ProcessMatch "PumaMiqUiWorker" "puma.*3.3.0.*3000.*\[MIQ.*Web.*Server.*Worker\]"
+  ProcessMatch "PumaMiqWebServiceWorker" "puma.*3.3.0.*4000.*\[MIQ.*Web.*Server.*Worker\]"
+  ProcessMatch "PumaMiqWebSocketsWorker" "puma.*3.3.0.*5000.*\[MIQ.*Web.*Server.*Worker\]"
   ProcessMatch "MiqReplicationWorker" "MiqReplicationWorker.*"
   ProcessMatch "MiqEmsMetricsProcessorWorker" "MiqEmsMetricsProcessorWorker.*"
   ProcessMatch "MiqSmartProxyWorker" "MiqSmartProxyWorker.*"
@@ -276,6 +280,17 @@ LoadPlugin uptime
 
   ProcessMatch "MiqStorageMetricsCollectorWorker" "MiqStorageMetricsCollectorWorker.*"
 
+
+  # Capture specific postgres processes:
+  ProcessMatch "PostgresMaster" "/opt/rh/rh-postgresql94/root/usr/bin/postgres"
+  ProcessMatch "PostgresLogger" "postgres: logger process"
+  ProcessMatch "PostgresCheckpoint" "postgres: checkpointer process"
+  ProcessMatch "PostgresWriter" "postgres: writer process"
+  ProcessMatch "PostgresWALWriter" "postgres: wal writer process"
+  ProcessMatch "PostgresAutovacuum" "postgres: autovacuum launcher process"
+  ProcessMatch "PostgresStats" "postgres: stats collector process"
+  ProcessMatch "PostgresPgLogical" "postgres: bgworker: pglogical supervisor"
+  ProcessMatch "PostgresServers" "postgres: root vmdb_production.*"
 
   ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
   Process "httpd"

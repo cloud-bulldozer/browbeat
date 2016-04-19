@@ -83,9 +83,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -98,9 +110,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -289,6 +304,17 @@ per_process_panels:
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -301,9 +327,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -483,9 +512,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -498,9 +539,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -543,9 +587,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -558,9 +614,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -597,9 +656,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -612,9 +683,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -696,9 +770,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -711,9 +797,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -748,9 +837,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -763,9 +864,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -817,9 +921,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -832,9 +948,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
@@ -877,9 +996,21 @@ per_process_panels:
         - collectd
     - name: "Appliance"
       processes:
+        - MIQServer
         - evm_server.rb
         - evm_watchdog.rb
         - appliance_console.rb
+    - name: "Postgres"
+      processes:
+        - PostgresMaster
+        - PostgresLogger
+        - PostgresCheckpoint
+        - PostgresWriter
+        - PostgresWALWriter
+        - PostgresAutovacuum
+        - PostgresStats
+        - PostgresPgLogical
+        - PostgresServers
     - name: "MiqGenericWorker"
       processes:
         - MiqGenericWorker
@@ -892,9 +1023,12 @@ per_process_panels:
     - name: "MiqUiWorker"
       processes:
         - MiqUiWorker
+        - PumaMiqUiWorker
     - name: "MiqWebServiceWorker"
       processes:
         - MiqWebServiceWorker
+        - PumaMiqWebServiceWorker
+        - PumaMiqWebSocketsWorker
     - name: "MiqReportingWorker"
       processes:
         - MiqReportingWorker
