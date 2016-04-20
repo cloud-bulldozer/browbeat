@@ -1,0 +1,101 @@
+---
+#
+# Tasks to get neutron facts
+#
+  - name: Get Neutron L3 conf
+    command: crudini --get /etc/neutron/neutron.conf DEFAULT router_distributed
+    register: dvr_stat
+    ignore_errors: true
+
+  - name: Set L3 configuration fact
+    set_fact:
+      openstack_neutron_l3_dvr: "{{ dvr_stat.stdout }}"
+    when: dvr_stat.stdout != ""
+
+  - name: Set L3 configauration fact
+    set_fact:
+      openstack_neutron_l3_dvr: false
+    when: dvr_stat.stdout == ""
+
+  - name: Get Neutron Core Plugin
+    command: crudini --get /etc/neutron/neutron.conf DEFAULT core_plugin
+    register: core_plugin
+    ignore_errors: true
+
+  - name: Set Core Plugin fact
+    set_fact:
+      openstack_neutron_core_plugin: "{{ core_plugin.stdout }}"
+
+  - name: Get Neutron API Workers
+    command:  crudini --get /etc/neutron/neutron.conf DEFAULT api_workers
+    register: neutron_api
+    ignore_errors: true
+
+  - name: Set neutron API Workers fact
+    set_fact:
+      openstack_neutron_api_workers: "{{ facter_processorcount }}"
+    when: ( neutron_api.stdout == "" or neutron_api.stdout|int < 1)
+
+  - name: Set neutron API Workers fact
+    set_fact:
+      openstack_neutron_api_workers: "{{ neutron_api.stdout }}"
+    when: (neutron_api.stdout != "" and neutron_api.stdout|int >= 1)
+
+  - name: Get Neutron RPC Workers
+    command:  crudini --get /etc/neutron/neutron.conf DEFAULT rpc_workers
+    register: neutron_rpc
+    ignore_errors: true
+
+  - name: Set neutron RPC Workers fact
+    set_fact:
+      openstack_neutron_rpc_workers: 1
+    when: (neutron_rpc.stdout == "" or neutron_rpc.stdout|int < 1)
+
+  - name: Set neutron RPC Workers fact
+    set_fact:
+      openstack_neutron_rpc_workers: "{{ neutron_rpc.stdout }}"
+    when: (neutron_rpc.stdout != "" and  neutron_rpc.stdout|int >= 1)
+
+  - name: Get ml2 mechanism driver
+    command: crudini --get /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers
+    register: ml2
+    when: openstack_neutron_core_plugin == "ml2"
+    ignore_errors: true
+
+  - name: Set mechanism driver
+    set_fact:
+      openstack_neutron_ml2_driver: "{{ ml2.stdout }}"
+
+  - name: Get firewall driver
+    command: crudini --get /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup firewall_driver
+    register: firewall
+    ignore_errors: true
+
+  - name: Set firewall driver fact
+    set_fact:
+      openstack_neutron_firewall_driver: "iptables_hybrid"
+    when: (firewall.stdout == "" and openstack_neutron_core_plugin == "ml2")
+
+  - name: Set firewall driver fact
+    set_fact:
+      openstack_neutron_firewall_driver: "{{ firewall.stdout }}"
+    when: firewall.stdout != ""
+
+  - name: Get ovs tunnel type
+    command: crudini --get /etc/neutron/plugins/ml2/openvswitch_agent.ini agent tunnel_types
+    register: tunnel_type
+    ignore_errors: true
+
+  - name: Set ovs tunnel type fact
+    set_fact:
+      openstack_neutron_ovs_tunnel: "{{ tunnel_type.stdout }}"
+    when: "'openvswitch' in openstack_neutron_ml2_driver"
+
+  - name: Get ovs version
+    shell: ovs-vswitchd --version | grep vSwitch | awk {'print$4'}
+    register: ovs_version
+    ignore_errors: true
+
+  - name: Set ovs version fact
+    set_fact:
+      openstack_ovs_version: "{{ ovs_version.stdout }}"

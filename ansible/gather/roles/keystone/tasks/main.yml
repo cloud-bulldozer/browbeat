@@ -1,0 +1,28 @@
+---
+#
+# Tasks to set keystone facts
+#
+
+  - name: Get keystone provider
+    command: crudini --get /etc/keystone/keystone.conf token provider
+    register: keystone_provider
+
+  - name: Set keystone provider fact
+    set_fact:
+      openstack_keystone_token_provider: "{{ keystone_provider.stdout }}"
+
+  - name: Determine if Keystone is deployed in eventlet
+    shell: ps afx | grep "[Kk]eystone-all" -c
+    register: keystone_in_eventlet
+    changed_when: false
+    ignore_errors: True
+
+  - name: Set keystone_deployment variable to httpd
+    set_fact: openstack_keystone_deployment='httpd'
+    when: keystone_in_eventlet.stdout|int == 0
+
+  - name: Set keystone_deployment variable to eventlet
+    set_fact: openstack_keystone_deployment='eventlet'
+    when: keystone_in_eventlet.stdout|int > 0
+
+

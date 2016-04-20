@@ -1,0 +1,21 @@
+#
+# Get mysql facts
+#
+  - name: Get max_connections on the database
+    shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
+    register: max_conn
+    ignore_errors: true
+
+  - name: Set max database connections
+    set_fact:
+      openstack_mysql_max_connections: "{{ max_conn.stdout }}"
+
+  - name : Get file descriptors for the mysql process
+    shell: cat /proc/$(pgrep mysqld_safe)/limits | grep "open files" | awk '{print $4}'
+    register: mysql_desc
+
+  - name: Set file descriptors fact for mysql
+    set_fact:
+      openstack_mysql_file_descriptors: "{{ mysql_desc.stdout }}"
+
+
