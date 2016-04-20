@@ -12,9 +12,11 @@ mapping:
       rerun:
         type: int
         required: True
+
   ansible:
     required: True
     type: map
+    allowempty: True
     mapping:
       hosts:
         type: str
@@ -34,6 +36,7 @@ mapping:
         required: True
       shaker_build:
         type: str
+
   connmon:
     type: map
     allowempty: True
@@ -45,6 +48,7 @@ mapping:
   grafana:
     required: True
     type: map
+    allowempty: True
     mapping:
       enabled:
         type: bool
@@ -53,7 +57,7 @@ mapping:
         type: str
       grafana_ip:
         type: str
-        pattern: (?:[0-9]{1,3}\.){3}[0-9]{1,3}
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
       grafana_port:
         type: int
       dashboards:
@@ -125,6 +129,7 @@ mapping:
             benchmarks:
               type: str
               required: True
+
   shaker:
     required: False
     allowempty: True
@@ -136,7 +141,7 @@ mapping:
       server:
         type: str
         required: True
-        pattern: (?:[0-9]{1,3}\.){3}[0-9]{1,3}
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
       port:
         type: int
         required: True
@@ -173,6 +178,7 @@ mapping:
             file:
               type: str
               required: True
+
   rally:
     required: False
     type: map
