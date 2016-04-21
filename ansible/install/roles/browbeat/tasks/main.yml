@@ -53,7 +53,6 @@
 
 - name: Install requirements.txt into browbeat-venv
   pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
-  become: true
 
 - name: Clone PerfKitBenchmarker on undercloud
   git: repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git dest={{ perfkit_venv }}/PerfKitBenchmarker
@@ -66,15 +65,12 @@
 
 - name: Install functools32 into rally-venv
   pip: name=functools32 virtualenv={{ rally_venv }}
-  become: true
 
-- name: Install functools32 into rally-venv
+- name: Install funcsigs into rally-venv
   pip: name=funcsigs virtualenv={{ rally_venv }}
-  become: true
 
 - name: Install rally into rally-venv
   pip: name=rally virtualenv={{ rally_venv }}
-  become: true
 
 - name: Setup rally database
   shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate
