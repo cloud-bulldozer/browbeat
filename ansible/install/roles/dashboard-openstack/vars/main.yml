@@ -1,0 +1,343 @@
+---
+#
+# Vars to generate Per-Process component of Openstack Dashboards
+#
+
+per_process_metrics:
+  - name: "Process/Thread Counts"
+    y1units: "short"
+    metrics:
+      - name: "Processes"
+        query: ".ps_count.processes"
+      - name: "Threads"
+        query: ".ps_count.threads"
+    nullPointMode: "connected"
+  - name: "Process CPU"
+    y1units: "percent"
+    metrics:
+      - name: "System"
+        query: ".ps_cputime.syst"
+      - name: "User"
+        query: ".ps_cputime.user"
+    nullPointMode: "connected"
+  - name: "Process Memory"
+    y1units: "bits"
+    metrics:
+      - name: "RSS"
+        query: ".ps_rss"
+      - name: "Virtual"
+        query: ".ps_vm"
+    nullPointMode: "connected"
+  - name: "Process Page Faults"
+    y1units: "short"
+    metrics:
+      - name: "Majflt"
+        query: ".ps_pagefaults.majflt"
+      - name: "Minflt"
+        query: ".ps_pagefaults.minflt"
+    nullPointMode: "connected"
+  - name: "Process IOPs(Estimated via SYSCALLS)"
+    y1units: "iops"
+    metrics:
+      - name: "Read"
+        query: ".ps_disk_ops.read"
+      - name: "Write"
+        query: ".ps_disk_ops.write"
+    nullPointMode: "null"
+  - name: "Process IO Throughput(Estimated via SYSCALLS)"
+    y1units: "bytes"
+    metrics:
+      - name: "Read"
+        query: ".ps_disk_octets.read"
+      - name: "Write"
+        query: ".ps_disk_octets.write"
+    nullPointMode: "null"
+
+per_process_panels:
+
+  #
+  # This dashboard should only contain Openstack Undercloud Node processes
+  #
+  Openstack-Undercloud:
+    - name: "Everything Else"
+      processes:
+        - dnsmasq
+        - httpd
+        - memcached
+        - mysqld
+        - ovs-vswitchd
+        - ovsdb-server
+        - rabbitmq
+    - name: "Nova"
+      processes:
+        - nova-api
+        - nova-cert
+        - nova-conductor
+        - nova-scheduler
+    - name: "Neutron"
+      processes:
+        - neutron-server
+        - neutron-openvswitch-agent
+        - neutron-ns-metadata-proxy
+        - neutron-metadata-proxy
+        - neutron-l3-agent
+        - neutron-dhcp-agent
+    - name: "Keystone"
+      processes:
+        - keystone-all
+    - name: "Heat"
+      processes:
+        - heat-api
+        - heat-api-cfn
+        - heat-api-cloudwatch
+        - heat-engine
+    - name: "Glance"
+      processes:
+        - glance-agent
+        - glance-registry
+    - name: "Ceilometer"
+      processes:
+        - ceilometer-api
+        - ceilometer-agent-central
+        - ceilometer-agent-notification
+        - ceilometer-alarm-evaluator
+        - ceilometer-alaram-notifier
+        - ceilometer-collector
+    - name: "Ironic"
+      processes:
+        - ironic-api
+        - ironic-conductor
+        - dnsmasq-ironic
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard should only contain Openstack Controller Node processes
+  #
+  Openstack-Controller:
+    - name: "Everything Else"
+      processes:
+        - dnsmasq
+        - haproxy
+        - httpd
+        - memcached
+        - mongod
+        - mysqld
+        - ovs-vswitchd
+        - ovsdb-server
+        - rabbitmq
+        - redis-server
+    - name: "Nova"
+      processes:
+        - nova-api
+        - nova-cert
+        - nova-conductor
+        - nova-scheduler
+        - nova-consoleauth
+        - nova-novncproxy
+    - name: "Neutron"
+      processes:
+        - neutron-server
+        - neutron-openvswitch-agent
+        - neutron-ns-metadata-proxy
+        - neutron-metadata-proxy
+        - neutron-l3-agent
+        - neutron-dhcp-agent
+    - name: "Keystone"
+      processes:
+        - keystone-all
+    - name: "Cinder"
+      processes:
+        - cinder-api
+        - cinder-scheduler
+        - cinder-volume
+    - name: "Heat"
+      processes:
+        - heat-api
+        - heat-api-cfn
+        - heat-api-cloudwatch
+        - heat-engine
+    - name: "Glance"
+      processes:
+        - glance-agent
+        - glance-registry
+    - name: "Swift"
+      processes:
+        - swift-account-auditor
+        - swift-account-reaper
+        - swift-account-replicator
+        - swift-account-server
+        - swift-container-auditor
+        - swift-container-replicator
+        - swift-container-server
+        - swift-container-updater
+        - swift-object-auditor
+        - swift-object-replicator
+        - swift-object-server
+        - swift-object-updater
+        - swift-proxy-server
+    - name: "Ceilometer"
+      processes:
+        - ceilometer-api
+        - ceilometer-agent-central
+        - ceilometer-agent-notification
+        - ceilometer-alarm-evaluator
+        - ceilometer-alaram-notifier
+        - ceilometer-collector
+    - name: "Corosync/Pacemaker"
+      processes:
+        - corosync
+        - pacemakerd
+        - cib
+        - stonithd
+        - attrd
+        - pengine
+        - crmd
+        - lrmd
+        - pcsd
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard should only contain Openstack Compute Node processes
+  #
+  Openstack-Compute:
+    - name: "Everything Else"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-server
+        - qemu-kvm
+    - name: "Nova"
+      processes:
+        - nova-compute
+    - name: "Neutron"
+      processes:
+        - neutron-openvswitch-agent
+    - name: "Ceilometer"
+      processes:
+        - ceilometer-agent-compute
+        - ceilometer-polling
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard should only contain Openstack Ceph Node processes
+  #
+  Openstack-Ceph:
+    - name: "Ceph"
+      processes:
+        - ceph-osd
+        - ceph-mon
+        - salt-minion
+        - diamond
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard "Openstack" aims to be comprehensive with all processes across:
+  # Undercloud, Controller, Compute, Ceph, etc... Nodes
+  #
+  Openstack:
+    - name: "Everything Else"
+      processes:
+        - dnsmasq
+        - haproxy
+        - httpd
+        - memcached
+        - mongod
+        - mysqld
+        - ovs-vswitchd
+        - ovsdb-server
+        - qemu-kvm
+        - rabbitmq
+        - redis-server
+        - tuskar-api
+    - name: "Nova"
+      processes:
+        - nova-api
+        - nova-cert
+        - nova-conductor
+        - nova-scheduler
+        - nova-compute
+        - nova-consoleauth
+        - nova-novncproxy
+    - name: "Neutron"
+      processes:
+        - neutron-server
+        - neutron-openvswitch-agent
+        - neutron-ns-metadata-proxy
+        - neutron-metadata-proxy
+        - neutron-l3-agent
+        - neutron-dhcp-agent
+    - name: "Keystone"
+      processes:
+        - keystone-all
+    - name: "Cinder"
+      processes:
+        - cinder-api
+        - cinder-scheduler
+        - cinder-volume
+    - name: "Heat"
+      processes:
+        - heat-api
+        - heat-api-cfn
+        - heat-api-cloudwatch
+        - heat-engine
+    - name: "Glance"
+      processes:
+        - glance-agent
+        - glance-registry
+    - name: "Swift"
+      processes:
+        - swift-account-auditor
+        - swift-account-reaper
+        - swift-account-replicator
+        - swift-account-server
+        - swift-container-auditor
+        - swift-container-replicator
+        - swift-container-server
+        - swift-container-updater
+        - swift-object-auditor
+        - swift-object-replicator
+        - swift-object-server
+        - swift-object-updater
+        - swift-proxy-server
+    - name: "Ceilometer"
+      processes:
+        - ceilometer-api
+        - ceilometer-agent-central
+        - ceilometer-agent-notification
+        - ceilometer-alarm-evaluator
+        - ceilometer-alaram-notifier
+        - ceilometer-collector
+        - ceilometer-agent-compute
+        - ceilometer-polling
+    - name: "Ironic"
+      processes:
+        - ironic-api
+        - ironic-conductor
+        - dnsmasq-ironic
+    - name: "Ceph"
+      processes:
+        - ceph-osd
+        - ceph-mon
+        - salt-minion
+        - diamond
+    - name: "Corosync/Pacemaker"
+      processes:
+        - corosync
+        - pacemakerd
+        - cib
+        - stonithd
+        - attrd
+        - pengine
+        - crmd
+        - lrmd
+        - pcsd
+    - name: "Collectd"
+      processes:
+        - collectd

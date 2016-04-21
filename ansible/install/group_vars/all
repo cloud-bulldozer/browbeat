@@ -33,8 +33,8 @@ images:
 # DNS Server to add
 dns_server: 8.8.8.8
 
-# epel Repository for collectd packages
-epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+# epel7 rpm for collectd packages
+epel7_rpm: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 # Host where connmond will be running
 connmon_host: 192.0.2.1
