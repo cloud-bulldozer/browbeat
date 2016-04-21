@@ -3,8 +3,13 @@
 # Install/run collectd for browbeat (Generic)
 #
 
+- name: Import EPEL GPG Key
+  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    state=present
+
 - name: Check for EPEL repo
-  yum: name=epel-release state=present
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state=present
 
 - name: Install collectd rpms
   yum: name={{ item }} state=present
