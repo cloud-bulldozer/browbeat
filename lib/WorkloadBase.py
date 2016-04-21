@@ -65,7 +65,10 @@ class WorkloadBase:
     def print_report(result_dir, time_stamp):
         with open(os.path.join(result_dir,time_stamp + '.' + 'report'), 'w') as yaml_file:
             yaml_file.write("Browbeat Report Card\n")
-            yaml_file.write(yaml.dump(WorkloadBase.browbeat, default_flow_style=False))
+            if not WorkloadBase.browbeat:
+                yaml_file.write("No tests were enabled")
+            else:
+                yaml_file.write(yaml.dump(WorkloadBase.browbeat, default_flow_style=False))
 
     @staticmethod
     def print_summary():
