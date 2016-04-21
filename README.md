@@ -94,7 +94,7 @@ $ ssh undercloud-root
 [stack@ospd ~]$ . browbeat-venv/bin/activate
 (browbeat-venv)[stack@ospd ~]$ cd browbeat/
 (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
-(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
 ```
 
 ## Install Browbeat directly on undercloud
@@ -141,7 +141,7 @@ Your Overcloud check output is located in check/bug_report.log
 [stack@ospd ansible]$ . ../../browbeat-venv/bin/activate
 (browbeat-venv)[stack@ospd ansible]$ cd ..
 (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat.cfg to control how many stress tests are run.
-(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
 ```
 
 # Running PerfKitBenchmarker
@@ -152,7 +152,7 @@ To run browbeat's PerfKit Benchmarks, you can start by viewing the tested benchm
 
 Example running only PerfKitBenchmarker benchmarks with browbeat from browbeat-config.yaml:
 ```
-(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py -w perfkit -s browbeat-config.yaml
+(browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py  perfkit -s browbeat-config.yaml
 ```
 
 # Contributing
