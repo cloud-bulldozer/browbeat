@@ -85,6 +85,8 @@ per_process_panels:
     - name: "Keystone"
       processes:
         - keystone-all
+        - keystone-admin
+        - keystone-main
     - name: "Heat"
       processes:
         - heat-api
@@ -147,6 +149,8 @@ per_process_panels:
     - name: "Keystone"
       processes:
         - keystone-all
+        - keystone-admin
+        - keystone-main
     - name: "Cinder"
       processes:
         - cinder-api
@@ -276,6 +280,8 @@ per_process_panels:
     - name: "Keystone"
       processes:
         - keystone-all
+        - keystone-admin
+        - keystone-main
     - name: "Cinder"
       processes:
         - cinder-api

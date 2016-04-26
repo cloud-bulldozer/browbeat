@@ -118,6 +118,8 @@ PreCacheChain "PreCache"
 
   # Keystone
   ProcessMatch "keystone-all" "python.+keystone-all"
+  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"
+  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"
 
   # Neutron
   ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"
