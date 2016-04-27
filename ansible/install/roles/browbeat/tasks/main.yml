@@ -18,9 +18,12 @@
   easy_install: name=pip
   become: true
 
-- name: Install virtualenv
-  pip: name=virtualenv
+- name: Update virtualenv and setuptools
+  pip: name={{item}} state=latest
   become: true
+  with_items:
+    - virtualenv
+    - setuptools
 
 - name: Create browbeat virtualenv
   command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
@@ -57,17 +60,8 @@
 - name: Clone PerfKitBenchmarker on undercloud
   git: repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git dest={{ perfkit_venv }}/PerfKitBenchmarker
 
-- name: Install PerfKitBenchmarker requirements into perfkit-venv
-  pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements.txt virtualenv={{ perfkit_venv }}
-
 - name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
-  pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements-openstack.txt virtualenv={{ perfkit_venv }}
-
-- name: Install functools32 into rally-venv
-  pip: name=functools32 virtualenv={{ rally_venv }}
-
-- name: Install funcsigs into rally-venv
-  pip: name=funcsigs virtualenv={{ rally_venv }}
+  pip: requirements={{ perfkit_venv }}/PerfKitBenchmarker/perfkitbenchmarker/providers/openstack/requirements.txt virtualenv={{ perfkit_venv }}
 
 - name: Install rally into rally-venv
   pip: name=rally virtualenv={{ rally_venv }}
@@ -164,4 +158,3 @@
   when: not item.rc == 0
   ignore_errors: true
   with_items: "{{ image_osp8.results }}"
-
