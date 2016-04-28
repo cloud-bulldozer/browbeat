@@ -3,6 +3,9 @@ from Tools import Tools
 from collections import OrderedDict
 from Grafana import Grafana
 from WorkloadBase import WorkloadBase
+from Elastic import Elastic
+import pprint
+import numpy
 import datetime
 import glob
 import logging
@@ -19,6 +22,7 @@ class Rally(WorkloadBase):
         self.tools = Tools(self.config)
         self.connmon = Connmon(self.config)
         self.grafana = Grafana(self.config)
+        self.elastic = Elastic(self.config)
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -54,11 +58,11 @@ class Rally(WorkloadBase):
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
-        return (from_time, to_time)
-        self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
-        self.grafana.log_snapshot_playbook_cmd(
-            from_ts, to_ts, result_dir, test_name)
+        self.grafana.create_grafana_urls({'from_ts':from_ts, 'to_ts':to_ts})
+        self.grafana.print_dashboard_url(test_name)
+        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
+        return (from_time, to_time)
 
     def update_tests(self):
         self.test_count += 1
@@ -92,17 +96,63 @@ class Rally(WorkloadBase):
             all_task_ids, test_name)
         return self.tools.run_cmd(cmd)
 
-    def gen_scenario_json(self, task_id, test_name):
+    def gen_scenario_json(self, task_id):
+        cmd = "source {}; ".format(self.config['rally']['venv'])
+        cmd += "rally task results {}".format(task_id)
+        return self.tools.run_cmd(cmd)
+
+    def gen_scenario_json_file(self, task_id, test_name):
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task results {} > {}.json".format(task_id, test_name)
         return self.tools.run_cmd(cmd)
+
+    def rally_metadata(self, result, meta) :
+        result['rally_metadata'] = meta
+        return result
+
+    def json_result(self,task_id):
+        rally_data = {}
+        rally_errors = []
+        rally_sla = []
+        self.logger.info("Loadding Task_ID {} JSON".format(task_id))
+        rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
+        if len(rally_json) < 1 :
+            self.logger.error("Issue with Rally Results")
+            return False
+        for metrics in rally_json[0]['result']:
+            for workload in metrics :
+                if type(metrics[workload]) is dict:
+                    for value in metrics[workload] :
+                        if not type(metrics[workload][value]) is list:
+                            if value not in rally_json:
+                                rally_data[value] = []
+                            rally_data[value].append(metrics[workload][value])
+            if len(metrics['error']) > 0 :
+                rally_errors.append({'action_name': value,
+                                     'error': metrics['error']})
+        rally_doc = []
+        for workload in rally_data:
+            if not type(rally_data[workload]) is dict :
+                rally_stats = {'action': workload,
+                               '90th':numpy.percentile(rally_data[workload], 90),
+                               '95th':numpy.percentile(rally_data[workload], 95),
+                               'Max':numpy.max(rally_data[workload]),
+                               'Min':numpy.min(rally_data[workload]),
+                               'Average':numpy.average(rally_data[workload]),
+                               'Median':numpy.median(rally_data[workload])}
+                rally_doc.append(rally_stats)
+
+        return {'rally_stats' : rally_doc,
+                'rally_errors' : rally_errors,
+                'rally_setup' : rally_json[0]['key']}
 
     def start_workloads(self):
         """Iterates through all rally scenarios in browbeat yaml config file"""
         results = OrderedDict()
         self.logger.info("Starting Rally workloads")
-        time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
+        es_ts = datetime.datetime.now()
+        dir_ts = es_ts.strftime("%Y%m%d-%H%M%S")
+        self.logger.debug("Time Stamp (Prefix): {}".format(dir_ts))
         benchmarks = self.config.get('rally')['benchmarks']
         if len(benchmarks) > 0:
             for benchmark in benchmarks:
@@ -134,7 +184,7 @@ class Rally(WorkloadBase):
 
                             result_dir = self.tools.create_results_dir(
                                 self.config['browbeat'][
-                                    'results'], time_stamp, benchmark['name'],
+                                    'results'], dir_ts, benchmark['name'],
                                 scenario_name)
                             self.logger.debug("Created result directory: {}".format(result_dir))
                             workload = self.__class__.__name__
@@ -157,7 +207,7 @@ class Rally(WorkloadBase):
                                     self.update_tests()
                                     self.update_total_tests()
                                     test_name = "{}-browbeat-{}-{}-iteration-{}".format(
-                                        time_stamp, scenario_name, concurrency, run)
+                                        dir_ts, scenario_name, concurrency, run)
 
                                     if not result_dir:
                                         self.logger.error(
@@ -195,17 +245,35 @@ class Rally(WorkloadBase):
                                         self.logger.info(
                                             "Generating Rally HTML for task_id : {}".
                                             format(task_id))
-                                        self.gen_scenario_html(
-                                            [task_id], test_name)
-                                        self.gen_scenario_json(
-                                            task_id, test_name)
+                                        self.gen_scenario_html([task_id], test_name)
+                                        self.gen_scenario_json_file(task_id, test_name)
                                         results[run].append(task_id)
-                                        self.update_pass_tests()
-                                        self.update_total_pass_tests()
-                                        self.get_time_dict(
-                                            to_time, from_time, benchmark['name'], new_test_name,
-                                            workload, "pass")
-
+                                        if self.config['elasticsearch']['enabled'] :
+                                            # Start indexing
+                                            result_json = self.json_result(task_id)
+                                            _meta = {'taskid' : task_id,
+                                                     'timestamp': es_ts,
+                                                     'workload' : {
+                                                         'name' : benchmark['name'],
+                                                         'scenario' : scenario_name,
+                                                         'times' : scenario['times'],
+                                                         'concurrency' : scenario['concurrency']},
+                                                     'grafana': ",".join(self.grafana.grafana_urls())
+                                                     }
+                                            if result_json :
+                                                result = self.elastic.combine_metadata(
+                                                    self.rally_metadata(result_json,_meta))
+                                                if result is False :
+                                                    self.logger.error
+                                                    ("Error with ElasticSerach connector")
+                                                else :
+                                                    if len(result) < 1 :
+                                                        self.logger.error(
+                                                            "Issue with ElasticSearch Data, \
+                                                            for task_id {}".format(task_id))
+                                                    else :
+                                                        self.elastic.index_result(result,
+                                                                                  _id=task_id)
                                     else:
                                         self.logger.error("Cannot find task_id")
                                         self.update_fail_tests()
@@ -231,6 +299,6 @@ class Rally(WorkloadBase):
                 self.gen_scenario_html(results[run], combined_html_name)
                 if os.path.isfile('{}.html'.format(combined_html_name)):
                     shutil.move('{}.html'.format(combined_html_name),
-                                '{}/{}'.format(self.config['browbeat']['results'], time_stamp))
+                                '{}/{}'.format(self.config['browbeat']['results'], dir_ts))
         else:
             self.logger.error("Config file contains no rally benchmarks.")
