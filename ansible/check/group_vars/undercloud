@@ -7,6 +7,8 @@ mariadb_max_connections: 4096
 mysqld_soft_fd: 16384
 nova_vif_timeout: 300
 netdev_max_backlog: 100000
+keystone_threads: 6
+keystone_processes: 2
 
 checks :
     bz1282491 :
@@ -42,5 +44,7 @@ checks :
     neutron_rootwrap_daemon:
         url: "none"
         name: "Ensure rootwrap has daemon mode enabled"
-
+    bz1330980:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1330980"
+        name: "Undercloud deployed with 1 keystone worker and cpu_count for threads"
 # vi:syntax=yaml

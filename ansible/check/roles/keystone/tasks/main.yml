@@ -33,3 +33,32 @@
   when: keystone_in_eventlet.stdout|int > 0
 
 - debug: msg="Keystone deployed in:{{ keystone_deployment }}"
+
+- name: Keystone HTTP admin processes
+  command: egrep -o "processes=[0-9]+" /etc/httpd/conf.d/*keystone*admin.conf | egrep -o "[0-9]+"
+  register: bz1330980
+  failed_when: bz1330980.stdout|int < keystone_processes
+  when: keystone_in_eventlet.stdout|int == 0
+  failed_when:
+  ignore_errors: True
+
+- name: Keystone HTTP main processes
+  command: egrep -o "processes=[0-9]+" /etc/httpd/conf.d/*keystone*main.conf | egrep -o "[0-9]+"
+  register: bz1330980
+  failed_when: bz1330980.stdout|int < keystone_processes
+  when: keystone_in_eventlet.stdout|int == 0
+  ignore_errors: True
+
+- name: Keystone HTTP admin threads
+  command: egrep -o "threads=[0-9]+" /etc/httpd/conf.d/*keystone*admin.conf | egrep -o "[0-9]+"
+  register: bz1330980
+  failed_when: bz1330980.stdout|int < keystone_threads
+  when: keystone_in_eventlet.stdout|int == 0
+  ignore_errors: True
+
+- name: Keystone HTTP main threads
+  command: egrep -o "threads=[0-9]+" /etc/httpd/conf.d/*keystone*main.conf | egrep -o "[0-9]+"
+  register: bz1330980
+  failed_when: bz1330980.stdout|int < keystone_threads
+  when: keystone_in_eventlet.stdout|int == 0
+  ignore_errors: True
