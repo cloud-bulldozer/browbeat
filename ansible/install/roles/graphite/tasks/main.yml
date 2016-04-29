@@ -64,6 +64,7 @@
 - name: disable firewalld
   service: name=firewalld state=stopped enabled=false
   become: true
+  ignore_errors: true
 
 # remove silly welcome from apache (if it exists)
 - name: Remove httpd welcome config

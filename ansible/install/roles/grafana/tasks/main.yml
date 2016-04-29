@@ -44,6 +44,7 @@
 - name: Setup grafana-server service
   service: name=grafana-server state=started enabled=true
   become: true
+  ignore_errors: true
 
 - name: Wait for grafana to be ready
   wait_for: host={{grafana_host}} port={{grafana_port}} delay=5 timeout=30
