@@ -13,7 +13,6 @@ class Metadata:
         json_str = None
         try :
             with open(filename) as data:
-                s
                 json_str = data.read()
         except IOError:
             print("Machine facts json is missing")
