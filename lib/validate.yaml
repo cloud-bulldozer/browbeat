@@ -108,10 +108,10 @@ mapping:
           openstack_image_username:
             type: str
             required: True
-          openstack_public_network:
+          openstack_floating_ip_pool:
             type: str
             required: True
-          openstack_private_network:
+          openstack_network:
             type: str
             required: True
       benchmarks:

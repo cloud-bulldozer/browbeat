@@ -1,14 +1,15 @@
 from Connmon import Connmon
-from Tools import Tools
 from Grafana import Grafana
+from Tools import Tools
 from WorkloadBase import WorkloadBase
+import datetime
 import glob
 import logging
-import datetime
 import os
 import shutil
 import subprocess
 import time
+
 
 class PerfKit(WorkloadBase):
 
@@ -25,8 +26,7 @@ class PerfKit(WorkloadBase):
 
     def _log_details(self):
         self.logger.info(
-            "Current number of Perkit scenarios executed: {}".format(
-                self.scenario_count))
+            "Current number of Perkit scenarios executed: {}".format(self.scenario_count))
         self.logger.info("Current number of Perfkit test(s) executed: {}".format(self.test_count))
         self.logger.info("Current number of Perfkit test(s) succeeded: {}".format(self.pass_count))
         self.logger.info("Current number of Perfkit test failures: {}".format(self.error_count))
@@ -73,20 +73,17 @@ class PerfKit(WorkloadBase):
         if self.config['connmon']['enabled']:
             self.connmon.start_connmon()
 
-        # Run PerfKit
-        from_ts = int(time.time() * 1000)
-        if 'sleep_before' in self.config['perfkit']:
-            time.sleep(self.config['perfkit']['sleep_before'])
         self.logger.info("Running Perfkit Command: {}".format(cmd))
         stdout_file = open("{}/pkb.stdout.log".format(result_dir), 'w')
         stderr_file = open("{}/pkb.stderr.log".format(result_dir), 'w')
-        from_time = time.time()
+        from_ts = time.time()
+        if 'sleep_before' in self.config['perfkit']:
+            time.sleep(self.config['perfkit']['sleep_before'])
         process = subprocess.Popen(cmd, shell=True, stdout=stdout_file, stderr=stderr_file)
         process.communicate()
-        to_time = time.time()
         if 'sleep_after' in self.config['perfkit']:
             time.sleep(self.config['perfkit']['sleep_after'])
-        to_ts = int(time.time() * 1000)
+        to_ts = time.time()
 
         # Stop connmon at end of perfkit task
         if self.config['connmon']['enabled']:
@@ -96,6 +93,7 @@ class PerfKit(WorkloadBase):
                 self.connmon.connmon_graphs(result_dir, test_name)
             except:
                 self.logger.error("Connmon Result data missing, Connmon never started")
+
         workload = self.__class__.__name__
         new_test_name = test_name.split('-')
         new_test_name = new_test_name[2:]
@@ -108,27 +106,17 @@ class PerfKit(WorkloadBase):
                     self.update_pass_tests()
                     self.update_total_pass_tests()
                     self.get_time_dict(
-                        to_time,
-                        from_time,
-                        benchmark_config['benchmarks'],
-                        new_test_name,
-                        workload,
-                        "pass")
-
+                        to_ts, from_ts, benchmark_config['benchmarks'], new_test_name,
+                        workload, "pass")
                 else:
                     self.logger.error("Benchmark failed.")
                     self.update_fail_tests()
                     self.update_total_fail_tests()
                     self.get_time_dict(
-                        to_time,
-                        from_time,
-                        benchmark_config['benchmarks'],
-                        new_test_name,
-                        workload,
-                        "fail")
+                        to_ts, from_ts, benchmark_config['benchmarks'], new_test_name,
+                        workload, "fail")
         except IOError:
-            self.logger.error(
-                "File missing: {}/pkb.stderr.log".format(result_dir))
+            self.logger.error("File missing: {}/pkb.stderr.log".format(result_dir))
 
         # Copy all results
         for perfkit_file in glob.glob("/tmp/perfkitbenchmarker/run_browbeat/*"):
@@ -137,9 +125,11 @@ class PerfKit(WorkloadBase):
             shutil.rmtree("/tmp/perfkitbenchmarker/run_browbeat")
 
         # Grafana integration
-        self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
-        self.grafana.log_snapshot_playbook_cmd(
-            from_ts, to_ts, result_dir, test_name)
+        self.grafana.create_grafana_urls(
+            {'from_ts': int(from_ts * 1000),
+             'to_ts': int(to_ts * 1000)})
+        self.grafana.print_dashboard_url(test_name)
+        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def start_workloads(self):

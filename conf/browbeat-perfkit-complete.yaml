@@ -33,23 +33,23 @@ perfkit:
     machine_type: m1.small
     os_type: rhel
     openstack_image_username: centos
-    openstack_public_network: browbeat_public
-    openstack_private_network: browbeat_private
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
   benchmarks:
     - name: aerospike-centos-m1-small
       enabled: false
       benchmarks: aerospike
-    - name: block_storage_workload-centos-m1-small
-      enabled: false
-      benchmarks: block_storage_workload
-      data_disk_size: 20
-      workload_mode: logging
-    - name: block_storage_workload-centos-m1-small
+    - name: block_storage_workload-database-centos-m1-small
       enabled: false
       benchmarks: block_storage_workload
       data_disk_size: 20
       workload_mode: database
-    - name: block_storage_workload-centos-m1-small
+    - name: block_storage_workload-logging-centos-m1-small
+      enabled: false
+      benchmarks: block_storage_workload
+      data_disk_size: 20
+      workload_mode: logging
+    - name: block_storage_workload-streaming-centos-m1-small
       enabled: true
       benchmarks: block_storage_workload
       data_disk_size: 20
@@ -62,8 +62,8 @@ perfkit:
       machine_type: m1.small
       os_type: rhel
       openstack_image_username: centos
-      openstack_public_network: browbeat_public
-      openstack_private_network: browbeat_private
+      openstack_floating_ip_pool: browbeat_public
+      openstack_network: browbeat_private
     - name: cluster_boot-centos-m1-small
       enabled: false
       benchmarks: cluster_boot
