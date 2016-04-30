@@ -258,7 +258,7 @@ class Rally(WorkloadBase):
                                                          'scenario' : scenario_name,
                                                          'times' : scenario['times'],
                                                          'concurrency' : scenario['concurrency']},
-                                                     'grafana': ",".join(self.grafana.grafana_urls())
+                                                     'grafana': self.grafana.grafana_urls()
                                                      }
                                             if result_json :
                                                 result = self.elastic.combine_metadata(

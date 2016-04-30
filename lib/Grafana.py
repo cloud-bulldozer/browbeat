@@ -12,7 +12,7 @@ class Grafana:
         self.grafana_ip = self.config['grafana']['grafana_ip']
         self.grafana_port = self.config['grafana']['grafana_port']
         self.playbook = self.config['ansible']['grafana_snapshot']
-        self.grafana_url = []
+        self.grafana_url = {}
 
     def extra_vars(self, from_ts, to_ts, result_dir, test_name):
         extra_vars = 'grafana_ip={} '.format(self.config['grafana']['grafana_ip'])
@@ -35,12 +35,13 @@ class Grafana:
             url = 'http://{}:{}/dashboard/db/'.format(
                 self.grafana_ip, self.grafana_port)
             for dashboard in self.config['grafana']['dashboards']:
-                self.grafana_url.append('{}{}?from={}&to={}&var-Cloud={}'.format(
-                    url, dashboard, from_ts, to_ts, self.cloud_name))
+                self.grafana_url[dashboard]='{}{}?from={}&to={}&var-Cloud={}'.format(
+                    url, dashboard, from_ts, to_ts, self.cloud_name)
 
     def print_dashboard_url(self,test_name):
-        for full_url in self.grafana_url:
-            self.logger.info('{} - Grafana URL: {}'.format(test_name, full_url))
+        for dashboard in self.grafana_url:
+            self.logger.info('{} - Grafana Dashboard {} URL: {}'.format(test_name, dashboard,
+                                                                    self.grafana_url[dashboard]))
 
     def log_snapshot_playbook_cmd(self, from_ts, to_ts, result_dir, test_name):
         if 'grafana' in self.config and self.config['grafana']['enabled']:
