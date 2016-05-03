@@ -1,0 +1,13 @@
+---
+#
+# Playbook to install the ELK client
+#
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  roles:
+     - { role: filebeat }
+
+- hosts: controller,compute,ceph
+  remote_user: "{{ host_remote_user }}"
+  roles:
+    - { role: filebeat }
