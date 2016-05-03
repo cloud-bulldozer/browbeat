@@ -124,7 +124,7 @@ class Rally(WorkloadBase):
                 if type(metrics[workload]) is dict:
                     for value in metrics[workload] :
                         if not type(metrics[workload][value]) is list:
-                            if value not in rally_json:
+                            if value not in rally_data:
                                 rally_data[value] = []
                             rally_data[value].append(metrics[workload][value])
             if len(metrics['error']) > 0 :
@@ -139,7 +139,8 @@ class Rally(WorkloadBase):
                                'Max':numpy.max(rally_data[workload]),
                                'Min':numpy.min(rally_data[workload]),
                                'Average':numpy.average(rally_data[workload]),
-                               'Median':numpy.median(rally_data[workload])}
+                               'Median':numpy.median(rally_data[workload]),
+                               'Raw':rally_data[workload]}
                 rally_doc.append(rally_stats)
 
         return {'rally_stats' : rally_doc,
