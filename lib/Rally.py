@@ -249,6 +249,11 @@ class Rally(WorkloadBase):
                                         self.gen_scenario_html([task_id], test_name)
                                         self.gen_scenario_json_file(task_id, test_name)
                                         results[run].append(task_id)
+                                        self.update_pass_tests()
+                                        self.update_total_pass_tests()
+                                        self.get_time_dict(
+                                            to_time, from_time, benchmark['name'], new_test_name,
+                                            workload, "pass")
                                         if self.config['elasticsearch']['enabled'] :
                                             # Start indexing
                                             result_json = self.json_result(task_id)
