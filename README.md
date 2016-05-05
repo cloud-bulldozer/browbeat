@@ -32,13 +32,13 @@ This started as a project to help determine the number of database connections a
 * Configure browbeat-config.yaml to match your tests
 
 # How to run Browbeat?
-On the Red Hat OpenStack Director host, as the Stack user jump into the browbeat venv and you simply run:
+On the Undercloud host, as the Stack user jump into the browbeat venv and you simply run:
 
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py --help
 
 
 # What is necessary?
-* Red Hat OpenStack Director
+* TripleO
   * Why? We use passwordless ssh to reach each controller instance and compute instance.
 * OpenStack Rally
   * Why? We are using Rally to stress the control plane of the env.
