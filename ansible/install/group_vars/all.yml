@@ -104,3 +104,16 @@ browbeat_pri_pool_gw: 172.16.10.1
 browbeat_pri_pool_dns: 8.8.8.8
 
 browbeat_router_name: browbeat_router
+
+########################################
+# ELK Server Variables
+########################################
+### nginx ###
+# add nonstandard port here for undercloud usage
+# usage: port nginx listens to reverse-proxy Kibana
+# e.g. 8888
+nginx_kibana_port: 80
+#
+# usage: port filebeat client grabs the client SSL certificate
+# e.g. 9999
+elk_server_ssl_cert_port: 8080
