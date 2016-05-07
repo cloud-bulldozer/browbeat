@@ -1261,11 +1261,11 @@
             "datasource": null,
             "editable": true,
             "error": false,
-            "fill": 1,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
-              "leftMax": null,
-              "leftMin": null,
+              "leftMax": 100,
+              "leftMin": 0,
               "rightLogBase": 1,
               "rightMax": null,
               "rightMin": null,
@@ -1291,7 +1291,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1303,25 +1303,18 @@
               }
             ],
             "span": 12,
-            "stack": true,
+            "stack": false,
             "steppedLine": false,
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.df-root.percent_bytes-reserved, 'Reserved')"
-              },
-              {
-                "refId": "B",
-                "target": "alias($Cloud.$Node.df-root.percent_bytes-used, 'Used')"
-              },
-              {
-                "refId": "C",
-                "target": "alias($Cloud.$Node.df-root.percent_bytes-free, 'Free')"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.df-*.percent_bytes-used, 'df-', ''), 2)",
+                "textEditor": false
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "$Cloud - $Node - / Partition Capacity",
+            "title": "$Cloud - $Node -  Partition % Used",
             "tooltip": {
               "shared": true,
               "value_type": "individual"
