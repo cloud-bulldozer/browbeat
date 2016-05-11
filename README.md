@@ -24,26 +24,26 @@ Table of Contents
 - [Contributing](#contributing)
 
 # Browbeat
-This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools and change parameters of the overcloud.
+This started as a project to help determine the number of database connections a given OpenStack deployment uses via stress tests. It has since grown into a set of Ansible playbooks to help check deployments for known issues, install tools, run performance stress workloads and change parameters of the overcloud.
 
 # Before running browbeat
 * Execute the ansible/gen_hostfile.sh script (builds the ssh config)
-* Install Tools (connmon, collectd, graphite, grafana)
 * Configure browbeat-config.yaml to match your tests
 
-# How to run Browbeat?
+# How to run Browbeat Stress Tests?
 On the Undercloud host, as the Stack user jump into the browbeat venv and you simply run:
 
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py --help
-
+However, the playbook required to install browbeat and its dependencies(Rally, Shaker, Perfkit) needs to be run before this. DEtailed install and run instructions are presented in a section below.
 
 # What is necessary?
 * TripleO
   * Why? We use passwordless ssh to reach each controller instance and compute instance.
-* OpenStack Rally
-  * Why? We are using Rally to stress the control plane of the env.
 * Ansible
-  * Why? We started with using bash to make changes to the Overcloud, creating complex sed/awks that we get for free with Ansible (for the most part). If you prefer to not use Ansible, the older versions (no longer maintained) of the browbeat.sh can be found in a older commit.
+  * Why? We started with using bash to make changes to the Overcloud, creating complex sed/awks that we get for free with Ansible (for the most part).
+Other monitoring and stress test tools are installed by the respective playbooks when run.
+
+If you prefer to not use Ansible, the older versions (no longer maintained) of the browbeat.sh can be found in a older commit.
 
 
 # Detailed Install, Check and Run
@@ -85,6 +85,8 @@ $ ansible-playbook -i hosts install/connmon.yml
 $ ansible-playbook -i hosts check/site.yml
 ```
 Your Overcloud check output is located in check/bug_report.log
+
+NOTE: It is strongly advised to not run the ansible playbooks in a venv.
 
 ### Run performance stress tests through browbeat on the undercloud:
 ```
@@ -160,10 +162,11 @@ Contributions are most welcome! Pull requests need to be submitted using the ger
 ```
 $ cat ~/.ssh/id_\{r or d\}sa.pub
 ```
-Set your username and email for git:
+Set your username and email for git and gerrithub:
 ```
 $ git config --global user.email "example@example.com"
 $ git config --global user.name "example"
+$ git config --global --add gitreview.username "example"
 ```
 Next, Clone the github repository:
 ```
@@ -181,4 +184,45 @@ Make your changes and then commit them. Use:
 ```
 [user@laptop browbeat]$ git review
 ```
-The first time you are submitting a patch, you will be requested for a user name which is typically your GerritHub user name(same as GitHub user name).
+If you want to edit an already submitted patch, follow the below series of steps:
+
+Firstly, go to the browbeat directory. Then,
+
+```
+git review -d Change-Id
+```
+
+Change-Id is the change id number as seen on gerrithub.io.
+
+
+The above command downloads your patch onto a seperate branch. You might need to rebase your local branch with remoste master before running the abovecommand to avoid merge conflicts when you resubmit your edited patch. To avoid this, Go back to a "safe" commit using
+
+```
+$git reset --hard commit-number
+```
+Then,
+
+```
+$ git fetch origin
+```
+
+```
+$ git rebase origin/master
+```
+
+Make the changes on the branch that was setup by using the git review -d (the name of the branch is along the lines of review/username/branch_name/patchsetnumber).
+
+Add the files to git and commit your changes using,
+
+```
+$ git commit --amend
+```
+
+You can edit your commit message as well in the prompt shown upon executing above command.
+
+Finally, push the patch for review using,
+
+```
+$ git review
+```
+
