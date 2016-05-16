@@ -51,6 +51,19 @@ collectd_ceph: true
 collectd_compute: false
 
 ########################################
+# Docker related
+# (use these if deploying graphite/carbon/grafana as containers)
+########################################
+persistent_carbon_data_path: /data/carbon/whisper
+persistent_grafana_data_path: /data/grafana
+docker_carbon_cache_port: 2003
+docker_graphite_port: 8888
+docker_grafana_port: 3000
+carbon_cache_docker_image: kambiz/carbon-cache:0.9.15
+graphite_web_docker_image: kambiz/graphite-web:0.9.15
+grafana_docker_image: grafana/grafana:2.6.0
+
+########################################
 # Graphite Configuration
 ########################################
 # Graphite Server ip address (Collectd -> Graphite server)

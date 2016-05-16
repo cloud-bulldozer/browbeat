@@ -1,0 +1,125 @@
+---
+#
+# Install/run graphite-web for browbeat
+#
+
+- name: Import EPEL GPG Key
+  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    state=present
+
+- name: Check for EPEL repo
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state=present
+
+- name: Install repo file for docker
+  copy:
+    src=docker.repo
+    dest=/etc/yum.repos.d/docker.repo
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+# disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
+
+- name: disable firewalld
+  service: name=firewalld state=stopped enabled=false
+  become: true
+  ignore_errors: true
+
+- name: Install docker rpm
+  yum: name={{ item }} state=present
+  become: true
+  with_items:
+    - docker-engine
+
+# Start docker service
+
+- name: Setup docker service
+  service: name=docker state=started enabled=true
+  become: true
+
+- name: ensure data directory exists
+  file: path={{ persistent_carbon_data_path }} state=directory mode=0777
+
+- name: ensure docker overrides for carbon-cache
+  file: path=/etc/docker/carbon-cache state=directory mode=0755
+
+- name: Install carbon.conf
+  copy:
+    src=carbon.conf
+    dest=/etc/docker/carbon-cache/carbon.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+- name: Install storage-schemas.conf
+  copy:
+    src=storage-schemas.conf
+    dest=/etc/docker/carbon-cache/storage-schemas.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+- name: check active containers
+  command: /usr/bin/docker ps -a  --format '{{ "{{" }}.Names{{ "}}" }}'
+  register: docker_ps_a
+
+- name: start carbon-cache docker container
+  command: "{{item}}"
+  ignore_errors: true
+  with_items:
+    - docker kill carbon-cache
+    - docker rm carbon-cache
+    - sleep 5
+    - docker run -d --name carbon-cache -p {{ docker_carbon_cache_port }}:2003 -v /etc/docker/carbon-cache/carbon.conf:/etc/carbon/carbon.conf -v /etc/docker/carbon-cache/storage-schemas.conf:/etc/carbon/storage-schemas.conf -v {{ persistent_carbon_data_path }}:/var/lib/carbon/whisper {{ carbon_cache_docker_image }}
+  when: '"carbon-cache" not in docker_ps_a.stdout'
+
+- name: start graphite-web docker container
+  command: "{{item}}"
+  ignore_errors: true
+  with_items:
+    - docker kill graphite-web
+    - docker rm graphite-web
+    - sleep 5
+    - docker run -d --name graphite-web -p {{ docker_graphite_port }}:80 -v {{ persistent_carbon_data_path }}:/var/lib/carbon/whisper {{ graphite_web_docker_image }}
+  when: '"graphite-web" not in docker_ps_a.stdout'
+
+- name: Setup graphite-web systemd config
+  template:
+    src=graphite-web.service.j2
+    dest=/etc/systemd/system/graphite-web.service
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: systemd_graphite_needs_restart
+
+- name: bounce systemd and graphite-web container
+  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable graphite-web && /usr/bin/systemctl restart graphite-web
+  become: true
+  when: systemd_graphite_needs_restart.changed
+
+- name: Setup carbon-cache systemd config
+  template:
+    src=carbon-cache.service.j2
+    dest=/etc/systemd/system/carbon-cache.service
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: systemd_carbon_needs_restart
+
+- name: bounce systemd and carbon-cache container
+  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable carbon-cache && /usr/bin/systemctl restart carbon-cache
+  become: true
+  when: systemd_carbon_needs_restart.changed
+
+
+- name: Disable EPEL Repo
+  ini_file: dest=/etc/yum.repos.d/epel.repo
+    section=epel
+    option=enabled
+    value=0
