@@ -99,3 +99,18 @@
   - name: Set ovs version fact
     set_fact:
       openstack_ovs_version: "{{ ovs_version.stdout }}"
+
+  - name: Get neutron ovs agent ovsdb setting
+    shell: crudini --get /etc/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
+    register: ovsdb_status
+    ignore_errors: true
+
+  - name: Set Neutron OVS ovsdb fact
+    set_fact:
+      openstack_neutron_ovsdb: "{{ ovsdb_status.stdout }}"
+    when: (ovsdb_status.stdout.find('native') != -1 or ovsdb_status.stdout.find('vsctl') != -1)
+
+  - name: Set Neutron OVS ovsdb fact
+    set_fact:
+      openstack_neutron_ovsdb: "vsctl"
+    when: (ovsdb_status.stdout.find('native') == -1 and ovsdb_status.stdout.find('vsctl') == -1)
