@@ -42,12 +42,12 @@ Then run gen_hosts.sh script to generate your overcloud's hosts file for ansible
 ##### Install Browbeat
 Image upload requires Ansible 2.0
 ```
-# vi install/group_vars/all  # Edit ansible vars file (Installation parameters)
+# vi install/group_vars/all.yml  # Edit ansible vars file (Installation parameters)
 # ansible-playbook -i hosts install/browbeat.yml
 ```
 
 ##### Install Collectd Agent (Requires a Graphite Server)
-Prior to installing the agent, please review install/group_vars/all file to ensure the correct parameters are passed.
+Prior to installing the agent, please review install/group_vars/all.yml file to ensure the correct parameters are passed.
 ```
 # ansible-playbook -i hosts install/collectd-openstack.yml
 ```
@@ -71,15 +71,27 @@ ansible-playbook -i hosts install/elk-openstack-client.yml --extra-vars 'elk_ser
 ```
 # ansible-playbook -i hosts install/graphite.yml
 ```
+##### Install graphite service as a docker container
+Prior to installing graphite as a docker container, please review install/group_vars/all.yml file and ensure
+the docker related settings will work with your target host.
+```
+# ansible-playbook -i hosts install/graphite-docker.yml
+```
 
 ##### Install grafana service
-Prior to installing grafana, please review install/group_vars/all file and your ansible inventory file
+Prior to installing grafana, please review install/group_vars/all.yml file and your ansible inventory file
 ```
 # ansible-playbook -i hosts install/grafana.yml
 ```
+##### Install grafana service as a docker container
+Prior to installing graphite as a docker container, please review install/group_vars/all.yml file and ensure
+the docker related settings will work with your target host.
+```
+# ansible-playbook -i hosts install/grafana-docker.yml
+```
 
 ##### Install Grafana Dashboards (Requires a Grafana Server)
-Review install/group_vars/all before deploying the grafana dashboards
+Review install/group_vars/all.yml before deploying the grafana dashboards
 ```
 # ansible-playbook -i hosts install/dashboards-openstack.yml
 ```
