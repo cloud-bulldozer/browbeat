@@ -58,11 +58,24 @@ Requires Ansible 2.0
 ```
 # ansible-playbook -i hosts install/connmon.yml
 ```
-##### Install ELK Stack
+##### Install Generic ELK Stack
 ```
 ansible-playbook -i hosts install/elk.yml
 ```
-##### Install ELK Clients
+##### Install ELK Stack (on an OpenStack Undercloud)
+```
+sed -i 's/nginx_kibana_port: 80/nginx_kibana_port: 8888/' install/group_vars/all.yml
+sed -i 's/elk_server_ssl_cert_port: 8080/elk_server_ssl_cert_port: 9999/' install/group_vars/all.yml
+```
+```
+ansible-playbook -i hosts install/elk.yml
+```
+##### Install Generic ELK Clients
+```
+ansible-playbook -i hosts install/elk-client.yml --extra-vars 'elk_server=X.X.X.X'
+```
+  - elk_server variable will be generated after the ELK stack playbook runs
+#### Install ELK Clients for OpenStack nodes
 ```
 ansible-playbook -i hosts install/elk-openstack-client.yml --extra-vars 'elk_server=X.X.X.X'
 ```
