@@ -59,6 +59,7 @@ rally:
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
+    - subnet-router-create: rally/rally-plugins/subnet-router-create
   benchmarks:
     - name: authenticate
       enabled: true
@@ -208,6 +209,10 @@ rally:
           sla_max_avg_duration: 12
           sla_max_seconds: 30
           sla_max_failure: 0
+        - name: subnet-router-create
+          enabled: true
+          num_networks:  50
+          file: rally/rally-plugins/subnet-router-create/subnet-router-create.yml
 #shaker scenarios require atleast 2 compute nodes
 shaker:
   enabled: true
