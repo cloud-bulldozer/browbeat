@@ -58,16 +58,16 @@ $ ssh-copy-id stack@<undercloud-ip>
 $ git clone https://github.com/jtaleric/browbeat.git
 $ cd browbeat/ansible
 $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
-$ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
+$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
 $ ansible-playbook -i hosts install/browbeat.yml
-$ vi install/group_vars/all # Edit browbeat network settings
+$ vi install/group_vars/all.yml # Edit browbeat network settings
 $ ansible-playbook -i hosts install/browbeat_network.yml
 $ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
 ### (Optional) Install collectd
 ```
-$ ansible-playbook -i hosts install/collectd.yml
+$ ansible-playbook -i hosts install/collectd-openstack.yml
 ```
 
 ### (Optional) Install collectd->graphite dashboards
@@ -110,16 +110,16 @@ $ ssh undercloud-root
 [stack@ospd ansible]$ ./gen_hostfile.sh localhost ~/.ssh/config
 [stack@ospd ansible]$ sudo easy_install pip
 [stack@ospd ansible]$ sudo pip install ansible
-[stack@ospd ansible]$ vi install/group_vars/all # Make sure to edit the dns_server to the correct ip address
+[stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
-[stack@ospd ansible]$ vi install/group_vars/all # Edit browbeat network settings
+[stack@ospd ansible]$ vi install/group_vars/all.yml # Edit browbeat network settings
 [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml
 [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 ```
 
 ### (Optional) Install collectd
 ```
-[stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
+[stack@ospd ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
 ```
 
 ### (Optional) Install collectd->graphite dashboards
@@ -148,7 +148,7 @@ Your Overcloud check output is located in check/bug_report.log
 
 # Running PerfKitBenchmarker
 
-Work is on-going to utilize PerfKitBenchmarker as a workload provider to browbeat.  Many benchmarks work out of the box with browbeat.  You must ensure that your network is setup correctly to run those benchmarks and you will need to configure the settings in ansible/install/group_vars/all for browbeat public/private networks. Currently  tested benchmarks include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, mesh_network, mongodb_ycsb, netperf, object_storage_service, ping, scimark2, and sysbench_oltp.
+Work is on-going to utilize PerfKitBenchmarker as a workload provider to browbeat.  Many benchmarks work out of the box with browbeat.  You must ensure that your network is setup correctly to run those benchmarks and you will need to configure the settings in ansible/install/group_vars/all.yml for browbeat public/private networks. Currently  tested benchmarks include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, mesh_network, mongodb_ycsb, netperf, object_storage_service, ping, scimark2, and sysbench_oltp.
 
 To run browbeat's PerfKit Benchmarks, you can start by viewing the tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml. You must add them to your specific browbeat config yaml file or enable/disable the benchmarks you wish to run in the default config file (browbeat-config.yaml).  There are many flags exposed in the configuration files to tune how those benchmarks run.  Additional flags are exposed in the soruce code of PerfKitBenchmarker available: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker
 
