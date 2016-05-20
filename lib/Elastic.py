@@ -3,6 +3,7 @@ import logging
 import json
 import pprint
 import numpy
+import datetime
 
 class Elastic:
     """
@@ -15,7 +16,8 @@ class Elastic:
              'port': self.config['elasticsearch']['port']}],
             send_get_body_as='POST'
         )
-        self.index = tool
+        today = datetime.datetime.today()
+        self.index = "{}-{}".format(tool,today.strftime('%Y.%m.%d'))
 
     """
     """
@@ -54,10 +56,10 @@ class Elastic:
 
     """
     """
-    def index_result(self,result,_id=None) :
+    def index_result(self,result,_type='result',_id=None) :
         return self.es.index(index=self.index,
                              id=_id,
                              body=result,
-                             doc_type='result',
+                             doc_type=_type,
                              refresh=True
                              )
