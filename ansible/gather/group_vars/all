@@ -1,6 +1,6 @@
 ---
 # Path of browbeat
-browbeat_path: /home/jtaleric/Code/Work/browbeat
+browbeat_path: /home/stack/browbeat
 
 # Home directory on undercloud
 home_dir: /home/stack
