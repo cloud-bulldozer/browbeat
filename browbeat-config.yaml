@@ -90,6 +90,7 @@ rally:
   venv: /home/stack/rally-venv/bin/activate
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - subnet-router-create: rally/rally-plugins/subnet-router-create
   benchmarks:
     - name: authenticate
       enabled: true
@@ -196,3 +197,7 @@ rally:
           image_name: cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+        - name: subnet-router-create
+          enabled: true
+          num_networks:  10
+          file: rally/rally-plugins/subnet-router-create/subnet-router-create.yml
