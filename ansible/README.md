@@ -93,6 +93,7 @@ the docker related settings will work with your target host.
 
 ##### Install grafana service
 Prior to installing grafana, please review install/group_vars/all.yml file and your ansible inventory file
+You will need to define values for the grafana_host and graphite_host IP addresses here.
 ```
 # ansible-playbook -i hosts install/grafana.yml
 ```

@@ -67,7 +67,8 @@ grafana_docker_image: grafana/grafana:2.6.0
 # Graphite Configuration
 ########################################
 # Graphite Server ip address (Collectd -> Graphite server)
-graphite_host: 1.1.1.1
+# you must fill out graphite_host prior to playbook execution
+graphite_host:
 graphite_port: 80
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
@@ -79,7 +80,8 @@ graphite_password: calvin
 # Grafana Dashboarding Configuration
 ########################################
 # Grafana Server IP Address/Port (Can be hosted on the Graphite server)
-grafana_host: 1.1.1.1
+# you must fill out grafana_host prior to playbook execution
+grafana_host:
 grafana_port: 3000
 grafana_username: admin
 grafana_password: admin
