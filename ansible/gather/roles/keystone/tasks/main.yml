@@ -25,4 +25,46 @@
     set_fact: openstack_keystone_deployment='eventlet'
     when: keystone_in_eventlet.stdout|int > 0
 
+  - name: Determine number of public workers for eventlet
+    shell: crudini --get /etc/keystone/keystone.conf eventlet_server public_workers
+    register: keystone_public_workers
+    when: keystone_in_eventlet.stdout|int > 0
 
+  - name: Determine number of admin workers for eventlet
+    shell: crudini --get /etc/keystone/keystone.conf eventlet_server admin_workers
+    register: keystone_admin_workers
+    when: keystone_in_eventlet.stdout|int > 0
+
+  - name: Set keystone eventlet worker facts
+    set_fact:
+      openstack_keystone_admin_workers: "{{ keystone_admin_workers.stdout }}"
+      openstack_keystone_public_workers: "{{ keystone_public_workers.stdout }}"
+    when: keystone_in_eventlet.stdout|int > 0
+
+  - name: Determine number of keystone admin processes for httpd
+    shell: grep processes /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: keystone_admin_worker_processes
+    when: keystone_in_eventlet.stdout|int == 0
+
+  - name: Determine number of keystone admin threads for httpd
+    shell: grep threads /etc/httpd/conf.d/10-keystone_wsgi_admin.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: keystone_admin_worker_threads
+    when: keystone_in_eventlet.stdout|int == 0
+
+  - name: Determine number of keystone main threads for httpd
+    shell: grep threads /etc/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $6}'| awk -F= '{print $2}'
+    register: keystone_main_worker_threads
+    when: keystone_in_eventlet.stdout|int == 0
+
+  - name: Determine number of keystone main processes for httpd
+    shell: grep threads /etc/httpd/conf.d/10-keystone_wsgi_main.conf | awk '{print $5}'| awk -F= '{print $2}'
+    register: keystone_main_worker_processes
+    when: keystone_in_eventlet.stdout|int == 0
+
+  - name: Set keystone httpd worker facts
+    set_fact:
+      openstack_keystone_admin_workers_processes: "{{ keystone_admin_workers_processes.stdout }}"
+      openstack_keystone_admin_workers_threads: "{{ keystone_admin_workers_threads.stdout }}"
+      openstack_keystone_main_workers_processes: "{{ keystone_main_workers_processes.stdout }}"
+      openstack_keystone_main_workers_threads: "{{ keystone_main_workers_threads.stdout }}"
+    when: keystone_in_eventlet.stdout|int == 0
