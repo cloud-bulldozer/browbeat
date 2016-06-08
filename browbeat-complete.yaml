@@ -180,6 +180,11 @@ rally:
         - 96
       times: 128
       scenarios:
+        - name: boot-snapshot-delete
+          enabled: true
+          file: rally/nova/nova-boot-snapshot-cc.yml
+          image_name: cirros
+          flavor_name: m1.tiny
         - name: boot-list-centos
           enabled: true
           file: rally/nova/nova-boot-list-cc.yml
