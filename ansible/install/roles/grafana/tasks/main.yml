@@ -3,6 +3,12 @@
 # Install/run grafana-server for browbeat
 #
 
+# check that grafana_host and graphite_host is entered prior to playbook run
+- name: Check Graphite/Grafana Host IP Address
+  fail:
+    msg="** Edit grafana_host and graphite_host in ../install/group_vars/all.yml before running **"
+  when: ((grafana_host is none) and (graphite_host is none))
+
 - name: Import EPEL GPG Key
   rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     state=present
