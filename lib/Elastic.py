@@ -1,14 +1,27 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 from elasticsearch import Elasticsearch
 import logging
 import json
-import pprint
-import numpy
 import datetime
 
+
 class Elastic:
+
     """
     """
-    def __init__(self,config,tool="browbeat") :
+
+    def __init__(self, config, tool="browbeat"):
         self.config = config
         self.logger = logging.getLogger('browbeat.Elastic')
         self.es = Elasticsearch([
@@ -17,11 +30,12 @@ class Elastic:
             send_get_body_as='POST'
         )
         today = datetime.datetime.today()
-        self.index = "{}-{}".format(tool,today.strftime('%Y.%m.%d'))
+        self.index = "{}-{}".format(tool, today.strftime('%Y.%m.%d'))
 
     """
     """
-    def load_json(self,result):
+
+    def load_json(self, result):
         json_data = None
         self.logger.info("Loading JSON")
         json_data = json.loads(result)
@@ -29,34 +43,38 @@ class Elastic:
 
     """
     """
-    def load_json_file(self,result):
+
+    def load_json_file(self, result):
         json_data = None
         self.logger.info("Loading JSON file : {}".format(result))
-        try :
-            with open(result) as jdata :
+        try:
+            with open(result) as jdata:
                 json_data = json.load(jdata)
-        except (IOError, OSError) as e:
+        except (IOError, OSError):
             self.logger.error("Error loading JSON file : {}".format(result))
             return False
         return json_data
 
     """
     """
-    def combine_metadata(self,result):
-        if len(self.config['elasticsearch']['metadata_files']) > 0 :
+
+    def combine_metadata(self, result):
+        if len(self.config['elasticsearch']['metadata_files']) > 0:
             meta = self.config['elasticsearch']['metadata_files']
             for _meta in meta:
-                try :
-                    with open(_meta['file']) as jdata :
+                try:
+                    with open(_meta['file']) as jdata:
                         result[_meta['name']] = json.load(jdata)
-                except (IOError, OSError) as e:
-                    self.logger.error("Error loading Metadata file : {}".format(_meta['file']))
+                except (IOError, OSError):
+                    self.logger.error(
+                        "Error loading Metadata file : {}".format(_meta['file']))
                     return False
             return result
 
     """
     """
-    def index_result(self,result,_type='result',_id=None) :
+
+    def index_result(self, result, _type='result', _id=None):
         return self.es.index(index=self.index,
                              id=_id,
                              body=result,

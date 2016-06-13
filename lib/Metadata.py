@@ -1,8 +1,20 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 import json
 import re
-import logging
 import sys
 import os
+
 
 class Metadata:
 
@@ -11,14 +23,13 @@ class Metadata:
 
     def load_file(self, filename):
         json_str = None
-        try :
+        try:
             with open(filename) as data:
                 json_str = data.read()
         except IOError:
             print("Machine facts json is missing")
             exit(1)
-        regex = re.compile(r"}\n{")
-        new_json = re.sub(r"}\n{",r"},\n{",json_str,re.M)
+        new_json = re.sub(r"}\n{", r"},\n{", json_str, re.M)
         convert = "{ \"machines\": [" + new_json + "] }"
         sys_data = {}
         sys_data['system_data'] = json.loads(convert)
@@ -32,8 +43,10 @@ class Metadata:
             hardware_dict = {}
             hardware_dict['label'] = item['inventory_hostname']
             hardware_dict['kernel'] = item['ansible_kernel']
-            hardware_dict['total_mem'] = item['ansible_memory_mb']['real']['total']
-            hardware_dict['total_logical_cores'] = item['facter_processorcount']
+            hardware_dict['total_mem'] = item[
+                'ansible_memory_mb']['real']['total']
+            hardware_dict['total_logical_cores'] = item[
+                'facter_processorcount']
             hardware_dict['os_name'] = item['ansible_distribution'] + \
                 item['ansible_distribution_version']
             hardware_dict['ip'] = item['ansible_default_ipv4']['address']
@@ -47,7 +60,7 @@ class Metadata:
         for item in sys_data['system_data']['machines']:
             if 'environment_setup' not in env_dict:
                 env_dict['environment_setup'] = {}
-            for key,value in item.items():
+            for key, value in item.items():
                 if 'osp' in key:
                     env_dict['environment_setup'][key] = value
         return env_dict
@@ -62,7 +75,8 @@ class Metadata:
                 if 'openstack' not in soft_all_dict['software_details']:
                     soft_all_dict['software_details']['openstack'] = {}
                 if 'config' not in soft_all_dict['software_details']['openstack']:
-                    soft_all_dict['software_details']['openstack']['config'] = []
+                    soft_all_dict['software_details'][
+                        'openstack']['config'] = []
                 software_dict = {}
                 software_dict['node_name'] = item['inventory_hostname']
                 for soft in item:
@@ -73,7 +87,8 @@ class Metadata:
                             software_dict[service_name] = {}
                         if service_name in soft:
                             software_dict[service_name][soft] = item[soft]
-                soft_all_dict['software_details']['openstack']['config'].append(software_dict)
+                soft_all_dict['software_details']['openstack'][
+                    'config'].append(software_dict)
         return soft_all_dict
 
     def write_metadata_file(self, data, filename):
@@ -86,11 +101,14 @@ def main():
     metadata = Metadata()
     sysdata = metadata.load_file(_filename)
     env_data = metadata.get_environment_metadata(sysdata)
-    metadata.write_metadata_file(env_data, os.path.join(sys.argv[1], 'environment-metadata.json'))
+    metadata.write_metadata_file(
+        env_data, os.path.join(sys.argv[1], 'environment-metadata.json'))
     hardware_data = metadata.get_hardware_metadata(sysdata)
-    metadata.write_metadata_file(hardware_data, os.path.join(sys.argv[1], 'hardware-metadata.json'))
+    metadata.write_metadata_file(
+        hardware_data, os.path.join(sys.argv[1], 'hardware-metadata.json'))
     software_data = metadata.get_software_metadata(sysdata)
-    metadata.write_metadata_file(software_data, os.path.join(sys.argv[1], 'software-metadata.json'))
+    metadata.write_metadata_file(
+        software_data, os.path.join(sys.argv[1], 'software-metadata.json'))
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -1,3 +1,15 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 from Tools import Tools
 from Grafana import Grafana
 from WorkloadBase import WorkloadBase
@@ -7,6 +19,7 @@ import datetime
 import os
 import json
 import time
+
 
 class Shaker(WorkloadBase):
 
@@ -29,15 +42,22 @@ class Shaker(WorkloadBase):
             self.logger.info("Shaker image is built, continuing")
 
     def get_stats(self):
-        self.logger.info("Current number of Shaker tests executed: {}".format(self.test_count))
-        self.logger.info("Current number of Shaker tests passed: {}".format(self.pass_count))
-        self.logger.info("Current number of Shaker tests failed: {}".format(self.error_count))
+        self.logger.info(
+            "Current number of Shaker tests executed: {}".format(self.test_count))
+        self.logger.info(
+            "Current number of Shaker tests passed: {}".format(self.pass_count))
+        self.logger.info(
+            "Current number of Shaker tests failed: {}".format(self.error_count))
 
     def final_stats(self, total):
-        self.logger.info("Total Shaker scenarios enabled by user: {}".format(total))
-        self.logger.info("Total number of Shaker tests executed: {}".format(self.test_count))
-        self.logger.info("Total number of Shaker tests passed: {}".format(self.pass_count))
-        self.logger.info("Total number of Shaker tests failed: {}".format(self.error_count))
+        self.logger.info(
+            "Total Shaker scenarios enabled by user: {}".format(total))
+        self.logger.info(
+            "Total number of Shaker tests executed: {}".format(self.test_count))
+        self.logger.info(
+            "Total number of Shaker tests passed: {}".format(self.pass_count))
+        self.logger.info(
+            "Total number of Shaker tests failed: {}".format(self.error_count))
 
     def update_tests(self):
         self.test_count += 1
@@ -96,7 +116,7 @@ class Shaker(WorkloadBase):
         return uuidlist
 
     def result_check(self, result_dir, test_name, scenario, to_time, from_time):
-        outputfile = os.path.join(result_dir,test_name + "." + "json")
+        outputfile = os.path.join(result_dir, test_name + "." + "json")
         error = False
         with open(outputfile) as data_file:
             data = json.load(data_file)
@@ -110,7 +130,8 @@ class Shaker(WorkloadBase):
                 error = True
         if error:
             self.logger.error("Failed Test: {}".format(scenario['name']))
-            self.logger.error("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
+            self.logger.error(
+                "saved log to: {}.log".format(os.path.join(result_dir, test_name)))
             self.update_fail_tests()
             self.update_total_fail_tests()
             self.get_time_dict(
@@ -129,7 +150,8 @@ class Shaker(WorkloadBase):
                         test_name +
                         "." +
                         "html")))
-            self.logger.info("saved log to: {}.log".format(os.path.join(result_dir, test_name)))
+            self.logger.info(
+                "saved log to: {}.log".format(os.path.join(result_dir, test_name)))
             self.update_pass_tests()
             self.update_total_pass_tests()
             self.get_time_dict(
@@ -199,11 +221,13 @@ class Shaker(WorkloadBase):
                     self.logger.debug("Set Scenario File: {}".format(
                         scenario['file']))
                     result_dir = self.tools.create_results_dir(
-                        self.config['browbeat']['results'], time_stamp, "shaker",
+                        self.config['browbeat'][
+                            'results'], time_stamp, "shaker",
                         scenario['name'])
                     workload = self.__class__.__name__
                     self.workload_logger(result_dir, workload)
-                    time_stamp1 = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+                    time_stamp1 = datetime.datetime.now().strftime(
+                        "%Y%m%d-%H%M%S")
                     test_name = "{}-browbeat-{}-{}".format(time_stamp1,
                                                            "shaker", scenario['name'])
                     self.run_scenario(scenario, result_dir, test_name)

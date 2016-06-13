@@ -1,7 +1,19 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 import logging
 import os
-import shutil
-from subprocess import Popen, PIPE
+from subprocess import Popen
+from subprocess import PIPE
 
 
 class Tools:
@@ -37,7 +49,7 @@ class Tools:
         try:
             os.makedirs("%s/run-%s" % (results_dir, run))
             return "%s/run-%s" % (results_dir, run)
-        except OSError as e:
+        except OSError:
             return False
 
     # Create directory for results
@@ -48,5 +60,5 @@ class Tools:
             self.logger.debug("{}/{}/{}/{}".format(os.path.dirname(results_dir), timestamp, service,
                                                    scenario))
             return "{}/{}/{}/{}".format(os.path.dirname(results_dir), timestamp, service, scenario)
-        except OSError as e:
+        except OSError:
             return False

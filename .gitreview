@@ -1,5 +1,4 @@
 [gerrit]
-host=review.gerrithub.io
+host=review.openstack.org
 port=29418
-project=jtaleric/browbeat
-defaultbranch=master
+project=openstack/browbeat.git

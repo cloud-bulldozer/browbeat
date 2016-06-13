@@ -1,3 +1,15 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 from Connmon import Connmon
 from Grafana import Grafana
 from Tools import Tools
@@ -27,9 +39,12 @@ class PerfKit(WorkloadBase):
     def _log_details(self):
         self.logger.info(
             "Current number of Perkit scenarios executed: {}".format(self.scenario_count))
-        self.logger.info("Current number of Perfkit test(s) executed: {}".format(self.test_count))
-        self.logger.info("Current number of Perfkit test(s) succeeded: {}".format(self.pass_count))
-        self.logger.info("Current number of Perfkit test failures: {}".format(self.error_count))
+        self.logger.info(
+            "Current number of Perfkit test(s) executed: {}".format(self.test_count))
+        self.logger.info(
+            "Current number of Perfkit test(s) succeeded: {}".format(self.pass_count))
+        self.logger.info(
+            "Current number of Perfkit test failures: {}".format(self.error_count))
 
     def update_tests(self):
         self.test_count += 1
@@ -79,7 +94,8 @@ class PerfKit(WorkloadBase):
         from_ts = time.time()
         if 'sleep_before' in self.config['perfkit']:
             time.sleep(self.config['perfkit']['sleep_before'])
-        process = subprocess.Popen(cmd, shell=True, stdout=stdout_file, stderr=stderr_file)
+        process = subprocess.Popen(
+            cmd, shell=True, stdout=stdout_file, stderr=stderr_file)
         process.communicate()
         if 'sleep_after' in self.config['perfkit']:
             time.sleep(self.config['perfkit']['sleep_after'])
@@ -91,8 +107,9 @@ class PerfKit(WorkloadBase):
             try:
                 self.connmon.move_connmon_results(result_dir, test_name)
                 self.connmon.connmon_graphs(result_dir, test_name)
-            except:
-                self.logger.error("Connmon Result data missing, Connmon never started")
+            except Exception:
+                self.logger.error(
+                    "Connmon Result data missing, Connmon never started")
 
         workload = self.__class__.__name__
         new_test_name = test_name.split('-')
@@ -106,17 +123,20 @@ class PerfKit(WorkloadBase):
                     self.update_pass_tests()
                     self.update_total_pass_tests()
                     self.get_time_dict(
-                        to_ts, from_ts, benchmark_config['benchmarks'], new_test_name,
+                        to_ts, from_ts, benchmark_config[
+                            'benchmarks'], new_test_name,
                         workload, "pass")
                 else:
                     self.logger.error("Benchmark failed.")
                     self.update_fail_tests()
                     self.update_total_fail_tests()
                     self.get_time_dict(
-                        to_ts, from_ts, benchmark_config['benchmarks'], new_test_name,
+                        to_ts, from_ts, benchmark_config[
+                            'benchmarks'], new_test_name,
                         workload, "fail")
         except IOError:
-            self.logger.error("File missing: {}/pkb.stderr.log".format(result_dir))
+            self.logger.error(
+                "File missing: {}/pkb.stderr.log".format(result_dir))
 
         # Copy all results
         for perfkit_file in glob.glob("/tmp/perfkitbenchmarker/run_browbeat/*"):
@@ -129,7 +149,8 @@ class PerfKit(WorkloadBase):
             {'from_ts': int(from_ts * 1000),
              'to_ts': int(to_ts * 1000)})
         self.grafana.print_dashboard_url(test_name)
-        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.log_snapshot_playbook_cmd(
+            from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
     def start_workloads(self):
@@ -148,7 +169,8 @@ class PerfKit(WorkloadBase):
                         self.update_total_tests()
                         result_dir = self.tools.create_results_dir(
                             self.config['browbeat']['results'], time_stamp, benchmark['name'], run)
-                        test_name = "{}-{}-{}".format(time_stamp, benchmark['name'], run)
+                        test_name = "{}-{}-{}".format(time_stamp,
+                                                      benchmark['name'], run)
                         workload = self.__class__.__name__
                         self.workload_logger(result_dir, workload)
                         self.run_benchmark(benchmark, result_dir, test_name)

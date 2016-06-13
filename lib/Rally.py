@@ -1,19 +1,29 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 from Connmon import Connmon
 from Tools import Tools
 from collections import OrderedDict
 from Grafana import Grafana
 from WorkloadBase import WorkloadBase
 from Elastic import Elastic
-import pprint
-import numpy
 import datetime
 import glob
 import logging
 import os
 import shutil
-import subprocess
 import time
 import re
+
 
 class Rally(WorkloadBase):
 
@@ -52,16 +62,17 @@ class Rally(WorkloadBase):
             plugin_string = "--plugin-paths {}".format(",".join(plugins))
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(
-            plugin_string, task_file,task_args, test_name)
+            plugin_string, task_file, task_args, test_name)
         from_time = time.time()
         self.tools.run_cmd(cmd)
         to_time = time.time()
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
         to_ts = int(time.time() * 1000)
-        self.grafana.create_grafana_urls({'from_ts':from_ts, 'to_ts':to_ts})
+        self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
         self.grafana.print_dashboard_url(test_name)
-        self.grafana.log_snapshot_playbook_cmd(from_ts, to_ts, result_dir, test_name)
+        self.grafana.log_snapshot_playbook_cmd(
+            from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
         return (from_time, to_time)
 
@@ -86,9 +97,12 @@ class Rally(WorkloadBase):
         self.logger.info(
             "Current number of Rally scenarios executed:{}".format(
                 self.scenario_count))
-        self.logger.info("Current number of Rally tests executed:{}".format(self.test_count))
-        self.logger.info("Current number of Rally tests passed:{}".format(self.pass_count))
-        self.logger.info("Current number of Rally test failures:{}".format(self.error_count))
+        self.logger.info(
+            "Current number of Rally tests executed:{}".format(self.test_count))
+        self.logger.info(
+            "Current number of Rally tests passed:{}".format(self.pass_count))
+        self.logger.info(
+            "Current number of Rally test failures:{}".format(self.error_count))
 
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
@@ -107,57 +121,48 @@ class Rally(WorkloadBase):
         cmd += "rally task results {} > {}.json".format(task_id, test_name)
         return self.tools.run_cmd(cmd)
 
-    def rally_metadata(self, result, meta) :
+    def rally_metadata(self, result, meta):
         result['rally_metadata'] = meta
         return result
 
-    def json_result(self,task_id,scenario_name):
+    def json_result(self, task_id, scenario_name):
         rally_data = {}
-        rally_errors = []
-        rally_sla = []
         self.logger.info("Loadding Task_ID {} JSON".format(task_id))
         rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
         es_ts = datetime.datetime.utcnow()
-        if len(rally_json) < 1 :
+        if len(rally_json) < 1:
             self.logger.error("Issue with Rally Results")
             return False
         for metrics in rally_json[0]['result']:
-            for workload in metrics :
+            for workload in metrics:
                 if type(metrics[workload]) is dict:
-                    for value in metrics[workload] :
+                    for value in metrics[workload]:
                         if not type(metrics[workload][value]) is list:
                             if value not in rally_data:
                                 rally_data[value] = []
                             rally_data[value].append(metrics[workload][value])
-            if len(metrics['error']) > 0 :
+            if len(metrics['error']) > 0:
                 error = {'action_name': value,
-                        'error': metrics['error'],
-                        'result': task_id,
-                        'timestamp': es_ts,
-                        'scenario' : scenario_name,
-                        }
-                self.elastic.index_result(error,'config')
-        rally_doc = []
+                         'error': metrics['error'],
+                         'result': task_id,
+                         'timestamp': es_ts,
+                         'scenario': scenario_name,
+                         }
+                self.elastic.index_result(error, 'config')
         for workload in rally_data:
-            if not type(rally_data[workload]) is dict :
+            if not type(rally_data[workload]) is dict:
                 iteration = 1
                 workload_name = workload
-                if workload.find('(') is not -1 :
-                    iteration = re.findall('\d+',workload)
+                if workload.find('(') is not -1:
+                    iteration = re.findall('\d+', workload)
                     workload_name = workload.split('(')[0]
                 rally_stats = {'result': task_id,
                                'action': workload_name,
                                'iteration': iteration,
-                               #'90th':numpy.percentile(rally_data[workload], 90),
-                               #'95th':numpy.percentile(rally_data[workload], 95),
-                               #'max':numpy.max(rally_data[workload]),
-                               #'min':numpy.min(rally_data[workload]),
-                               #'average':numpy.average(rally_data[workload]),
-                               #'median':numpy.median(rally_data[workload]),
                                'timestamp': es_ts,
-                               'scenario' : scenario_name,
+                               'scenario': scenario_name,
                                'rally_setup': rally_json[0]['key'],
-                               'raw':rally_data[workload]}
+                               'raw': rally_data[workload]}
                 result = self.elastic.combine_metadata(rally_stats)
                 self.elastic.index_result(result)
         return True
@@ -202,7 +207,8 @@ class Rally(WorkloadBase):
                                 self.config['browbeat'][
                                     'results'], dir_ts, benchmark['name'],
                                 scenario_name)
-                            self.logger.debug("Created result directory: {}".format(result_dir))
+                            self.logger.debug(
+                                "Created result directory: {}".format(result_dir))
                             workload = self.__class__.__name__
                             self.workload_logger(result_dir, workload)
 
@@ -234,7 +240,7 @@ class Rally(WorkloadBase):
                                     if self.config['connmon']['enabled']:
                                         self.connmon.start_connmon()
 
-                                    from_time,to_time = self.run_scenario(
+                                    from_time, to_time = self.run_scenario(
                                         scenario_file, scenario, result_dir, test_name,
                                         benchmark['name'])
 
@@ -244,12 +250,13 @@ class Rally(WorkloadBase):
                                         try:
                                             self.connmon.move_connmon_results(
                                                 result_dir, test_name)
-                                        except:
+                                        except Exception:
                                             self.logger.error(
                                                 "Connmon Result data missing, \
                                                 Connmon never started")
                                             return False
-                                        self.connmon.connmon_graphs(result_dir, test_name)
+                                        self.connmon.connmon_graphs(
+                                            result_dir, test_name)
                                     new_test_name = test_name.split('-')
                                     new_test_name = new_test_name[3:]
                                     new_test_name = "-".join(new_test_name)
@@ -261,23 +268,29 @@ class Rally(WorkloadBase):
                                         self.logger.info(
                                             "Generating Rally HTML for task_id : {}".
                                             format(task_id))
-                                        self.gen_scenario_html([task_id], test_name)
-                                        self.gen_scenario_json_file(task_id, test_name)
+                                        self.gen_scenario_html(
+                                            [task_id], test_name)
+                                        self.gen_scenario_json_file(
+                                            task_id, test_name)
                                         results[run].append(task_id)
                                         self.update_pass_tests()
                                         self.update_total_pass_tests()
                                         self.get_time_dict(
-                                            to_time, from_time, benchmark['name'], new_test_name,
+                                            to_time, from_time, benchmark[
+                                                'name'], new_test_name,
                                             workload, "pass")
-                                        if self.config['elasticsearch']['enabled'] :
+                                        if self.config['elasticsearch']['enabled']:
                                             # Start indexing
-                                            result_json = self.json_result(task_id,scenario_name)
+                                            self.json_result(
+                                                task_id, scenario_name)
                                     else:
-                                        self.logger.error("Cannot find task_id")
+                                        self.logger.error(
+                                            "Cannot find task_id")
                                         self.update_fail_tests()
                                         self.update_total_fail_tests()
                                         self.get_time_dict(
-                                            to_time, from_time, benchmark['name'], new_test_name,
+                                            to_time, from_time, benchmark[
+                                                'name'], new_test_name,
                                             workload, "fail")
 
                                     for data in glob.glob("./{}*".format(test_name)):

@@ -1,3 +1,15 @@
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 import logging
 import subprocess
 
@@ -15,8 +27,10 @@ class Grafana:
         self.grafana_url = {}
 
     def extra_vars(self, from_ts, to_ts, result_dir, test_name):
-        extra_vars = 'grafana_ip={} '.format(self.config['grafana']['grafana_ip'])
-        extra_vars += 'grafana_port={} '.format(self.config['grafana']['grafana_port'])
+        extra_vars = 'grafana_ip={} '.format(
+            self.config['grafana']['grafana_ip'])
+        extra_vars += 'grafana_port={} '.format(
+            self.config['grafana']['grafana_port'])
         extra_vars += 'from={} '.format(from_ts)
         extra_vars += 'to={} '.format(to_ts)
         extra_vars += 'results_dir={}/{} '.format(result_dir, test_name)
@@ -35,13 +49,20 @@ class Grafana:
             url = 'http://{}:{}/dashboard/db/'.format(
                 self.grafana_ip, self.grafana_port)
             for dashboard in self.config['grafana']['dashboards']:
-                self.grafana_url[dashboard]='{}{}?from={}&to={}&var-Cloud={}'.format(
-                    url, dashboard, from_ts, to_ts, self.cloud_name)
+                self.grafana_url[dashboard] = '{}{}?from={}&to={}&var-Cloud={}'.format(
+                    url,
+                    dashboard,
+                    from_ts,
+                    to_ts,
+                    self.cloud_name)
 
-    def print_dashboard_url(self,test_name):
+    def print_dashboard_url(self, test_name):
         for dashboard in self.grafana_url:
-            self.logger.info('{} - Grafana Dashboard {} URL: {}'.format(test_name, dashboard,
-                                                                    self.grafana_url[dashboard]))
+            self.logger.info(
+                '{} - Grafana Dashboard {} URL: {}'.format(
+                    test_name,
+                    dashboard,
+                    self.grafana_url[dashboard]))
 
     def log_snapshot_playbook_cmd(self, from_ts, to_ts, result_dir, test_name):
         if 'grafana' in self.config and self.config['grafana']['enabled']:
@@ -56,8 +77,17 @@ class Grafana:
             if self.config['grafana']['snapshot']['enabled']:
                 extra_vars = self.extra_vars(
                     from_ts, to_ts, result_dir, test_name)
-                subprocess_cmd = ['ansible-playbook', '-i', self.hosts_file, self.playbook, '-e',
-                                  '{}'.format(extra_vars)]
+                subprocess_cmd = [
+                    'ansible-playbook',
+                    '-i',
+                    self.hosts_file,
+                    self.playbook,
+                    '-e',
+                    '{}'.format(extra_vars)]
                 snapshot_log = open('{}/snapshot.log'.format(result_dir), 'a+')
-                self.logger.info('Running ansible to create snapshots for: {}'.format(test_name))
-                subprocess.Popen(subprocess_cmd, stdout=snapshot_log, stderr=subprocess.STDOUT)
+                self.logger.info(
+                    'Running ansible to create snapshots for: {}'.format(test_name))
+                subprocess.Popen(
+                    subprocess_cmd,
+                    stdout=snapshot_log,
+                    stderr=subprocess.STDOUT)

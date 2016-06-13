@@ -1,8 +1,22 @@
-from abc import ABCMeta, abstractmethod
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+from abc import ABCMeta
+from abc import abstractmethod
 import os
 import logging
 import yaml
-import collections
+
+
 class WorkloadBase:
     __metaclass__ = ABCMeta
     success = 0
@@ -45,7 +59,8 @@ class WorkloadBase:
             file = logging.FileHandler(
                 "{}/{}/browbeat-{}-run.log".format(base[0], base[1], workload))
             file.setLevel(logging.DEBUG)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
             file.setFormatter(formatter)
             self.logger.addHandler(file)
         return None
@@ -63,16 +78,18 @@ class WorkloadBase:
 
     @staticmethod
     def print_report(result_dir, time_stamp):
-        with open(os.path.join(result_dir,time_stamp + '.' + 'report'), 'w') as yaml_file:
+        with open(os.path.join(result_dir, time_stamp + '.' + 'report'), 'w') as yaml_file:
             yaml_file.write("Browbeat Report Card\n")
             if not WorkloadBase.browbeat:
                 yaml_file.write("No tests were enabled")
             else:
-                yaml_file.write(yaml.dump(WorkloadBase.browbeat, default_flow_style=False))
+                yaml_file.write(
+                    yaml.dump(WorkloadBase.browbeat, default_flow_style=False))
 
     @staticmethod
     def print_summary():
-        print("Total scenarios executed:{}".format(WorkloadBase.total_scenarios))
+        print("Total scenarios executed:{}".format(
+            WorkloadBase.total_scenarios))
         print("Total tests executed:{}".format(WorkloadBase.total_tests))
         print("Total tests passed:{}".format(WorkloadBase.success))
         print("Total tests failed:{}".format(WorkloadBase.failure))

@@ -1,233 +1,372 @@
-name: Browbeat configuration schema
-type: map
-allowempty: True
+name:
+    Browbeat configuration schema
+type:
+    map
+allowempty:
+    True
 mapping:
-  browbeat:
-    required: True
-    type: map
-    mapping:
-      results:
-        type: str
-        required: True
-      rerun:
-        type: int
-        required: True
-
-  ansible:
-    required: True
-    type: map
-    allowempty: True
-    mapping:
-      hosts:
-        type: str
-      adjust:
-        type: map
+    browbeat:
+        required:
+            True
+        type:
+            map
         mapping:
-          keystone_token:
-            type: str
-          neutron_l3:
-            type: str
-          nova_db:
-            type: str
-          workers:
-            type: str
-      grafana_snapshot:
-        type: str
-        required: True
-      shaker_build:
-        type: str
+            results:
+                type:
+                    str
+                required:
+                    True
+            rerun:
+                type:
+                    int
+                required:
+                    True
 
-  connmon:
-    type: map
-    allowempty: True
-    mapping:
-      enabled:
-        type: bool
-        required: True
-
-  grafana:
-    required: True
-    type: map
-    allowempty: True
-    mapping:
-      enabled:
-        type: bool
-        required: True
-      cloud_name:
-        type: str
-      grafana_ip:
-        type: str
-        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
-      grafana_port:
-        type: int
-      dashboards:
-        type: seq
-        sequence:
-        - type: str
-      snapshot:
-        type: map
+    ansible:
+        required:
+            True
+        type:
+            map
+        allowempty:
+            True
         mapping:
-          enabled:
-            type: bool
-            required: True
-          snapshot_compute:
-            type: bool
-            required: True
-
-  perfkit:
-    required: False
-    type: map
-    allowempty: True
-    mapping:
-      enabled:
-        type: bool
-        required: True
-      sleep_before:
-        type: number
-        required: True
-      sleep_after:
-        type: number
-        required: True
-      venv:
-        type: str
-        required: True
-      default:
-        type: map
-        required: True
-        mapping:
-          image:
-            type: str
-            required: True
-          machine_type:
-            type: str
-            required: True
-          os_type:
-            type: str
-            required: True
-            enum: ['rhel', 'debian', 'ubuntu_container', 'windows']
-          openstack_image_username:
-            type: str
-            required: True
-          openstack_floating_ip_pool:
-            type: str
-            required: True
-          openstack_network:
-            type: str
-            required: True
-      benchmarks:
-        type: seq
-        sequence:
-        - type: map
-          allowempty: True
-          mapping:
-            name:
-              type: str
-              required: True
-            enabled:
-              type: bool
-              required: True
-            benchmarks:
-              type: str
-              required: True
-
-  shaker:
-    required: False
-    allowempty: True
-    type: map
-    mapping:
-      enabled:
-        type: bool
-        required: True
-      server:
-        type: str
-        required: True
-        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
-      port:
-        type: int
-        required: True
-      flavor:
-        type: str
-        required: True
-      join_timeout:
-        type: int
-        required: True
-      sleep_before:
-        type: number
-        required: True
-      sleep_after:
-        type: number
-        required: True
-      venv:
-        type: str
-        required: True
-      shaker_region:
-        type: str
-        required: true
-      scenarios:
-        type: seq
-        sequence:
-        - type: map
-          allowempty: True
-          mapping:
-            name:
-              type: str
-              required: True
-            enabled:
-              type: bool
-              required: True
-            file:
-              type: str
-              required: True
-
-  rally:
-    required: False
-    type: map
-    allowempty: True
-    mapping:
-      enabled:
-        type: bool
-        required: True
-      sleep_before:
-        type: number
-        required: True
-      sleep_after:
-        type: number
-        required: True
-      venv:
-        type: str
-        required: True
-      benchmarks:
-        type: seq
-        required: True
-        sequence:
-        - type: map
-          mapping:
-            name:
-              type: str
-              required: True
-            enabled:
-              required: True
-              type: bool
-            concurrency:
-              type: seq
-              required: True
-              sequence:
-              - type: int
-            times:
-              type: int
-              required: True
-            scenarios:
-              type: seq
-              sequence:
-              - type: map
-                allowempty: True
+            hosts:
+                type:
+                    str
+            adjust:
+                type:
+                    map
                 mapping:
-                  name:
-                    type: str
-                    required: True
-                  enabled:
-                    type: bool
-                    required: True
-                  file:
-                    type: str
-                    required: True
+                    keystone_token:
+                        type:
+                            str
+                    neutron_l3:
+                        type:
+                            str
+                    nova_db:
+                        type:
+                            str
+                    workers:
+                        type:
+                            str
+            grafana_snapshot:
+                type:
+                    str
+                required:
+                    True
+            shaker_build:
+                type:
+                    str
+
+    connmon:
+        type:
+            map
+        allowempty:
+            True
+        mapping:
+            enabled:
+                type:
+                    bool
+                required:
+                    True
+
+    grafana:
+        required:
+            True
+        type:
+            map
+        allowempty:
+            True
+        mapping:
+            enabled:
+                type:
+                    bool
+                required:
+                    True
+            cloud_name:
+                type:
+                    str
+            grafana_ip:
+                type:
+                    str
+                pattern:
+                    ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\- ]{0, 61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\- ]{0, 61}[a-zA-Z0-9]))*$
+            grafana_port:
+                type:
+                    int
+            dashboards:
+                type:
+                    seq
+                sequence:
+                - type:
+                    str
+            snapshot:
+                type:
+                    map
+                mapping:
+                    enabled:
+                        type:
+                            bool
+                        required:
+                            True
+                    snapshot_compute:
+                        type:
+                            bool
+                        required:
+                            True
+
+    perfkit:
+        required:
+            False
+        type:
+            map
+        allowempty:
+            True
+        mapping:
+            enabled:
+                type:
+                    bool
+                required:
+                    True
+            sleep_before:
+                type:
+                    number
+                required:
+                    True
+            sleep_after:
+                type:
+                    number
+                required:
+                    True
+            venv:
+                type:
+                    str
+                required:
+                    True
+            default:
+                type:
+                    map
+                required:
+                    True
+                mapping:
+                    image:
+                        type:
+                            str
+                        required:
+                            True
+                    machine_type:
+                        type:
+                            str
+                        required:
+                            True
+                    os_type:
+                        type:
+                            str
+                        required:
+                            True
+                        enum:
+                            ['rhel', 'debian', 'ubuntu_container', 'windows']
+                    openstack_image_username:
+                        type:
+                            str
+                        required:
+                            True
+                    openstack_floating_ip_pool:
+                        type:
+                            str
+                        required:
+                            True
+                    openstack_network:
+                        type:
+                            str
+                        required:
+                            True
+            benchmarks:
+                type:
+                    seq
+                sequence:
+                - type:
+                    map
+                    allowempty:
+                        True
+                    mapping:
+                        name:
+                            type:
+                                str
+                            required:
+                                True
+                        enabled:
+                            type:
+                                bool
+                            required:
+                                True
+                        benchmarks:
+                            type:
+                                str
+                            required:
+                                True
+
+    shaker:
+        required:
+            False
+        allowempty:
+            True
+        type:
+            map
+        mapping:
+            enabled:
+                type:
+                    bool
+                required:
+                    True
+            server:
+                type:
+                    str
+                required:
+                    True
+                pattern:
+                    ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0, 61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\- ]{0, 61}[a-zA-Z0-9]))*$
+            port:
+                type:
+                    int
+                required:
+                    True
+            flavor:
+                type:
+                    str
+                required:
+                    True
+            join_timeout:
+                type:
+                    int
+                required:
+                    True
+            sleep_before:
+                type:
+                    number
+                required:
+                    True
+            sleep_after:
+                type:
+                    number
+                required:
+                    True
+            venv:
+                type:
+                    str
+                required:
+                    True
+            shaker_region:
+                type:
+                    str
+                required:
+                    true
+            scenarios:
+                type:
+                    seq
+                sequence:
+                - type:
+                    map
+                    allowempty:
+                        True
+                    mapping:
+                        name:
+                            type:
+                                str
+                            required:
+                                True
+                        enabled:
+                            type:
+                                bool
+                            required:
+                                True
+                        file:
+                            type:
+                                str
+                            required:
+                                True
+
+    rally:
+        required:
+            False
+        type:
+            map
+        allowempty:
+            True
+        mapping:
+            enabled:
+                type:
+                    bool
+                required:
+                    True
+            sleep_before:
+                type:
+                    number
+                required:
+                    True
+            sleep_after:
+                type:
+                    number
+                required:
+                    True
+            venv:
+                type:
+                    str
+                required:
+                    True
+            benchmarks:
+                type:
+                    seq
+                required:
+                    True
+                sequence:
+                - type:
+                    map
+                    mapping:
+                        name:
+                            type:
+                                str
+                            required:
+                                True
+                        enabled:
+                            required:
+                                True
+                            type:
+                                bool
+                        concurrency:
+                            type:
+                                seq
+                            required:
+                                True
+                            sequence:
+                            - type:
+                                int
+                        times:
+                            type:
+                                int
+                            required:
+                                True
+                        scenarios:
+                            type:
+                                seq
+                            sequence:
+                            - type:
+                                map
+                                allowempty:
+                                    True
+                                mapping:
+                                    name:
+                                        type:
+                                            str
+                                        required:
+                                            True
+                                    enabled:
+                                        type:
+                                            bool
+                                        required:
+                                            True
+                                    file:
+                                        type:
+                                            str
+                                        required:
+                                            True
