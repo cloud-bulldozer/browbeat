@@ -86,7 +86,7 @@
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
 
 - name: Install shaker
-  pip: name=pyshaker version=0.0.10 virtualenv={{ shaker_venv }}
+  pip: name=pyshaker version=0.0.14 virtualenv={{ shaker_venv }}
 
 ### begin firewall ###
 # we need TCP/5555 open

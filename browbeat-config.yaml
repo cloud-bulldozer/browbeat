@@ -68,21 +68,21 @@ shaker:
       compute: 1
       progression: linear
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
     - name: l3-north-south
-      enabled: false
+      enabled: true
       placement: double_room
       density: 1
       compute: 1
       progression: null
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
     - name: l3-east-west
-      enabled: false
+      enabled: true
       density: 1
       compute: 1
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
 rally:
   enabled: true
   sleep_before: 5

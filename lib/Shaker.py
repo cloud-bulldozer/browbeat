@@ -43,17 +43,21 @@ class Shaker(WorkloadBase):
 
     def get_stats(self):
         self.logger.info(
-            "Current number of Shaker tests executed: {}".format(self.test_count))
+            "Current number of Shaker tests executed: {}".format(
+                self.test_count))
         self.logger.info(
-            "Current number of Shaker tests passed: {}".format(self.pass_count))
+            "Current number of Shaker tests passed: {}".format(
+                self.pass_count))
         self.logger.info(
-            "Current number of Shaker tests failed: {}".format(self.error_count))
+            "Current number of Shaker tests failed: {}".format(
+                self.error_count))
 
     def final_stats(self, total):
         self.logger.info(
             "Total Shaker scenarios enabled by user: {}".format(total))
         self.logger.info(
-            "Total number of Shaker tests executed: {}".format(self.test_count))
+            "Total number of Shaker tests executed: {}".format(
+                self.test_count))
         self.logger.info(
             "Total number of Shaker tests passed: {}".format(self.pass_count))
         self.logger.info(
@@ -71,8 +75,7 @@ class Shaker(WorkloadBase):
     def update_scenarios(self):
         self.scenario_count += 1
 
-    def set_scenario(self, scenario):
-        fname = scenario['file']
+    def set_scenario(self, scenario, fname):
         stream = open(fname, 'r')
         data = yaml.load(stream)
         stream.close()
@@ -97,15 +100,18 @@ class Shaker(WorkloadBase):
             data['deployment']['accommodation'][3][
                 'compute_nodes'] = default_compute
         if "progression" in scenario:
-            data['execution']['progression'] = scenario['progression']
+            if scenario['progression'] is None:
+                data['execution'].pop('progression', None)
+            else:
+                data['execution']['progression'] = scenario['progression']
         else:
             data['execution']['progression'] = default_progression
-        data['execution']['tests'] = [d for d in data['execution']
-                                      ['tests'] if d.get('class') == "iperf_graph"]
         if "time" in scenario:
-            data['execution']['tests'][0]['time'] = scenario['time']
+            for test in data['execution']['tests']:
+                test['time'] = scenario['time']
         else:
-            data['execution']['tests'][0]['time'] = default_time
+            for test in data['execution']['tests']:
+                test['time'] = default_time
         with open(fname, 'w') as yaml_file:
             yaml_file.write(yaml.dump(data, default_flow_style=False))
 
@@ -115,55 +121,107 @@ class Shaker(WorkloadBase):
             uuidlist.append(key)
         return uuidlist
 
-    def result_check(self, result_dir, test_name, scenario, to_time, from_time):
+    def result_check(
+            self,
+            result_dir,
+            test_name,
+            scenario,
+            to_time,
+            from_time):
         outputfile = os.path.join(result_dir, test_name + "." + "json")
         error = False
-        with open(outputfile) as data_file:
-            data = json.load(data_file)
-        uuidlist = self.get_uuidlist(data)
         workload = self.__class__.__name__
         new_test_name = test_name.split('-')
         new_test_name = new_test_name[3:]
         new_test_name = '-'.join(new_test_name)
+        try:
+            with open(outputfile) as data_file:
+                data = json.load(data_file)
+        except IOError:
+            self.logger.error(
+                "Cannot open outputfile, possible stack creation failure for test: {}". format(
+                    scenario['name']))
+            self.error_update(
+                result_dir,
+                test_name,
+                scenario,
+                to_time,
+                from_time,
+                new_test_name,
+                workload)
+            return
+        uuidlist = self.get_uuidlist(data)
         for uuid in uuidlist:
             if data['records'][uuid]['status'] != "ok":
                 error = True
         if error:
-            self.logger.error("Failed Test: {}".format(scenario['name']))
-            self.logger.error(
-                "saved log to: {}.log".format(os.path.join(result_dir, test_name)))
-            self.update_fail_tests()
-            self.update_total_fail_tests()
-            self.get_time_dict(
+            self.error_update(
+                result_dir,
+                test_name,
+                scenario,
                 to_time,
                 from_time,
-                scenario['name'],
                 new_test_name,
-                workload,
-                "fail")
+                workload)
         else:
-            self.logger.info("Completed Test: {}".format(scenario['name']))
-            self.logger.info(
-                "Saved report to: {}".format(
-                    os.path.join(
-                        result_dir,
-                        test_name +
-                        "." +
-                        "html")))
-            self.logger.info(
-                "saved log to: {}.log".format(os.path.join(result_dir, test_name)))
-            self.update_pass_tests()
-            self.update_total_pass_tests()
-            self.get_time_dict(
+            self.success_update(
+                result_dir,
+                test_name,
+                scenario,
                 to_time,
                 from_time,
-                scenario['name'],
                 new_test_name,
-                workload,
-                "pass")
+                workload)
 
-    def run_scenario(self, scenario, result_dir, test_name):
-        filename = scenario['file']
+    def error_update(self, result_dir, test_name, scenario, to_time, from_time,
+                     new_test_name, workload):
+        self.logger.error("Failed Test: {}".format(scenario['name']))
+        self.logger.error(
+            "saved log to: {}.log".format(
+                os.path.join(
+                    result_dir,
+                    test_name)))
+        self.update_fail_tests()
+        self.update_total_fail_tests()
+        self.get_time_dict(
+            to_time,
+            from_time,
+            scenario['name'],
+            new_test_name,
+            workload,
+            "fail")
+
+    def success_update(
+            self,
+            result_dir,
+            test_name,
+            scenario,
+            to_time,
+            from_time,
+            new_test_name,
+            workload):
+        self.logger.info("Completed Test: {}".format(scenario['name']))
+        self.logger.info(
+            "Saved report to: {}.html".format(
+                os.path.join(
+                    result_dir,
+                    test_name)))
+        self.logger.info(
+            "saved log to: {}.log".format(
+                os.path.join(
+                    result_dir,
+                    test_name)))
+        self.update_pass_tests()
+        self.update_total_pass_tests()
+        self.get_time_dict(
+            to_time,
+            from_time,
+            scenario['name'],
+            new_test_name,
+            workload,
+            "pass")
+
+    def run_scenario(self, scenario, result_dir, test_name, filename):
         server_endpoint = self.config['shaker']['server']
         port_no = self.config['shaker']['port']
         flavor = self.config['shaker']['flavor']
@@ -176,7 +234,7 @@ class Shaker(WorkloadBase):
             "shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}"
             " --os-region-name {7} --agent-join-timeout {6}"
             " --report {4}/{5}.html --output {4}/{5}.json"
-            " --debug > {4}/{5}.log 2>&1").format(
+            " --book {4}/{5} --debug > {4}/{5}.log 2>&1").format(
             server_endpoint,
             port_no,
             flavor,
@@ -199,7 +257,8 @@ class Shaker(WorkloadBase):
             time.sleep(self.config['shaker']['sleep_after'])
         to_ts = int(time.time() * 1000)
         # Snapshotting
-        self.grafana.print_dashboard_url(from_ts, to_ts, test_name)
+        self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
+        self.grafana.print_dashboard_url(test_name)
         self.grafana.log_snapshot_playbook_cmd(
             from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
@@ -209,6 +268,7 @@ class Shaker(WorkloadBase):
         time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         scenarios = self.config.get('shaker')['scenarios']
+        venv = self.config['shaker']['venv']
         self.shaker_checks()
         scen_length = len(scenarios)
         if scen_length > 0:
@@ -217,9 +277,10 @@ class Shaker(WorkloadBase):
                     self.update_scenarios()
                     self.update_total_scenarios()
                     self.logger.info("Scenario: {}".format(scenario['name']))
-                    self.set_scenario(scenario)
+                    fname = os.path.join(venv, scenario['file'])
+                    self.set_scenario(scenario, fname)
                     self.logger.debug("Set Scenario File: {}".format(
-                        scenario['file']))
+                        fname))
                     result_dir = self.tools.create_results_dir(
                         self.config['browbeat'][
                             'results'], time_stamp, "shaker",
@@ -228,9 +289,9 @@ class Shaker(WorkloadBase):
                     self.workload_logger(result_dir, workload)
                     time_stamp1 = datetime.datetime.now().strftime(
                         "%Y%m%d-%H%M%S")
-                    test_name = "{}-browbeat-{}-{}".format(time_stamp1,
-                                                           "shaker", scenario['name'])
-                    self.run_scenario(scenario, result_dir, test_name)
+                    test_name = "{}-browbeat-{}-{}".format(
+                        time_stamp1, "shaker", scenario['name'])
+                    self.run_scenario(scenario, result_dir, test_name, fname)
                     self.get_stats()
                 else:
                     self.logger.info(

@@ -228,6 +228,7 @@ shaker:
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/shaker-venv
+  dns_nameserver: 8.8.8.8
   shaker_region: regionOne
   scenarios:
     - name: l2-4-1
@@ -236,35 +237,35 @@ shaker:
       compute: 1
       progression: linear
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
     - name:  l2-8-1
       enabled: true
       density: 8
       compute: 1
       progression: linear
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
     - name: l2-4-2
       enabled: true
       density: 4
       compute: 2
       progression: linear
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
     - name: l2-4-8
       enabled: true
       density: 8
       compute: 2
       progression: linear
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l2.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
     - name: l3-north-south-4-1
       enabled: true
       placement: single_room
       density: 4
       compute: 1
       progression: null
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
     - name: l3-north-south-8-1
       enabled: false
       placement: single_room
@@ -272,7 +273,7 @@ shaker:
       compute: 1
       progression: null
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
     - name: l3-north-south-4-2
       enabled: true
       placement: single_room
@@ -280,7 +281,7 @@ shaker:
       compute: 2
       progression: null
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
     - name: l3-north-south-8-2
       enabled: true
       placement: single_room
@@ -288,32 +289,33 @@ shaker:
       compute: 2
       progression: null
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_north_south.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
     - name: l3-east-west-4-1
       enabled: true
       density: 4
       compute: 1
       placement: single_room
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
     - name: l3-east-west-8-1
       enabled: true
       density: 8
       compute: 1
       placement: single_room
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
     - name: l3-east-west-4-2
       enabled: true
       density: 4
       compute: 2
       placement: single_room
       time: 60
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
     - name: l3-east-west-8-2
       enabled: true
       density: 8
       compute: 2
       time: 60
       placement: single_room
-      file: /home/stack/shaker-venv/lib/python2.7/site-packages/shaker/scenarios/networking/dense_l3_east_west.yaml
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+ 
