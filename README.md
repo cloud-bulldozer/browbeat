@@ -55,7 +55,7 @@ Installing Browbeat and running the Overcloud checks can be performed either fro
 ### From your local machine
 ```
 $ ssh-copy-id stack@<undercloud-ip>
-$ git clone https://github.com/jtaleric/browbeat.git
+$ git clone https://github.com/openstack/browbeat.git
 $ cd browbeat/ansible
 $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
 $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
@@ -105,7 +105,7 @@ $ ssh undercloud-root
 ```
 $ ssh undercloud-root
 [root@ospd ~]# su - stack
-[stack@ospd ~]$ git clone https://github.com/jtaleric/browbeat.git
+[stack@ospd ~]$ git clone https://github.com/openstack/browbeat.git
 [stack@ospd ~]$ cd browbeat/ansible
 [stack@ospd ansible]$ ./gen_hostfile.sh localhost ~/.ssh/config
 [stack@ospd ansible]$ sudo easy_install pip
@@ -170,7 +170,7 @@ $ git config --global --add gitreview.username "example"
 ```
 Next, Clone the github repository:
 ```
-$ git clone https://github.com/jtaleric/browbeat.git
+$ git clone https://github.com/openstack/browbeat.git
 ```
 You need to have git-review in order to be able to submit patches using the gerrit code review system. You can install it using:
 ```
