@@ -49,7 +49,8 @@
   when: browbeat_exists.stat.isdir is undefined
 
 - name: Generate hosts and ~/.ssh/config on undercloud
-  shell: . {{ home_dir }}/stackrc; {{ home_dir }}/browbeat/ansible/gen_hostfile.sh localhost {{ home_dir }}/.ssh/config
+  shell: . {{ home_dir }}/stackrc; {{ home_dir }}/browbeat/ansible/generate_tripleo_hostfile.sh localhost {{ home_dir }}/.ssh/config
+  when: tripleo
 
 - name: Move hosts file to correct location
   command: mv {{ home_dir }}/hosts {{ home_dir }}/browbeat/ansible/hosts

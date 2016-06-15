@@ -1,5 +1,8 @@
 ---
 
+# OpenStack Installer
+tripleo: true
+
 browbeat_path: /home/stack/browbeat
 home_dir: /home/stack
 

@@ -46,7 +46,7 @@ change parameters of the overcloud.
 Before running browbeat
 =======================
 
--  Execute the ansible/gen_hostfile.sh script (builds the ssh config)
+-  Execute the ansible/generate_tripleo_hostfile.sh script (builds the ssh config)
 -  Configure browbeat-config.yaml to match your tests
 
 How to run Browbeat Stress Tests?
@@ -66,17 +66,22 @@ DEtailed install and run instructions are presented in a section below.
 What is necessary?
 ==================
 
--  TripleO
--  Why? We use passwordless ssh to reach each controller instance and
+-  TripleO**
+
+   Why? We use passwordless ssh to reach each controller instance and
    compute instance.
+
 -  Ansible
--  Why? We started with using bash to make changes to the Overcloud,
+
+   Why? We started with using bash to make changes to the Overcloud,
    creating complex sed/awks that we get for free with Ansible (for the
    most part). Other monitoring and stress test tools are installed by
    the respective playbooks when run.
 
 If you prefer to not use Ansible, the older versions (no longer
 maintained) of the browbeat.sh can be found in a older commit.
+
+** If you are interested in contributing a connector for your OpenStack Distribution, please review the Contributing section.
 
 Detailed Install, Check and Run
 ===============================
@@ -96,7 +101,7 @@ From your local machine
     $ ssh-copy-id stack@<undercloud-ip>
     $ git clone https://github.com/openstack/browbeat.git
     $ cd browbeat/ansible
-    $ ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
+    $ ./generate_tripleo_hostfile.sh <undercloud-ip> ~/.ssh/config
     $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     $ ansible-playbook -i hosts install/browbeat.yml
     $ vi install/group_vars/all.yml # Edit browbeat network settings
@@ -160,7 +165,7 @@ From your undercloud
     [root@ospd ~]# su - stack
     [stack@ospd ~]$ git clone https://github.com/openstack/browbeat.git
     [stack@ospd ~]$ cd browbeat/ansible
-    [stack@ospd ansible]$ ./gen_hostfile.sh localhost ~/.ssh/config
+    [stack@ospd ansible]$ ./generate_tripleo_hostfile.sh localhost ~/.ssh/config
     [stack@ospd ansible]$ sudo easy_install pip
     [stack@ospd ansible]$ sudo pip install ansible
     [stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
@@ -349,4 +354,3 @@ Resources
 * `Code Review <https://review.openstack.org/#/q/project:openstack/browbeat>`_
 * `Git Web <https://review.openstack.org/gitweb?p=openstack/browbeat.git;a=summary>`_
 * `IRC <http://webchat.freenode.net/?nick=browbeat_user&channels=openstack-browbeat>`_ -- **#openstack-browbeat** (irc.freenode.net)
-

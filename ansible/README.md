@@ -30,9 +30,9 @@ Install your public key into stack's authorized_keys
 # ssh-copy-id stack@<undercloud-ip>
 ```
 
-Then run gen_hosts.sh script to generate your overcloud's hosts file for ansible and generate a "jumpbox" ssh config:
+Then run generate_tripleo_hosts.sh script to generate your overcloud's hosts file for ansible and generate a "jumpbox" ssh config:
 ```
-# ./gen_hostfile.sh <undercloud-ip> ~/.ssh/config
+# ./generate_tripleo_hostfile.sh <undercloud-ip> ~/.ssh/config
 ```
 *Review the hosts file the script generates.
 
