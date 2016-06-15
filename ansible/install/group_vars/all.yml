@@ -5,6 +5,8 @@ tripleo: true
 
 browbeat_path: /home/stack/browbeat
 home_dir: /home/stack
+supported_distro: ((ansible_distribution == "CentOS" && ansible_distribution_major_version >= "7") or
+                   (ansible_distribution == "RedHat" && ansible_distribution_major_version >= "7"))
 
 # Login user for the remote hosts
 host_remote_user: heat-admin

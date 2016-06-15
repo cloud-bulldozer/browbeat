@@ -3,6 +3,10 @@
 # Browbeat Install
 #
 
+- name: Check for supported distribution
+  fail: msg="**Unsupported Linux distribution! Please use CentOS 7+, RHEL 7+, or add support for your distribution**"
+  when: not supported_distro
+
 - name: Install python development tools
   yum: name=python-devel state=present
   become: true
