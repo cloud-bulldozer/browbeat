@@ -283,39 +283,71 @@ the gerrit code review system. You can install it using:
 
 ::
 
-    $ yum install git-review
+    $ sudo yum install git-review
 
 To set up your cloned repository to work with OpenStack Gerrit
 
 ::
 
-    [user@laptop browbeat]$ git review -s
+    $ git review -s
 
-Make your changes and then commit them. Use:
-
-::
-
-    [user@laptop browbeat]$ git review
-
-If you want to edit an already submitted patch, follow the below series
-of steps:
-
-Firstly, go to the browbeat directory. Then,
+It's useful to create a branch to do your work, name it something
+related to the change you'd like to introduce.
 
 ::
 
-    git review -d Change-Id
+    $ cd browbeat
+    $ git branch my_special_enhancement
+    $ git checkout !$
 
-Change-Id is the change id number as seen on gerrithub.io.
+Make your changes and then commit them using the instructions
+below.
+
+::
+
+    $ git add /path/to/files/changed
+    $ git commit
+
+Use a descriptive commit title followed by an empty space.
+You should type a small justification of what you are
+changing and why.
+
+Now you're ready to submit your changes for review:
+
+::
+
+    $ git review
+
+
+If you want to make another patchset from the same commit you can
+use the ammend feature after further modification and saving.
+
+::
+
+    $ git add /path/to/files/changed
+    $ git commit --amend
+    $ git review
+
+If you want to submit a new patchset from a different location
+(perhaps on a different machine or computer for example) you can
+clone the browbeat repo again (if it doesn't already exist) and then
+use git review against your unique Change-ID:
+
+::
+
+    $ git review -d Change-Id
+
+Change-Id is the change id number as seen in Gerrit and will be
+generated after your first successful submission.
 
 The above command downloads your patch onto a seperate branch. You might
-need to rebase your local branch with remoste master before running the
-abovecommand to avoid merge conflicts when you resubmit your edited
-patch. To avoid this, Go back to a "safe" commit using
+need to rebase your local branch with remote master before running it to
+avoid merge conflicts when you resubmit the edited patch.  To avoid this
+go back to a "safe" commit using:
 
 ::
 
-    $git reset --hard commit-number
+    $ git reset --hard commit-number
 
 Then,
 
