@@ -63,8 +63,8 @@
 
   - name: Set keystone httpd worker facts
     set_fact:
-      openstack_keystone_admin_workers_processes: "{{ keystone_admin_workers_processes.stdout }}"
-      openstack_keystone_admin_workers_threads: "{{ keystone_admin_workers_threads.stdout }}"
-      openstack_keystone_main_workers_processes: "{{ keystone_main_workers_processes.stdout }}"
-      openstack_keystone_main_workers_threads: "{{ keystone_main_workers_threads.stdout }}"
+      openstack_keystone_admin_workers_processes: "{{ keystone_admin_worker_processes.stdout }}"
+      openstack_keystone_admin_workers_threads: "{{ keystone_admin_worker_threads.stdout }}"
+      openstack_keystone_main_workers_processes: "{{ keystone_main_worker_processes.stdout }}"
+      openstack_keystone_main_workers_threads: "{{ keystone_main_worker_threads.stdout }}"
     when: keystone_in_eventlet.stdout|int == 0
