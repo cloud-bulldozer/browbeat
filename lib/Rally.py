@@ -33,7 +33,7 @@ class Rally(WorkloadBase):
         self.tools = Tools(self.config)
         self.connmon = Connmon(self.config)
         self.grafana = Grafana(self.config)
-        self.elastic = Elastic(self.config)
+        self.elastic = Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0

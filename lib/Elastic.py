@@ -21,7 +21,7 @@ class Elastic:
     """
     """
 
-    def __init__(self, config, tool="browbeat"):
+    def __init__(self, config, workload, tool="browbeat"):
         self.config = config
         self.logger = logging.getLogger('browbeat.Elastic')
         self.es = Elasticsearch([
@@ -30,7 +30,7 @@ class Elastic:
             send_get_body_as='POST'
         )
         today = datetime.datetime.today()
-        self.index = "{}-{}".format(tool, today.strftime('%Y.%m.%d'))
+        self.index = "{}-{}-{}".format(tool, workload, today.strftime('%Y.%m.%d'))
 
     """
     """
