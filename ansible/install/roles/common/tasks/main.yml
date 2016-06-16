@@ -2,7 +2,12 @@
 #
 # Browbeat Install Common
 #
+- name: Check external connectivity
+  shell: ping google.com -c 1 -q
+  register: ping
+  ignore_errors: true
 
 - name: Add DNS record
   become: true
   lineinfile: dest=/etc/resolv.conf state=present line="nameserver {{ dns_server }}" insertafter="^search"
+  when: ping.rc != 0
