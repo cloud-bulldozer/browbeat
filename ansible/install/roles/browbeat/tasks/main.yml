@@ -38,7 +38,7 @@
   when: browbeat_exists.stat.isdir is defined and browbeat_exists.stat.isdir
 
 - name: Clone browbeat on undercloud
-  git: repo=https://github.com/jtaleric/browbeat.git dest={{ home_dir }}/browbeat
+  git: repo=https://github.com/openstack/browbeat.git dest={{ home_dir }}/browbeat
   when: browbeat_exists.stat.isdir is undefined
 
 - name: Generate hosts and ~/.ssh/config on undercloud
