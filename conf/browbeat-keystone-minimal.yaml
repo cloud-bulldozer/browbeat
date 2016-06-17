@@ -3,6 +3,7 @@
 browbeat:
   results : results/
   rerun: 1
+  cloud_name: openstack
 elasticsearch:
   enabled: false
   host: 1.1.1.1
@@ -14,6 +15,7 @@ elasticsearch:
       file: metadata/environment-metadata.json
     - name: software-metadata
       file: metadata/software-metadata.json
+
 ansible:
   hosts: ansible/hosts
   adjust:
@@ -27,7 +29,6 @@ connmon:
   sudo: true
 grafana:
   enabled: false
-  cloud_name: openstack
   grafana_ip: 1.1.1.1
   grafana_port: 3000
   dashboards:

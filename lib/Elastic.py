@@ -75,6 +75,7 @@ class Elastic:
     """
 
     def index_result(self, result, _type='result', _id=None):
+        result['cloud_name'] = self.config['browbeat']['cloud_name']
         return self.es.index(index=self.index,
                              id=_id,
                              body=result,

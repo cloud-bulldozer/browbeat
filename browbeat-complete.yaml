@@ -2,6 +2,7 @@
 browbeat:
   results : results/
   rerun: 3
+  cloud_name: openstack
 elasticsearch:
   enabled: false
   host: 1.1.1.1
@@ -26,7 +27,6 @@ connmon:
   sudo: true
 grafana:
   enabled: true
-  cloud_name: openstack
   grafana_ip: 1.1.1.1
   grafana_port: 3000
   dashboards:
