@@ -52,7 +52,12 @@ Image upload requires Ansible 2.0
 
 ::
 
-    # vi install/group_vars/all.yml  # Edit ansible vars file (Installation parameters)
+    # vi install/group_vars/all.yml
+
+Edit ansible vars file (Installation parameters)
+
+::
+
     # ansible-playbook -i hosts install/browbeat.yml
 
 Install Collectd Agent (Requires a Graphite Server)
@@ -79,6 +84,10 @@ Requires Ansible 2.0
 
 Install Generic ELK Stack
 '''''''''''''''''''''''''
+Listening ports and other options can be changed in ``install/group_vars/all.yml``
+as needed.  You can also change the logging backend to use fluentd via the
+``logging_backend:`` variable.  For most uses leaving the defaults in place is
+accceptable.  If left unchanged the default is to use logstash.
 
 ::
 
@@ -86,11 +95,16 @@ Install Generic ELK Stack
 
 Install ELK Stack (on an OpenStack Undercloud)
 ''''''''''''''''''''''''''''''''''''''''''''''
+Triple-O based OpenStack deployments have a lot of ports already listening on
+the Undercloud node.  You'll need to change the default listening ports for ELK
+to be deployed without conflict.
 
 ::
 
     sed -i 's/nginx_kibana_port: 80/nginx_kibana_port: 8888/' install/group_vars/all.yml
     sed -i 's/elk_server_ssl_cert_port: 8080/elk_server_ssl_cert_port: 9999/' install/group_vars/all.yml
+
+Now you can proceed with deployment.
 
 ::
 
@@ -98,13 +112,19 @@ Install ELK Stack (on an OpenStack Undercloud)
 
 Install Generic ELK Clients
 '''''''''''''''''''''''''''
+Filebeat (official Logstash forwarder) is used here unless you chose the
+optional fluentd ``logging_backend`` option in ``install/group_vars/all.yml``.  In this case
+a simple rsyslog setup will be implemented.
 
 ::
 
     ansible-playbook -i hosts install/elk-client.yml --extra-vars 'elk_server=X.X.X.X'
 
--  elk\_server variable will be generated after the ELK stack playbook
-   runs
+The ``elk_server`` variable will be generated after the ELK stack playbook runs,
+but it's generally wherever you installed ELK.  If you have an existing ELK
+stack you can point new clients to it as well, but you'll want to place a new
+client SSL certificate at the location of
+``http://{{elk_server}}:{{elk_server_ssl_cert_port}}/filebeat-forwarder.crt``
 
 Install ELK Clients for OpenStack nodes
 '''''''''''''''''''''''''''''''''''''''
@@ -112,9 +132,6 @@ Install ELK Clients for OpenStack nodes
 ::
 
     ansible-playbook -i hosts install/elk-openstack-client.yml --extra-vars 'elk_server=X.X.X.X'
-
--  elk\_server variable will be generated after the ELK stack playbook
-   runs
 
 Install graphite service
 ''''''''''''''''''''''''
@@ -139,7 +156,7 @@ Prior to installing graphite as a docker container, please review
 install/group\_vars/all.yml file and ensure the docker related settings
 will work with your target host. This playbook is ideal when installing
 services on director/rdo-manager undercloud host(s).
-   
+
 ::
 
     # ansible-playbook -i hosts install/graphite-docker.yml

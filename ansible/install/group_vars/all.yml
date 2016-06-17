@@ -135,3 +135,19 @@ nginx_kibana_port: 80
 # usage: port filebeat client grabs the client SSL certificate
 # e.g. 9999
 elk_server_ssl_cert_port: 8080
+#
+### logging backend ###
+# you can pick between logstash or fluentd
+# if left empty logstash will be used
+### accepted options ###
+# logging_backend:
+# logging_backend: logstash
+# logging_backend: fluentd
+logging_backend:
+#
+### logstash options ###
+logstash_syslog_port: 5044
+### fluentd options ###
+fluentd_syslog_port: 42185
+fluentd_http_port: 9919
+fluentd_debug_port: 24230
