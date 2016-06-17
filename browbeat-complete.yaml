@@ -8,11 +8,11 @@ elasticsearch:
   port: 9200
   metadata_files:
     - name: hardware-metadata
-      file: hardware-metadata.json
-    - name: os-metadata
-      file: os-metadata.json
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
     - name: software-metadata
-      file: software-metadata.json
+      file: metadata/software-metadata.json
 ansible:
   hosts: ansible/hosts
   adjust:

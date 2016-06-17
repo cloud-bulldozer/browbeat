@@ -3,6 +3,17 @@
 browbeat:
   results : results/
   rerun: 3
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
 ansible:
   hosts: ansible/hosts
   adjust:
