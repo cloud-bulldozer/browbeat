@@ -148,7 +148,7 @@ class Rally(WorkloadBase):
                          'timestamp': es_ts,
                          'scenario': scenario_name,
                          }
-                self.elastic.index_result(error, 'config')
+                self.elastic.index_result(error, 'error')
         for workload in rally_data:
             if not type(rally_data[workload]) is dict:
                 iteration = 1
