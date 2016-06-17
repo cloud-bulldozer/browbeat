@@ -11,6 +11,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from lib.Elastic import browbeat_uuid
 from lib.PerfKit import PerfKit
 from lib.Rally import Rally
 from lib.Shaker import Shaker
@@ -27,7 +28,6 @@ from pykwalify import errors as pykwalify_errors
 _workload_opts = ['perfkit', 'rally', 'shaker']
 _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
-
 
 def _load_config(path, _logger):
     try:
@@ -116,6 +116,7 @@ def main():
     else:
         time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         _logger.info("Browbeat test suite kicked off")
+        _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:
@@ -131,6 +132,7 @@ def main():
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
         WorkloadBase.print_summary()
+        _logger.info("Browbeat Finished, UUID: {}".format(browbeat_uuid))
 
 if __name__ == '__main__':
     sys.exit(main())

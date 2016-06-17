@@ -14,6 +14,9 @@ from elasticsearch import Elasticsearch
 import logging
 import json
 import datetime
+import uuid
+
+browbeat_uuid = uuid.uuid4()
 
 
 class Elastic:
@@ -75,6 +78,7 @@ class Elastic:
     """
 
     def index_result(self, result, _type='result', _id=None):
+        result['browbeat_uuid'] = browbeat_uuid
         result['cloud_name'] = self.config['browbeat']['cloud_name']
         return self.es.index(index=self.index,
                              id=_id,
