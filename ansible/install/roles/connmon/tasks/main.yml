@@ -37,13 +37,62 @@
   changed_when: false
   ignore_errors: true
 
-- name: check iptables
-  shell: iptables -nvL | grep -q "dpt:5800"
-  changed_when: false
-  when: undercloud
-  register: connmon_port
-  ignore_errors: true
+### begin firewall ###
+# we need TCP/5555 open
+# determine firewall status and take action
+# 1) use firewall-cmd if firewalld is utilized
+# 2) insert iptables rule if iptables is used
 
-- name: open up iptables
-  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport 5800 -j ACCEPT
-  when: undercloud and connmon_port.rc == 1
+# Firewalld
+- name: (connmon) Determine if firewalld is in use
+  shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
+  ignore_errors: true
+  register: firewalld_in_use
+  no_log: true
+
+- name: (connmon) Determine if firewalld is active
+  shell: systemctl is-active firewalld.service | grep -vq inactive
+  ignore_errors: true
+  register: firewalld_is_active
+  no_log: true
+
+- name: (connmon) Determine if TCP/{{connmon_port}} is already active
+  shell: firewall-cmd --list-ports | egrep -q "^{{connmon_port}}/tcp"
+  ignore_errors: true
+  register: firewalld_tcp{{connmon_port}}_exists
+  no_log: true
+
+# add firewall rule via firewall-cmd
+- name: (connmon) Add firewall rule for TCP/{{connmon_port}} (firewalld)
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --zone=public --add-port={{connmon_port}}/tcp --permanent
+    - firewall-cmd --reload
+  ignore_errors: true
+  become: true
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{connmon_port}}_exists.rc != 0
+
+# iptables-services
+- name: (connmon) check firewall rules for TCP/{{connmon_port}} (iptables-services)
+  shell: grep "dport {{connmon_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
+  ignore_errors: true
+  register: iptables_tcp5800_exists
+  failed_when: iptables_tcp{{connmon_port}}_exists == 127
+  no_log: true
+
+- name: (connmon) Add firewall rule for TCP/{{connmon_port}} (iptables-services)
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    line: '-A INPUT -p tcp -m tcp --dport {{connmon_port}} -j ACCEPT'
+    regexp: '^INPUT -i lo -j ACCEPT'
+    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    backup: yes
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp5800_exists.stdout|int == 0
+  register: iptables_needs_restart
+
+- name: (connmon) Restart iptables-services for TCP/{{connmon_port}} (iptables-services)
+  shell: systemctl restart iptables.service
+  ignore_errors: true
+  when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
+
+### end firewall ###

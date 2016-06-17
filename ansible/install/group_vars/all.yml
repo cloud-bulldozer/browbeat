@@ -104,6 +104,12 @@ shaker_flavor: m1.small
 shaker_centos: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
 shaker_region: regionOne
 
+#######################################
+# Connman Configuration
+#######################################
+# Port for Connman
+connmon_port: 5800
+
 ########################################
 # Browbeat Network Configuration
 ########################################
