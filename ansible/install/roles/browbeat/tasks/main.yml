@@ -40,22 +40,22 @@
   command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
 
 - name: Determine if browbeat directory exists already
-  stat: path={{ home_dir }}/browbeat
+  stat: path={{ browbeat_path }}
   register: browbeat_exists
 
 - debug: msg="Browbeat directory exists already."
   when: browbeat_exists.stat.isdir is defined and browbeat_exists.stat.isdir
 
 - name: Clone browbeat on undercloud
-  git: repo=https://github.com/openstack/browbeat.git dest={{ home_dir }}/browbeat
+  git: repo=https://github.com/openstack/browbeat.git dest={{ browbeat_path }}
   when: browbeat_exists.stat.isdir is undefined
 
 - name: Generate hosts and ~/.ssh/config on undercloud
-  shell: . {{ home_dir }}/stackrc; {{ home_dir }}/browbeat/ansible/generate_tripleo_hostfile.sh localhost {{ home_dir }}/.ssh/config
+  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh localhost {{ home_dir }}/.ssh/config
   when: tripleo
 
 - name: Move hosts file to correct location
-  command: mv {{ home_dir }}/hosts {{ home_dir }}/browbeat/ansible/hosts
+  command: mv {{ home_dir }}/hosts {{ browbeat_path }}/ansible/hosts
 
 - name: Install requirements.txt into browbeat-venv
   pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
