@@ -12,6 +12,7 @@
     - nova
     - neutron
     - keystone
+    - ceilometer
     - mysql
     - rabbitmq
 
