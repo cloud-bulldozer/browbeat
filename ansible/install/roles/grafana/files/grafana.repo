@@ -1,0 +1,6 @@
+[grafana]
+name=grafana
+baseurl=https://packagecloud.io/grafana/stable/el/7/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana

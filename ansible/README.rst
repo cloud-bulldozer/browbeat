@@ -143,7 +143,8 @@ resources to allocate dedicated systems for the graphing/stats related
 services.  Prior to installing grafana, please review
 install/group\_vars/all.yml file and your ansible inventory file You
 will need to define values for the grafana\_host and graphite\_host IP
-addresses here.
+addresses here.  Optionally you can change the listening port for
+graphite-web.
 
 ::
 
@@ -171,7 +172,7 @@ resources to allocate dedicated systems for the graphing/stats related
 services.  Prior to installing grafana, please review
 install/group\_vars/all.yml file and your ansible inventory file You
 will need to define values for the grafana\_host and graphite\_host IP
-addresses here.
+addresses here.  Optionally you can change the listening port.
 
 ::
 

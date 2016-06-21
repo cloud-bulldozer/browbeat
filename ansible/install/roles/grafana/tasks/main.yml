@@ -17,11 +17,24 @@
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state=present
 
-- name: Install grafana rpms
+- name: Install grafana RPM repo
+  copy:
+    src=grafana.repo
+    dest=/etc/yum.repos.d/grafana.repo
+    owner=root
+    group=root
+    mode=0644
+  become: true
+
+- name: Import grafana GPG Key
+  rpm_key: key=https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+    state=present
+
+- name: Install grafana RPM
   yum: name={{ item }} state=present
   become: true
   with_items:
-    - https://grafanarel.s3.amazonaws.com/builds/grafana-2.6.0-1.x86_64.rpm
+    - grafana
 
 - name: Set grafana server port
   ini_file:
@@ -38,15 +51,67 @@
       value: true
   become: true
 
-# disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
+### begin firewall ###
+# we need TCP/3000 open
+# determine firewall status and take action
+# 1) use firewall-cmd if firewalld is utilized
+# 2) insert iptables rule if iptables is used
 
-- name: disable firewalld
-  service: name=firewalld state=stopped enabled=false
+# Firewalld
+- name: (grafana) Determine if firewalld is in use
+  shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
+  ignore_errors: true
+  register: firewalld_in_use
+  no_log: true
+
+- name: (grafana) Determine if firewalld is active
+  shell: systemctl is-active firewalld.service | grep -vq inactive
+  ignore_errors: true
+  register: firewalld_is_active
+  no_log: true
+
+- name: (grafana) Determine if TCP/{{grafana_port}} is already active
+  shell: firewall-cmd --list-ports | egrep -q "^{{grafana_port}}/tcp"
+  ignore_errors: true
+  register: firewalld_tcp{{grafana_port}}_exists
+  no_log: true
+
+# add firewall rule via firewall-cmd
+- name: (grafana) Add firewall rule for TCP/{{grafana_port}} (firewalld)
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --zone=public --add-port={{grafana_port}}/tcp --permanent
+    - firewall-cmd --reload
+  ignore_errors: true
   become: true
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{grafana_port}}_exists.rc != 0
 
-#
+# iptables-services
+- name: (grafana) check firewall rules for TCP/{{grafana_port}} (iptables-services)
+  shell: grep "dport {{grafana_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
+  ignore_errors: true
+  register: iptables_tcp3000_exists
+  failed_when: iptables_tcp{{grafana_port}}_exists == 127
+  no_log: true
+
+- name: (grafana) Add firewall rule for TCP/{{grafana_port}} (iptables-services)
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    line: '-A INPUT -p tcp -m tcp --dport {{grafana_port}} -j ACCEPT'
+    regexp: '^INPUT -i lo -j ACCEPT'
+    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    backup: yes
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp3000_exists.stdout|int == 0
+  register: iptables_needs_restart
+
+- name: (grafana) Restart iptables-services for TCP/{{grafana_port}} (iptables-services)
+  shell: systemctl restart iptables.service
+  ignore_errors: true
+  when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
+
+### end firewall ###
+
 # setup the grafana-server service
-#
 - name: Setup grafana-server service
   service: name=grafana-server state=started enabled=true
   become: true

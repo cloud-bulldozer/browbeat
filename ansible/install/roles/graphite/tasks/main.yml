@@ -19,9 +19,6 @@
     - python-carbon
     - expect
 
-# moved to grafana specific playbook
-#    - https://grafanarel.s3.amazonaws.com/builds/grafana-2.6.0-1.x86_64.rpm
-
 - name: Check for graphite.db sqlite
   shell: ls /var/lib/graphite-web/graphite.db
   ignore_errors: true
@@ -52,19 +49,70 @@
   become: true
   register: apache_needs_restart
 
+### begin firewall ###
+# we need TCP/80 open
+# determine firewall status and take action
+# 1) use firewall-cmd if firewalld is utilized
+# 2) insert iptables rule if iptables is used
+
+# Firewalld
+- name: (graphite-web) Determine if firewalld is in use
+  shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
+  ignore_errors: true
+  register: firewalld_in_use
+  no_log: true
+
+- name: (graphite-web) Determine if firewalld is active
+  shell: systemctl is-active firewalld.service | grep -vq inactive
+  ignore_errors: true
+  register: firewalld_is_active
+  no_log: true
+
+- name: (graphite-web) Determine if TCP/{{graphite_port}} is already active
+  shell: firewall-cmd --list-ports | egrep -q "^{{graphite_port}}/tcp"
+  ignore_errors: true
+  register: firewalld_tcp{{graphite_port}}_exists
+  no_log: true
+
+# add firewall rule via firewall-cmd
+- name: (graphite-web) Add firewall rule for TCP/{{graphite_port}} (firewalld)
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --zone=public --add-port={{graphite_port}}/tcp --permanent
+    - firewall-cmd --reload
+  ignore_errors: true
+  become: true
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{graphite_port}}_exists.rc != 0
+
+# iptables-services
+- name: (graphite-web) check firewall rules for TCP/{{graphite_port}} (iptables-services)
+  shell: grep "dport {{graphite_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
+  ignore_errors: true
+  register: iptables_tcp80_exists
+  failed_when: iptables_tcp{{graphite_port}}_exists == 127
+  no_log: true
+
+- name: (graphite-web) Add firewall rule for TCP/{{graphite_port}} (iptables-services)
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    line: '-A INPUT -p tcp -m tcp --dport {{graphite_port}} -j ACCEPT'
+    regexp: '^INPUT -i lo -j ACCEPT'
+    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    backup: yes
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp80_exists.stdout|int == 0
+  register: iptables_needs_restart
+
+- name: (graphite-web) Restart iptables-services for TCP/{{graphite_port}} (iptables-services)
+  shell: systemctl restart iptables.service
+  ignore_errors: true
+  when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
+
+### end firewall ###
 
 # Start graphite-web service
-
 - name: Setup httpd service
   service: name=httpd state=started enabled=true
   become: true
-
-# disable firewalld (might need to create specific firewall rules or leave it to admin to do via iptables)
-
-- name: disable firewalld
-  service: name=firewalld state=stopped enabled=false
-  become: true
-  ignore_errors: true
 
 # remove silly welcome from apache (if it exists)
 - name: Remove httpd welcome config
