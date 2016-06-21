@@ -10,6 +10,7 @@ NeutronPlugin.create_network_nova_boot:
       image:
         name: '{{image_name}}'
       network_create_args: {}
+      num_networks: {{num_networks}}
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
@@ -24,6 +25,10 @@ NeutronPlugin.create_network_nova_boot:
           port: -1
           router: -1
           subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
     sla:
       max_avg_duration: {{sla_max_avg_duration}}
       max_seconds_per_iteration: {{sla_max_seconds}}
