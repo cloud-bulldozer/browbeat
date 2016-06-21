@@ -25,6 +25,7 @@
   shell: cat /var/log/messages | /opt/logstash/bin/logstash -f /etc/logstash/conf.d/10-syslog.conf
   when: "'logstash-' not in elasticsearch_index.content"
   ignore_errors: true
+  no_log: true
 
 - name: Install local rsyslogd for fluentd
   yum: name={{ item }} state=present
