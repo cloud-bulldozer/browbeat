@@ -89,6 +89,11 @@ as needed.  You can also change the logging backend to use fluentd via the
 ``logging_backend:`` variable.  For most uses leaving the defaults in place is
 accceptable.  If left unchanged the default is to use logstash.
 
+You can also install the optional `curator <https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html>`_ tool for managing
+elasticsearch indexes.  Set ``install_curator_tool: true`` to enable this optional tool installation.
+
+If all the variables look ok in ``install/group_vars/all.yml`` you can proceed with deployment.
+
 ::
 
     ansible-playbook -i hosts install/elk.yml
