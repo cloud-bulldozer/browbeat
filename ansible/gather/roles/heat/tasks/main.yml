@@ -1,0 +1,275 @@
+---
+#
+# Tasks to get heat facts
+#
+
+  - name: Get heat stale token duration
+    command: crudini --get /etc/heat/heat.conf DEFAULT stale_token_duration
+    register: stale_token_duration
+    ignore_errors: true
+
+  - name: Set heat stale token duration
+    set_fact:
+      openstack_heat_stale_token_duration: "{{ stale_token_duration.stdout }}"
+    when: stale_token_duration.stdout != ""
+
+  - name: Set heat stale token duration
+    set_fact:
+      openstack_heat_stale_token_duration: 30
+    when: stale_token_duration.stdout == ""
+
+  - name: Get heat max resources per stack
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_resources_per_stack
+    register: max_resources_per_stack
+    ignore_errors: true
+
+  - name: Set heat max resources per stack
+    set_fact:
+      openstack_heat_max_resources_per_stack: "{{ max_resources_per_stack.stdout }}"
+    when: max_resources_per_stack.stdout != ""
+
+  - name: Set heat max resources per stack
+    set_fact:
+      openstack_heat_max_resources_per_stack: -1
+    when: max_resources_per_stack.stdout == ""
+
+  - name: Get heat max stacks per tenant
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_stacks_per_tenant
+    register: max_stacks_per_tenant
+    ignore_errors: true
+
+  - name: Set heat max stacks per tenant
+    set_fact:
+      openstack_heat_max_stacks_per_tenant: "{{ max_stacks_per_tenant.stdout }}"
+    when: max_stacks_per_tenant.stdout != ""
+
+  - name: Set heat max stacks per tenant
+    set_fact:
+      openstack_heat_max_stacks_per_tenant: 100
+    when: max_stacks_per_tenant.stdout == ""
+
+  - name: Get heat action retry limit
+    command: crudini --get /etc/heat/heat.conf DEFAULT action_retry_limit
+    register: action_retry_limit
+    ignore_errors: true
+
+  - name: Set heat action retry limit
+    set_fact:
+      openstack_heat_action_retry_limit: "{{ action_retry_limit.stdout }}"
+    when: action_retry_limit.stdout != ""
+
+  - name: Set heat action retry limit
+    set_fact:
+      openstack_heat_action_retry_limit: 5
+    when: action_retry_limit.stdout == ""
+
+  - name: Get heat max interface check attempts
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_interface_check_attempts
+    register: max_interface_check_attempts
+    ignore_errors: true
+
+  - name: Set heat max interface check attempts
+    set_fact:
+      openstack_heat_max_interface_check_attempts: "{{ max_interface_check_attempts.stdout }}"
+    when: max_interface_check_attempts.stdout != ""
+
+  - name: Set heat max interface check attempts
+    set_fact:
+      openstack_heat_max_interface_check_attempts: 10
+    when: max_interface_check_attempts.stdout == ""
+
+  - name: Get heat event purgE batch size
+    command: crudini --get /etc/heat/heat.conf DEFAULT event_purgE_batch_size
+    register: event_purgE_batch_size
+    ignore_errors: true
+
+  - name: Set heat event purgE batch size
+    set_fact:
+      openstack_heat_event_purgE_batch_size: "{{ event_purgE_batch_size.stdout }}"
+    when: event_purgE_batch_size.stdout != ""
+
+  - name: Set heat event purgE batch size
+    set_fact:
+      openstack_heat_event_purgE_batch_size: 10
+    when: event_purgE_batch_size.stdout == ""
+
+  - name: Get heat max events per stack
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_events_per_stack
+    register: max_events_per_stack
+    ignore_errors: true
+
+  - name: Set heat max events per stack
+    set_fact:
+      openstack_heat_max_events_per_stack: "{{ max_events_per_stack.stdout }}"
+    when: max_events_per_stack.stdout != ""
+
+  - name: Set heat max events per stack
+    set_fact:
+      openstack_heat_max_events_per_stack: 1000
+    when: max_events_per_stack.stdout == ""
+
+  - name: Get heat stack action timeout
+    command: crudini --get /etc/heat/heat.conf DEFAULT stack_action_timeout
+    register: stack_action_timeout
+    ignore_errors: true
+
+  - name: Set heat stack action timeout
+    set_fact:
+      openstack_heat_stack_action_timeout: "{{ stack_action_timeout.stdout }}"
+    when: stack_action_timeout.stdout != ""
+
+  - name: Set heat stack action timeout
+    set_fact:
+      openstack_heat_stack_action_timeout: 3600
+    when: stack_action_timeout.stdout == ""
+
+  - name: Get heat enable stack abandon
+    command: crudini --get /etc/heat/heat.conf DEFAULT enable_stack_abandon
+    register: enable_stack_abandon
+    ignore_errors: true
+
+  - name: Set heat enable stack abandon
+    set_fact:
+      openstack_heat_enable_stack_abandon: "{{ enable_stack_abandon.stdout }}"
+    when: (enable_stack_abandon.stdout != "")
+
+  - name: Set heat enable stack abandon
+    set_fact:
+      openstack_heat_enable_stack_abandon: false
+    when: (enable_stack_abandon.stdout == "")
+
+  - name: Get heat enable stack adopt
+    command: crudini --get /etc/heat/heat.conf DEFAULT enable_stack_adopt
+    register: enable_stack_adopt
+    ignore_errors: true
+
+  - name: Set heat enable stack adopt
+    set_fact:
+      openstack_heat_enable_stack_adopt: "{{ enable_stack_adopt.stdout }}"
+    when: (enable_stack_adopt.stdout != "")
+
+  - name: Set heat enable stack adopt
+    set_fact:
+      openstack_heat_enable_stack_adopt: false
+    when: (enable_stack_adopt.stdout == "")
+
+  - name: Get heat convergence engine
+    command: crudini --get /etc/heat/heat.conf DEFAULT convergence_engine
+    register: convergence_engine
+    ignore_errors: true
+
+  - name: Set heat convergence engine
+    set_fact:
+      openstack_heat_convergence_engine: "{{ convergence_engine.stdout }}"
+    when: (convergence_engine.stdout != "")
+
+  - name: Set heat convergence engine
+    set_fact:
+      openstack_heat_convergence_engine: false
+    when: (convergence_engine.stdout == "")
+
+  - name: Get heat observe on update
+    command: crudini --get /etc/heat/heat.conf DEFAULT observe_on_update
+    register: observe_on_update
+    ignore_errors: true
+
+  - name: Set heat observe on update
+    set_fact:
+      openstack_heat_observe_on_update: "{{ observe_on_update.stdout }}"
+    when: (observe_on_update.stdout != "")
+
+  - name: Set heat observe on update
+    set_fact:
+      openstack_heat_observe_on_update: false
+    when: (observe_on_update.stdout == "")
+
+  - name: Get heat encrypt parameter and properties
+    command: crudini --get /etc/heat/heat.conf DEFAULT encrypt_parameter_and_properties
+    register: encrypt_parameter_and_properties
+    ignore_errors: true
+
+  - name: Set heat encrypt parameter and properties
+    set_fact:
+      openstack_heat_encrypt_parameter_and_properties: "{{ encrypt_parameter_and_properties.stdout }}"
+    when: (encrypt_parameter_and_properties.stdout != "")
+
+  - name: Set heat encrypt parameter and properties
+    set_fact:
+      openstack_heat_encrypt_parameter_and_properties: false
+    when: (encrypt_parameter_and_properties.stdout == "")
+
+  - name: Get heat periodic interval
+    command: crudini --get /etc/heat/heat.conf DEFAULT periodic_interval
+    register: periodic_interval
+    ignore_errors: true
+
+  - name: Set heat periodic interval
+    set_fact:
+      openstack_heat_periodic_interval: "{{ periodic_interval.stdout }}"
+    when: periodic_interval.stdout != ""
+
+  - name: Set heat periodic interval
+    set_fact:
+      openstack_heat_periodic_interval: 60
+    when: periodic_interval.stdout == ""
+
+  - name: Get heat max template size
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_template_size
+    register: max_template_size
+    ignore_errors: true
+
+  - name: Set heat max template size
+    set_fact:
+      openstack_heat_max_template_size: "{{ max_template_size.stdout }}"
+    when: max_template_size.stdout != ""
+
+  - name: Set heat max template size
+    set_fact:
+      openstack_heat_max_template_size: 524288
+    when: max_template_size.stdout == ""
+
+  - name: Get heat max nested stack depth
+    command: crudini --get /etc/heat/heat.conf DEFAULT max_nested_stack_depth
+    register: max_nested_stack_depth
+    ignore_errors: true
+
+  - name: Set heat max nested stack depth
+    set_fact:
+      openstack_heat_max_nested_stack_depth: "{{ max_nested_stack_depth.stdout }}"
+    when: max_nested_stack_depth.stdout != ""
+
+  - name: Set heat max nested stack depth
+    set_fact:
+      openstack_heat_max_nested_stack_depth: 5
+    when: max_nested_stack_depth.stdout == ""
+
+  - name: Get heat debug
+    command: crudini --get /etc/heat/heat.conf DEFAULT debug
+    register: debug
+    ignore_errors: true
+
+  - name: Set heat debug
+    set_fact:
+      openstack_heat_debug: "{{ debug.stdout }}"
+    when: (debug.stdout != "")
+
+  - name: Set heat debug
+    set_fact:
+      openstack_heat_debug: false
+    when: (debug.stdout == "")
+
+  - name: Get heat rpc response timeout
+    command: crudini --get /etc/heat/heat.conf DEFAULT rpc_response_timeout
+    register: rpc_response_timeout
+    ignore_errors: true
+
+  - name: Set heat rpc response timeout
+    set_fact:
+      openstack_heat_rpc_response_timeout: "{{ rpc_response_timeout.stdout }}"
+    when: rpc_response_timeout.stdout != ""
+
+  - name: Set heat rpc response timeout
+    set_fact:
+      openstack_heat_rpc_response_timeout: 600
+    when: rpc_response_timeout.stdout == ""
+
