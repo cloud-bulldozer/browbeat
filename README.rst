@@ -32,6 +32,9 @@ Table of Contents
 
 -  `Running PerfKitBenchmarker <#running-perfkitbenchmarker>`__
 -  `Contributing <#contributing>`__
+
+   -  `Adding Functionality <#adding-functionality>`__
+
 -  `Links and Resources <#resources>`__
 
 Browbeat
@@ -367,6 +370,17 @@ Finally, push the patch for review using,
 ::
 
     $ git review
+
+Adding functionality
+--------------------
+
+If you are adding new functionality to Browbeat please add testing for that functionality in.
+
+::
+
+    $ ci-scripts/install-and-check.sh
+
+See the README.rst in the ci-scripts folder for more details on the structure of the script and how to add additional tests.
 
 Resources
 =========
