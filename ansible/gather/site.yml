@@ -13,6 +13,7 @@
     - neutron
     - keystone
     - ceilometer
+    - cinder
     - mysql
     - rabbitmq
 
