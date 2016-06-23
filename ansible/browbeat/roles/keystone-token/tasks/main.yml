@@ -70,22 +70,22 @@
 
 - name: Setup fernet keys
   command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
-  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname == groups['controller'][0])    
+  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname == groups['controller'][0])
 
 - name: Get fernet keys
   fetch: src=/etc/keystone/fernet-keys/{{ item }} dest=roles/keystone-token/files/{{ item }} flat=yes
   with_items:
     - 0
     - 1
-  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])    
+  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])
   changed_when: false
 
 - name: Copy fernet keys
-  copy: src={{ item }} dest=/etc/yum.repos.d/
+  copy: src={{ item }} dest=/etc/keystone/fernet-keys/{{ item }}
   with_items:
-    - 0
-    - 1
-  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname != groups['controller'][0])    
+    - "0"
+    - "1"
+  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname != groups['controller'][0])
 
 - name: Copy keystone type enforcement file
   copy:
@@ -102,5 +102,5 @@
   when: "'{{ token_provider }}' == 'fernet'"
 
 - name: Install keystone selinux policy
-  shell: semodule -i /root/my-keystone.pp 
+  shell: semodule -i /root/my-keystone.pp
   when: "'{{ token_provider }}' == 'fernet'"

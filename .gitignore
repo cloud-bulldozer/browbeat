@@ -6,6 +6,9 @@
 # Prevent hosts files from sneaking into the git repo
 ansible/hosts
 
+# Prevent any fernet keys from sneaking into git repo
+ansible/browbeat/roles/keystone-token/files/[0-9]
+
 log/*
 
 # Swap files
