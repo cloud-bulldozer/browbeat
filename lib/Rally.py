@@ -146,6 +146,7 @@ class Rally(WorkloadBase):
                          'error': metrics['error'],
                          'result': task_id,
                          'timestamp': es_ts,
+                         'rally_setup': rally_json[0]['key'],
                          'scenario': scenario_name,
                          }
                 self.elastic.index_result(error, 'error')
