@@ -54,3 +54,4 @@
       service: name=collectd state=stopped enabled=false
       become: true
       when: not collectd_compute
+      ignore_errors: true
