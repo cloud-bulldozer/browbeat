@@ -180,4 +180,4 @@ echo "---------------------------"
 echo "Copying heat-admin key to local machine(~/.ssh/heat-admin-id_rsa) to for use with ssh config file"
 echo "---------------------------"
 echo ""
-scp "stack@${tripleo_ip_address}":/home/stack/.ssh/id_rsa ~/.ssh/heat-admin-id_rsa
+scp -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" "stack@${tripleo_ip_address}":/home/stack/.ssh/id_rsa ~/.ssh/heat-admin-id_rsa
