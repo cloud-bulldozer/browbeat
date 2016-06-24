@@ -160,6 +160,7 @@ class Rally(WorkloadBase):
                                'action': workload_name,
                                'iteration': iteration,
                                'timestamp': es_ts,
+                               'grafana_url': [self.grafana.grafana_urls()],
                                'scenario': scenario_name,
                                'rally_setup': rally_json[0]['key'],
                                'raw': rally_data[workload]}
