@@ -10,7 +10,7 @@
 
   - name: Set cinder osapi max limit
     set_fact:
-      openstack_cinder_osapi_max_limit: "{{ osapi_max_limit }}"
+      openstack_cinder_osapi_max_limit: "{{ osapi_max_limit.stdout }}"
     when: osapi_max_limit.stdout != ""
 
   - name: Set cinder osapi max limit
@@ -25,7 +25,7 @@
 
   - name: Set cinder backup ceph chunk size
     set_fact:
-      openstack_cinder_backup_ceph_chunk_size: "{{ backup_ceph_chunk_size }}"
+      openstack_cinder_backup_ceph_chunk_size: "{{ backup_ceph_chunk_size.stdout }}"
     when: backup_ceph_chunk_size.stdout != ""
 
   - name: Set cinder backup ceph chunk size
@@ -40,7 +40,7 @@
 
   - name: Set cinder backup ceph stripe unit
     set_fact:
-      openstack_cinder_backup_ceph_stripe_unit: "{{ backup_ceph_stripe_unit }}"
+      openstack_cinder_backup_ceph_stripe_unit: "{{ backup_ceph_stripe_unit.stdout }}"
     when: backup_ceph_stripe_unit.stdout != ""
 
   - name: Set cinder backup ceph stripe unit
@@ -55,7 +55,7 @@
 
   - name: Set cinder backup ceph stripe count
     set_fact:
-      openstack_cinder_backup_ceph_stripe_count: "{{ backup_ceph_stripe_count }}"
+      openstack_cinder_backup_ceph_stripe_count: "{{ backup_ceph_stripe_count.stdout }}"
     when: backup_ceph_stripe_count.stdout != ""
 
   - name: Set cinder backup ceph stripe count
@@ -70,7 +70,7 @@
 
   - name: Set cinder restore discarded excess bytes
     set_fact:
-      openstack_cinder_restore_discarded_excess_bytes: "{{ restore_discarded_excess_bytes }}"
+      openstack_cinder_restore_discarded_excess_bytes: "{{ restore_discarded_excess_bytes.stdout }}"
     when: (restore_discarded_excess_bytes.stdout != "")
 
   - name: Set cinder restore discarded excess bytes
@@ -85,7 +85,7 @@
 
   - name: Set cinder expiry thres minutes
     set_fact:
-      openstack_cinder_expiry_thres_minutes: "{{ expiry_thres_minutes }}"
+      openstack_cinder_expiry_thres_minutes: "{{ expiry_thres_minutes.stdout }}"
     when: expiry_thres_minutes.stdout != ""
 
   - name: Set cinder expiry thres minutes
@@ -100,7 +100,7 @@
 
   - name: Set cinder netapp enable multiattach
     set_fact:
-      openstack_cinder_netapp_enable_multiattach: "{{ netapp_enable_multiattach }}"
+      openstack_cinder_netapp_enable_multiattach: "{{ netapp_enable_multiattach.stdout }}"
     when: (netapp_enable_multiattach.stdout != "")
 
   - name: Set cinder netapp enable multiattach
@@ -115,7 +115,7 @@
 
   - name: Set cinder backup tsm compression
     set_fact:
-      openstack_cinder_backup_tsm_compression: "{{ backup_tsm_compression }}"
+      openstack_cinder_backup_tsm_compression: "{{ backup_tsm_compression.stdout }}"
     when: (backup_tsm_compression.stdout != "")
 
   - name: Set cinder backup tsm compression
@@ -130,7 +130,7 @@
 
   - name: Set cinder gpfs max clone depth
     set_fact:
-      openstack_cinder_gpfs_max_clone_depth: "{{ gpfs_max_clone_depth }}"
+      openstack_cinder_gpfs_max_clone_depth: "{{ gpfs_max_clone_depth.stdout }}"
     when: gpfs_max_clone_depth.stdout != ""
 
   - name: Set cinder gpfs max clone depth
@@ -145,7 +145,7 @@
 
   - name: Set cinder violin request timeout
     set_fact:
-      openstack_cinder_violin_request_timeout: "{{ violin_request_timeout }}"
+      openstack_cinder_violin_request_timeout: "{{ violin_request_timeout.stdout }}"
     when: violin_request_timeout.stdout != ""
 
   - name: Set cinder violin request timeout
@@ -160,7 +160,7 @@
 
   - name: Set cinder nexenta blocksize
     set_fact:
-      openstack_cinder_nexenta_blocksize: "{{ nexenta_blocksize }}"
+      openstack_cinder_nexenta_blocksize: "{{ nexenta_blocksize.stdout }}"
     when: nexenta_blocksize.stdout != ""
 
   - name: Set cinder nexenta blocksize
@@ -175,7 +175,7 @@
 
   - name: Set cinder nexenta rrmgr tcp buf size
     set_fact:
-      openstack_cinder_nexenta_rrmgr_tcp_buf_size: "{{ nexenta_rrmgr_tcp_buf_size }}"
+      openstack_cinder_nexenta_rrmgr_tcp_buf_size: "{{ nexenta_rrmgr_tcp_buf_size.stdout }}"
     when: nexenta_rrmgr_tcp_buf_size.stdout != ""
 
   - name: Set cinder nexenta rrmgr tcp buf size
@@ -190,7 +190,7 @@
 
   - name: Set cinder nexenta chunksize
     set_fact:
-      openstack_cinder_nexenta_chunksize: "{{ nexenta_chunksize }}"
+      openstack_cinder_nexenta_chunksize: "{{ nexenta_chunksize.stdout }}"
     when: nexenta_chunksize.stdout != ""
 
   - name: Set cinder nexenta chunksize
@@ -205,7 +205,7 @@
 
   - name: Set cinder sf emulate 512
     set_fact:
-      openstack_cinder_sf_emulate_512: "{{ sf_emulate_512 }}"
+      openstack_cinder_sf_emulate_512: "{{ sf_emulate_512.stdout }}"
     when: (sf_emulate_512.stdout != "")
 
   - name: Set cinder sf emulate 512
@@ -220,7 +220,7 @@
 
   - name: Set cinder sf allow tenant qos
     set_fact:
-      openstack_cinder_sf_allow_tenant_qos: "{{ sf_allow_tenant_qos }}"
+      openstack_cinder_sf_allow_tenant_qos: "{{ sf_allow_tenant_qos.stdout }}"
     when: (sf_allow_tenant_qos.stdout != "")
 
   - name: Set cinder sf allow tenant qos
@@ -235,7 +235,7 @@
 
   - name: Set cinder sf allow template caching
     set_fact:
-      openstack_cinder_sf_allow_template_caching: "{{ sf_allow_template_caching }}"
+      openstack_cinder_sf_allow_template_caching: "{{ sf_allow_template_caching.stdout }}"
     when: (sf_allow_template_caching.stdout != "")
 
   - name: Set cinder sf allow template caching
@@ -250,7 +250,7 @@
 
   - name: Set cinder backup swift object size
     set_fact:
-      openstack_cinder_backup_swift_object_size: "{{ backup_swift_object_size }}"
+      openstack_cinder_backup_swift_object_size: "{{ backup_swift_object_size.stdout }}"
     when: backup_swift_object_size.stdout != ""
 
   - name: Set cinder backup swift object size
@@ -265,7 +265,7 @@
 
   - name: Set cinder backup swift block size
     set_fact:
-      openstack_cinder_backup_swift_block_size: "{{ backup_swift_block_size }}"
+      openstack_cinder_backup_swift_block_size: "{{ backup_swift_block_size.stdout }}"
     when: backup_swift_block_size.stdout != ""
 
   - name: Set cinder backup swift block size
@@ -280,7 +280,7 @@
 
   - name: Set cinder backup file size
     set_fact:
-      openstack_cinder_backup_file_size: "{{ backup_file_size }}"
+      openstack_cinder_backup_file_size: "{{ backup_file_size.stdout }}"
     when: backup_file_size.stdout != ""
 
   - name: Set cinder backup file size
@@ -295,7 +295,7 @@
 
   - name: Set cinder backup sha block size bytes
     set_fact:
-      openstack_cinder_backup_sha_block_size_bytes: "{{ backup_sha_block_size_bytes }}"
+      openstack_cinder_backup_sha_block_size_bytes: "{{ backup_sha_block_size_bytes.stdout }}"
     when: backup_sha_block_size_bytes.stdout != ""
 
   - name: Set cinder backup sha block size bytes
