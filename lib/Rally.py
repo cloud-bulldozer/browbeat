@@ -143,13 +143,15 @@ class Rally(WorkloadBase):
                             rally_data[value].append(metrics[workload][value])
             if len(metrics['error']) > 0:
                 error = {'action_name': value,
-                         'error': metrics['error'],
+                         'error_type': metrics['error'][0],
+                         'error_msg': metrics['error'][1],
                          'result': task_id,
                          'timestamp': es_ts,
                          'rally_setup': rally_json[0]['key'],
                          'scenario': scenario_name,
                          }
-                self.elastic.index_result(error, 'error')
+                error_result = self.elastic.combine_metadata(error)
+                self.elastic.index_result(error_result, 'error')
         for workload in rally_data:
             if not type(rally_data[workload]) is dict:
                 iteration = 1
