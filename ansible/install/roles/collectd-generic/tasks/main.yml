@@ -28,20 +28,6 @@
 
 
 #
-# CFME specific configuration steps
-#
-- name: Copy cfme-http.conf for apache monitoring
-  copy:
-    src=cfme-http.conf
-    dest=/etc/httpd/conf.d/cfme-http.conf
-    owner=root
-    group=root
-    mode=0644
-  when: "'cfme' in '{{config_type}}'"
-  notify:
-    - restart httpd
-
-#
 # Satellite6 specific configuration steps
 #
 - name: Get Candlepin PostgresDB Password

@@ -13,24 +13,6 @@
         process_list_name: Baremetal
       - template_name: guest
         process_list_name: Guest
-      - template_name: cfme
-        process_list_name: CFME
-      - template_name: cfmeallinone
-        process_list_name: CFME-All-In-One
-      # - template_name: cfme
-      #   process_list_name: CFME-Amazon
-      # - template_name: cfme
-      #   process_list_name: CFME-Azure
-      - template_name: cfme
-        process_list_name: CFME-Containers
-      - template_name: cfme
-        process_list_name: CFME-Microsoft
-      - template_name: cfme
-        process_list_name: CFME-Openstack
-      - template_name: cfme
-        process_list_name: CFME-RedHat
-      - template_name: cfme
-        process_list_name: CFME-VMware
       - template_name: graphite
         process_list_name: Graphite
       - template_name: ose

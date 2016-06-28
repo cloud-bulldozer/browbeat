@@ -4,9 +4,6 @@ Installing and configuring collectd agent on other machines
 Collectd configurations are built for these types of machines:
   * baremetal
   * guest
-  * cfme
-  * cfme-vmdb
-  * cfme-all-in-one
   * graphite/grafana
   * ose
   * satellite6
@@ -40,15 +37,6 @@ Complete Example Inventory file:
     [guest]
     x.x.x.x # An ip adddress or fqdn or specificed vm in ~/.ssh/config
 
-    [cfme]
-    x.x.x.x # An ip address of a Red Hat Cloud Forms appliance or ManageIQ appliance
-
-    [cfme-vmdb]
-    x.x.x.x # An ip address of a Red Hat Cloud Forms appliance with vmdb
-
-    [cfme-all-in-one]
-    x.x.x.x # An ip address of a Red Hat Cloud Forms appliance or ManageIQ appliance with Graphite and Grafana
-
     [graphite]
     x.x.x.x # An ip address of a Graphite/Grafana Server
 
@@ -59,14 +47,13 @@ Complete Example Inventory file:
     x.x.x.x # An ip address of a Red Hat Satellite 6 Server
 
 Example running the collectd-generic playbook on the above specified
-cfme machine:
+satellite6 machine:
 
 ::
 
-    # ansible-playbook -i hosts install/collectd-generic.yml --tags "cfme"
+    # ansible-playbook -i hosts install/collectd-generic.yml --tags "satellite6"
 
-Replace "cfme" with whatever machines you intend to install collectd on.
+Replace "satellite6" with whatever machines you intend to install collectd on.
 
 Note: Openstack host groups (undercloud, controller, compute, ceph) are
 ignored with the collectd-generic.yml playbook.
-

@@ -6,9 +6,6 @@
 #
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="baremetal"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="guest"
-# ansible-playbook -i hosts install/collectd-generic.yml --tags="cfme-all-in-one"
-# ansible-playbook -i hosts install/collectd-generic.yml --tags="cfme-vmdb"
-# ansible-playbook -i hosts install/collectd-generic.yml --tags="cfme"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="graphite"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="ose"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="satellite6"
@@ -30,33 +27,6 @@
   roles:
     - collectd-generic
   tags: guest
-
-# Cloud Forms Database appliances with Graphite/Grafana
-- hosts: cfme-all-in-one
-  remote_user: root
-  vars:
-    config_type: cfme-all-in-one
-  roles:
-    - collectd-generic
-  tags: cfme-all-in-one
-
-# Cloud Forms Database appliances
-- hosts: cfme-vmdb
-  remote_user: root
-  vars:
-    config_type: cfme-vmdb
-  roles:
-    - collectd-generic
-  tags: cfme-vmdb
-
-# Cloud Forms Worker appliances
-- hosts: cfme
-  remote_user: root
-  vars:
-    config_type: cfme
-  roles:
-    - collectd-generic
-  tags: cfme
 
 - hosts: graphite
   remote_user: root
