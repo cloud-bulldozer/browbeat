@@ -13,12 +13,15 @@
 from Tools import Tools
 from Grafana import Grafana
 from WorkloadBase import WorkloadBase
+from Elastic import Elastic
+from collections import OrderedDict
 import yaml
 import logging
 import datetime
 import os
 import json
 import time
+import uuid
 
 
 class Shaker(WorkloadBase):
@@ -28,6 +31,7 @@ class Shaker(WorkloadBase):
         self.config = config
         self.tools = Tools(self.config)
         self.grafana = Grafana(self.config)
+        self.elastic = Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -74,6 +78,122 @@ class Shaker(WorkloadBase):
 
     def update_scenarios(self):
         self.scenario_count += 1
+
+    # Method to process JSON outputted by Shaker, model data in a format that can be consumed
+    # by ElasticSearch and ship the data to ES
+
+    def send_to_elastic(self, outputfile, browbeat_scenario, shaker_uuid):
+        es_ts = datetime.datetime.utcnow()
+        es_list = []
+        fname = outputfile
+        # Load output json
+        try:
+            with open(fname) as data_file:
+                data = json.load(data_file)
+        # If output JSON doesn't exist, ship UUID of failed run to ES
+        except IOError:
+            self.logger.error(
+                "The Shaker output JSON could not be found, pushing details to Elastic")
+            record = {'status': "error"}
+            shaker_stats = {
+                'timestamp': str(es_ts).replace(" ", "T"),
+                'browbeat_scenario': browbeat_scenario,
+                'shaker_uuid': str(shaker_uuid),
+                'record': record
+            }
+
+            result = self.elastic.combine_metadata(shaker_stats)
+            self.elastic.index_result(result)
+            return
+        # Dictionary to capture common test data
+        shaker_test_meta = {}
+        for scenario in data['scenarios'].iterkeys():
+            test_time = data['scenarios'][scenario][
+                'execution']['tests'][0]['time']
+            # Setting up the timestamp list based on the time the test ran for
+            for interval in range(0, test_time + 9):
+                es_list.append(
+                    datetime.datetime.utcnow() +
+                    datetime.timedelta(
+                        0,
+                        interval))
+            # Populating common test data
+            if 'shaker_test_info' not in shaker_test_meta:
+                shaker_test_meta['shaker_test_info'] = data[
+                    'scenarios'][scenario]
+                if "progression" not in shaker_test_meta[
+                        'shaker_test_info']['execution']:
+                    shaker_test_meta['shaker_test_info']['execution'] = "all"
+                var = data['scenarios'][scenario][
+                    'deployment'].pop('accommodation')
+            if 'deployment' not in shaker_test_meta:
+                shaker_test_meta['deployment'] = {}
+                shaker_test_meta['deployment']['accommodation'] = {}
+                shaker_test_meta['deployment'][
+                    'accommodation']['distribution'] = var[0]
+                shaker_test_meta['deployment'][
+                    'accommodation']['placement'] = var[1]
+                shaker_test_meta['deployment']['accommodation'][
+                    'density'] = var[2]['density']
+                shaker_test_meta['deployment']['accommodation'][
+                    'compute_nodes'] = var[3]['compute_nodes']
+                shaker_test_meta['deployment']['template'] = data[
+                    'scenarios'][scenario]['deployment']['template']
+        # Iterating through each record to get result values
+        for record in data['records'].iterkeys():
+            if data['records'][record]['status'] == "ok":
+                if 'stdout' in data['records'][record]:
+                    del data['records'][record]['stdout']
+                metadata = data['records'][record].pop('meta')
+                samples = data['records'][record].pop('samples')
+                # Ordered Dictionary to capture result types and metrics
+                outputs = OrderedDict()
+                for metric in metadata:
+                    outputs[metric[0]] = metric[1]
+                # Iterate over each result type for each sample in record and
+                # get associated value
+                for key in outputs.iterkeys():
+                    if key == "time":
+                        continue
+                    # Iterate in step lock over each list of samples in the
+                    # samples list wrt timestamp
+                    for sample, es_time in zip(samples, es_list):
+                        elastic_timestamp = str(es_time).replace(" ", "T")
+                        result = {}
+                        shaker_stats = {}
+                        result['value'] = sample[outputs.keys().index(key)]
+                        result['metric'] = outputs[key]
+                        result['result_type'] = key
+                        # Populate shaker_stats dictionary with individual result value from the
+                        # list of samples for each test type(tcp download/ping_icm) for each
+                        # record afterrecord after flattening out data
+                        shaker_stats = {
+                            'record': data['records'][record],
+                            'shaker_test_info': shaker_test_meta['shaker_test_info'],
+                            'timestamp': elastic_timestamp,
+                            'accommodation': shaker_test_meta['deployment']['accommodation'],
+                            'template': shaker_test_meta['deployment']['template'],
+                            'result': result,
+                            'browbeat_scenario': browbeat_scenario,
+                            'grafana_url': [self.grafana.grafana_urls()],
+                            'shaker_uuid': str(shaker_uuid)}
+                        # Ship Data to Es when record status is ok
+                        result = self.elastic.combine_metadata(shaker_stats)
+                        self.elastic.index_result(result)
+            else:
+                # If the status of the record is not ok, ship minimal
+                # shaker_stats dictionary to ES
+                shaker_stats = {
+                    'record': data['records'][record],
+                    'shaker_test_info': shaker_test_meta['shaker_test_info'],
+                    'timestamp': str(es_ts).replace(" ", "T"),
+                    'accommodation': shaker_test_meta['deployment']['accommodation'],
+                    'template': shaker_test_meta['deployment']['template'],
+                    'browbeat_scenario': browbeat_scenario,
+                    'grafana_url': [self.grafana.grafana_urls()],
+                    'shaker_uuid': str(shaker_uuid)}
+                result = self.elastic.combine_metadata(shaker_stats)
+                self.elastic.index_result(result)
 
     def set_scenario(self, scenario, fname):
         stream = open(fname, 'r')
@@ -151,8 +271,8 @@ class Shaker(WorkloadBase):
                 workload)
             return
         uuidlist = self.get_uuidlist(data)
-        for uuid in uuidlist:
-            if data['records'][uuid]['status'] != "ok":
+        for id in uuidlist:
+            if data['records'][id]['status'] != "ok":
                 error = True
         if error:
             self.error_update(
@@ -228,6 +348,9 @@ class Shaker(WorkloadBase):
         venv = self.config['shaker']['venv']
         shaker_region = self.config['shaker']['shaker_region']
         timeout = self.config['shaker']['join_timeout']
+        shaker_uuid = uuid.uuid4()
+        self.logger.info(
+            "The uuid for this shaker scenario is {}".format(shaker_uuid))
         cmd_1 = (
             "source {}/bin/activate; source /home/stack/overcloudrc").format(venv)
         cmd_2 = (
@@ -252,6 +375,7 @@ class Shaker(WorkloadBase):
         to_time = time.time()
         self.update_tests()
         self.update_total_tests()
+        outputfile = os.path.join(result_dir, test_name + "." + "json")
         self.result_check(result_dir, test_name, scenario, to_time, from_time)
         if 'sleep_after' in self.config['shaker']:
             time.sleep(self.config['shaker']['sleep_after'])
@@ -262,6 +386,9 @@ class Shaker(WorkloadBase):
         self.grafana.log_snapshot_playbook_cmd(
             from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
+        # Send Data to elastic
+        if self.config['elasticsearch']['enabled']:
+            self.send_to_elastic(outputfile, scenario['name'], shaker_uuid)
 
     def run_shaker(self):
         self.logger.info("Starting Shaker workloads")
