@@ -15,6 +15,7 @@
       service: name=collectd state=stopped enabled=false
       become: true
       when: not collectd_undercloud
+      ignore_errors: true
 
 - hosts: controller
   remote_user: "{{ host_remote_user }}"
@@ -28,6 +29,7 @@
       service: name=collectd state=stopped enabled=false
       become: true
       when: not collectd_controller
+      ignore_errors: true
 
 - hosts: ceph
   remote_user: "{{ host_remote_user }}"
@@ -41,6 +43,7 @@
       service: name=collectd state=stopped enabled=false
       become: true
       when: not collectd_ceph
+      ignore_errors: true
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"
