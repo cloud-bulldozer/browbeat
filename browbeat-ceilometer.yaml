@@ -1,0 +1,55 @@
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: openstack
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+ansible:
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+connmon:
+  enabled: false
+  sudo: true
+grafana:
+  enabled: true
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - subnet-router-create: rally/rally-plugins/subnet-router-create
+    - validate-ceilometer: rally/rally-plugins/validate-ceilometer
+  benchmarks:
+    - name: plugins
+      enabled: true
+      concurrency:
+        - 2
+      times: 6
+      scenarios:
+        - name: validate-ceilometer
+          enabled: true
+          file: rally/rally-plugins/validate-ceilometer/validate-ceilometer.yml
