@@ -123,7 +123,7 @@ class Shaker(WorkloadBase):
                     'scenarios'][scenario]
                 if "progression" not in shaker_test_meta[
                         'shaker_test_info']['execution']:
-                    shaker_test_meta['shaker_test_info']['execution'] = "all"
+                    shaker_test_meta['shaker_test_info']['execution']['progression'] = "all"
                 var = data['scenarios'][scenario][
                     'deployment'].pop('accommodation')
             if 'deployment' not in shaker_test_meta:
