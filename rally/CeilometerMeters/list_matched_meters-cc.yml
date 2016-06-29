@@ -1,0 +1,43 @@
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  CeilometerMeters.list_matched_meters:
+    -
+      args:
+        limit: 50
+        filter_by_user_id: true
+        filter_by_project_id: true
+        filter_by_resource_id: true
+        metadata_query:
+          status: "terminated"
+      context:
+        ceilometer:
+          counter_name: "benchmark_meter"
+          counter_type: "gauge"
+          counter_unit: "%"
+          counter_volume: 100
+          resources_per_tenant: 100
+          samples_per_resource: 100
+          timestamp_interval: 10
+          metadata_list:
+            -
+              status: "active"
+              name: "rally benchmark on"
+              deleted: "false"
+            -
+              status: "terminated"
+              name: "rally benchmark off"
+              deleted: "true"
+        users:
+          tenants: 2
+          users_per_tenant: 2
+      runner:
+        concurrency: {{concurrency}}
+        times: {{times}}
+        type: "constant"
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}

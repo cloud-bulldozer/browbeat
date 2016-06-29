@@ -231,3 +231,10 @@
   when: not item.rc == 0
   ignore_errors: true
   with_items: "{{ image_osp8.results }}"
+
+#
+# Add additional flavor to overcloud
+#
+
+- name: Add extra tiny flavor to overcloud
+  shell: . {{ overcloudrc }}; nova flavor-create m1.xtiny auto 64 1 1

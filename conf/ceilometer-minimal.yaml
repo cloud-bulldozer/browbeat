@@ -1,0 +1,172 @@
+# Ceilometer Stress tests run minimal number of times.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: openstack
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+ansible:
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+connmon:
+  enabled: false
+  sudo: true
+grafana:
+  enabled: false
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - validate-ceilometer: rally/rally-plugins/validate-ceilometer
+    - nova-ceilometer: rally/rally-plugins/nova-ceilometer
+  benchmarks:
+    - name: CeilometerAlarms
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: create_alarm
+          enabled: true
+          file: rally/CeilometerAlarms/create_alarm-cc.yml
+        - name: create_alarm_and_get_history
+          enabled: true
+          file: rally/CeilometerAlarms/create_alarm_and_get_history-cc.yml
+        - name: create_and_delete_alarm
+          enabled: true
+          file: rally/CeilometerAlarms/create_and_delete_alarm-cc.yml
+        - name: create_and_list_alarm
+          enabled: true
+          file: rally/CeilometerAlarms/create_and_list_alarm-cc.yml
+        - name: create_and_update_alarm
+          enabled: true
+          file: rally/CeilometerAlarms/create_and_update_alarm-cc.yml
+        - name: list_alarms
+          enabled: true
+          file: rally/CeilometerAlarms/list_alarms-cc.yml
+    - name: CeilometerEvents
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: create_user_and_get_event
+          enabled: true
+          file: rally/CeilometerEvents/create_user_and_get_event-cc.yml
+        - name: create_user_and_list_event_types
+          enabled: true
+          file: rally/CeilometerEvents/create_user_and_list_event_types-cc.yml
+        - name: create_user_and_list_events
+          enabled: true
+          file: rally/CeilometerEvents/create_user_and_list_events-cc.yml
+    - name: CeilometerMeters
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: list_matched_meters
+          enabled: true
+          file: rally/CeilometerMeters/list_matched_meters-cc.yml
+        - name: list_meters
+          enabled: true
+          file: rally/CeilometerMeters/list_meters-cc.yml
+    - name: CeilometerQueries
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: create_and_query_alarm_history
+          enabled: true
+          file: rally/CeilometerQueries/create_and_query_alarm_history-cc.yml
+        - name: create_and_query_alarms
+          enabled: true
+          file: rally/CeilometerQueries/create_and_query_alarms-cc.yml
+        - name: create_and_query_samples
+          enabled: true
+          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
+    - name: CeilometerResource
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: get_tenant_resources
+          enabled: true
+          file: rally/CeilometerResource/get_tenant_resources-cc.yml
+        - name: list_matched_resources
+          enabled: true
+          file: rally/CeilometerResource/list_matched_resources-cc.yml
+        - name: list_resources
+          enabled: true
+          file: rally/CeilometerResource/list_resources-cc.yml
+    - name: CeilometerSamples
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: list_matched_samples
+          enabled: true
+          file: rally/CeilometerSamples/list_matched_samples-cc.yml
+        - name: list_samples
+          enabled: true
+          file: rally/CeilometerSamples/list_samples-cc.yml
+    - name: CeilometerStats
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: create_meter_and_get_stats
+          enabled: true
+          file: rally/CeilometerStats/create_meter_and_get_stats-cc.yml
+        - name: get_stats
+          enabled: true
+          file: rally/CeilometerStats/get_stats-cc.yml
+    - name: CeilometerTraits
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: create_user_and_list_trait_descriptions
+          enabled: true
+          file: rally/CeilometerTraits/create_user_and_list_trait_descriptions-cc.yml
+        - name: create_user_and_list_traits
+          enabled: true
+          file: rally/CeilometerTraits/create_user_and_list_traits-cc.yml
+    # Other Scenarios involving Ceilometer:
+    - name: Authenticate
+      enabled: false
+      concurrency:
+        - 2
+      times: 10
+      scenarios:
+        - name: validate_ceilometer
+          enabled: true
+          file: rally/authenticate/validate_ceilometer-cc.yml
