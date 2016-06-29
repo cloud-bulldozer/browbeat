@@ -10,7 +10,7 @@
 
   - name: Set ceilometer batch polled samples
     set_fact:
-      openstack_ceilometer_batch_polled_samples: "{{ batch_polled_samples }}"
+      openstack_ceilometer_batch_polled_samples: "{{ batch_polled_samples.stdout }}"
     when: (batch_polled_samples.stdout != "")
 
   - name: Set ceilometer batch polled samples
@@ -25,13 +25,13 @@
 
   - name: Set ceilometer shuffle time before polling task
     set_fact:
-      openstack_ceilometer_shuffle_time_before_polling_task: "{{ shuffle_time_before_polling_task }}"
-    when: (shuffle_time_before_polling_task.stdout != "" or shuffle_time_before_polling_task.stdout|int >= 1)
+      openstack_ceilometer_shuffle_time_before_polling_task: "{{ shuffle_time_before_polling_task.stdout }}"
+    when: shuffle_time_before_polling_task.stdout != ""
 
   - name: Set ceilometer shuffle time before polling task
     set_fact:
       openstack_ceilometer_shuffle_time_before_polling_task: 0
-    when: (shuffle_time_before_polling_task.stdout == "" or shuffle_time_before_polling_task.stdout|int < 1)
+    when: shuffle_time_before_polling_task.stdout == ""
 
   - name: Get ceilometer reserved metadata length
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT reserved_metadata_length
@@ -40,13 +40,13 @@
 
   - name: Set ceilometer reserved metadata length
     set_fact:
-      openstack_ceilometer_reserved_metadata_length: "{{ reserved_metadata_length }}"
-    when: (reserved_metadata_length.stdout != "" or reserved_metadata_length.stdout|int >= 1)
+      openstack_ceilometer_reserved_metadata_length: "{{ reserved_metadata_length.stdout }}"
+    when: reserved_metadata_length.stdout != ""
 
   - name: Set ceilometer reserved metadata length
     set_fact:
       openstack_ceilometer_reserved_metadata_length: 255
-    when: (reserved_metadata_length.stdout == "" or reserved_metadata_length.stdout|int < 1)
+    when: reserved_metadata_length.stdout == ""
 
   - name: Get ceilometer pipeline polling interval
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT pipeline_polling_interval
@@ -55,13 +55,13 @@
 
   - name: Set ceilometer pipeline polling interval
     set_fact:
-      openstack_ceilometer_pipeline_polling_interval: "{{ pipeline_polling_interval }}"
-    when: (pipeline_polling_interval.stdout != "" or pipeline_polling_interval.stdout|int >= 1)
+      openstack_ceilometer_pipeline_polling_interval: "{{ pipeline_polling_interval.stdout }}"
+    when: pipeline_polling_interval.stdout != ""
 
   - name: Set ceilometer pipeline polling interval
     set_fact:
       openstack_ceilometer_pipeline_polling_interval: 20
-    when: (pipeline_polling_interval.stdout == "" or pipeline_polling_interval.stdout|int < 1)
+    when: pipeline_polling_interval.stdout == ""
 
   - name: Get ceilometer http timeout
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT http_timeout
@@ -70,13 +70,13 @@
 
   - name: Set ceilometer http timeout
     set_fact:
-      openstack_ceilometer_http_timeout: "{{ http_timeout }}"
-    when: (http_timeout.stdout != "" or http_timeout.stdout|int >= 1)
+      openstack_ceilometer_http_timeout: "{{ http_timeout.stdout }}"
+    when: http_timeout.stdout != ""
 
   - name: Set ceilometer http timeout
     set_fact:
       openstack_ceilometer_http_timeout: 600
-    when: (http_timeout.stdout == "" or http_timeout.stdout|int < 1)
+    when: http_timeout.stdout == ""
 
   - name: Get ceilometer rpc conn pool size
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT rpc_conn_pool_size
@@ -85,13 +85,13 @@
 
   - name: Set ceilometer rpc conn pool size
     set_fact:
-      openstack_ceilometer_rpc_conn_pool_size: "{{ rpc_conn_pool_size }}"
-    when: (rpc_conn_pool_size.stdout != "" or rpc_conn_pool_size.stdout|int >= 1)
+      openstack_ceilometer_rpc_conn_pool_size: "{{ rpc_conn_pool_size.stdout }}"
+    when: rpc_conn_pool_size.stdout != ""
 
   - name: Set ceilometer rpc conn pool size
     set_fact:
       openstack_ceilometer_rpc_conn_pool_size: 30
-    when: (rpc_conn_pool_size.stdout == "" or rpc_conn_pool_size.stdout|int < 1)
+    when: rpc_conn_pool_size.stdout == ""
 
   - name: Get ceilometer executor thread pool size
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT executor_thread_pool_size
@@ -100,13 +100,13 @@
 
   - name: Set ceilometer executor thread pool size
     set_fact:
-      openstack_ceilometer_executor_thread_pool_size: "{{ executor_thread_pool_size }}"
-    when: (executor_thread_pool_size.stdout != "" or executor_thread_pool_size.stdout|int >= 1)
+      openstack_ceilometer_executor_thread_pool_size: "{{ executor_thread_pool_size.stdout }}"
+    when: executor_thread_pool_size.stdout != ""
 
   - name: Set ceilometer executor thread pool size
     set_fact:
       openstack_ceilometer_executor_thread_pool_size: 64
-    when: (executor_thread_pool_size.stdout == "" or executor_thread_pool_size.stdout|int < 1)
+    when: executor_thread_pool_size.stdout == ""
 
   - name: Get ceilometer rpc response timeout
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT rpc_response_timeout
@@ -115,13 +115,13 @@
 
   - name: Set ceilometer rpc response timeout
     set_fact:
-      openstack_ceilometer_rpc_response_timeout: "{{ rpc_response_timeout }}"
-    when: (rpc_response_timeout.stdout != "" or rpc_response_timeout.stdout|int >= 1)
+      openstack_ceilometer_rpc_response_timeout: "{{ rpc_response_timeout.stdout }}"
+    when: rpc_response_timeout.stdout != ""
 
   - name: Set ceilometer rpc response timeout
     set_fact:
       openstack_ceilometer_rpc_response_timeout: 60
-    when: (rpc_response_timeout.stdout == "" or rpc_response_timeout.stdout|int < 1)
+    when: rpc_response_timeout.stdout == ""
 
   - name: Get ceilometer rpc backend
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT rpc_backend
@@ -130,13 +130,13 @@
 
   - name: Set ceilometer rpc backend
     set_fact:
-      openstack_ceilometer_rpc_backend: "{{ rpc_backend }}"
-    when: (rpc_backend.stdout != "" or rpc_backend.stdout|int >= 1)
+      openstack_ceilometer_rpc_backend: "{{ rpc_backend.stdout }}"
+    when: rpc_backend.stdout != ""
 
   - name: Set ceilometer rpc backend
     set_fact:
       openstack_ceilometer_rpc_backend: rabbit
-    when: (rpc_backend.stdout == "" or rpc_backend.stdout|int < 1)
+    when: rpc_backend.stdout == ""
 
   - name: Get ceilometer workers
     command: crudini --get /etc/ceilometer/ceilometer.conf api workers
@@ -145,13 +145,13 @@
 
   - name: Set ceilometer workers
     set_fact:
-      openstack_ceilometer_workers: "{{ workers }}"
-    when: (workers.stdout != "" or workers.stdout|int >= 1)
+      openstack_ceilometer_workers: "{{ workers.stdout }}"
+    when: workers.stdout != ""
 
   - name: Set ceilometer workers
     set_fact:
       openstack_ceilometer_workers: 1
-    when: (workers.stdout == "" or workers.stdout|int < 1)
+    when: workers.stdout == ""
 
   - name: Get ceilometer batch polled samples
     command: crudini --get /etc/ceilometer/ceilometer.conf central batch_polled_samples
@@ -160,7 +160,7 @@
 
   - name: Set ceilometer batch polled samples
     set_fact:
-      openstack_ceilometer_batch_polled_samples: "{{ batch_polled_samples }}"
+      openstack_ceilometer_batch_polled_samples: "{{ batch_polled_samples.stdout }}"
     when: (batch_polled_samples.stdout != "")
 
   - name: Set ceilometer batch polled samples
@@ -175,13 +175,13 @@
 
   - name: Set ceilometer shuffle time before polling task
     set_fact:
-      openstack_ceilometer_shuffle_time_before_polling_task: "{{ shuffle_time_before_polling_task }}"
-    when: (shuffle_time_before_polling_task.stdout != "" or shuffle_time_before_polling_task.stdout|int >= 1)
+      openstack_ceilometer_shuffle_time_before_polling_task: "{{ shuffle_time_before_polling_task.stdout }}"
+    when: shuffle_time_before_polling_task.stdout != ""
 
   - name: Set ceilometer shuffle time before polling task
     set_fact:
       openstack_ceilometer_shuffle_time_before_polling_task: 0
-    when: (shuffle_time_before_polling_task.stdout == "" or shuffle_time_before_polling_task.stdout|int < 1)
+    when: shuffle_time_before_polling_task.stdout == ""
 
   - name: Get ceilometer batch size
     command: crudini --get /etc/ceilometer/ceilometer.conf collector batch_size
@@ -190,13 +190,13 @@
 
   - name: Set ceilometer batch size
     set_fact:
-      openstack_ceilometer_batch_size: "{{ batch_size }}"
-    when: (batch_size.stdout != "" or batch_size.stdout|int >= 1)
+      openstack_ceilometer_batch_size: "{{ batch_size.stdout }}"
+    when: batch_size.stdout != ""
 
   - name: Set ceilometer batch size
     set_fact:
       openstack_ceilometer_batch_size: 1
-    when: (batch_size.stdout == "" or batch_size.stdout|int < 1)
+    when: batch_size.stdout == ""
 
   - name: Get ceilometer workers
     command: crudini --get /etc/ceilometer/ceilometer.conf collector workers
@@ -205,13 +205,13 @@
 
   - name: Set ceilometer workers
     set_fact:
-      openstack_ceilometer_workers: "{{ workers }}"
-    when: (workers.stdout != "" or workers.stdout|int >= 1)
+      openstack_ceilometer_workers: "{{ workers.stdout }}"
+    when: workers.stdout != ""
 
   - name: Set ceilometer workers
     set_fact:
       openstack_ceilometer_workers: 1
-    when: (workers.stdout == "" or workers.stdout|int < 1)
+    when: workers.stdout == ""
 
   - name: Get ceilometer workload partitioning
     command: crudini --get /etc/ceilometer/ceilometer.conf compute workload_partitioning
@@ -220,7 +220,7 @@
 
   - name: Set ceilometer workload partitioning
     set_fact:
-      openstack_ceilometer_workload_partitioning: "{{ workload_partitioning }}"
+      openstack_ceilometer_workload_partitioning: "{{ workload_partitioning.stdout }}"
     when: (workload_partitioning.stdout != "")
 
   - name: Set ceilometer workload partitioning
@@ -235,13 +235,13 @@
 
   - name: Set ceilometer resource update interval
     set_fact:
-      openstack_ceilometer_resource_update_interval: "{{ resource_update_interval }}"
-    when: (resource_update_interval.stdout != "" or resource_update_interval.stdout|int >= 1)
+      openstack_ceilometer_resource_update_interval: "{{ resource_update_interval.stdout }}"
+    when: resource_update_interval.stdout != ""
 
   - name: Set ceilometer resource update interval
     set_fact:
       openstack_ceilometer_resource_update_interval: 0
-    when: (resource_update_interval.stdout == "" or resource_update_interval.stdout|int < 1)
+    when: resource_update_interval.stdout == ""
 
   - name: Get ceilometer disable process locking
     command: crudini --get /etc/ceilometer/ceilometer.conf oslo_concurrency disable_process_locking
@@ -250,7 +250,7 @@
 
   - name: Set ceilometer disable process locking
     set_fact:
-      openstack_ceilometer_disable_process_locking: "{{ disable_process_locking }}"
+      openstack_ceilometer_disable_process_locking: "{{ disable_process_locking.stdout }}"
     when: (disable_process_locking.stdout != "")
 
   - name: Set ceilometer disable process locking
@@ -265,7 +265,7 @@
 
   - name: Set ceilometer rabbit use ssl
     set_fact:
-      openstack_ceilometer_rabbit_use_ssl: "{{ rabbit_use_ssl }}"
+      openstack_ceilometer_rabbit_use_ssl: "{{ rabbit_use_ssl.stdout }}"
     when: (rabbit_use_ssl.stdout != "")
 
   - name: Set ceilometer rabbit use ssl
