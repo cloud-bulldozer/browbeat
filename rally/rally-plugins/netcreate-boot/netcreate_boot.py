@@ -17,9 +17,9 @@ from rally.task import types
 from rally.task import validation
 
 
-class NeutronPlugin(neutron_utils.NeutronScenario,
-                    nova_utils.NovaScenario,
-                    scenario.Scenario):
+class BrowbeatPlugin(neutron_utils.NeutronScenario,
+                     nova_utils.NovaScenario,
+                     scenario.Scenario):
 
     @types.set(image=types.ImageResourceType,
                flavor=types.FlavorResourceType)
