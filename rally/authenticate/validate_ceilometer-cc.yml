@@ -3,14 +3,10 @@
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-  KeystonePlugin.validate_ceilometer:
+  Authenticate.validate_ceilometer:
     -
       args:
         repetitions: {{repetitions}}
-      runner:
-        concurrency: {{concurrency}}
-        times: {{times}}
-        type: "constant"
       context:
         users:
           project_domain: "default"
@@ -18,6 +14,10 @@
           tenants: 1
           user_domain: "default"
           users_per_tenant: 8
+      runner:
+        concurrency: {{concurrency}}
+        times: {{times}}
+        type: "constant"
       sla:
         max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}

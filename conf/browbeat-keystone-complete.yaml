@@ -54,6 +54,12 @@ rally:
         - 512
       times: 10000
       scenarios:
+        - name: authentic-ceilometer
+          enabled: true
+          file: rally/authenticate/validate_ceilometer-cc.yml
+          sla_max_avg_duration: 12
+          sla_max_seconds: 30
+          sla_max_failure: 0
         - name: authentic-cinder
           enabled: true
           file: rally/authenticate/validate_cinder-cc.yml
