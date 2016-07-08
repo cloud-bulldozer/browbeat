@@ -1,0 +1,46 @@
+---
+#
+# Ceilometer change backend handlers
+#
+
+- name: pacemaker default unmanaged
+  become: true
+  command: pcs property set is-managed-default=false
+
+- name: restart ceilometer services
+  become: true
+  service: name={{item}} state=restarted
+  with_items:
+    - openstack-ceilometer-api
+    - openstack-ceilometer-central
+    - openstack-ceilometer-collector
+    - openstack-ceilometer-notification
+
+- name: restart gnocchi services
+  become: true
+  service: name={{item}} state=restarted
+  with_items:
+    - openstack-gnocchi-metricd
+    - openstack-gnocchi-statsd
+
+- name: pacemaker default managed
+  become: true
+  command: pcs property set is-managed-default=true
+
+- name: pacemaker cleanup ceilometer
+  become: true
+  command: pcs resource cleanup {{item}}
+  with_items:
+    - openstack-ceilometer-api
+    - openstack-ceilometer-central
+    - openstack-ceilometer-collector
+    - openstack-ceilometer-notification
+  when: inventory_hostname == groups['controller'][0]
+
+- name: pacemaker cleanup gnocchi
+  become: true
+  command: pcs resource cleanup {{item}}
+  with_items:
+    - openstack-gnocchi-metricd
+    - openstack-gnocchi-statsd
+  when: inventory_hostname == groups['controller'][0]

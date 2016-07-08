@@ -1,0 +1,13 @@
+---
+#
+# Playbook to change token type from uuid to fernet and back for keystone.
+#
+# Examples:
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=database"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=gnocchi"
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  roles:
+    - ceilometer-backend
