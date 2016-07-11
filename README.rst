@@ -66,22 +66,12 @@ DEtailed install and run instructions are presented in a section below.
 What is necessary?
 ==================
 
--  TripleO**
-
-   Why? We use passwordless ssh to reach each controller instance and
-   compute instance.
-
 -  Ansible
 
    Why? We started with using bash to make changes to the Overcloud,
    creating complex sed/awks that we get for free with Ansible (for the
    most part). Other monitoring and stress test tools are installed by
    the respective playbooks when run.
-
-If you prefer to not use Ansible, the older versions (no longer
-maintained) of the browbeat.sh can be found in a older commit.
-
-** If you are interested in contributing a connector for your OpenStack Distribution, please review the Contributing section.
 
 Detailed Install, Check and Run
 ===============================
