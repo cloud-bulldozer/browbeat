@@ -4,31 +4,39 @@
 #
 
 - name: pacemaker unmanaged default
+  become: true
   command: pcs property set is-managed-default=false
   ignore_errors: true
 
 - name: stop keystone eventlet
+  become: true
   service: name=openstack-keystone state=stopped
   when: "'httpd' in '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: restart httpd
+  become: true
   service: name=httpd state=restarted
 
 - name: restart keystone
+  become: true
   service: name=openstack-keystone state=restarted
   when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: pacemaker managed default
+  become: true
   command: pcs property set is-managed-default=true
-  when: "'eventlet' in '{{ keystone_deployment }}'"
+  # OSP8 and below uncomment, so only pcs managed when keystone in eventlet
+  # when: "'eventlet' in '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: cleanup keystone
+  become: true
   command: pcs resource cleanup openstack-keystone
   when: "'eventlet' in '{{ keystone_deployment }}'"
   ignore_errors: true
 
 - name: cleanup httpd
+  become: true
   command: pcs resource cleanup httpd
   ignore_errors: true

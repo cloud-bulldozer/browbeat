@@ -5,6 +5,7 @@
 #
 
 - name: Configure neutron.conf
+  become: true
   ini_file:
     dest: /etc/neutron/neutron.conf
     mode: 0640
@@ -22,6 +23,7 @@
     - cleanup neutron services
 
 - name: Configure metadata_agent.ini
+  become: true
   ini_file:
     dest: /etc/neutron/metadata_agent.ini
     mode: 0640

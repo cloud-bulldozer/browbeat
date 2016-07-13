@@ -9,7 +9,9 @@
 
 - hosts: controller
   remote_user: heat-admin
-  vars:
-    ansible_become: true
+  pre_tasks:
+    - name: Check for variable (token_provider)
+      fail: msg="token_provider not defined"
+      when: token_provider is undefined
   roles:
     - keystone-token

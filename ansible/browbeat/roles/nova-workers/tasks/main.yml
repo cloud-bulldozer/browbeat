@@ -5,6 +5,7 @@
 #
 
 - name: Ensure nova.conf is properly configured
+  become: true
   ini_file:
     dest: /etc/nova/nova.conf
     mode: 0640

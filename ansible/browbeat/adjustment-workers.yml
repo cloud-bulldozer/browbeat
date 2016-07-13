@@ -1,9 +1,12 @@
 ---
 #
-# Playbook to change number of workers for nova,cinder and keystone services
+# Playbook to change number of workers for nova, neutron, cinder and keystone services
 #
 # Change Workers Example:
 # ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12"
+#
+# Change Workers Example and change Keystone Threads (If deployed in httpd)
+# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12 threads=1"
 #
 # Change Workers and Keystone Deployment Example:
 # ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12 keystone_deployment=httpd"
@@ -13,11 +16,23 @@
   remote_user: heat-admin
   gather_facts: false
   vars:
-    ansible_become: true
-    workers: 24
-    threads: 6
+    default_threads: 6
+  pre_tasks:
+    - name: Check for variable (workers)
+      fail: msg="workers not defined"
+      when: workers is undefined
+    - name: Check for variable (threads)
+      debug: msg="threads (Keystone only) not set, using default ({{default_threads}})"
+      when: threads is undefined
+    - name: Set default threads variable for Keystone
+      set_fact:
+        threads: "{{default_threads}}"
+      when: threads is undefined
+    - name: Determine if keystone_deployment is set
+      debug: msg="keystone_deployment is not set therefore not changing keystone deployment"
+      when: keystone_deployment is undefined
   roles:
-  - nova-workers
-  - neutron-workers
-  - keystone-workers
-  - cinder-workers
+    - keystone-workers
+    - nova-workers
+    - neutron-workers
+    - cinder-workers

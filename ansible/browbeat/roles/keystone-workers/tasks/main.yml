@@ -21,11 +21,13 @@
   when: keystone_deployment is undefined
 
 - name: Get keystone admin ip address
+  become: true
   command: crudini --get /etc/keystone/keystone.conf DEFAULT admin_bind_host
   register: admin_ip_addr
   changed_when: false
 
 - name: Get keystone public ip address
+  become: true
   command: crudini --get /etc/keystone/keystone.conf DEFAULT public_bind_host
   register: public_ip_addr
   changed_when: false
@@ -35,13 +37,14 @@
 #
 
 - name: Configure eventlet workers
+  become: true
   ini_file:
     dest: /etc/keystone/keystone.conf
     mode: 0640
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
-    backup: yes
+    backup: true
   with_items:
     - { section: DEFAULT, option: public_workers, value: "{{ workers }}" }
     - { section: DEFAULT, option: admin_workers, value: "{{ workers }}" }
@@ -56,6 +59,7 @@
     - cleanup keystone
 
 - name: Unconfigure keystone in httpd if eventlet
+  become: true
   file:
     path: /etc/httpd/conf.d/10-keystone_wsgi_{{ item }}.conf
     state: absent
@@ -68,6 +72,7 @@
     - cleanup httpd
 
 - name: Create keystone in httpd wsgi directory
+  become: true
   file:
     path: /var/www/cgi-bin/keystone
     state: directory
@@ -76,24 +81,29 @@
   when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: Copy keystone in httpd files over
+  become: true
   copy:
     src: keystone_httpd
     dest: /var/www/cgi-bin/keystone/{{ item }}
     owner: keystone
     group: keystone
     mode: 0744
+    backup: true
   with_items:
     - admin
     - main
   when: "'httpd' in '{{ keystone_deployment }}'"
+  ignore_errors: true
 
 - name: Configure httpd processes/threads
+  become: true
   template:
-    src=keystone_wsgi.conf.j2
-    dest=/etc/httpd/conf.d/10-keystone_wsgi_{{ item.interface }}.conf
-    owner=root
-    group=root
-    mode=0644
+    src: keystone_wsgi.conf.j2
+    dest: /etc/httpd/conf.d/10-keystone_wsgi_{{ item.interface }}.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
   with_items:
     - ip_address: "{{ admin_ip_addr.stdout }}"
       interface: "admin"
@@ -111,17 +121,33 @@
     - stop keystone eventlet
     - restart httpd
 
-- name: Configure/Unconfigure httpd ports.conf for keystone
-  template:
-    src=keystone_ports.conf.j2
-    dest=/etc/httpd/conf/ports.conf
-    owner=root
-    group=root
-    mode=0644
+- name: Configure/Unconfigure httpd ports.conf for keystone (httpd)
+  become: true
+  lineinfile:
+    dest: /etc/httpd/conf/ports.conf
+    line: "Listen {{item}}"
+    backup: true
   with_items:
-    - admin_ip_address: "{{ admin_ip_addr.stdout }}"
-      public_ip_address: "{{ public_ip_addr.stdout }}"
-      deployment: "{{ keystone_deployment }}"
+    - "{{ public_ip_addr.stdout }}:5000"
+    - "{{ admin_ip_addr.stdout }}:35357"
+  when: "'httpd' in '{{ keystone_deployment }}'"
+  notify:
+    - pacemaker unmanaged default
+    - stop keystone eventlet
+    - restart keystone
+    - pacemaker managed default
+    - cleanup keystone
+
+- name: Configure/Unconfigure httpd ports.conf for keystone (eventlet)
+  become: true
+  lineinfile:
+    dest: /etc/httpd/conf/ports.conf
+    line: "Listen {{item}}"
+    state: absent
+  with_items:
+    - "{{ public_ip_addr.stdout }}:5000"
+    - "{{ admin_ip_addr.stdout }}:35357"
+  when: "'eventlet' in '{{ keystone_deployment }}'"
   notify:
     - pacemaker unmanaged default
     - stop keystone eventlet

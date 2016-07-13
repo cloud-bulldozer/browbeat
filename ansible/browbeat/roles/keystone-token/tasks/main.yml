@@ -23,6 +23,7 @@
 #
 
 - name: Check Keystone Token Provider
+  become: true
   command: crudini --get /etc/keystone/keystone.conf token provider
   register: keystone_token_provider
   changed_when: false
@@ -45,6 +46,7 @@
 #
 
 - name: Change token provider
+  become: true
   command: crudini --set /etc/keystone/keystone.conf token provider "keystone.token.providers.{{ token_provider }}.Provider"
   when: "'{{ current_token_provider }}' != '{{ token_provider }}'"
   notify:
@@ -60,6 +62,7 @@
 #
 
 - name: Create fernet keys directory
+  become: true
   file:
     path=/etc/keystone/fernet-keys
     state=directory
@@ -69,10 +72,12 @@
   when: "'{{ token_provider }}' == 'fernet'"
 
 - name: Setup fernet keys
+  become: true
   command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
-  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname == groups['controller'][0])
+  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])
 
 - name: Get fernet keys
+  become: true
   fetch: src=/etc/keystone/fernet-keys/{{ item }} dest=roles/keystone-token/files/{{ item }} flat=yes
   with_items:
     - 0
@@ -81,26 +86,31 @@
   changed_when: false
 
 - name: Copy fernet keys
+  become: true
   copy: src={{ item }} dest=/etc/keystone/fernet-keys/{{ item }}
   with_items:
     - "0"
     - "1"
-  when: ("'{{ token_provider }}' == 'fernet'") and (inventory_hostname != groups['controller'][0])
+  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname != groups['controller'][0])
 
 - name: Copy keystone type enforcement file
+  become: true
   copy:
     src: my-keystone.te
     dest: /root/my-keystone.te
   when: "'{{ token_provider }}' == 'fernet'"
 
 - name: Create keystone.mod file
+  become: true
   command: checkmodule -M -m -o /root/my-keystone.mod /root/my-keystone.te
   when: "'{{ token_provider }}' == 'fernet'"
 
 - name: Create keystone.pp file
+  become: true
   command: semodule_package -o /root/my-keystone.pp -m /root/my-keystone.mod
   when: "'{{ token_provider }}' == 'fernet'"
 
 - name: Install keystone selinux policy
+  become: true
   shell: semodule -i /root/my-keystone.pp
   when: "'{{ token_provider }}' == 'fernet'"

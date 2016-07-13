@@ -4,23 +4,27 @@
 #
 
 - name: unmanage cinder services
+  become: true
   command: pcs resource unmanage {{ item }}
   with_items:
     - openstack-cinder-api
   ignore_errors: true
 
 - name: restart cinder services
+  become: true
   service: name={{ item }} state=restarted
   with_items:
     - openstack-cinder-api
 
 - name: manage cinder services
+  become: true
   command: pcs resource manage {{ item }}
   with_items:
     - openstack-cinder-api
   ignore_errors: true
 
 - name: cleanup cinder services
+  become: true
   command: pcs resource cleanup {{ item }}
   with_items:
     - openstack-cinder-api

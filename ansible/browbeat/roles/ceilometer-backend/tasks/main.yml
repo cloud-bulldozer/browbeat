@@ -4,10 +4,6 @@
 # * Change backend between database and gnocchi
 #
 
-- name: Check for variable
-  fail: msg="ceilometer_backend not defined"
-  when: ceilometer_backend is undefined
-
 - name:  Get current backend(s)
   become: true
   command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT meter_dispatchers
@@ -33,6 +29,6 @@
     - pacemaker cleanup gnocchi
 
 - name: Configure for gnocchi
-  when: ("'{{ ceilometer_backend }}' == 'gnocchi'") and (inventory_hostname == groups['controller'][0])
   become: true
+  when: ("'{{ ceilometer_backend }}' == 'gnocchi'") and (inventory_hostname == groups['controller'][0])
   shell:  gnocchi-upgrade --create-legacy-resource-types

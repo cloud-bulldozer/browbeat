@@ -9,5 +9,9 @@
 
 - hosts: controller
   remote_user: heat-admin
+  pre_tasks:
+    - name: Check for variable (ceilometer_backend)
+      fail: msg="ceilometer_backend not defined"
+      when: ceilometer_backend is undefined
   roles:
     - ceilometer-backend

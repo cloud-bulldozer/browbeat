@@ -4,6 +4,7 @@
 #
 
 - name: unmanage neutron services
+  become: true
   command: pcs resource unmanage {{ item }}
   with_items:
     - neutron-server
@@ -11,12 +12,14 @@
   ignore_errors: true
 
 - name: restart neutron services
+  become: true
   service: name={{ item }} state=restarted
   with_items:
     - neutron-server
     - neutron-metadata-agent
 
 - name: manage neutron services
+  become: true
   command: pcs resource manage {{ item }}
   with_items:
     - neutron-server
@@ -24,6 +27,7 @@
   ignore_errors: true
 
 - name: cleanup neutron services
+  become: true
   command: pcs resource cleanup {{ item }}
   with_items:
     - neutron-server

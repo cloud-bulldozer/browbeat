@@ -4,24 +4,31 @@
 #
 
 - name: pacemaker default unmanaged
+  become: true
   command: pcs property set is-managed-default=false
 
 - name: stop keystone service
+  become: true
   service: name=openstack-keystone state=stopped
   when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: restart httpd service
+  become: true
   service: name=httpd state=restarted
   when: "'httpd' in '{{ keystone_deployment }}'"
 
 - name: restart keystone service
+  become: true
   service: name=openstack-keystone state=restarted
   when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: pacemaker default managed
+  become: true
   command: pcs property set is-managed-default=true
   when: "'eventlet' in '{{ keystone_deployment }}'"
 
 - name: pacemaker cleanup keystone
+  become: true
   command: pcs resource cleanup openstack-keystone
   when: "'eventlet' in '{{ keystone_deployment }}'"
+  ignore_errors: true

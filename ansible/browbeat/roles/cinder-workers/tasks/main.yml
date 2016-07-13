@@ -5,6 +5,7 @@
 #
 
 - name: Configure cinder.conf
+  become: true
   ini_file:
     dest: /etc/cinder/cinder.conf
     mode: 0640
