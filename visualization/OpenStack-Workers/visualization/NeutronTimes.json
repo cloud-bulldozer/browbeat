@@ -1,0 +1,11 @@
+{
+    "title": "OpenStack Performance: Neutron Times",
+      "visState": "{\"title\":\"OpenStack Performance: Neutron API Response Times @ Differnet loads\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"mode\":\"grouped\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"percentiles\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\",\"percents\":[99]}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"action\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1.99\"}},{\"id\":\"4\",\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"software-metadata.software_details.openstack.config.neutron.openstack_neutron_api_workers\",\"size\":20,\"order\":\"desc\",\"orderBy\":\"1.99\",\"row\":false}},{\"id\":\"3\",\"type\":\"histogram\",\"schema\":\"group\",\"params\":{\"field\":\"rally_setup.kw.runner.times\",\"interval\":20,\"min_doc_count\":false,\"extended_bounds\":{}}}],\"listeners\":{}}",
+    "description": "",
+    "version": 1,
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"action: neutron.*\"}},\"filter\":[]}"
+    }
+}
+
+

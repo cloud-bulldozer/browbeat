@@ -1,0 +1,8 @@
+---
+#
+#
+
+- hosts: localhost
+  remote_user: "{{ local_remote_user }}"
+  roles:
+    - kibana-visualization

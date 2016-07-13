@@ -1,0 +1,31 @@
+---
+
+- name: Upload Searches
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/search/{{ item | basename | regex_replace('\.json','') }}
+    method: PUT
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+  with_fileglob:
+  - "{{ browbeat_path }}/visualization/*/search/*"
+  ignore_errors: true
+
+- name: Upload Visuals
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/visualization/{{ item | basename | regex_replace('\.json','')}}
+    method: PUT
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+  with_fileglob:
+  - "{{ browbeat_path }}/visualization/*/visualization/*"
+  ignore_errors: true
+
+- name: Upload Dashboards
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/dashboard/{{ item | basename | regex_replace('\.json','')}}
+    method: PUT
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+  with_fileglob:
+  - "{{ browbeat_path }}/visualization/*/dashboard/*"
+  ignore_errors: true

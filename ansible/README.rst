@@ -73,6 +73,23 @@ file to ensure the correct parameters are passed.
 To install collectd on everything other than Openstack machines, view
 the `README for collectd-generic <README.collectd-generic.md>`__.
 
+Install Kibana Visuals
+''''''''''''''''''''''
+
+Prior to installing the Kibana visuals, please review install/group\_vars/all.yml
+file to ensure the correct parameters are passed.
+
+::
+    browbeat_path - Point to the browbeat directory, default is /home/stack/browbeat
+    es_ip -  Point to the ElasticSerach host, default is blank
+    es_kibana_index - Point to the correct Kibana index, default is .kibana
+
+To Install Kibana Visuals
+
+::
+
+    # ansible-playbook -i hosts install/kibana-visuals.yml
+
 Install Connmon
 '''''''''''''''
 

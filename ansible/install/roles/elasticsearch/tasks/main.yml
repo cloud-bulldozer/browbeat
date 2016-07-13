@@ -110,6 +110,12 @@
 
 ## end firewall rules ##
 
+- name: Copy over ES Config
+  template:
+    src=elasticsearch.yml.j2
+    dest=/etc/elasticsearch/elasticsearch.yml
+  become: true
+
 - name: Start elasticsearch service
   command: systemctl start elasticsearch.service
   ignore_errors: true
