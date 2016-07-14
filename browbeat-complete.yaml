@@ -228,7 +228,6 @@ shaker:
   sleep_before: 5
   sleep_after: 5
   venv: /home/stack/shaker-venv
-  dns_nameserver: 8.8.8.8
   shaker_region: regionOne
   scenarios:
     - name: l2-4-1
