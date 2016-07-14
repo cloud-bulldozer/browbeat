@@ -64,11 +64,20 @@
 - name: Install requirements.txt into browbeat-venv
   pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
 
+- name: Determine if perfkit is already cloned
+  stat: path={{ perfkit_venv }}/PerfKitBenchmarker
+  register: perfkit_exists
+
+- debug: msg="PerfKit already exists on the host"
+  when: perfkit_exists.stat.isdir is defined and perfkit_exists.stat.isdir
+
 - name: Clone PerfKitBenchmarker on undercloud
   git:
     repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git
     dest={{ perfkit_venv }}/PerfKitBenchmarker
     version=v1.4.0
+  when: perfkit_exists.stat.isdir is undefined
+
 
 - name: Install PerfKitBenchmarker requirements into perfkit-venv
   pip:
