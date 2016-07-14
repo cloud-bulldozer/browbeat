@@ -1,29 +1,15 @@
-{% set image_name = image_name or "cirros" %}
-{% set flavor_name = flavor_name or "m1.xtiny" %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-BrowbeatNova.nova_boot_persist:
+BrowbeatGnocchi.create_resource_type:
   -
-    args:
-      flavor:
-        name: '{{flavor_name}}'
-      image:
-        name: '{{image_name}}'
+    args: {}
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
       type: "constant"
-    context:
-      users:
-        tenants: 1
-        users_per_tenant: 8
-      quotas:
-        nova:
-          instances: -1
-          cores: -1
-          ram: -1
+    context: {}
     sla:
       max_avg_duration: {{sla_max_avg_duration}}
       max_seconds_per_iteration: {{sla_max_seconds}}
