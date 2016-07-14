@@ -80,104 +80,30 @@ PreCacheChain "PreCache"
   IgnoreSelected false
 </Plugin>
 
+# (akrzos) Including the version of OpenStack that the process was verified as running after
+# OpenStack Installation with a comment at the end of each Process/ProcessMath statement.
+# A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
-  # Ceilometer
-  ProcessMatch "ceilometer-agent-central" "python.+ceilometer-agent-central"
-  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"
-  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"
-  ProcessMatch "ceilometer-alarm-evaluator" "python.+ceilometer-alarm-evaluator"
-  ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"
-  ProcessMatch "ceilometer-api" "python.+ceilometer-api"
-  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"
-  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"
+  # Ceilometer (OpenStack Installed)
+  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9
+  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9
 
-  # Ceph
-  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"
-  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"
-  ProcessMatch "diamond" "python.+diamond"
-  ProcessMatch "salt-minion" "python.+salt-minion"
-
-  # Cinder
-  ProcessMatch "cinder-api" "python.+cinder-api"
-  ProcessMatch "cinder-scheduler" "python.+cinder-scheduler"
-  ProcessMatch "cinder-volume" "python.+cinder-volume"
-
-  # Glance
-  ProcessMatch "glance-api" "python.+glance-api"
-  ProcessMatch "glance-registry" "python.+glance-registry"
-
-  # Heat
-  ProcessMatch "heat-api" "python.+heat-api"
-  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"
-  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"
-  ProcessMatch "heat-engine" "python.+heat-engine"
-
-  # Ironic
-  ProcessMatch "ironic-api" "python.+ironic-api"
-  ProcessMatch "ironic-conductor" "python.+ironic-conductor"
-
-  # Keystone
-  ProcessMatch "keystone-all" "python.+keystone-all"
-  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"
-  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"
-
-  # Neutron
-  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"
-  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"
-  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"
-  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"
-  ProcessMatch "neutron-server" "python.+neutron-server"
-
-  # Nova Processes
-  ProcessMatch "nova-api" "python.+nova-api"
-  ProcessMatch "nova-cert" "python.+nova-cert"
-  ProcessMatch "nova-compute" "python.+nova-compute"
-  ProcessMatch "nova-conductor" "python.+nova-conductor"
-  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"
-  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"
-  ProcessMatch "nova-scheduler" "python.+nova-scheduler"
-
-  # Swift
-  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"
-  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"
-  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"
-  ProcessMatch "swift-account-server" "python.+swift-account-server"
-  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"
-  ProcessMatch "swift-container-updater" "python.+swift-container-updater"
-  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"
-  ProcessMatch "swift-container-server" "python.+swift-container-server"
-  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"
-  ProcessMatch "swift-object-updater" "python.+swift-object-updater"
-  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"
-  ProcessMatch "swift-object-server" "python.+swift-object-server"
-  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"
-
-  # Pacemaker
-  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"
-  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"
-  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"
-  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"
-  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"
-  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"
-  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"
-  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"
-
+  # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
-  Process "corosync"
-  ProcessMatch "dnsmasq" "^dnsmasq.+"
-  ProcessMatch "dnsmasq-ironic" "/sbin/dnsmasq.+/etc/ironic-discoverd/dnsmasq.conf"
-  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"
-  Process "httpd"
-  Process "memcached"
-  Process "mongod"
-  ProcessMatch "mysqld" "/usr/libexec/mysqld"
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"
-  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"
-  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"
-  Process "redis-server"
-  ProcessMatch "tuskar-api" "python.+tuskar-api"
+
+  # Neutron (OpenStack Installed)
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 9
+
+  # Nova (OpenStack Installed)
+  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 9
+
+  # OVS (OpenStack Installed)
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 9
+  ProcessMatch "ovsdb-client" "/bin/ovsdb-client"                                       # 9
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 9
+
+  # QEMU (OpenStack Installed)
+  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 9
 </Plugin>
 
 <Plugin swap>

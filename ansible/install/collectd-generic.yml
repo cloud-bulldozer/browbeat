@@ -7,8 +7,6 @@
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="baremetal"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="guest"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="graphite"
-# ansible-playbook -i hosts install/collectd-generic.yml --tags="ose"
-# ansible-playbook -i hosts install/collectd-generic.yml --tags="satellite6"
 # ansible-playbook -i hosts install/collectd-generic.yml --tags="baremetal,guest"
 #
 
@@ -35,19 +33,3 @@
   roles:
     - collectd-generic
   tags: graphite
-
-- hosts: ose
-  remote_user: root
-  vars:
-    config_type: ose
-  roles:
-    - collectd-generic
-  tags: ose
-
-- hosts: satellite6
-  remote_user: root
-  vars:
-    config_type: satellite6
-  roles:
-    - collectd-generic
-  tags: satellite6
