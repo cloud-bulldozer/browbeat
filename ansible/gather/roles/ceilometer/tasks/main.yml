@@ -48,6 +48,21 @@
       openstack_ceilometer_reserved_metadata_length: 255
     when: reserved_metadata_length.stdout == ""
 
+  - name: Get ceilometer meter_dispatchers
+    command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT meter_dispatchers
+    register: meter_dispatchers
+    ignore_errors: true
+
+  - name: Set ceilometer meter_dispatchers
+    set_fact:
+      openstack_ceilometer_meter_dispatchers: "{{ meter_dispatchers.stdout }}"
+    when: meter_dispatchers.stdout != ""
+
+  - name: Set ceilometer meter_dispatchers
+    set_fact:
+      openstack_ceilometer_meter_dispatchers: "database"
+    when: reserved_metadata_length.stdout == ""
+
   - name: Get ceilometer pipeline polling interval
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT pipeline_polling_interval
     register: pipeline_polling_interval
