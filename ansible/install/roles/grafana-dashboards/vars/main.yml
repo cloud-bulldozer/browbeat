@@ -1,6 +1,6 @@
 ---
 #
-# Vars to generate Per-Process component of Openstack Dashboards
+# Vars to generate Per-Process component of OpenStack Dashboards
 #
 
 per_process_metrics:
@@ -56,9 +56,9 @@ per_process_metrics:
 per_process_panels:
 
   #
-  # This dashboard should only contain Openstack Undercloud Node processes
+  # This dashboard should only contain OpenStack Undercloud Node processes
   #
-  Openstack-Undercloud:
+  OpenStack-Undercloud:
     - name: "Everything Else"
       processes:
         - dnsmasq
@@ -66,8 +66,10 @@ per_process_panels:
         - memcached
         - mysqld
         - ovs-vswitchd
+        - ovsdb-client
         - ovsdb-server
         - rabbitmq
+        - docker-registry
     - name: "Nova"
       processes:
         - nova-api
@@ -95,7 +97,7 @@ per_process_panels:
         - heat-engine
     - name: "Glance"
       processes:
-        - glance-agent
+        - glance-api
         - glance-registry
     - name: "Ceilometer"
       processes:
@@ -105,19 +107,26 @@ per_process_panels:
         - ceilometer-alarm-evaluator
         - ceilometer-alaram-notifier
         - ceilometer-collector
+    - name: "Aodh"
+      processes:
+        - aodh-evaluator
+        - aodh-listener
+        - aodh-notifier
     - name: "Ironic"
       processes:
         - ironic-api
         - ironic-conductor
+        - ironic-inspector
         - dnsmasq-ironic
+        - dnsmasq-ironicinspector
     - name: "Collectd"
       processes:
         - collectd
 
   #
-  # This dashboard should only contain Openstack Controller Node processes
+  # This dashboard should only contain OpenStack Controller Node processes
   #
-  Openstack-Controller:
+  OpenStack-Controller:
     - name: "Everything Else"
       processes:
         - dnsmasq
@@ -127,6 +136,7 @@ per_process_panels:
         - mongod
         - mysqld
         - ovs-vswitchd
+        - ovsdb-client
         - ovsdb-server
         - rabbitmq
         - redis-server
@@ -164,7 +174,7 @@ per_process_panels:
         - heat-engine
     - name: "Glance"
       processes:
-        - glance-agent
+        - glance-api
         - glance-registry
     - name: "Swift"
       processes:
@@ -189,6 +199,19 @@ per_process_panels:
         - ceilometer-alarm-evaluator
         - ceilometer-alaram-notifier
         - ceilometer-collector
+    - name: "Gnocchi"
+      processes:
+        - gnocchi-metricd
+        - gnocchi-statsd
+    - name: "Aodh"
+      processes:
+        - aodh-evaluator
+        - aodh-listener
+        - aodh-notifier
+    - name: "Sahara"
+      processes:
+        - sahara-api
+        - sahara-engine
     - name: "Corosync/Pacemaker"
       processes:
         - corosync
@@ -205,12 +228,13 @@ per_process_panels:
         - collectd
 
   #
-  # This dashboard should only contain Openstack Compute Node processes
+  # This dashboard should only contain OpenStack Compute Node processes
   #
-  Openstack-Compute:
+  OpenStack-Compute:
     - name: "Everything Else"
       processes:
         - ovs-vswitchd
+        - ovsdb-client
         - ovsdb-server
         - qemu-kvm
     - name: "Nova"
@@ -228,9 +252,9 @@ per_process_panels:
         - collectd
 
   #
-  # This dashboard should only contain Openstack Ceph Node processes
+  # This dashboard should only contain OpenStack Ceph Node processes
   #
-  Openstack-Ceph:
+  OpenStack-Ceph:
     - name: "Ceph"
       processes:
         - ceph-osd
@@ -242,10 +266,10 @@ per_process_panels:
         - collectd
 
   #
-  # This dashboard "Openstack" aims to be comprehensive with all processes across:
+  # This dashboard "OpenStack" aims to be comprehensive with all processes across:
   # Undercloud, Controller, Compute, Ceph, etc... Nodes
   #
-  Openstack:
+  OpenStack:
     - name: "Everything Else"
       processes:
         - dnsmasq
@@ -255,11 +279,13 @@ per_process_panels:
         - mongod
         - mysqld
         - ovs-vswitchd
+        - ovsdb-client
         - ovsdb-server
         - qemu-kvm
         - rabbitmq
         - redis-server
         - tuskar-api
+        - docker-registry
     - name: "Nova"
       processes:
         - nova-api
@@ -295,7 +321,7 @@ per_process_panels:
         - heat-engine
     - name: "Glance"
       processes:
-        - glance-agent
+        - glance-api
         - glance-registry
     - name: "Swift"
       processes:
@@ -322,11 +348,26 @@ per_process_panels:
         - ceilometer-collector
         - ceilometer-agent-compute
         - ceilometer-polling
+    - name: "Gnocchi"
+      processes:
+        - gnocchi-metricd
+        - gnocchi-statsd
+    - name: "Aodh"
+      processes:
+        - aodh-evaluator
+        - aodh-listener
+        - aodh-notifier
+    - name: "Sahara"
+      processes:
+        - sahara-api
+        - sahara-engine
     - name: "Ironic"
       processes:
         - ironic-api
         - ironic-conductor
+        - ironic-inspector
         - dnsmasq-ironic
+        - dnsmasq-ironicinspector
     - name: "Ceph"
       processes:
         - ceph-osd
@@ -344,6 +385,51 @@ per_process_panels:
         - crmd
         - lrmd
         - pcsd
+    - name: "Collectd"
+      processes:
+        - collectd
+
+
+  #
+  # This dashboard is geared towards "Generic" Baremetal machines
+  #
+  Baremetal:
+    - name: "httpd"
+      processes:
+        - httpd
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard is geared towards "Generic" VM Guests
+  #
+  Guest:
+    - name: "httpd"
+      processes:
+        - httpd
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard is geared towards Carbon/Graphite/Grafana machines
+  #
+  Graphite:
+    - name: "Summerized"
+      processes:
+        - carbon-cache
+        - grafana-server
+        - httpd
+    - name: "Carbon"
+      processes:
+        - carbon-cache
+    - name: "Grafana"
+      processes:
+        - grafana-server
+    - name: "httpd"
+      processes:
+        - httpd
     - name: "Collectd"
       processes:
         - collectd

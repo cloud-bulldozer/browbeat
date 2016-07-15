@@ -80,20 +80,18 @@ PreCacheChain "PreCache"
   IgnoreSelected false
 </Plugin>
 
+# (akrzos) Including the version of OpenStack that the process was verified as running after
+# OpenStack Installation with a comment at the end of each Process/ProcessMath statement.
+# A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
-  # Ceph
-  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"
-  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"
-  ProcessMatch "diamond" "python.+diamond"
-  ProcessMatch "salt-minion" "python.+salt-minion"
+  # Ceph (OpenStack Installed)
+  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"                                          # Unchecked
+  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"                                          # Unchecked
+  ProcessMatch "diamond" "python.+diamond"                                              # Unchecked
+  ProcessMatch "salt-minion" "python.+salt-minion"                                      # Unchecked
 
+  # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
-  Process "corosync"
-  Process "httpd"
-  Process "memcached"
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"
-  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"
 </Plugin>
 
 <Plugin swap>

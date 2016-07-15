@@ -1,13 +1,13 @@
 {
   "dashboard": {
-    "id": null,
-    "title": "Cloud System Performance Comparsion",
-    "tags": [],
-    "style": "dark",
-    "timezone": "browser",
+    "annotations": {
+      "list": []
+    },
     "editable": true,
     "hideControls": false,
-    "sharedCrosshair": false,
+    "id": null,
+    "links": [],
+    "overwrite": true,
     "rows": [
       {
         "collapse": true,
@@ -70,72 +70,72 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-system), 'Node1 - System')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-system), '$Node1_Timeshift'), 'Node1 - System')"
               },
               {
                 "refId": "B",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-user), 'Node1 - User')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-user), '$Node1_Timeshift'), 'Node1 - User')"
               },
               {
                 "refId": "C",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-nice), 'Node1 - Nice')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-nice), '$Node1_Timeshift'), 'Node1 - Nice')"
               },
               {
                 "refId": "D",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-steal), 'Node1 - Steal')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-steal), '$Node1_Timeshift'), 'Node1 - Steal')"
               },
               {
                 "refId": "E",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-softirq), 'Node1 - SoftIRQ')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-softirq), '$Node1_Timeshift'), 'Node1 - SoftIRQ')"
               },
               {
                 "refId": "F",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), 'Node1 - Interrupt')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), '$Node1_Timeshift'), 'Node1 - Interrupt')"
               },
               {
                 "refId": "G",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-wait), 'Node1 - Wait')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-wait), '$Node1_Timeshift'), 'Node1 - Wait')"
               },
               {
                 "refId": "H",
-                "target": "alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-idle), 'Node1 - Idle')"
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-idle), '$Node1_Timeshift'), 'Node1 - Idle')"
               },
               {
                 "refId": "I",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-system), 'Node2 - System')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-system), '$Node2_Timeshift'), 'Node2 - System')"
               },
               {
                 "refId": "J",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-user), 'Node2 - User')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-user), '$Node2_Timeshift'), 'Node2 - User')"
               },
               {
                 "refId": "K",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-nice), 'Node2 - Nice')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-nice), '$Node2_Timeshift'), 'Node2 - Nice')"
               },
               {
                 "refId": "L",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-steal), 'Node2 - Steal')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-steal), '$Node2_Timeshift'), 'Node2 - Steal')"
               },
               {
                 "refId": "M",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-softirq), 'Node2 - SoftIRQ')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-softirq), '$Node2_Timeshift'), 'Node2 - SoftIRQ')"
               },
               {
                 "refId": "N",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), 'Node2 - Interrupt')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), '$Node2_Timeshift'), 'Node2 - Interrupt')"
               },
               {
                 "refId": "O",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-wait), 'Node2 - Wait')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-wait), '$Node2_Timeshift'), 'Node2 - Wait')"
               },
               {
                 "refId": "P",
-                "target": "alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-idle), 'Node2 - Idle')"
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-idle), '$Node2_Timeshift'), 'Node2 - Idle')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "CPU",
+            "title": "CPU Average",
             "tooltip": {
               "shared": true,
               "value_type": "individual"
@@ -147,17 +147,7 @@
               "percent",
               "short"
             ]
-          }
-        ],
-        "showTitle": true,
-        "title": "CPU Comparsion"
-      },
-      {
-        "title": "Memory Comparsion",
-        "height": "250px",
-        "editable": true,
-        "collapse": true,
-        "panels": [
+          },
           {
             "aliasColors": {},
             "bars": false,
@@ -214,56 +204,72 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-slab_unrecl), 'Node1 - Slab Unrecl')"
+                "target": "alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-system), 'Node1 - System')"
               },
               {
                 "refId": "B",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-used), 'Node1 - Used')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-user), '$Node1_Timeshift'), 'Node1 - User')"
               },
               {
                 "refId": "C",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-buffered), 'Node1 - Buffered')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-nice), '$Node1_Timeshift'), 'Node1 - Nice')"
               },
               {
                 "refId": "D",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-slab_recl), 'Node1 - Slab Recl')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-steal), '$Node1_Timeshift'), 'Node1 - Steal')"
               },
               {
                 "refId": "E",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-cached), 'Node1 - Cached')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-softirq), '$Node1_Timeshift'), 'Node1 - SoftIRQ')"
               },
               {
                 "refId": "F",
-                "target": "alias(averageSeries($Cloud1.$Node1.memory.memory-free), 'Node1 - Free')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), '$Node1_Timeshift'), 'Node1 - Interrupt')"
               },
               {
                 "refId": "G",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-slab_unrecl), 'Node2 - Slab Unrecl')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-wait), '$Node1_Timeshift'), 'Node1 - Wait')"
               },
               {
                 "refId": "H",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-used), 'Node2 - Used')"
+                "target": "alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-idle), '$Node1_Timeshift'), 'Node1 - Idle')"
               },
               {
                 "refId": "I",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-buffered), 'Node2 - Buffered')"
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-system), '$Node2_Timeshift'), 'Node2 - System')"
               },
               {
                 "refId": "J",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-slab_recl), 'Node2 - Slab Recl')"
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-user), '$Node2_Timeshift'), 'Node2 - User')"
               },
               {
                 "refId": "K",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-cached), 'Node2 - Cached')"
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-nice), '$Node2_Timeshift'), 'Node2 - Nice')"
               },
               {
                 "refId": "L",
-                "target": "alias(averageSeries($Cloud2.$Node2.memory.memory-free), 'Node2 - Free')"
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-steal), '$Node2_Timeshift'), 'Node2 - Steal')"
+              },
+              {
+                "refId": "M",
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-softirq), '$Node2_Timeshift'), 'Node2 - SoftIRQ')"
+              },
+              {
+                "refId": "N",
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), '$Node2_Timeshift'), 'Node2 - Interrupt')"
+              },
+              {
+                "refId": "O",
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-wait), '$Node2_Timeshift'), 'Node2 - Wait')"
+              },
+              {
+                "refId": "P",
+                "target": "alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-idle), '$Node2_Timeshift'), 'Node2 - Idle')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Memory in Bytes",
+            "title": "CPU Sum",
             "tooltip": {
               "shared": true,
               "value_type": "individual"
@@ -272,10 +278,19 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "bytes",
+              "percent",
               "short"
             ]
-          },
+          }
+        ],
+        "showTitle": true,
+        "title": "CPU Comparsion"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "250px",
+        "panels": [
           {
             "aliasColors": {},
             "bars": false,
@@ -286,7 +301,7 @@
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "leftMin": 0,
+              "leftMin": null,
               "rightLogBase": 1,
               "rightMax": null,
               "rightMin": null,
@@ -327,43 +342,161 @@
               }
             ],
             "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-slab_unrecl), '$Node1_Timeshift'), 'Node1 - Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-used), '$Node1_Timeshift'), 'Node1 - Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-buffered), '$Node1_Timeshift'), 'Node1 - Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-slab_recl), '$Node1_Timeshift'), 'Node1 - Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-cached), '$Node1_Timeshift'), 'Node1 - Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-free), '$Node1_Timeshift'), 'Node1 - Free')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-slab_unrecl), '$Node2_Timeshift'), 'Node2 - Slab Unrecl')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-used), '$Node2_Timeshift'), 'Node2 - Used')"
+              },
+              {
+                "refId": "I",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-buffered), '$Node2_Timeshift'), 'Node2 - Buffered')"
+              },
+              {
+                "refId": "J",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-slab_recl), '$Node2_Timeshift'), 'Node2 - Slab Recl')"
+              },
+              {
+                "refId": "K",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-cached), '$Node2_Timeshift'), 'Node2 - Cached')"
+              },
+              {
+                "refId": "L",
+                "target": "alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-free), '$Node2_Timeshift'), 'Node2 - Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Memory in Bytes",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 4,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/Node1/i",
+                "stack": "A"
+              },
+              {
+                "alias": "/Node2/i",
+                "stack": "B"
+              }
+            ],
+            "span": 12,
             "stack": true,
             "steppedLine": false,
             "targets": [
               {
                 "hide": true,
                 "refId": "A",
-                "target": "$Cloud1.$Node1.memory.memory-slab_unrecl"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-slab_unrecl, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "B",
-                "target": "$Cloud1.$Node1.memory.memory-used"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-used, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "C",
-                "target": "$Cloud1.$Node1.memory.memory-buffered"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-buffered, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "D",
-                "target": "$Cloud1.$Node1.memory.memory-slab_recl"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-slab_recl, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "E",
-                "target": "$Cloud1.$Node1.memory.memory-cached"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-cached, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "F",
-                "target": "$Cloud1.$Node1.memory.memory-free"
+                "target": "timeShift($Cloud1.$Node1.memory.memory-free, '$Node1_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "G",
-                "target": "sumSeries($Cloud1.$Node1.memory.*)"
+                "target": "timeShift(sumSeries($Cloud1.$Node1.memory.*), '$Node1_Timeshift')"
               },
               {
                 "refId": "H",
@@ -392,37 +525,37 @@
               {
                 "hide": true,
                 "refId": "N",
-                "target": "$Cloud2.$Node2.memory.memory-slab_unrecl"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-slab_unrecl, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "O",
-                "target": "$Cloud2.$Node2.memory.memory-used"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-used, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "P",
-                "target": "$Cloud2.$Node2.memory.memory-buffered"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-buffered, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "Q",
-                "target": "$Cloud2.$Node2.memory.memory-slab_recl"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-slab_recl, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "R",
-                "target": "$Cloud2.$Node2.memory.memory-cached"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-cached, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "S",
-                "target": "$Cloud2.$Node2.memory.memory-free"
+                "target": "timeShift($Cloud2.$Node2.memory.memory-free, '$Node2_Timeshift')"
               },
               {
                 "hide": true,
                 "refId": "T",
-                "target": "sumSeries($Cloud2.$Node2.memory.*)"
+                "target": "timeShift(sumSeries($Cloud2.$Node2.memory.*), '$Node2_Timeshift')"
               },
               {
                 "refId": "U",
@@ -465,100 +598,14 @@
             ]
           }
         ],
-        "showTitle": true
+        "showTitle": true,
+        "title": "Memory Comparsion"
       },
       {
-        "title": "Disk Comparsion",
-        "height": "250px",
-        "editable": true,
         "collapse": true,
+        "editable": true,
+        "height": "250px",
         "panels": [
-          {
-            "aliasColors": {},
-            "bars": false,
-            "datasource": null,
-            "editable": true,
-            "error": false,
-            "fill": 1,
-            "grid": {
-              "leftLogBase": 1,
-              "leftMax": null,
-              "leftMin": null,
-              "rightLogBase": 1,
-              "rightMax": null,
-              "rightMin": null,
-              "threshold1": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2": null,
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
-            "id": 4,
-            "isNew": true,
-            "legend": {
-              "alignAsTable": true,
-              "avg": true,
-              "current": true,
-              "max": true,
-              "min": true,
-              "rightSide": true,
-              "show": true,
-              "total": false,
-              "values": true
-            },
-            "lines": true,
-            "linewidth": 2,
-            "links": [],
-            "nullPointMode": "connected",
-            "percentage": false,
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [
-              {
-                "alias": "Node1 - Write",
-                "transform": "negative-Y"
-              },
-              {
-                "alias": "Node2 - Write",
-                "transform": "negative-Y"
-              }
-            ],
-            "span": 12,
-            "stack": false,
-            "steppedLine": false,
-            "targets": [
-              {
-                "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Disk.disk_ops.read, 'Node1 - Read')"
-              },
-              {
-                "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Disk.disk_ops.write, 'Node1 - Write')"
-              },
-              {
-                "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Disk.disk_ops.read, 'Node2 - Read')"
-              },
-              {
-                "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Disk.disk_ops.write, 'Node2 - Write')"
-              }
-            ],
-            "timeFrom": null,
-            "timeShift": null,
-            "title": "iops",
-            "tooltip": {
-              "shared": true,
-              "value_type": "cumulative"
-            },
-            "type": "graph",
-            "x-axis": true,
-            "y-axis": true,
-            "y_formats": [
-              "iops",
-              "short"
-            ]
-          },
           {
             "aliasColors": {},
             "bars": false,
@@ -615,24 +662,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Disk.disk_octets.read, 'Node1 - Read')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_ops.read, '$Node1_Timeshift'), 'Node1 - Read')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Disk.disk_octets.write, 'Node1 - Write')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_ops.write, '$Node1_Timeshift'), 'Node1 - Write')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Disk.disk_octets.read, 'Node2 - Read')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_ops.read, '$Node2_Timeshift'), 'Node2 - Read')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Disk.disk_octets.write, 'Node2 - Write')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_ops.write, '$Node2_Timeshift'), 'Node2 - Write')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Throughput",
+            "title": "iops",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -641,20 +688,10 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "Bps",
+              "iops",
               "short"
             ]
-          }
-
-        ],
-        "showTitle": true
-      },
-      {
-        "title": "Network Comparsion",
-        "height": "250px",
-        "editable": true,
-        "collapse": true,
-        "panels": [
+          },
           {
             "aliasColors": {},
             "bars": false,
@@ -697,11 +734,11 @@
             "renderer": "flot",
             "seriesOverrides": [
               {
-                "alias": "Node1 - RX",
+                "alias": "Node1 - Write",
                 "transform": "negative-Y"
               },
               {
-                "alias": "Node2 - RX",
+                "alias": "Node2 - Write",
                 "transform": "negative-Y"
               }
             ],
@@ -711,24 +748,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Interface.if_packets.tx, 'Node1 - TX')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_octets.read, '$Node1_Timeshift'), 'Node1 - Read')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Interface.if_packets.rx, 'Node1 - RX')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_octets.write, '$Node1_Timeshift'), 'Node1 - Write')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Interface.if_packets.tx, 'Node2 - TX')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_octets.read, '$Node2_Timeshift'), 'Node2 - Read')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Interface.if_packets.rx, 'Node2 - RX')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_octets.write, '$Node2_Timeshift'), 'Node2 - Write')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "pps",
+            "title": "Throughput",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -737,7 +774,7 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "pps",
+              "Bps",
               "short"
             ]
           },
@@ -781,40 +818,23 @@
             "pointradius": 5,
             "points": false,
             "renderer": "flot",
-            "seriesOverrides": [
-              {
-                "alias": "Node1 - RX",
-                "transform": "negative-Y"
-              },
-              {
-                "alias": "Node2 - RX",
-                "transform": "negative-Y"
-              }
-            ],
+            "seriesOverrides": [],
             "span": 12,
             "stack": false,
             "steppedLine": false,
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(scale($Cloud1.$Node1.$Node1_Interface.if_octets.tx, 8), 'Node1 - TX')"
+                "target": "alias(timeShift(scale($Cloud1.$Node1.$Node1_Disk.disk_io_time.io_time, 0.1), '$Node1_Timeshift'), 'Node1 - Time')"
               },
               {
                 "refId": "B",
-                "target": "alias(scale($Cloud1.$Node1.$Node1_Interface.if_octets.rx, 8), 'Node1 - RX')"
-              },
-              {
-                "refId": "C",
-                "target": "alias(scale($Cloud2.$Node2.$Node2_Interface.if_octets.tx, 8), 'Node2 - TX')"
-              },
-              {
-                "refId": "D",
-                "target": "alias(scale($Cloud2.$Node2.$Node2_Interface.if_octets.rx, 8), 'Node2 - RX')"
+                "target": "alias(timeShift(scale($Cloud2.$Node2.$Node2_Disk.disk_io_time.io_time, 0.1), '$Node2_Timeshift'), 'Node2 - Time')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Throughput",
+            "title": "% Time",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -823,10 +843,19 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "bps",
+              "percent",
               "short"
             ]
-          },
+          }
+        ],
+        "showTitle": true,
+        "title": "Disk Comparsion"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "250px",
+        "panels": [
           {
             "aliasColors": {},
             "bars": false,
@@ -839,8 +868,8 @@
               "leftMax": null,
               "leftMin": null,
               "rightLogBase": 1,
-              "rightMax": 100,
-              "rightMin": 0,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
               "threshold2": null,
@@ -850,7 +879,7 @@
             "isNew": true,
             "legend": {
               "alignAsTable": true,
-              "avg": false,
+              "avg": true,
               "current": true,
               "max": true,
               "min": true,
@@ -869,12 +898,12 @@
             "renderer": "flot",
             "seriesOverrides": [
               {
-                "alias": "Node1 - % Used",
-                "yaxis": 2
+                "alias": "Node1 - RX",
+                "transform": "negative-Y"
               },
               {
-                "alias": "Node2 - % Used",
-                "yaxis": 2
+                "alias": "Node2 - RX",
+                "transform": "negative-Y"
               }
             ],
             "span": 12,
@@ -883,32 +912,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.conntrack.conntrack-max, 'Node1 - Max')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Interface.if_packets.tx, '$Node1_Timeshift'), 'Node1 - TX')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.conntrack.conntrack, 'Node1 - Used')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Interface.if_packets.rx, '$Node1_Timeshift'), 'Node1 - RX')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud1.$Node1.conntrack.percent-used, 'Node1 - % Used')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Interface.if_packets.tx, '$Node2_Timeshift'), 'Node2 - TX')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.conntrack.conntrack-max, 'Node2 - Max')"
-              },
-              {
-                "refId": "E",
-                "target": "alias($Cloud2.$Node2.conntrack.conntrack, 'Node2 - Used')"
-              },
-              {
-                "refId": "F",
-                "target": "alias($Cloud2.$Node2.conntrack.percent-used, 'Node2 - % Used')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Interface.if_packets.rx, '$Node2_Timeshift'), 'Node2 - RX')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "ConnTrack",
+            "title": "pps",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -917,20 +938,10 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "short",
-              "percent"
+              "pps",
+              "short"
             ]
-          }
-
-        ],
-        "showTitle": true
-      },
-      {
-        "title": "Node Process Comparsion",
-        "height": "250px",
-        "editable": true,
-        "collapse": true,
-        "panels": [
+          },
           {
             "aliasColors": {},
             "bars": false,
@@ -954,7 +965,7 @@
             "isNew": true,
             "legend": {
               "alignAsTable": true,
-              "avg": false,
+              "avg": true,
               "current": true,
               "max": true,
               "min": true,
@@ -973,12 +984,12 @@
             "renderer": "flot",
             "seriesOverrides": [
               {
-                "alias": "/Node1/i",
-                "stack": "A"
+                "alias": "Node1 - RX",
+                "transform": "negative-Y"
               },
               {
-                "alias": "/Node2/i",
-                "stack": "B"
+                "alias": "Node2 - RX",
+                "transform": "negative-Y"
               }
             ],
             "span": 12,
@@ -987,76 +998,44 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-running, 'Node1 - Running')"
+                "target": "alias(timeShift(scale($Cloud1.$Node1.$Node1_Interface.if_octets.tx, 8), '$Node1_Timeshift'), 'Node1 - TX')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-stopped, 'Node1 - Stopped')"
+                "target": "alias(timeShift(scale($Cloud1.$Node1.$Node1_Interface.if_octets.rx, 8), '$Node1_Timeshift'), 'Node1 - RX')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-sleeping, 'Node1 - Sleeping')"
+                "target": "alias(timeShift(scale($Cloud2.$Node2.$Node2_Interface.if_octets.tx, 8), '$Node2_Timeshift'), 'Node2 - TX')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-blocked, 'Node1 - Blocked')"
-              },
-              {
-                "refId": "E",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-paging, 'Node1 - Paging')"
-              },
-              {
-                "refId": "F",
-                "target": "alias($Cloud1.$Node1.processes.ps_state-zombies, 'Node1 - Zombies')"
-              },
-              {
-                "refId": "G",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-running, 'Node2 - Running')"
-              },
-              {
-                "refId": "H",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-stopped, 'Node2 - Stopped')"
-              },
-              {
-                "refId": "I",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-sleeping, 'Node2 - Sleeping')"
-              },
-              {
-                "refId": "J",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-blocked, 'Node2 - Blocked')"
-              },
-              {
-                "refId": "K",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-paging, 'Node2 - Paging')"
-              },
-              {
-                "refId": "L",
-                "target": "alias($Cloud2.$Node2.processes.ps_state-zombies, 'Node2 - Zombies')"
+                "target": "alias(timeShift(scale($Cloud2.$Node2.$Node2_Interface.if_octets.rx, 8), '$Node2_Timeshift'), 'Node2 - RX')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Processes State",
+            "title": "Throughput",
             "tooltip": {
               "shared": true,
-              "value_type": "individual"
+              "value_type": "cumulative"
             },
             "type": "graph",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "short",
+              "bps",
               "short"
             ]
           }
         ],
-        "showTitle": true
+        "showTitle": true,
+        "title": "Network Comparsion"
       },
       {
-        "title": "Per Process Comparsion",
-        "height": "250px",
-        "editable": true,
         "collapse": true,
+        "editable": true,
+        "height": "250px",
         "panels": [
           {
             "aliasColors": {},
@@ -1098,60 +1077,100 @@
             "pointradius": 5,
             "points": false,
             "renderer": "flot",
-            "seriesOverrides": [],
+            "seriesOverrides": [
+              {
+                "alias": "/Node1/i",
+                "stack": "A"
+              },
+              {
+                "alias": "/Node2/i",
+                "stack": "B"
+              }
+            ],
             "span": 12,
             "stack": false,
             "steppedLine": false,
             "targets": [
               {
-                "hide": true,
                 "refId": "A",
-                "target": "alias(sumSeries(offset(scale($Cloud1.$Node1.cpu-*.cpu-idle, 0), 1)), 'Node1 - cores')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-running, '$Node1_Timeshift'), 'Node1 - Running')"
               },
               {
-                "hide": true,
                 "refId": "B",
-                "target": "alias(sumSeries(offset(scale($Cloud2.$Node2.cpu-*.cpu-idle, 0), 1)), 'Node2 - cores')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-stopped, '$Node1_Timeshift'), 'Node1 - Stopped')"
               },
               {
                 "refId": "C",
-                "target": "alias(divideSeries(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.syst, 0.0001), #A), 'Node1 - $Node1_Process - System')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-sleeping, '$Node1_Timeshift'), 'Node1 - Sleeping')"
               },
               {
                 "refId": "D",
-                "target": "alias(divideSeries(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.user, 0.0001), #A), 'Node1 - $Node1_Process - User')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-blocked, '$Node1_Timeshift'), 'Node1 - Blocked')"
               },
               {
                 "refId": "E",
-                "target": "alias(divideSeries(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.syst, 0.0001), #A), 'Node2 - $Node2_Process - System')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-paging, '$Node1_Timeshift'), 'Node1 - Paging')"
               },
               {
                 "refId": "F",
-                "target": "alias(divideSeries(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.user, 0.0001), #A), 'Node2 - $Node2_Process - User')"
+                "target": "alias(timeShift($Cloud1.$Node1.processes.ps_state-zombies, '$Node1_Timeshift'), 'Node1 - Zombies')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-running, '$Node2_Timeshift'), 'Node2 - Running')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-stopped, '$Node2_Timeshift'), 'Node2 - Stopped')"
+              },
+              {
+                "refId": "I",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-sleeping, '$Node2_Timeshift'), 'Node2 - Sleeping')"
+              },
+              {
+                "refId": "J",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-blocked, '$Node2_Timeshift'), 'Node2 - Blocked')"
+              },
+              {
+                "refId": "K",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-paging, '$Node2_Timeshift'), 'Node2 - Paging')"
+              },
+              {
+                "refId": "L",
+                "target": "alias(timeShift($Cloud2.$Node2.processes.ps_state-zombies, '$Node2_Timeshift'), 'Node2 - Zombies')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Process CPU",
+            "title": "Processes State",
             "tooltip": {
               "shared": true,
-              "value_type": "cumulative"
+              "value_type": "individual"
             },
             "type": "graph",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "percent",
+              "short",
               "short"
             ]
-          },
+          }
+        ],
+        "showTitle": true,
+        "title": "Node Process Comparsion"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "250px",
+        "panels": [
           {
             "aliasColors": {},
             "bars": false,
             "datasource": null,
             "editable": true,
             "error": false,
-            "fill": 1,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
@@ -1192,24 +1211,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_rss, 'Node1 - $Node1_Process - RSS')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_count.processes, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Processes')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_vm, 'Node1 - $Node1_Process - Virtual')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_count.threads, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Threads')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_rss, 'Node2 - $Node2_Process - RSS')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_count.processes, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Processes')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_vm, 'Node2 - $Node2_Process - Virtual')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_count.threads, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Threads')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Process Memory",
+            "title": "Process Counts",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -1218,7 +1237,7 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "bits",
+              "short",
               "short"
             ]
           },
@@ -1269,24 +1288,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_pagefaults.majflt, 'Node1 - $Node1_Process - Majflt')"
+                "target": "alias(timeShift(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.syst, 0.0001), '$Node1_Timeshift'), 'Node1 - $Node1_Process - System')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_pagefaults.minflt, 'Node1 - $Node1_Process - Minflt')"
+                "target": "alias(timeShift(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.user, 0.0001), '$Node1_Timeshift'), 'Node1 - $Node1_Process - User')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_pagefaults.majflt, 'Node2 - $Node2_Process - Majflt')"
+                "target": "alias(timeShift(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.syst, 0.0001), '$Node2_Timeshift'), 'Node2 - $Node2_Process - System')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_pagefaults.minflt, 'Node2 - $Node2_Process - Minflt')"
+                "target": "alias(timeShift(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.user, 0.0001), '$Node2_Timeshift'), 'Node2 - $Node2_Process - User')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Page Faults",
+            "title": "Process CPU",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -1295,7 +1314,7 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "short",
+              "percent",
               "short"
             ]
           },
@@ -1346,24 +1365,24 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_disk_ops.read, 'Node1 - $Node1_Process - Read')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_rss, '$Node1_Timeshift'), 'Node1 - $Node1_Process - RSS')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_disk_ops.write, 'Node1 - $Node1_Process - Write')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_vm, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Virtual')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_disk_ops.read, 'Node2 - $Node2_Process - Read')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_rss, '$Node2_Timeshift'), 'Node2 - $Node2_Process - RSS')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_disk_ops.write, 'Node2 - $Node2_Process - Write')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_vm, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Virtual')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "iops",
+            "title": "Process Memory",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -1372,7 +1391,7 @@
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
-              "iops",
+              "bits",
               "short"
             ]
           },
@@ -1423,19 +1442,173 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_disk_octets.read, 'Node1 - $Node1_Process - Read')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_pagefaults.majflt, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Majflt')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud1.$Node1.$Node1_Process.ps_disk_octets.write, 'Node1 - $Node1_Process - Write')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_pagefaults.minflt, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Minflt')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_disk_octets.read, 'Node2 - $Node2_Process - Read')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_pagefaults.majflt, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Majflt')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud2.$Node2.$Node2_Process.ps_disk_octets.write, 'Node2 - $Node2_Process - Write')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_pagefaults.minflt, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Minflt')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Page Faults",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 15,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_ops.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_ops.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_ops.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_ops.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "iops",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "iops",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 16,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_octets.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_octets.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_octets.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_octets.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')"
               }
             ],
             "timeFrom": null,
@@ -1454,14 +1627,431 @@
             ]
           }
         ],
-        "showTitle": true
+        "showTitle": true,
+        "title": "Per Process Comparsion"
       }
     ],
+    "schemaVersion": 8,
+    "sharedCrosshair": false,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "None",
+            "value": "None"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud1",
+          "options": [],
+          "query": "*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "None",
+            "value": "None"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud2",
+          "options": [],
+          "query": "*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node1",
+          "options": [],
+          "query": "$Cloud1.*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node2",
+          "options": [],
+          "query": "$Cloud2.*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "disk-vda",
+            "value": "disk-vda"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node1_Disk",
+          "options": [],
+          "query": "$Cloud1.$Node1.disk-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "disk-vda",
+            "value": "disk-vda"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node2_Disk",
+          "options": [],
+          "query": "$Cloud2.$Node2.disk-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "interface-eth0",
+            "value": "interface-eth0"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node1_Interface",
+          "options": [],
+          "query": "$Cloud1.$Node1.interface-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "interface-eth0",
+            "value": "interface-eth0"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node2_Interface",
+          "options": [],
+          "query": "$Cloud2.$Node2.interface-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "processes-ruby",
+            "value": "processes-ruby"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node1_Process",
+          "options": [],
+          "query": "$Cloud1.$Node1.processes-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "tags": [],
+            "text": "processes-ruby",
+            "value": "processes-ruby"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node2_Process",
+          "options": [],
+          "query": "$Cloud2.$Node2.processes-*",
+          "refresh": true,
+          "type": "query"
+        },
+        {
+          "allFormat": "glob",
+          "auto": false,
+          "current": {
+            "tags": [],
+            "text": "0m",
+            "value": "0m"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node1_Timeshift",
+          "options": [
+            {
+              "selected": true,
+              "text": "0m",
+              "value": "0m"
+            },
+            {
+              "selected": false,
+              "text": "1m",
+              "value": "1m"
+            },
+            {
+              "selected": false,
+              "text": "10m",
+              "value": "10m"
+            },
+            {
+              "selected": false,
+              "text": "30m",
+              "value": "30m"
+            },
+            {
+              "selected": false,
+              "text": "1h",
+              "value": "1h"
+            },
+            {
+              "selected": false,
+              "text": "2h",
+              "value": "2h"
+            },
+            {
+              "selected": false,
+              "text": "3h",
+              "value": "3h"
+            },
+            {
+              "selected": false,
+              "text": "4h",
+              "value": "4h"
+            },
+            {
+              "selected": false,
+              "text": "5h",
+              "value": "5h"
+            },
+            {
+              "selected": false,
+              "text": "6h",
+              "value": "6h"
+            },
+            {
+              "selected": false,
+              "text": "12h",
+              "value": "12h"
+            },
+            {
+              "selected": false,
+              "text": "1d",
+              "value": "1d"
+            },
+            {
+              "selected": false,
+              "text": "2d",
+              "value": "2d"
+            },
+            {
+              "selected": false,
+              "text": "3d",
+              "value": "3d"
+            },
+            {
+              "selected": false,
+              "text": "4d",
+              "value": "4d"
+            },
+            {
+              "selected": false,
+              "text": "5d",
+              "value": "5d"
+            },
+            {
+              "selected": false,
+              "text": "6d",
+              "value": "6d"
+            },
+            {
+              "selected": false,
+              "text": "7d",
+              "value": "7d"
+            },
+            {
+              "selected": false,
+              "text": "14d",
+              "value": "14d"
+            },
+            {
+              "selected": false,
+              "text": "30d",
+              "value": "30d"
+            }
+          ],
+          "query": "0m,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+          "refresh": false,
+          "type": "custom"
+        },
+        {
+          "allFormat": "glob",
+          "auto": false,
+          "current": {
+            "tags": [],
+            "text": "0m",
+            "value": "0m"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node2_Timeshift",
+          "options": [
+            {
+              "selected": true,
+              "text": "0m",
+              "value": "0m"
+            },
+            {
+              "selected": false,
+              "text": "1m",
+              "value": "1m"
+            },
+            {
+              "selected": false,
+              "text": "10m",
+              "value": "10m"
+            },
+            {
+              "selected": false,
+              "text": "30m",
+              "value": "30m"
+            },
+            {
+              "selected": false,
+              "text": "1h",
+              "value": "1h"
+            },
+            {
+              "selected": false,
+              "text": "2h",
+              "value": "2h"
+            },
+            {
+              "selected": false,
+              "text": "3h",
+              "value": "3h"
+            },
+            {
+              "selected": false,
+              "text": "4h",
+              "value": "4h"
+            },
+            {
+              "selected": false,
+              "text": "5h",
+              "value": "5h"
+            },
+            {
+              "selected": false,
+              "text": "6h",
+              "value": "6h"
+            },
+            {
+              "selected": false,
+              "text": "12h",
+              "value": "12h"
+            },
+            {
+              "selected": false,
+              "text": "1d",
+              "value": "1d"
+            },
+            {
+              "selected": false,
+              "text": "2d",
+              "value": "2d"
+            },
+            {
+              "selected": false,
+              "text": "3d",
+              "value": "3d"
+            },
+            {
+              "selected": false,
+              "text": "4d",
+              "value": "4d"
+            },
+            {
+              "selected": false,
+              "text": "5d",
+              "value": "5d"
+            },
+            {
+              "selected": false,
+              "text": "6d",
+              "value": "6d"
+            },
+            {
+              "selected": false,
+              "text": "7d",
+              "value": "7d"
+            },
+            {
+              "selected": false,
+              "text": "14d",
+              "value": "14d"
+            },
+            {
+              "selected": false,
+              "text": "30d",
+              "value": "30d"
+            }
+          ],
+          "query": "0m,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+          "refresh": false,
+          "type": "custom"
+        }
+      ]
+    },
     "time": {
       "from": "now-1h",
       "to": "now"
     },
     "timepicker": {
+      "now": true,
       "refresh_intervals": [
         "5s",
         "10s",
@@ -1484,188 +2074,10 @@
         "2d",
         "7d",
         "30d"
-      ],
-      "now": true
-    },
-    "templating": {
-      "list": [
-        {
-          "allFormat": "glob",
-          "current": {
-            "text": "rduperf",
-            "value": "rduperf"
-          },
-          "datasource": null,
-          "includeAll": false,
-          "multi": false,
-          "multiFormat": "glob",
-          "name": "Cloud1",
-          "options": [],
-          "query": "*",
-          "refresh": true,
-          "type": "query"
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Cloud2",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "*",
-          "current": {
-            "text": "rduperf",
-            "value": "rduperf",
-            "tags": []
-          }
-        },
-        {
-          "allFormat": "glob",
-          "current": {
-            "text": "overcloud-controller-0_localdomain",
-            "value": "overcloud-controller-0_localdomain",
-            "tags": []
-          },
-          "datasource": null,
-          "includeAll": false,
-          "multi": false,
-          "multiFormat": "glob",
-          "name": "Node1",
-          "options": [],
-          "query": "$Cloud1.*",
-          "refresh": true,
-          "type": "query"
-        },
-        {
-          "allFormat": "glob",
-          "current": {
-            "text": "overcloud-controller-0_localdomain",
-            "value": "overcloud-controller-0_localdomain",
-            "tags": []
-          },
-          "datasource": null,
-          "includeAll": false,
-          "multi": false,
-          "multiFormat": "glob",
-          "name": "Node2",
-          "options": [],
-          "query": "$Cloud2.*",
-          "refresh": true,
-          "type": "query"
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node1_Disk",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud1.$Node1.disk-*",
-          "current": {
-            "text": "disk-sda",
-            "value": "disk-sda",
-            "tags": []
-          }
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node2_Disk",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud2.$Node2.disk-*",
-          "current": {
-            "text": "disk-sda",
-            "value": "disk-sda",
-            "tags": []
-          }
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node1_Interface",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud1.$Node1.interface-*",
-          "current": {
-            "text": "interface-br-bond",
-            "value": "interface-br-bond",
-            "tags": []
-          }
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node2_Interface",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud2.$Node2.interface-*",
-          "current": {
-            "text": "interface-br-bond",
-            "value": "interface-br-bond",
-            "tags": []
-          }
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node1_Process",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud1.$Node1.processes-*",
-          "current": {
-            "text": "processes-keystone-all",
-            "value": "processes-keystone-all",
-            "tags": []
-          }
-        },
-        {
-          "type": "query",
-          "datasource": null,
-          "refresh": true,
-          "name": "Node2_Process",
-          "options": [],
-          "includeAll": false,
-          "allFormat": "glob",
-          "multi": false,
-          "multiFormat": "glob",
-          "query": "$Cloud2.$Node2.processes-*",
-          "current": {
-            "text": "processes-keystone-all",
-            "value": "processes-keystone-all",
-            "tags": []
-          }
-        }
       ]
     },
-    "annotations": {
-      "list": []
-    },
-    "schemaVersion": 8,
-    "version": 7,
-    "links": [],
-    "overwrite": true
+    "timezone": "browser",
+    "title": "Cloud System Performance Comparsion",
+    "version": 7
   }
 }

@@ -1,15 +1,24 @@
 ---
 #
-# Generate Openstack collectd to graphite dashboards
+# Generate Browbeat OpenStack Grafana Dashboards
+#
+# Three types of Grafana Dashboards:
+# * Static Dashboards (Ex. cloud_system_performance_comparsion.json)
+# * Generic Generated Dashboards (Ex. OpenStack General System Performance)
+# * Cloud Specific Dashboards (All Nodes CPU Graphs (for a specific cloud))
+#
+# The Cloud Specific Dashboards are the only ones that require a cloud's inventory be defined.
+# You can deploy all of the Pre-Generated and Generated Dashboards and not the Cloud Specific
+# Dashboards with cloud_dashboards=false
 #
 
-- name: Generate Individual Machine Dashboards
+- name: Generate Generic Dashboards
   template:
     src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
     dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
   with_items: "{{dashboards}}"
 
-- name: Generate All Openstack Nodes CPU/Memory/Disk/Network Dashboards
+- name: Generate Cloud Specific CPU/Memory/Disk/Network Dashboards
   template:
     src: "{{item}}.json.j2"
     dest: "{{role_path}}/files/{{item}}.json"
@@ -18,40 +27,51 @@
     - all_memory_graphs
     - all_disk_graphs
     - all_network_graphs
+  when: cloud_dashboards
 
-- name: Remove Existing Individual Machine Dashboards
+- name: Remove Existing Static Dashboard(s)
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
+  when: overwrite_existing
+  with_items:
+    - cloud-system-performance-comparsion
+
+- name: Remove Existing Generic Dashboards
   command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
   when: overwrite_existing
   with_items: "{{dashboards}}"
 
-- name: Remove Existing All Openstack Nodes CPU/Memory/Disk/Network Dashboards
+- name: Remove Existing Cloud Specific CPU/Memory/Disk/Network Dashboards
   command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
-  when: overwrite_existing
+  when: overwrite_existing and cloud_dashboards
   with_items:
     - "{{dashboard_cloud_name}}-all-nodes-cpu"
     - "{{dashboard_cloud_name}}-all-nodes-memory"
     - "{{dashboard_cloud_name}}-all-nodes-disk"
     - "{{dashboard_cloud_name}}-all-nodes-network"
-    - cloud-system-performance-comparsion
 
-- name: Upload dashboards to Grafana
+- name: Upload Static Dashboards to Grafana
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  with_items:
+    - "{{role_path}}/files/cloud_system_performance_comparsion.json"
+
+- name: Upload Generic Dashboards to Grafana
   command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
   with_items: "{{dashboards}}"
 
-- name: Upload Dashboards to Grafana
+- name: Upload Cloud Specific CPU/Memory/Disk/Network Dashboards
   command: "curl -X POST -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
   with_items:
     - "{{role_path}}/files/all_cpu_graphs.json"
     - "{{role_path}}/files/all_memory_graphs.json"
     - "{{role_path}}/files/all_disk_graphs.json"
     - "{{role_path}}/files/all_network_graphs.json"
-    - "{{role_path}}/files/cloud_system_performance_comparsion.json"
+  when: cloud_dashboards
 
-- name: Remove leftover json file(s) from Individual Machine Dashboards
+- name: Remove leftover json file(s) from Generic Dashboards
   file: path={{role_path}}/files/{{item.process_list_name}}_general_system_performance.json state=absent
   with_items: "{{dashboards}}"
 
-- name: Remove leftover json file(s) from All Openstack Nodes CPU/Memory/Disk/Network Dashboards
+- name: Remove leftover json file(s) from Cloud Specific CPU/Memory/Disk/Network Dashboards
   file: path={{role_path}}/files/{{item}} state=absent
   with_items:
     - all_cpu_graphs.json

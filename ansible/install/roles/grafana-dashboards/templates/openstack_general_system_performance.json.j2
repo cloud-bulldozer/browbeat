@@ -1,4 +1,5 @@
 {% set vars = {'panel_idx': 0, 'temp_count': 0} %}
+{% set mariadb_groups = ['undercloud', 'controller', '*'] %}
 {
   "dashboard": {
     "annotations": {
@@ -7,7 +8,17 @@
     "editable": true,
     "hideControls": false,
     "id": null,
-    "links": [],
+    "links": [
+      {
+        "icon": "external link",
+        "tags": [
+          "OSP"
+        ],
+        "type": "dashboards",
+        "asDropdown": true,
+        "title": "Openstack General Dashboards"
+      }
+    ],
     "overwrite": true,
     "rows": [
       {
@@ -96,7 +107,7 @@
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "$Cloud - $Node - All CPUs",
+            "title": "$Cloud - $Node - CPU",
             "tooltip": {
               "shared": true,
               "value_type": "individual"
@@ -205,7 +216,7 @@
           }
         ],
         "showTitle": true,
-        "title": "CPU All"
+        "title": "CPU"
       },
       {
         "collapse": true,
@@ -664,7 +675,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -738,7 +749,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -817,7 +828,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -892,7 +903,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -967,7 +978,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1042,7 +1053,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1113,7 +1124,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1188,7 +1199,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1344,7 +1355,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1419,7 +1430,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1494,7 +1505,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1549,6 +1560,85 @@
               "short",
               "short"
             ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": 100,
+              "rightMin": 0,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "% Used",
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.conntrack.conntrack-max, 'Max')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.conntrack.conntrack, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.conntrack.percent-used, '% Used')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - ConnTrack",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "percent"
+            ]
           }
         ],
         "showTitle": true,
@@ -1579,7 +1669,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1654,7 +1744,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1721,7 +1811,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1788,7 +1878,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1855,7 +1945,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1930,7 +2020,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2025,7 +2115,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2092,7 +2182,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2169,7 +2259,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2262,7 +2352,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2348,7 +2438,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -2406,7 +2496,6 @@
         "editable": true,
         "height": "200px",
         "panels": [
-
       {% for panel in per_process_panels[item.process_list_name] %}
           {
             "aliasColors": {},
@@ -2445,7 +2534,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "{{metrics.nullPointMode}}",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -2456,20 +2545,12 @@
             "steppedLine": false,
             "targets": [
         {% if vars.update({'temp_count': 0}) %} {% endif %}
-        {% if metrics.name|match('Process CPU') %}
-              {
-                "hide": true,
-                "refId": "{{vars.temp_count|to_grafana_refid}}",
-                "target": "alias(sumSeries(offset(scale($Cloud.$Node.cpu-*.cpu-idle, 0), 1)), 'cores')"
-              },
-              {% if vars.update({'temp_count': (vars.temp_count + 1)}) %} {% endif %}
-        {% endif %}
         {% for process in panel.processes %}
           {% for metric in metrics.metrics %}
               {
                 "refId": "{{vars.temp_count|to_grafana_refid}}",
             {% if metrics.name|match('Process CPU') %}
-                "target": "alias(divideSeries(scale($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, 0.0001), #A), '{{process}} {{metric.name}}')"
+                "target": "alias(scale($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, 0.0001), '{{process}} {{metric.name}}')"
             {% else %}
                 "target": "alias($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, '{{process}} {{metric.name}}')"
             {% endif %}
@@ -2507,617 +2588,1152 @@
       {% endfor %}
         ],
         "showTitle": true,
-        "title": "Satellite6 {{metrics.name}}"
+        "title": "OSP {{metrics.name}}"
       },
     {% endfor %}
 {# End Loop over per-process options here #}
+      {% if item.template_node_type in mariadb_groups %}
       {
-        "title": "Postgresql",
-        "height": "250px",
-        "editable": true,
         "collapse": true,
+        "editable": true,
+        "height": "200px",
         "panels": [
           {
-            "title": "$Cloud - $Node - Database Sizes",
-            "error": false,
-            "span": 12,
-            "editable": true,
-            "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
+            "aliasColors": {},
+            "bars": false,
             "datasource": null,
-            "renderer": "flot",
-            "x-axis": true,
-            "y-axis": true,
-            "y_formats": [
-              "bits",
-              "short"
-            ],
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 1,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_db_size, 'postgresql-', ''), 2)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.threads-*, 'threads-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Connected Clients",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Threads",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_numbackends, 'postgresql-', ''), 2)"
+                "target": "aliasByNode($Cloud.$Node.mysql-*.mysql_octets.*, 4)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Traffic",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
           },
           {
-            "title": "$Cloud - $Node - Foreman Heap/Index/Toast Activity",
-            "error": false,
-            "span": 12,
-            "editable": true,
-            "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
+            "aliasColors": {},
+            "bars": false,
             "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
             "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.cache_result-*, 'cache_result-qcache-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Query Cache",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-foreman.pg_blks-*, 'pg_blks-', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.cache_size-*, 'cache_size-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Candlepin Heap/Index/Toast Activity",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Query Cache Size",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-candlepin.pg_blks-*, 'pg_blks-', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_bpool_bytes-*, 'mysql_bpool_bytes-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Buffer Pool Data",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
           },
           {
-            "title": "$Cloud - $Node - Gutterball Heap/Index/Toast Activity",
-            "error": false,
-            "span": 12,
-            "editable": true,
-            "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
+            "aliasColors": {},
+            "bars": false,
             "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
             "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_bpool_counters-*, 'mysql_bpool_counters-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Buffer Pool Counters",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-gutterball.pg_blks-*, 'pg_blks-', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_commands-*, 'mysql_commands-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Foreman Tuple Operations",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Commands",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-foreman.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_handler-*, 'mysql_handler-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Candlepin Tuple Operations",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Handler",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-candlepin.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_locks-*, 'mysql_locks-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Gutterball Tuple Operations",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Locks",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.postgresql-gutterball.pg_n_tup_*, 'pg_n_tup_', ''), 3)"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_select-*, 'mysql_select-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
-          },
-          {
-            "title": "$Cloud - $Node - Commits/Rollbacks",
-            "error": false,
-            "span": 12,
-            "editable": true,
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Select",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
             "type": "graph",
-            "isNew": true,
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
-            "id": {{vars.panel_idx}},
-            "datasource": null,
-            "renderer": "flot",
             "x-axis": true,
             "y-axis": true,
             "y_formats": [
               "short",
               "short"
-            ],
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
             "grid": {
               "leftLogBase": 1,
               "leftMax": null,
-              "rightMax": null,
               "leftMin": null,
-              "rightMin": null,
               "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
               "threshold1": null,
-              "threshold2": null,
               "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
             "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
+              "alignAsTable": true,
               "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
               "rightSide": true,
-              "alignAsTable": true
+              "show": true,
+              "total": false,
+              "values": true
             },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
             "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
             "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true
-            },
-            "timeFrom": null,
-            "timeShift": null,
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-commit, 'postgresql-', ''), 2), '$', '-commit')"
-              },
-              {
-                "refId": "B",
-                "target": "aliasSub(aliasByNode(aliasSub($Cloud.$Node.postgresql-*.pg_xact-rollback, 'postgresql-', ''), 2), '$', '-rollback')"
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_sort-*, 'mysql_sort-', ''), 3)"
               }
             ],
-            "aliasColors": {},
-            "seriesOverrides": [],
-            "links": []
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Sort",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
           }
         ],
-        "showTitle": true
+        "showTitle": true,
+        "title": "MARIADB"
       },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_data-*, 'mysql_innodb_data-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Data",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_dblwr-*, 'mysql_innodb_dblwr-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Double Write",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_log-*, 'mysql_innodb_log-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Log",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_pages-*, 'mysql_innodb_pages-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Pages",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_row_lock-*, 'mysql_innodb_row_lock-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Row Lock",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_rows-*, 'mysql_innodb_rows-', ''), 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MySQL Innodb Rows",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "MYSQL INNODB"
+      },
+      {% endif %}
       {
         "collapse": true,
         "editable": true,
@@ -3142,7 +3758,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -3203,6 +3819,7 @@
         {
           "allFormat": "glob",
           "current": {
+            "tags": [],
             "text": "None",
             "value": "None"
           },
@@ -3219,8 +3836,51 @@
         {
           "allFormat": "glob",
           "current": {
-            "text": "None",
-            "value": "None"
+            "tags": [],
+            "text": "{{item.template_node_type}}",
+            "value": "{{item.template_node_type}}"
+          },
+          "datasource": null,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "NodeType",
+          "options": [
+            {
+              "selected": false,
+              "text": "undercloud",
+              "value": "undercloud"
+            },
+            {
+              "selected": false,
+              "text": "controller",
+              "value": "controller"
+            },
+            {
+              "selected": false,
+              "text": "compute",
+              "value": "compute"
+            },
+            {
+              "selected": false,
+              "text": "ceph",
+              "value": "ceph"
+            },
+            {
+              "selected": true,
+              "text": "*",
+              "value": "*"
+            }
+          ],
+          "query": "undercloud,controller,compute,ceph,*",
+          "refresh": false,
+          "type": "custom"
+        },
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "overcloud-controller-0",
+            "value": "overcloud-controller-0"
           },
           "datasource": null,
           "includeAll": false,
@@ -3228,7 +3888,7 @@
           "multiFormat": "glob",
           "name": "Node",
           "options": [],
-          "query": "$Cloud.*",
+          "query": "$Cloud.*$NodeType*",
           "refresh": true,
           "type": "query"
         },
@@ -3333,6 +3993,9 @@
     },
     "timezone": "browser",
     "title": "{{item.process_list_name}} General System Performance",
-    "version": 1
+    "tags": [
+      "OSP"
+    ],
+    "version": 16
   }
 }
