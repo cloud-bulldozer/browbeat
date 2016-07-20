@@ -5,6 +5,7 @@
 
 - name: unmanage cinder services
   command: pcs resource unmanage {{ item }}
+  become: true
   with_items:
     - openstack-cinder-api
     - openstack-cinder-scheduler
@@ -13,6 +14,7 @@
 
 - name: restart cinder services
   service: name={{ item }} state=restarted
+  become: true
   with_items:
     - openstack-cinder-api
     - openstack-cinder-scheduler
@@ -20,6 +22,7 @@
 
 - name: manage cinder services
   command: pcs resource manage {{ item }}
+  become: true
   with_items:
     - openstack-cinder-api
     - openstack-cinder-scheduler
@@ -28,6 +31,7 @@
 
 - name: cleanup cinder services
   command: pcs resource cleanup {{ item }}
+  become: true
   with_items:
     - openstack-cinder-api
     - openstack-cinder-scheduler

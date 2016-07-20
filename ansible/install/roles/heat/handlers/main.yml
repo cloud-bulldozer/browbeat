@@ -5,6 +5,7 @@
 #
 - name: unmanage heat services
   command: pcs resource unmanage {{ item }}
+  become: true
   with_items:
     - openstack-heat-api
     - openstack-heat-engine
@@ -12,12 +13,14 @@
 
 - name: restart heat services
   service: name={{ item }} state=restarted
+  become: true
   with_items:
     - openstack-heat-api
     - openstack-heat-engine
 
 - name: manage heat services
   command: pcs resource manage {{ item }}
+  become: true
   with_items:
     - openstack-heat-api
     - openstack-heat-engine
@@ -25,6 +28,7 @@
 
 - name: cleanup heat services
   command: pcs resource cleanup {{ item }}
+  become: true
   with_items:
     - openstack-heat-api
     - openstack-heat-engine
