@@ -19,6 +19,7 @@ import yaml
 
 class WorkloadBase:
     __metaclass__ = ABCMeta
+    logger = logging.getLogger('browbeat.WorkloadBase')
     success = 0
     failure = 0
     total_tests = 0
@@ -88,8 +89,8 @@ class WorkloadBase:
 
     @staticmethod
     def print_summary():
-        print("Total scenarios executed:{}".format(
+        WorkloadBase.logger.info("Total scenarios executed:{}".format(
             WorkloadBase.total_scenarios))
-        print("Total tests executed:{}".format(WorkloadBase.total_tests))
-        print("Total tests passed:{}".format(WorkloadBase.success))
-        print("Total tests failed:{}".format(WorkloadBase.failure))
+        WorkloadBase.logger.info("Total tests executed:{}".format(WorkloadBase.total_tests))
+        WorkloadBase.logger.info("Total tests passed:{}".format(WorkloadBase.success))
+        WorkloadBase.logger.info("Total tests failed:{}".format(WorkloadBase.failure))
