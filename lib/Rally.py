@@ -179,7 +179,7 @@ class Rally(WorkloadBase):
         dir_ts = es_ts.strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(dir_ts))
         benchmarks = self.config.get('rally')['benchmarks']
-        if len(benchmarks) > 0:
+        if (benchmarks is not None and len(benchmarks) > 0):
             for benchmark in benchmarks:
                 if benchmark['enabled']:
                     self.logger.info("Benchmark: {}".format(benchmark['name']))
