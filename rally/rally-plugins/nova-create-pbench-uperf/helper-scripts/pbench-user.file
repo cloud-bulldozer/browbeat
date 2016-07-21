@@ -1,0 +1,32 @@
+#!/bin/bash
+sudo echo "nameserver 8.8.8.8" > /etc/resolv.conf
+sudo cat << EOF >> /etc/yum.repos.d/pbench.repo
+# Template file to be used with ansible playbook "pbench-repo.yml"
+
+###########################################################################
+[pbench]
+name=Pbench 7Server - x86_64
+baseurl=http://my-pbench.com/repo/7Server/
+arch=x86_64
+enabled=1
+gpgcheck=0
+skip_if_unavailable=1
+
+# External COPR repo
+[copr-pbench]
+name=Copr repo for pbench owned by ndokos
+baseurl=https://copr-be.cloud.fedoraproject.org/results/ndokos/pbench/epel-7-x86_64/
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/ndokos/pbench/pubkey.gpg
+enabled=1
+enabled_metadata=1
+skip_if_unavailable=1
+EOF
+cat /etc/yum.repos.d/pbench.repo
+sudo yum clean all
+sudo yum install -y pbench-agent-internal
+sudo yum install -y pbench-sysstat
+sudo yum install -y pbench-uperf
+sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
+cat /etc/cloud/cloud.cfg | grep disable_root
