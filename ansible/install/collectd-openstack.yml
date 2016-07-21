@@ -8,6 +8,7 @@
   vars:
     config_type: undercloud
   roles:
+    - { role: epel, when: collectd_undercloud }
     - { role: common, when: collectd_undercloud }
     - { role: collectd-openstack, when: collectd_undercloud }
   tasks:
@@ -22,6 +23,7 @@
   vars:
     config_type: controller
   roles:
+    - { role: epel, when: collectd_controller }
     - { role: common, when: collectd_controller }
     - { role: collectd-openstack, when: collectd_controller }
   tasks:
@@ -36,6 +38,7 @@
   vars:
     config_type: ceph
   roles:
+    - { role: epel, when: collectd_ceph }
     - { role: common, when: collectd_ceph }
     - { role: collectd-openstack, when: collectd_ceph }
   tasks:
@@ -50,6 +53,7 @@
   vars:
     config_type: compute
   roles:
+    - { role: epel, when: collectd_compute }
     - { role: common, when: collectd_compute }
     - { role: collectd-openstack, when: collectd_compute }
   tasks:

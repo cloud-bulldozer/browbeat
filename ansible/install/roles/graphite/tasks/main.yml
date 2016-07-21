@@ -3,14 +3,6 @@
 # Install/run graphite-web for browbeat
 #
 
-- name: Import EPEL GPG Key
-  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-    state=present
-
-- name: Check for EPEL repo
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    state=present
-
 - name: Install graphite rpms
   yum: name={{ item }} state=present
   become: true
@@ -168,8 +160,3 @@
   become: true
   when: carbon_cache_needs_restart.changed
 
-- name: Disable EPEL Repo
-  ini_file: dest=/etc/yum.repos.d/epel.repo
-    section=epel
-    option=enabled
-    value=0

@@ -9,14 +9,6 @@
     msg="** Edit grafana_host and graphite_host in ../install/group_vars/all.yml before running **"
   when: ((grafana_host is none) or (graphite_host is none))
 
-- name: Import EPEL GPG Key
-  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-    state=present
-
-- name: Check for EPEL repo
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    state=present
-
 - name: Install grafana RPM repo
   copy:
     src=grafana.repo
@@ -140,9 +132,3 @@
 - name: Remove leftover json file
   file: path={{role_path}}/files/data_source.json state=absent
   connection: local
-
-- name: Disable EPEL Repo
-  ini_file: dest=/etc/yum.repos.d/epel.repo
-    section=epel
-    option=enabled
-    value=0

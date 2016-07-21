@@ -15,6 +15,7 @@
   vars:
     config_type: baremetal
   roles:
+    - epel
     - collectd-generic
   tags: baremetal
 
@@ -23,6 +24,7 @@
   vars:
     config_type: guest
   roles:
+    - epel
     - collectd-generic
   tags: guest
 
@@ -31,5 +33,6 @@
   vars:
     config_type: graphite
   roles:
+    - epel
     - collectd-generic
   tags: graphite

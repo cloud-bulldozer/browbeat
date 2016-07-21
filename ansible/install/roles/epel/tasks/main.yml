@@ -1,0 +1,18 @@
+---
+#
+# Tasks install EPEL packages
+#
+
+- name: Remove old EPEL
+  yum: name=epel-release state=absent
+  become: true
+
+- name: Import EPEL GPG Key
+  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    state=present
+  become: true
+
+- name: Check for EPEL repo
+  yum: "name={{ epel7_rpm }} state=present"
+  become: true
+  notify: remove_epel
