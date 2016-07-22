@@ -3,14 +3,6 @@
 # Install/run grafana-server for browbeat
 #
 
-- name: Import EPEL GPG Key
-  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-    state=present
-
-- name: Check for EPEL repo
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    state=present
-
 - name: disable firewalld
   service: name=firewalld state=stopped enabled=false
   become: true
@@ -80,8 +72,3 @@
   become: true
   when: systemd_grafana_needs_restart.changed
 
-- name: Disable EPEL Repo
-  ini_file: dest=/etc/yum.repos.d/epel.repo
-    section=epel
-    option=enabled
-    value=0

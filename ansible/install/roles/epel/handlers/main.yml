@@ -1,0 +1,8 @@
+---
+#
+# Handler to clean up EPEL whenever it is used
+#
+- name: remove_epel
+  shell: rpm -e epel-release
+  ignore_errors: true
+  become: true
