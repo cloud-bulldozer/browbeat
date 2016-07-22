@@ -5,9 +5,11 @@
 
 - name: Install pip
   easy_install: name=pip
+  become: true
 
 - name: Install connmon
   pip: name=connmon
+  become: true
 
 #
 # Connmon Setup
@@ -20,9 +22,11 @@
     owner: root
     group: root
     mode: 0644
+  become: true
 
 - name: Install Screen for connmon
   yum: name=screen state=latest
+  become: true
   when: undercloud
 
 # To remove the screen session: screen -X -S connmond kill
@@ -30,12 +34,6 @@
   command: screen -d -S connmond -m connmond
   when: undercloud
   changed_when: false
-
-- name: Change connmon result owner
-  command: chown "{{ local_remote_user }}":"{{ local_remote_user }}" /tmp/connmon_results.csv
-  when: undercloud
-  changed_when: false
-  ignore_errors: true
 
 ### begin firewall ###
 # we need TCP/5555 open
@@ -76,8 +74,9 @@
 - name: (connmon) check firewall rules for TCP/{{connmon_port}} (iptables-services)
   shell: grep "dport {{connmon_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
+  become: true
   register: iptables_tcp5800_exists
-  failed_when: iptables_tcp{{connmon_port}}_exists == 127
+  failed_when: iptables_tcp{{connmon_port}}_exists == 127i
   no_log: true
 
 - name: (connmon) Add firewall rule for TCP/{{connmon_port}} (iptables-services)
@@ -87,12 +86,14 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
+  become: true
   when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp5800_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: (connmon) Restart iptables-services for TCP/{{connmon_port}} (iptables-services)
   shell: systemctl restart iptables.service
   ignore_errors: true
+  become: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
 
 ### end firewall ###
