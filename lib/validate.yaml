@@ -16,6 +16,35 @@ mapping:
         type: str
         required: True
 
+  elasticsearch:
+    required: True
+    type: map
+    mapping:
+      enabled:
+        type: bool
+        required: True
+      host:
+        type: str
+        required: True
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
+      port:
+        type: int
+        required: True
+      metadata_files:
+        type: seq
+        required: True
+        sequence:
+        - type: map
+          allowempty: True
+          mapping:
+            name:
+              type: str
+              required: True
+            file:
+              type: str
+              required: True
+
+
   ansible:
     required: True
     type: map
