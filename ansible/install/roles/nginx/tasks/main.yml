@@ -16,6 +16,12 @@
 - name: Apply SELinux boolean httpd_can_network_connect
   seboolean: name=httpd_can_network_connect state=yes persistent=yes
 
+# create /etc/nginx/conf.d/ directory
+- name: Create nginx directory structure
+  file: path=/etc/nginx/conf.d/
+    state=directory
+    mode=0755
+
 # deploy kibana.conf with FQDN
 - name: Setup nginx reverse proxy for kibana
   template:
