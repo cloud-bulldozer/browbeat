@@ -62,7 +62,8 @@ class Elastic:
     """
 
     def combine_metadata(self, result):
-        if len(self.config['elasticsearch']['metadata_files']) > 0:
+        if (self.config['elasticsearch']['metadata_files'] is not None and
+                len(self.config['elasticsearch']['metadata_files']) > 0):
             meta = self.config['elasticsearch']['metadata_files']
             for _meta in meta:
                 try:
