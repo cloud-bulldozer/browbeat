@@ -397,8 +397,7 @@ class Shaker(WorkloadBase):
         scenarios = self.config.get('shaker')['scenarios']
         venv = self.config['shaker']['venv']
         self.shaker_checks()
-        scen_length = len(scenarios)
-        if scen_length > 0:
+        if (scenarios is not None and len(scenarios) > 0):
             for scenario in scenarios:
                 if scenario['enabled']:
                     self.update_scenarios()

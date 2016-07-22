@@ -158,7 +158,7 @@ class PerfKit(WorkloadBase):
         time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         benchmarks = self.config.get('perfkit')['benchmarks']
-        if len(benchmarks) > 0:
+        if (benchmarks is not None and len(benchmarks) > 0):
             for benchmark in benchmarks:
                 if benchmark['enabled']:
                     self.logger.info("Benchmark: {}".format(benchmark['name']))
