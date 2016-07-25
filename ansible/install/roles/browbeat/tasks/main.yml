@@ -90,7 +90,7 @@
      virtualenv={{ perfkit_venv }}
 
 - name: Install rally into rally-venv
-  pip: name=rally virtualenv={{ rally_venv }}
+  pip: name=rally version=0.5.0 virtualenv={{ rally_venv }}
 
 - name: Setup rally database
   shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate

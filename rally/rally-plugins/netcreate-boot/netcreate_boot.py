@@ -21,8 +21,8 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                      nova_utils.NovaScenario,
                      scenario.Scenario):
 
-    @types.set(image=types.ImageResourceType,
-               flavor=types.FlavorResourceType)
+    @types.convert(image={"type": "glance_image"},
+                   flavor={"type": "nova_flavor"})
     @validation.image_valid_on_flavor("flavor", "image")
     @validation.required_openstack(users=True)
     @scenario.configure(context={"cleanup": ["nova", "neutron"]})
