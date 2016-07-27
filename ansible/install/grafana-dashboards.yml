@@ -14,19 +14,19 @@
     cloud_dashboards: true
     overwrite_existing: true
     dashboards:
-      - template_name: OpenStack
+      - template_name: openstack
         template_node_type: undercloud
         process_list_name: OpenStack-Undercloud
-      - template_name: OpenStack
+      - template_name: openstack
         template_node_type: controller
         process_list_name: OpenStack-Controller
-      - template_name: OpenStack
+      - template_name: openstack
         template_node_type: compute
         process_list_name: OpenStack-Compute
-      - template_name: OpenStack
+      - template_name: openstack
         template_node_type: ceph
         process_list_name: OpenStack-Ceph
-      - template_name: OpenStack
+      - template_name: openstack
         template_node_type: "*"
         process_list_name: OpenStack
       # Non-OpenStack specific dashboards that are included:

@@ -216,7 +216,7 @@
       {% endfor %}
           ],
       {% if 'undercloud' in group %}
-          "title": "{{group}} Disk Throughput",
+          "title": "{{group}} Network Throughput",
       {% else %}
           "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network Throughput",
       {% endif %}
