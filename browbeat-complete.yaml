@@ -197,6 +197,30 @@ rally:
           flavor_name: m1.tiny
           sla_max_seconds: 30
           sla_max_failure: 0
+    - name: glance
+      enabled: true
+      concurrency:
+        - 8
+      times: 10
+      scenarios:
+        - name: create-image-boot-instances
+          enabled: true
+          image_location: /home/stack/cirros
+          instances: 2
+          flavor_name: m1.small
+          file: rally/glance/create-image-and-boot-instances-cc.yml
+        - name: create-and-delete-image
+          enabled: true
+          image_location: /home/stack/cirros
+          flavor_name: m1.small
+          file: rally/glance/create-and-delete-image-cc.yml
+        - name: create-and-list-image
+          enabled: true
+          image_location: /home/stack/cirros
+          file: rally/glance/create-and-list-image-cc.yml
+        - name: list-images
+          enabled: true
+          file: rally/glance/list-images-cc.yml
     - name: plugins
       enabled: true
       concurrency:
