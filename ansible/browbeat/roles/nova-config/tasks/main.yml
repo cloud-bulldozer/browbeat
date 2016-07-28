@@ -1,0 +1,21 @@
+---
+#
+# Configure nova.conf tasks
+#
+
+- name: Configure nova.conf
+  become: true
+  ini_file:
+    dest: /etc/nova/nova.conf
+    mode: 0640
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - "{{nova_configuration}}"
+  notify:
+    - unmanage nova services
+    - restart nova services
+    - manage nova services
+    - cleanup nova services

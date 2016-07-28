@@ -1,0 +1,75 @@
+---
+#
+# Playbook to change Nova allocation ratios
+#
+# Examples:
+# ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24"
+# ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0"
+# ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0 disk_allocation_ratio=10.0"
+#
+# * Note not setting a variable does not change that configuration item then. Setting no variables
+#   and running the playbook sets all configuration items back to defaults
+#
+# Defaults (defaults being what OSPd9 comes with out of the box cpu/ram/disk - 16/1/1)
+# ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml
+#
+
+- hosts: controller
+  remote_user: heat-admin
+  gather_facts: false
+  vars:
+    # Create initial blank configuration list
+    nova_configuration: []
+    # Defaults
+    default_cpu_allocation_ratio: 16
+    default_ram_allocation_ratio: 1
+    default_disk_allocation_ratio: 1
+    # Each configuration item needs to be a list so it can be merged
+    cpu_allocation_ratio_item: []
+    ram_allocation_ratio_item: []
+    disk_allocation_ratio_item: []
+  pre_tasks:
+    - name: Set default cpu_allocation_ratio/ram_allocation_ratio/disk_allocation_ratio configuration for Nova
+      set_fact:
+        nova_configuration:
+          - section: DEFAULT
+            option: cpu_allocation_ratio
+            value: "{{default_cpu_allocation_ratio}}"
+          - section: DEFAULT
+            option: ram_allocation_ratio
+            value: "{{default_ram_allocation_ratio}}"
+          - section: DEFAULT
+            option: disk_allocation_ratio
+            value: "{{default_disk_allocation_ratio}}"
+      when: cpu_allocation_ratio is undefined and ram_allocation_ratio is undefined and disk_allocation_ratio is undefined
+
+    - name: Set cpu_allocation_ratio configuration for Nova
+      set_fact:
+        cpu_allocation_ratio_item:
+          - section: DEFAULT
+            option: cpu_allocation_ratio
+            value: "{{cpu_allocation_ratio}}"
+      when: cpu_allocation_ratio is defined
+
+    - name: Set ram_allocation_ratio configuration for Nova
+      set_fact:
+        ram_allocation_ratio_item:
+          - section: DEFAULT
+            option: ram_allocation_ratio
+            value: "{{ram_allocation_ratio}}"
+      when: ram_allocation_ratio is defined
+
+    - name: Set disk_allocation_ratio configuration for Nova
+      set_fact:
+        disk_allocation_ratio_item:
+          - section: DEFAULT
+            option: disk_allocation_ratio
+            value: "{{disk_allocation_ratio}}"
+      when: disk_allocation_ratio is defined
+
+    - name: Merge configuration items
+      set_fact:
+        nova_configuration: "{{nova_configuration + cpu_allocation_ratio_item + ram_allocation_ratio_item + disk_allocation_ratio_item }}"
+
+  roles:
+    - nova-config
