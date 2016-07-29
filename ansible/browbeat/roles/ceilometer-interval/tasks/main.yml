@@ -1,0 +1,19 @@
+---
+#
+# Ceilometer interval tasks for Browbeat
+#
+
+- name: Deploy pipeline.yaml files
+  become: true
+  template:
+    src: pipeline.yaml.j2
+    dest: /etc/ceilometer/pipeline.yaml
+    owner: root
+    group: ceilometer
+    mode: 0640
+    backup: true
+  notify:
+    - pacemaker unmanage openstack-ceilometer-central
+    - restart openstack-ceilometer-central
+    - pacemaker manage openstack-ceilometer-central
+    - restart openstack-ceilometer-compute
