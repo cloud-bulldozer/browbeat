@@ -191,6 +191,17 @@ rally:
           image_name: cirros
           file: rally/nova/nova-boot-list-cc.yml
           flavor_name: m1.tiny
+    - name: glance
+      enabled: true
+      concurrency:
+        - 8
+      times: 10
+      scenarios:
+        - name: create-and-delete-image
+          enabled: true
+          image_location: /home/stack/cirros
+          flavor_name: m1.small
+          file: rally/glance/create-and-delete-image-cc.yml
     - name: plugins
       enabled: true
       concurrency:
