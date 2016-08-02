@@ -29,7 +29,7 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
     def create_network_nova_boot(self, image, flavor, num_networks=1, network_create_args=None,
                                  subnet_create_args=None, **kwargs):
         nets = []
-        for net in range(1, num_networks):
+        for net in range(0, num_networks):
             network = self._create_network(network_create_args or {})
             self._create_subnet(network, subnet_create_args or {})
             nets.append(network)
