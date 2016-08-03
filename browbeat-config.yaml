@@ -91,6 +91,7 @@ rally:
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - subnet-router-create: rally/rally-plugins/subnet-router-create
+    - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
   benchmarks:
     - name: authenticate
       enabled: true
@@ -217,3 +218,9 @@ rally:
           enabled: true
           num_networks:  10
           file: rally/rally-plugins/subnet-router-create/subnet-router-create.yml
+        - name: glance-create-boot-delete
+          enabled: true
+          image_location: /home/stack/cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/glance-create-boot-delete/glance_create_boot_delete.yml
+

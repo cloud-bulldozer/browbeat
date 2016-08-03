@@ -60,6 +60,8 @@ rally:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
     - subnet-router-create: rally/rally-plugins/subnet-router-create
+    - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
+
   benchmarks:
     - name: authenticate
       enabled: true
@@ -242,6 +244,11 @@ rally:
           enabled: true
           num_networks:  50
           file: rally/rally-plugins/subnet-router-create/subnet-router-create.yml
+        - name: glance-create-boot-delete
+          enabled: true
+          flavor_name: m1.tiny
+          image_location: /home/stack/cirros
+          file: rally/rally-plugins/glance-create-boot-delete/glance_create_boot_delete.yml
 #shaker scenarios require atleast 2 compute nodes
 shaker:
   enabled: true
