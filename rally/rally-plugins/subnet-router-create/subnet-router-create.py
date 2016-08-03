@@ -17,8 +17,9 @@ from rally.task import validation
 
 class NeutronPlugin(neutron_utils.NeutronScenario,
                     scenario.Scenario):
-    @types.set(image=types.ImageResourceType,
-               flavor=types.FlavorResourceType)
+
+    @types.convert(image={"type": "glance_image"},
+                   flavor={"type": "nova_flavor"})
     @validation.required_openstack(users=True)
     @scenario.configure(context={"cleanup": ["neutron"]})
     def create_router_and_net(self,num_networks=1,network_create_args=None,
