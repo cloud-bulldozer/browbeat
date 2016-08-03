@@ -1,0 +1,24 @@
+---
+#
+# Ceilometer Interval handlers
+#
+
+- name: pacemaker unmanage openstack-ceilometer-central
+  become: true
+  command: pcs resource unmanage openstack-ceilometer-central
+  when: inventory_hostname in groups['controller']
+
+- name: restart openstack-ceilometer-central
+  become: true
+  service: name=openstack-ceilometer-central state=restarted
+  when: inventory_hostname in groups['controller']
+
+- name: pacemaker manage openstack-ceilometer-central
+  become: true
+  command: pcs resource manage openstack-ceilometer-central
+  when: inventory_hostname in groups['controller']
+
+- name: restart openstack-ceilometer-compute
+  become: true
+  service: name=openstack-ceilometer-compute state=restarted
+  when: inventory_hostname in groups['compute']

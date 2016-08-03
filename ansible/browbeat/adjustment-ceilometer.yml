@@ -1,17 +1,22 @@
 ---
 #
-# Playbook to change token type from uuid to fernet and back for keystone.
+# Playbook to apply changes to ceilometer.
 #
-# Examples:
+# Examples (backend):
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=database"
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=gnocchi"
+#
+# Examples (interval):
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_interval=60"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_interval=600"
 #
 
 - hosts: controller
   remote_user: heat-admin
-  pre_tasks:
-    - name: Check for variable (ceilometer_backend)
-      fail: msg="ceilometer_backend not defined"
-      when: ceilometer_backend is undefined
   roles:
-    - ceilometer-backend
+    - { role: ceilometer-backend, when: ceilometer_backend is defined }
+
+- hosts: controller,compute
+  remote_user: heat-admin
+  roles:
+    - { role: ceilometer-interval, when: ceilometer_interval is defined }
