@@ -45,5 +45,11 @@ checks :
     neutron_rootwrap_daemon:
         url: "none"
         name: "Ensure rootwrap has daemon mode enabled"
+    neutron_dnsmasq_mtu:
+        url: "https://bugs.launchpad.net/tripleo/+bug/1590100"
+        name: "Ensure there is no dnsmasq setting to force MTU"
+    neutron_conf_mtu:
+        url: "https://bugs.launchpad.net/tripleo/+bug/1590101"
+        name: "The global_physnet_mtu should not be set unless by Administrator"
 
 # vi:syntax=yaml

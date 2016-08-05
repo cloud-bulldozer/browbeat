@@ -12,3 +12,17 @@
   failed_when: neutron_rootwrap_daemon.rc == 1
   changed_when: false
   ignore_errors: True
+
+- name: Check MTU
+  shell: cat /etc/neutron/dnsmasq-neutron.conf | grep 'dhcp\-option\-force=26'
+  register: neutron_dnsmasq_mtu
+  failed_when: neutron_dnsmasq_mtu.rc == 0
+  changed_when: false
+  ignore_errors: True
+
+- name: Check Neutron.conf MTU
+  command: crudini --get /etc/neutron/neutron.conf DEFAULT global_physnet_mtu
+  register: neutron_conf_mtu
+  failed_when: neutron_conf_mtu.rc == 0
+  changed_when: false
+  ignore_errors: True
