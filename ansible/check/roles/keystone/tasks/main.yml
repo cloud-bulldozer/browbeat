@@ -39,7 +39,6 @@
   register: bz1330980
   failed_when: bz1330980.stdout|int < keystone_processes
   when: keystone_in_eventlet.stdout|int == 0
-  failed_when:
   ignore_errors: True
 
 - name: Keystone HTTP main processes

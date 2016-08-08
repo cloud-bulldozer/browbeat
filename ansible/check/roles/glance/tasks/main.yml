@@ -1,0 +1,12 @@
+- name: Glance API worker count
+  command:  crudini --get /etc/glance/glance-api.conf DEFAULT workers
+  register: glance_api_workers
+  failed_when: glance_api_workers.rc == 1
+  changed_when: false
+  ignore_errors: true
+- name: Glance Registry worker count
+  command:  crudini --get /etc/glance/glance-registry.conf DEFAULT workers
+  register: glance_registry_workers
+  failed_when: glance_registry_workers.rc == 1
+  changed_when: false
+  ignore_errors: true

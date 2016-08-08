@@ -51,5 +51,9 @@ checks :
     neutron_conf_mtu:
         url: "https://bugs.launchpad.net/tripleo/+bug/1590101"
         name: "The global_physnet_mtu should not be set unless by Administrator"
-
+    glance_api_workers:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1361285"
+        name: "Glance API wokres should be set to None , thereby defaulting to number of cores"
+    glance_registry_workers:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1361285"
 # vi:syntax=yaml
