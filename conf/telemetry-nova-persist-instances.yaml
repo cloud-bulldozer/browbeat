@@ -1,0 +1,106 @@
+# Stress test designed for telemetry services (ceilometer, gnocchi) by
+# booting persisting xtiny cirros instances. It boots 20 each iteration
+# with a concurrency of 5 instances.  View how system resources degrade
+# over each new set of instances booted.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: openstack
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+ansible:
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+connmon:
+  enabled: false
+  sudo: true
+grafana:
+  enabled: false
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 0
+  # Sleeps 20 minutes after each iteration to allow for system resources to degrade or
+  # display stepped degrading (If the system is hitting saturation or high utilization)
+  sleep_after: 1200
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - nova: rally/rally-plugins/nova
+  benchmarks:
+    # Boots a total of 200 instances, 20 at a time with 20minutes between persist-booting "Storms"
+    - name: BrowbeatNovaPersist01
+      enabled: true
+      concurrency:
+        - 5
+      times: 20
+      scenarios:
+        - name: nova-boot-20-01
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-02
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-03
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-04
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-05
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-06
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-07
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-08
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-09
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml
+        - name: nova-boot-20-10
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/nova/nova_boot_persist.yml

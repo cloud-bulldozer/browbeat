@@ -1,0 +1,27 @@
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  CeilometerAlarms.create_and_list_alarm:
+    -
+      args:
+        meter_name: "ram_util"
+        threshold: 10.0
+        type: "threshold"
+        statistic: "avg"
+        alarm_actions: ["http://localhost:8776/alarm"]
+        ok_actions: ["http://localhost:8776/ok"]
+        insufficient_data_actions: ["http://localhost:8776/notok"]
+      context:
+        users:
+          tenants: 2
+          users_per_tenant: 2
+      runner:
+        concurrency: {{concurrency}}
+        times: {{times}}
+        type: "constant"
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}
