@@ -392,7 +392,7 @@ class Shaker(WorkloadBase):
 
     def run_shaker(self):
         self.logger.info("Starting Shaker workloads")
-        time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         scenarios = self.config.get('shaker')['scenarios']
         venv = self.config['shaker']['venv']
@@ -413,7 +413,7 @@ class Shaker(WorkloadBase):
                         scenario['name'])
                     workload = self.__class__.__name__
                     self.workload_logger(result_dir, workload)
-                    time_stamp1 = datetime.datetime.now().strftime(
+                    time_stamp1 = datetime.datetime.utcnow().strftime(
                         "%Y%m%d-%H%M%S")
                     test_name = "{}-browbeat-{}-{}".format(
                         time_stamp1, "shaker", scenario['name'])

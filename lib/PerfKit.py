@@ -155,7 +155,7 @@ class PerfKit(WorkloadBase):
 
     def start_workloads(self):
         self.logger.info("Starting PerfKitBenchmarker Workloads.")
-        time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         benchmarks = self.config.get('perfkit')['benchmarks']
         if (benchmarks is not None and len(benchmarks) > 0):
