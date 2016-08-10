@@ -56,7 +56,7 @@ deployCloud()
 
 deployBrowbeat()
 {
-  #The vitrualenv script is delicate to enviromental changes
+  #The vitrualenv script is delicate to environmental changes
   #this restores the default terminal mode temporarily (jkilpatr)
   set +eux
   . $WORKSPACE/bin/activate
@@ -94,6 +94,21 @@ runGather()
  popd
 }
 
+runCheck()
+{
+ pushd $WORKSPACE/browbeat/ansible
+
+ ansible-playbook --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" -i $WORKSPACE/hosts check/site.yml
+
+ if [[ $($SSH_CMD "cat /home/stack/ansible/bug_report.log") == "" ]]
+ then
+   #checks failed to create the bug_report.log
+   exit 1
+ fi
+
+ popd
+}
+
 runBrowbeat()
 {
   $SSH_CMD ". /home/stack/browbeat-venv/bin/activate; cd /home/stack/browbeat; python browbeat.py $1"
@@ -112,9 +127,16 @@ popd
 
 pushd $WORKSPACE/browbeat
 
+if [[ $($DIFF_CMD | grep -i check) != "" ]]
+then
+  time runCheck
+fi
+popd
+
 #variable to determine if an execution test has already happened
 HASRUN=false
 
+pushd $WORKSPACE/browbeat
 #re-add shaker to tools list when fixed upstream
 #re-add perfkit to this list after investigation
 for tool in rally; do
