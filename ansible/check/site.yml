@@ -32,6 +32,7 @@
   - keystone
   - neutron
   - nova
+  - glance
 
 - hosts: compute
   name: Checking Compute Nodes for common Performance Issues
