@@ -43,6 +43,30 @@
 - name: Create shaker virtualenv
   command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
 
+- name: Setup browbeat-venv CA certificate path
+  lineinfile:
+    dest: {{ browbeat_venv }}/bin/activate
+    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
+  when: overcloud_ca_path is defined
+
+- name: Setup perfkit-venv CA certificate path
+  lineinfile:
+    dest: {{ perfkit_venv }}/bin/activate
+    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
+  when: overcloud_ca_path is defined
+
+- name: Setup rally-venv CA certificate path
+  lineinfile:
+    dest: {{ rally_venv }}/bin/activate
+    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
+  when: overcloud_ca_path is defined
+
+- name: Setup shaker-venv CA certificate path
+  lineinfile:
+    dest: {{ shaker_venv }}/bin/activate
+    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
+  when: overcloud_ca_path is defined
+
 - name: Determine if browbeat directory exists already
   stat: path={{ browbeat_path }}
   register: browbeat_exists

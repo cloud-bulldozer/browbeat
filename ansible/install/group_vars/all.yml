@@ -16,6 +16,9 @@ local_remote_user: stack
 # The Overcloud RC file
 overcloudrc: /home/stack/overcloudrc
 
+# The Overcloud CA cert file
+# overcloud_ca_path: /etc/pki/ca-trust/source/anchors/overcloud.crt.pem
+
 # The default Browbeat venv
 browbeat_venv: /home/stack/browbeat-venv
 
