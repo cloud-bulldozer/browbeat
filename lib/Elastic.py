@@ -20,7 +20,7 @@ import sys
 browbeat_uuid = uuid.uuid4()
 
 
-class Elastic:
+class Elastic(object):
 
     """
     """
