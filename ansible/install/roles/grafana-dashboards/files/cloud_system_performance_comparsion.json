@@ -2076,7 +2076,7 @@
         "30d"
       ]
     },
-    "timezone": "browser",
+    "timezone": "utc",
     "title": "Cloud System Performance Comparsion",
     "version": 7
   }

@@ -114,7 +114,7 @@ def main():
             _logger.error("If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
         exit(1)
     else:
-        time_stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         _logger.info("Browbeat test suite kicked off")
         _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
