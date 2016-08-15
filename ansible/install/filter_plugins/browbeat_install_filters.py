@@ -9,6 +9,7 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+import re
 
 def dict_remove(the_dict, item):
     """Remove an item from a dictionary."""
@@ -24,9 +25,8 @@ def hosts_to_dictionary(arg):
     dictionary = {}
     nonindex = 1000000
     for item in arg:
-        if '-' in item:
-            idx = item.rindex('-')
-            dictionary[int(item[idx + 1:])] = item
+        if item[(len(item)-1)].isdigit():
+            dictionary[int(re.sub('.*[^0-9][^0-9]*', '', item))] = item
         else:
             nonindex += 1
             dictionary[nonindex] = item
