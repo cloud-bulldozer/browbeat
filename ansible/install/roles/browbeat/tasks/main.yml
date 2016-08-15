@@ -43,6 +43,9 @@
 - name: Create shaker virtualenv
   command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
 
+- name: Rally Add browbeat to Python path
+  shell: echo 'export PYTHONPATH=$PYTHONPATH:{{ browbeat_path }}/lib' >> {{ rally_venv }}/bin/activate
+
 - name: Setup browbeat-venv CA certificate path
   lineinfile:
     dest: {{ browbeat_venv }}/bin/activate
@@ -115,6 +118,9 @@
 
 - name: Install rally into rally-venv
   pip: name=rally version=0.5.0 virtualenv={{ rally_venv }}
+
+- name: Install elasticsearch into rally-venv
+  pip: name=elasticsearch virtualenv={{ rally_venv }}
 
 - name: Setup rally database
   shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate
