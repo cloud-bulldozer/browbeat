@@ -25,7 +25,7 @@
     - undercloud
 
 
-- hosts: localhost
+- hosts: undercloud
   tasks:
   - name: Dump all vars
     local_action: template src=dump_facts.j2 dest={{ browbeat_path }}/metadata/machine_facts.json
