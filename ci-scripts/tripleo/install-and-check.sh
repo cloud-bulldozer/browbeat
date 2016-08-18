@@ -18,9 +18,9 @@ RELEASE=$1
 BUILD_SYS=$2
 CONFIG=$3
 JOB_TYPE=$4
-export SSH_CMD="ssh -tt -F $WORKSPACE/ssh.config.ansible undercloud"
-export SCP_CMD="scp -F $WORKSPACE/ssh.config.ansible"
-export DIFF_CMD="git diff origin/master --name-only"
+SSH_CMD="ssh -tt -F $WORKSPACE/ssh.config.ansible undercloud"
+SCP_CMD="scp -F $WORKSPACE/ssh.config.ansible"
+DIFF_CMD="git diff origin/master --name-only"
 
 
 if [ "$JOB_TYPE" = "gate" ] || [ "$JOB_TYPE" = "periodic" ]; then
@@ -111,17 +111,35 @@ fi
 popd
 
 pushd $WORKSPACE/browbeat
+
+#variable to determine if an execution test has already happened
+HASRUN=false
+
 #re-add shaker to tools list when fixed upstream
 #re-add perfkit to this list after investigation
 for tool in rally; do
 
-  # remove comments after further testing
   if [[ $($DIFF_CMD | grep -i $tool) != "" ]]
   then
     time runBrowbeat $tool
+    HASRUN=true
   fi
 
 done
+
+#Tests files in lib/
+if [[ $($DIFF_CMD | grep -i lib\/) != "" ]] && [$HASRUN == "false"]
+then
+  time runBrowbeat rally
+  HASRUN=true
+fi
+
+#Test Browbeat.py
+if [[ $($DIFF_CMD | grep -i browbeat.py) != "" ]] && [$HASRUN == "false"]
+then
+  time runBrowbeat rally
+  HASRUN=true
+fi
 popd
 
 exit 0
