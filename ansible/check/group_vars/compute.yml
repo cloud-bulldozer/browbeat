@@ -7,16 +7,26 @@ nova_vif_timeout: 300
 checks:
     bz1245714:
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1245714"
-        name: "No Swap Space allocated"
+        description: "No Swap Space allocated"
+        severity: "Critical"
+        impact: "The Compute node can hit OOM since we deploy with no swap"
     bz1282644:
         url : "https://bugzilla.redhat.com/show_bug.cgi?id=1282644"
-        name : "increase reserved_host_memory_mb"
+        description: "increase reserved_host_memory_mb"
+        severity: "Critical"
+        impact: "The Compute node can hit OOM if we do not reserve enough memory"
     tuned_profile_result :
         url: "none"
-        name: "Ensure Tuned Profile is set to virtual-host"
+        description: "Ensure Tuned Profile is set to virtual-host"
+        severity: "Suggestion"
+        impact: "Incorrect Tuned Profile will not result in better performance"
     nova_vif_timeout_result:
         url: "none"
-        name: "Nova VIF timeout should be >= 300"
+        description: "Nova VIF timeout should be >= 300"
+        severity: "Critical"
+        impact: "This could cause guests to fail to boot if not properly set."
     bz1264740:
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1264740"
-        name: "RHEL OSP Director must be configure with nova-event-callback by default"
+        description: "RHEL OSP Director must be configured with nova-event-callback by default"
+        severity: "Critical"
+        impact: "This could cause guests to fail to boot if not properly set."
