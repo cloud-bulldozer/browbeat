@@ -117,7 +117,7 @@
      virtualenv={{ perfkit_venv }}
 
 - name: Install rally into rally-venv
-  pip: name=rally version=0.5.0 virtualenv={{ rally_venv }}
+  pip: name=rally version={{ rally_version }} virtualenv={{ rally_venv }}
 
 - name: Install elasticsearch into rally-venv
   pip: name=elasticsearch virtualenv={{ rally_venv }}
