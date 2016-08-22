@@ -2,6 +2,15 @@
 #
 # Tests common to Director/Controller/Compute/Ceph
 #
+- name: Ensure crudini
+  shell: which crudini
+  changed_when: no
+  register: crudini
+  ignore_errors: True
+
+- name: Install Crudini if it is not there
+  yum: name=crudini state=latest
+  when: crudini.rc == 1
 
 - name: Get selinux mode
   command: getenforce
