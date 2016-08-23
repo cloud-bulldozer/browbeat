@@ -81,7 +81,7 @@ PreCacheChain "PreCache"
 </Plugin>
 
 # (akrzos) Including the version of OpenStack that the process was verified as running after
-# OpenStack Installation with a comment at the end of each Process/ProcessMath statement.
+# OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
   # Ceph (OpenStack Installed)
@@ -91,7 +91,7 @@ PreCacheChain "PreCache"
   ProcessMatch "salt-minion" "python.+salt-minion"                                      # Unchecked
 
   # Collectd (Browbeat Installed)
-  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  ProcessMatch "collectd" "/usr/sbin/collectd"
 </Plugin>
 
 <Plugin swap>

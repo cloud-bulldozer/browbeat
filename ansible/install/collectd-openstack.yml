@@ -2,6 +2,16 @@
 #
 # Playbook to install collectd on undercloud/overcloud
 #
+# Install on all undercloud/overcloud machines:
+# ansible-playbook -i hosts install/collectd-openstack.yml
+#
+# Or use tags:
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "undercloud"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "controller"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "ceph"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "compute"
+#
+
 
 - hosts: undercloud
   remote_user: "{{ local_remote_user }}"
@@ -17,6 +27,7 @@
       become: true
       when: not collectd_undercloud
       ignore_errors: true
+  tags: undercloud
 
 - hosts: controller
   remote_user: "{{ host_remote_user }}"
@@ -32,6 +43,7 @@
       become: true
       when: not collectd_controller
       ignore_errors: true
+  tags: controller
 
 - hosts: ceph
   remote_user: "{{ host_remote_user }}"
@@ -47,6 +59,7 @@
       become: true
       when: not collectd_ceph
       ignore_errors: true
+  tags: ceph
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"
@@ -62,3 +75,4 @@
       become: true
       when: not collectd_compute
       ignore_errors: true
+  tags: compute
