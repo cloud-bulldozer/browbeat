@@ -20,6 +20,7 @@ import argparse
 import logging
 import sys
 import yaml
+import time
 import datetime
 import os
 from pykwalify import core as pykwalify_core
@@ -84,6 +85,7 @@ def main():
     _logger = logging.getLogger('browbeat')
     _logger.setLevel(logging.DEBUG)
     _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)7s - %(message)s')
+    _formatter.converter = time.gmtime
     _dbg_file = logging.FileHandler(debug_log_file)
     _dbg_file.setLevel(logging.DEBUG)
     _dbg_file.setFormatter(_formatter)
