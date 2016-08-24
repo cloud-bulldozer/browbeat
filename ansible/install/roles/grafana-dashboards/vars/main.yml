@@ -119,6 +119,13 @@ per_process_panels:
         - ironic-inspector
         - dnsmasq-ironic
         - dnsmasq-ironicinspector
+    # Openstack's Workflow service, +1 to optimize
+    - name: "Mistral"
+      processes:
+        - mistral-server
+    - name: "Zaqar"
+      processes:
+        - zaqar-server
     - name: "Collectd"
       processes:
         - collectd
@@ -385,6 +392,13 @@ per_process_panels:
         - crmd
         - lrmd
         - pcsd
+    # Openstack's Workflow service, +1 to optimize
+    - name: "Mistral"
+      processes:
+        - mistral-server
+    - name: "Zaqar"
+      processes:
+        - zaqar-server
     - name: "Collectd"
       processes:
         - collectd

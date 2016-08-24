@@ -90,112 +90,107 @@ PreCacheChain "PreCache"
 </Plugin>
 
 # (akrzos) Including the version of OpenStack that the process was verified as running after
-# OpenStack Installation with a comment at the end of each Process/ProcessMath statement.
+# OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
   # Aodh (OpenStack Installed)
-  ProcessMatch "aodh-evaluator" "python.+aodh-evaluator"                                # 9
-  ProcessMatch "aodh-listener" "python.+aodh-listener"                                  # 9
-  ProcessMatch "aodh-notifier" "python.+aodh-notifier"                                  # 9
+  ProcessMatch "aodh-evaluator" "python.+aodh-evaluator"                                # 9,-10
+  ProcessMatch "aodh-listener" "python.+aodh-listener"                                  # 9,-10
+  ProcessMatch "aodh-notifier" "python.+aodh-notifier"                                  # 9,-10
 
   # Ceilometer (OpenStack Installed)
-  ProcessMatch "ceilometer-agent-central" "python.+ceilometer-agent-central"            # -9
-  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9
-  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"  # 9
-  ProcessMatch "ceilometer-alarm-evaluator" "python.+ceilometer-alarm-evaluator"        # -9
-  ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"          # -9
-  ProcessMatch "ceilometer-api" "python.+ceilometer-api"                                # 9
-  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"                    # 9
-  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9
+  ProcessMatch "ceilometer-agent-central" "python.+ceilometer-agent-central"            # -9,-10
+  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9,-10
+  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"  # 9,-10
+  ProcessMatch "ceilometer-alarm-evaluator" "python.+ceilometer-alarm-evaluator"        # -9,-10
+  ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"          # -9,-10
+  ProcessMatch "ceilometer-api" "python.+ceilometer-api"                                # 9,-10
+  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"                    # 9,-10
+  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9,-10
 
   # Collectd (Browbeat Installed)
-  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # Docker Registry (OpenStack Installed)
-  ProcessMatch "docker-registry" "python.+/usr/bin/gunicorn.+docker_registry"           # 9
+  ProcessMatch "docker-registry" "python.+/usr/bin/gunicorn.+docker_registry"           # 9,-10
 
   # Glance (OpenStack Installed)
-  ProcessMatch "glance-api" "python.+glance-api"                                        # 9
-  ProcessMatch "glance-registry" "python.+glance-registry"                              # 9
+  ProcessMatch "glance-api" "python.+glance-api"                                        # 9,10
+  ProcessMatch "glance-registry" "python.+glance-registry"                              # 9,10
 
   # Everything Else (OpenStack Installed)
   # (Processes displayed under "Everything Else" on Grafana Dashboards)
-  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 9
-  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # -9
-  Process "httpd"                                                                       # 9
-  Process "memcached"                                                                   # 9
-  Process "mongod"                                                                      # -9
-  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 9
-  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # -9
-  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 9
-  Process "redis-server"                                                                # -9
-  ProcessMatch "tuskar-api" "python.+tuskar-api"                                        # -9
+  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 9,10
+  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # -9,-10
+  Process "httpd"                                                                       # 9,10
+  Process "memcached"                                                                   # 9,10
+  Process "mongod"                                                                      # -9,10
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 9,10
+  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # -9,-10
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 9,10
+  Process "redis-server"                                                                # -9,-10
+  ProcessMatch "tuskar-api" "python.+tuskar-api"                                        # -9,-10
 
   # Heat (OpenStack Installed)
-  ProcessMatch "heat-api" "python.+heat-api"                                            # 9
-  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 9
-  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # -9
-  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 9
+  ProcessMatch "heat-api" "python.+heat-api"                                            # 9,10
+  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 9,10
+  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # -9,-10
+  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 9,10
 
   # Ironic (OpenStack Installed)
-  ProcessMatch "ironic-api" "python.+ironic-api"                                        # 9
-  ProcessMatch "ironic-conductor" "python.+ironic-conductor"                            # 9
-  ProcessMatch "ironic-inspector" "python.+ironic-inspector"                            # 9
-  ProcessMatch "dnsmasq-ironic" "/sbin/dnsmasq.+/etc/ironic-discoverd/dnsmasq.conf"     # -9
-  ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 9
+  ProcessMatch "ironic-api" "python.+ironic-api"                                        # 9,10
+  ProcessMatch "ironic-conductor" "python.+ironic-conductor"                            # 9,10
+  ProcessMatch "ironic-inspector" "python.+ironic-inspector"                            # 9,10
+  ProcessMatch "dnsmasq-ironic" "/sbin/dnsmasq.+/etc/dnsmasq-ironic.conf"               # 9,10
+  ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 9,10
 
   # Keystone (OpenStack Installed)
-  ProcessMatch "keystone-all" "python.+keystone-all"                                    # 7,8,-9
-  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 9
-  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9
+  ProcessMatch "keystone-all" "python.+keystone-all"                                    # -9,-10
+  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 9,10
+  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9,10
+
+  # Mistral (Openstack Installed)
+  ProcessMatch "mistral-server" "python.+mistral-server"                                # -9,10
 
   # Neutron (OpenStack Installed)
-  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 9
-  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # -9
-  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # -9
-  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # -9
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 9
-  ProcessMatch "neutron-server" "python.+neutron-server"                                # 9
+  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 9,10
+  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # -9,-10
+  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # -9,-10
+  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # -9,-10
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 9,10
+  ProcessMatch "neutron-server" "python.+neutron-server"                                # 9,10
 
   # Nova (OpenStack Installed)
-  ProcessMatch "nova-api" "python.+nova-api"                                            # 9
-  ProcessMatch "nova-cert" "python.+nova-cert"                                          # 9
-  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 9
-  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 9
-  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # -9
-  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # -9
-  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 9
+  ProcessMatch "nova-api" "python.+nova-api"                                            # 9,10
+  ProcessMatch "nova-cert" "python.+nova-cert"                                          # 9,10
+  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 9,10
+  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 9,10
+  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # -9,-10
+  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # -9,-10
+  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 9,10
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 9
-  ProcessMatch "ovsdb-client" "/bin/ovsdb-client"                                       # 9
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 9
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 9,10
+  ProcessMatch "ovsdb-client" "/bin/ovsdb-client"                                       # 9,10
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 9,10
 
   # Swift (OpenStack Installed)
-  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 9
-  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 9
-  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 9
-  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 9
-  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 9
-  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 9
-  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 9
-  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 9
-  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 9
-  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 9
-  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 9
-  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 9
-  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 9
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 9,10
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 9,10
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 9,10
+  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 9,10
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 9,10
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 9,10
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 9,10
+  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 9,10
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 9,10
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 9,10
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 9,10
+  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 9,10
+  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 9,10
 
-  # Pacemaker / Corosync (OpenStack Installed)
-  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"                                   # 9
-  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"                                       # 9
-  Process "corosync"                                                                    # 9
-  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"                                     # 9
-  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"                                     # 9
-  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"                                      # 9
-  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"                                   # 9
-  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"                               # 9
-  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"                             # 9
+  # Zaqar (Openstack Installed)
+  ProcessMatch "zaqar-server" "python.+zaqar-server"                                    # -9,10
 </Plugin>
 
 <Plugin swap>

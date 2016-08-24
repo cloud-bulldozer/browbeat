@@ -81,29 +81,29 @@ PreCacheChain "PreCache"
 </Plugin>
 
 # (akrzos) Including the version of OpenStack that the process was verified as running after
-# OpenStack Installation with a comment at the end of each Process/ProcessMath statement.
+# OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
   # Ceilometer (OpenStack Installed)
-  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9
-  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9
+  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9,-10
+  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 9,10
 
   # Collectd (Browbeat Installed)
-  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # Neutron (OpenStack Installed)
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 9
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 9,10
 
   # Nova (OpenStack Installed)
-  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 9
+  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 9,10
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 9
-  ProcessMatch "ovsdb-client" "/bin/ovsdb-client"                                       # 9
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 9
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 9,10
+  ProcessMatch "ovsdb-client" "/bin/ovsdb-client"                                       # 9,10
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 9,10
 
   # QEMU (OpenStack Installed)
-  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 9
+  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 9,10
 </Plugin>
 
 <Plugin swap>
