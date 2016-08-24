@@ -150,14 +150,14 @@ for tool in rally; do
 done
 
 #Tests files in lib/
-if [[ $($DIFF_CMD | grep -i lib\/) != "" ]] && [$HASRUN == "false"]
+if [[ $($DIFF_CMD | grep -i lib\/) != "" ]] && [ $HASRUN == false ]
 then
   time runBrowbeat rally
   HASRUN=true
 fi
 
 #Test Browbeat.py
-if [[ $($DIFF_CMD | grep -i browbeat.py) != "" ]] && [$HASRUN == "false"]
+if [[ $($DIFF_CMD | grep -i browbeat.py) != "" ]] && [ $HASRUN == false ]
 then
   time runBrowbeat rally
   HASRUN=true
