@@ -10,28 +10,28 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from Connmon import Connmon
-from Grafana import Grafana
-from Tools import Tools
-from WorkloadBase import WorkloadBase
+import Connmon
 import datetime
 import glob
+import Grafana
 import logging
 import os
 import shutil
 import subprocess
 import time
+import Tools
+import WorkloadBase
 
 
-class PerfKit(WorkloadBase):
+class PerfKit(WorkloadBase.WorkloadBase):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.PerfKit')
         self.config = config
         self.error_count = 0
-        self.tools = Tools(self.config)
-        self.connmon = Connmon(self.config)
-        self.grafana = Grafana(self.config)
+        self.tools = Tools.Tools(self.config)
+        self.connmon = Connmon.Connmon(self.config)
+        self.grafana = Grafana.Grafana(self.config)
         self.test_count = 0
         self.scenario_count = 0
         self.pass_count = 0
