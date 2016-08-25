@@ -133,7 +133,7 @@
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
 
 - name: Install shaker
-  pip: name=pyshaker version=0.0.14 virtualenv={{ shaker_venv }}
+  pip: name=pyshaker version={{ shaker_version }} virtualenv={{ shaker_venv }}
 
 #
 # Serve results out of httpd if browbeat_results_in_httpd is set to true
