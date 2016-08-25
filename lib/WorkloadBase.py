@@ -10,15 +10,14 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from abc import ABCMeta
-from abc import abstractmethod
-import os
+import abc
 import logging
+import os
 import yaml
 
 
 class WorkloadBase:
-    __metaclass__ = ABCMeta
+    __metaclass__ = abc.ABCMeta
     logger = logging.getLogger('browbeat.WorkloadBase')
     success = 0
     failure = 0
@@ -26,19 +25,19 @@ class WorkloadBase:
     total_scenarios = 0
     browbeat = {}
 
-    @abstractmethod
+    @abc.abstractmethod
     def update_scenarios(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def update_tests(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def update_pass_tests(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def update_fail_tests(self):
         pass
 

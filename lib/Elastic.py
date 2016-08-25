@@ -10,7 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from elasticsearch import Elasticsearch
+import elasticsearch
 import logging
 import json
 import datetime
@@ -27,7 +27,7 @@ class Elastic:
     def __init__(self, config, workload, tool="browbeat"):
         self.config = config
         self.logger = logging.getLogger('browbeat.Elastic')
-        self.es = Elasticsearch([
+        self.es = elasticsearch.Elasticsearch([
             {'host': self.config['elasticsearch']['host'],
              'port': self.config['elasticsearch']['port']}],
             send_get_body_as='POST'

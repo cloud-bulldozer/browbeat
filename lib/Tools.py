@@ -12,8 +12,7 @@
 
 import logging
 import os
-from subprocess import Popen
-from subprocess import PIPE
+import subprocess
 
 
 class Tools:
@@ -26,7 +25,8 @@ class Tools:
     # Run command, return stdout as result
     def run_cmd(self, cmd):
         self.logger.debug("Running command : %s" % cmd)
-        process = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         if len(stderr) > 0:
             return None

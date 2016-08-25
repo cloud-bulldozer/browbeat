@@ -10,28 +10,28 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from Tools import Tools
-from Grafana import Grafana
-from WorkloadBase import WorkloadBase
-from Elastic import Elastic
-from collections import OrderedDict
-import yaml
-import logging
+import collections
 import datetime
-import os
+import Elastic
+import Grafana
 import json
+import logging
+import os
 import time
+import Tools
 import uuid
+import WorkloadBase
+import yaml
 
 
-class Shaker(WorkloadBase):
+class Shaker(WorkloadBase.WorkloadBase):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.Shaker')
         self.config = config
-        self.tools = Tools(self.config)
-        self.grafana = Grafana(self.config)
-        self.elastic = Elastic(self.config, self.__class__.__name__.lower())
+        self.tools = Tools.Tools(self.config)
+        self.grafana = Grafana.Grafana(self.config)
+        self.elastic = Elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -147,7 +147,7 @@ class Shaker(WorkloadBase):
                 metadata = data['records'][record].pop('meta')
                 samples = data['records'][record].pop('samples')
                 # Ordered Dictionary to capture result types and metrics
-                outputs = OrderedDict()
+                outputs = collections.OrderedDict()
                 for metric in metadata:
                     outputs[metric[0]] = metric[1]
                 # Iterate over each result type for each sample in record and

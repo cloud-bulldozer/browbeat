@@ -10,30 +10,30 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from Connmon import Connmon
-from Tools import Tools
-from collections import OrderedDict
-from Grafana import Grafana
-from WorkloadBase import WorkloadBase
-from Elastic import Elastic
+import collections
+import Connmon
 import datetime
+import Elastic
 import glob
+import Grafana
 import logging
 import os
+import re
 import shutil
 import time
-import re
+import Tools
+import WorkloadBase
 
 
-class Rally(WorkloadBase):
+class Rally(WorkloadBase.WorkloadBase):
 
     def __init__(self, config, hosts=None):
         self.logger = logging.getLogger('browbeat.Rally')
         self.config = config
-        self.tools = Tools(self.config)
-        self.connmon = Connmon(self.config)
-        self.grafana = Grafana(self.config)
-        self.elastic = Elastic(self.config, self.__class__.__name__.lower())
+        self.tools = Tools.Tools(self.config)
+        self.connmon = Connmon.Connmon(self.config)
+        self.grafana = Grafana.Grafana(self.config)
+        self.elastic = Elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -173,7 +173,7 @@ class Rally(WorkloadBase):
 
     def start_workloads(self):
         """Iterates through all rally scenarios in browbeat yaml config file"""
-        results = OrderedDict()
+        results = collections.OrderedDict()
         self.logger.info("Starting Rally workloads")
         es_ts = datetime.datetime.utcnow()
         dir_ts = es_ts.strftime("%Y%m%d-%H%M%S")

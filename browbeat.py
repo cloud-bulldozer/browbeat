@@ -12,10 +12,10 @@
 #   limitations under the License.
 
 from lib.Elastic import browbeat_uuid
-from lib.PerfKit import PerfKit
-from lib.Rally import Rally
-from lib.Shaker import Shaker
-from lib.WorkloadBase import WorkloadBase
+from lib import PerfKit
+from lib import Rally
+from lib import Shaker
+from lib import WorkloadBase
 import argparse
 import logging
 import sys
@@ -55,13 +55,13 @@ def validate_yaml(config, _logger):
 def _run_workload_provider(provider, config):
     _logger = logging.getLogger('browbeat')
     if provider == "perfkit":
-        perfkit = PerfKit(config)
+        perfkit = PerfKit.PerfKit(config)
         perfkit.start_workloads()
     elif provider == "rally":
-        rally = Rally(config)
+        rally = Rally.Rally(config)
         rally.start_workloads()
     elif provider == "shaker":
-        shaker = Shaker(config)
+        shaker = Shaker.Shaker(config)
         shaker.run_shaker()
     else:
         _logger.error("Unknown workload provider: {}".format(provider))
@@ -128,10 +128,10 @@ def main():
             else:
                 _logger.error("{} is missing in {}".format(wkld_provider, _cli_args.setup))
         result_dir = _config['browbeat']['results']
-        WorkloadBase.print_report(result_dir, time_stamp)
+        WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
-        WorkloadBase.print_summary()
+        WorkloadBase.WorkloadBase.print_summary()
         _logger.info("Browbeat Finished, UUID: {}".format(browbeat_uuid))
 
 if __name__ == '__main__':
