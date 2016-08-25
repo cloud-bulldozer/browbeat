@@ -73,9 +73,20 @@
   ignore_errors: true
   when: kibana_dashboards_present != 0
 
+- name: Validate kibana load.sh script is available for use
+  stat:
+    path: /tmp/beats-dashboards-master/load.sh
+  ignore_errors: true
+  register: kibana_dashboards_load_sh_present
+
 - name: Configure kibana filebeat dashboards
   shell: sh /tmp/beats-dashboards-master/load.sh -url "http://localhost:9200" -user "admin:admin"
   ignore_errors: true
+  when: kibana_dashboards_load_sh_present != 0
+  tags:
+    # Skip ANSIBLE0013 Use shell only when shell functionality is required
+    # Shell required here during script execution
+    - skip_ansible_lint
 
 - name: Check kibana users
   stat: path=/etc/nginx/htpasswd.users
