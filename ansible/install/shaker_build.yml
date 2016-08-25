@@ -10,7 +10,7 @@
       shell: >
              source {{ overcloudrc }}; source {{ shaker_venv }}/bin/activate;
              shaker-image-builder --flavor-name {{ shaker_flavor }} --image-builder-template
-             {{ shaker_centos }} --os-region-name {{ shaker_region }} 
+             {{ shaker_centos }} --os-region-name {{ shaker_region }}
       become: true
       register: image_result
       failed_when: image_result.rc != 0
