@@ -1,0 +1,16 @@
+---
+#Gathers Browbeat metdata and inserts it into elasticsearch
+# and flat files in browbeat/results
+
+- name: Gather Metadata
+  shell:
+    "cd {{ ansible_env.HOME }}/browbeat/ansible; \
+     ansible-playbook -i hosts \
+     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+     gather/site.yml > {{ ansible_env.HOME }}/browbeat/results/metadata.log"
+  register: metadata_run
+  until: metadata_run.rc == 0
+  retries: 2
+  delay: 60
+  environment:
+    ANSIBLE_SSH_ARGS: "-F {{ ansible_env.HOME }}/browbeat/ansible/ssh-config"

@@ -1,0 +1,7 @@
+elastic_enabled_template: false
+elastic_host_template: "1.2.3.4.5"
+connmon_enabled_template: false
+grafana_enabled_template: false
+grafana_host_template: "1.2.3.4.5"
+browbeat_config_file: "browbeat-basic.yaml.j2"
+browbeat_cloud_name: "browbeat_ci"

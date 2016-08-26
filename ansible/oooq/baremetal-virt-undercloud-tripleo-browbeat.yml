@@ -1,0 +1,29 @@
+---
+- include: baremetal-prep-virthost.yml
+
+- name: Configure Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/pre-install-setup
+    - browbeat/oooq-metadata
+    - browbeat/collectd-undercloud
+
+- include: baremetal-quickstart-extras.yml
+
+- name: Install Browbeat
+  hosts: undercloud
+  vars:
+    results_in_httpd: false
+  roles:
+    - browbeat/common
+    - browbeat/browbeat
+    - browbeat/browbeat-network
+
+- name: Run Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/collectd
+    - browbeat/gather-metadata
+    - browbeat/bug-check
+    - browbeat/grafana-dashboard-setup
+    - browbeat/browbeat-run

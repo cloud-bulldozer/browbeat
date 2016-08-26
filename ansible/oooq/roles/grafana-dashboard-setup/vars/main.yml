@@ -1,0 +1,6 @@
+grafana_enabled_template: false
+grafana_host_template: 1.2.3.4
+grafana_username_template: admin
+grafana_password_template: admin
+graphite_prefix_template: "browbeat-ci"
+

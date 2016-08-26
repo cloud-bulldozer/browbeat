@@ -1,0 +1,17 @@
+---
+# Checks the cloud for known bugs and produces a bug report
+#  not functional on osp8 or earlier, therefore errors are ignored
+
+- name: Check Cloud for Bugs
+  shell:
+    "cd {{ ansible_env.HOME }}/browbeat/ansible; \
+     ansible-playbook -i hosts \
+     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+     check/site.yml > {{ ansible_env.HOME }}/browbeat/results/check.log"
+  register: check_run
+  ignore_errors: true
+  until: check_run.rc == 0
+  retries: 2
+  delay: 60
+  environment:
+    ANSIBLE_SSH_ARGS: "-F {{ ansible_env.HOME }}/browbeat/ansible/ssh-config"

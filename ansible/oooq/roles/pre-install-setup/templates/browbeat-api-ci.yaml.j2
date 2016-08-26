@@ -1,0 +1,145 @@
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: {{ browbeat_cloud_name }}
+elasticsearch:
+  enabled: {{ elastic_enabled_template }}
+  host: {{ elastic_host_template }}
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+ansible:
+  ssh_config: ansible/ssh-config
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  metadata: ansible/gather/site.yml
+connmon:
+  enabled: {{ connmon_enabled_template }}
+  sudo: true
+grafana:
+  enabled: {{ grafana_enabled_template }}
+  grafana_ip: {{ grafana_host_template }}
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
+    - subnet-router-create: rally/rally-plugins/subnet-router-create
+  benchmarks:
+    - name: authenticate
+      enabled: true
+      concurrency:
+        - 8
+        - 16
+        - 24
+      times: 2500
+      scenarios:
+        - name: authentic-keystone
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+    - name: keystonebasic
+      enabled: true
+      concurrency:
+        - 16
+      times: 1000
+      scenarios:
+        - name: create-and-list-tenants
+          enabled: true
+          file: rally/keystonebasic/create_and_list_tenants-cc.yml
+    - name: neutron
+      enabled: true
+      concurrency:
+        - 4
+        - 8
+        - 12
+      times: 128
+      scenarios:
+        - name: create-list-router
+          enabled: true
+          file: rally/neutron/neutron-create-list-router-cc.yml
+        - name: create-list-network
+          enabled: true
+          file: rally/neutron/neutron-create-list-network-cc.yml
+        - name: create-list-subnet
+          enabled: true
+          file: rally/neutron/neutron-create-list-subnet-cc.yml
+        - name: create-list-port
+          enabled: true
+          file: rally/neutron/neutron-create-list-port-cc.yml
+        - name: create-list-security-group
+          enabled: true
+          file: rally/neutron/neutron-create-list-security-group-cc.yml
+    - name: nova
+      enabled: true
+      concurrency:
+        - 4
+        - 8
+        - 12
+      times: 64
+      scenarios:
+        - name: boot-snapshot-delete
+          enabled: true
+          file: rally/nova/nova-boot-snapshot-cc.yml
+          image_name: cirros
+          flavor_name: m1.tiny
+          net_id:
+        - name: boot-list
+          enabled: true
+          file: rally/nova/nova-boot-list-cc.yml
+          image_name: cirros
+          flavor_name: m1.tiny
+          net_id:
+    - name: glance
+      enabled: true
+      concurrency:
+        - 4
+        - 8
+        - 12
+      times: 64
+      scenarios:
+        - name: create-and-delete-image
+          enabled: true
+          image_location: /home/stack/cirros
+          flavor_name: m1.tiny
+          file: rally/glance/create-and-delete-image-cc.yml
+    - name: plugins
+      enabled: true
+      concurrency:
+        - 4
+        - 8
+        - 12
+      times: 64
+      scenarios:
+        - name: netcreate-5-boot
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          num_networks: 5
+        - name: netcreate-10-boot
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          num_networks: 10

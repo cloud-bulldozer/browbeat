@@ -1,0 +1,245 @@
+# Tests to be compleated for the install-and-check.sh script minimal and short workloads are performed
+#  to confirm functionality.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: {{ browbeat_cloud_name }}
+elasticsearch:
+  enabled: {{ elastic_enabled_template }}
+  host: {{ elastic_host_template }}
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+ansible:
+  ssh_config: ansible/ssh-config
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  metadata: ansible/gather/site.yml
+connmon:
+  enabled: {{ connmon_enabled_template }}
+  sudo: true
+grafana:
+  enabled: {{ grafana_enabled_template }}
+  grafana_ip: {{ grafana_host_template }}
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+perfkit:
+  enabled: true
+  sleep_before: 0
+  sleep_after: 0
+  venv: /home/stack/perfkit-venv/bin/activate
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+  benchmarks:
+    - name: fio-centos-m1-small
+      enabled: false
+      benchmarks: fio
+      data_disk_size: 4
+rally:
+  enabled: true
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
+    - subnet-router-create: rally/rally-plugins/subnet-router-create
+  benchmarks:
+    - name: authenticate
+      enabled: true
+      concurrency:
+        - 8
+        - 16
+      times: 10
+      scenarios:
+        - name: authentic-keystone
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+          sla_max_avg_duration: 6
+          sla_max_seconds: 30
+          sla_max_failure: 0
+    - name: cinder
+      enabled: true
+      concurrency:
+        - 1
+        - 2
+      times: 4
+      scenarios:
+        - name: create-attach-volume-centos
+          enabled: true
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+    - name: keystonebasic
+      enabled: false
+      concurrency:
+        - 8
+      times: 10
+      scenarios:
+        - name: create-and-list-tenants
+          enabled: true
+          file: rally/keystonebasic/create_and_list_tenants-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+          times: 50
+    - name: neutron
+      enabled: true
+      concurrency:
+        - 2
+        - 4
+      times: 10
+      scenarios:
+        - name: create-list-network
+          enabled: true
+          file: rally/neutron/neutron-create-list-network-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+    - name: nova
+      enabled: true
+      concurrency:
+        - 1
+        - 2
+      times: 16
+      scenarios:
+        - name: boot-snapshot-delete
+          enabled: true
+          file: rally/nova/nova-boot-snapshot-cc.yml
+          image_name: cirros
+          flavor_name: m1.tiny
+    - name: plugins
+      enabled: true
+      concurrency:
+        - 8
+        - 16
+      times: 16
+      scenarios:
+        - name: netcreate-boot
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          sla_max_avg_duration: 12
+          sla_max_seconds: 30
+          sla_max_failure: 0
+#shaker scenarios require at least 2 compute nodes
+shaker:
+  enabled: true
+  server: localhost
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/shaker-venv
+  dns_nameserver: 192.168.23.1
+  shaker_region: regionOne
+  scenarios:
+    - name: l2-4-1
+      enabled: true
+      density: 4
+      compute: 1
+      progression: linear
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    - name:  l2-8-1
+      enabled: true
+      density: 8
+      compute: 1
+      progression: linear
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    - name: l2-4-2
+      enabled: true
+      density: 4
+      compute: 2
+      progression: linear
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    - name: l2-4-8
+      enabled: true
+      density: 8
+      compute: 2
+      progression: linear
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    - name: l3-north-south-4-1
+      enabled: true
+      placement: single_room
+      density: 4
+      compute: 1
+      progression: null
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    - name: l3-north-south-8-1
+      enabled: false
+      placement: single_room
+      density: 8
+      compute: 1
+      progression: null
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    - name: l3-north-south-4-2
+      enabled: true
+      placement: single_room
+      density: 4
+      compute: 2
+      progression: null
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    - name: l3-north-south-8-2
+      enabled: true
+      placement: single_room
+      density: 8
+      compute: 2
+      progression: null
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    - name: l3-east-west-4-1
+      enabled: true
+      density: 4
+      compute: 1
+      placement: single_room
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    - name: l3-east-west-8-1
+      enabled: true
+      density: 8
+      compute: 1
+      placement: single_room
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    - name: l3-east-west-4-2
+      enabled: true
+      density: 4
+      compute: 2
+      placement: single_room
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    - name: l3-east-west-8-2
+      enabled: true
+      density: 8
+      compute: 2
+      time: 60
+      placement: single_room
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+

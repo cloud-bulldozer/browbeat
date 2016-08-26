@@ -1,0 +1,15 @@
+---
+#Collect and template Metadata about the deployment
+
+- name: Get Overcloud Image Build date
+  shell: "curl -s -v -X HEAD {{ undercloud_image_url }} 2>&1 | grep '^< Date:'"
+  register: build
+  ignore_errors: true
+
+- name: Make sure the results directory exists
+  file: "path={{ ansible_env.HOME }}/browbeat/metadata state=directory"
+
+- name: Template Deployment Metadata
+  template:
+    "src=version.json.j2 \
+     dest={{ ansible_env.HOME }}/browbeat/metadata/version.json"

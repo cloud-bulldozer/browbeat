@@ -1,0 +1,46 @@
+---
+
+- name: Make sure rsync is installed
+  yum: name=rsync state=present
+  become: true
+
+- name: Copy browbeat to the undercloud
+  synchronize: "src={{ local_working_dir }}/browbeat dest={{ ansible_env.HOME }}/ use_ssh_args=yes"
+
+- name: Set hosts gen as executable
+  shell: "chmod +x {{ ansible_env.HOME }}/browbeat/ansible/generate_tripleo_hostfile.sh"
+
+- name: Fetch Browbeat vars file
+  fetch:
+    "src={{ ansible_env.HOME }}/browbeat/ansible/install/group_vars/all.yml \
+     dest=/tmp/all.yml \
+     flat=yes"
+
+- name: Load Browbeat vars
+  include_vars: /tmp/all.yml
+
+- name: Fetch CI vars file
+  fetch:
+    "src={{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+     dest=/tmp/install_vars.yml \
+     flat=yes"
+
+- name: Load CI vars
+  include_vars: /tmp/install_vars.yml
+
+- name: Template Browbeat configuration
+  template:
+    "src={{ browbeat_config_file }} \
+     dest={{ ansible_env.HOME }}/browbeat/browbeat-config.yaml"
+
+- name: Install Pip
+  retries: 10
+  delay: 60
+  until: pip.rc == 0
+  register: pip
+  shell: curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py
+  become: true
+
+- name: Install Ansible
+  pip: name=ansible state=present
+  become: true
