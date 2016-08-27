@@ -212,8 +212,7 @@ Run the gather playbook to gather metadata about how the OpenStack cloud is
 currently configured. This playbook writes hardware(No. of CPUs etc),
 software(OpenStack Configuration), environment(No. of controllers etc) metadata
 files into the metadata directory which are transported to ElasticSearch along
-with test results to provide context for the result data. Make sure you do not
-run this playbook from a python virtual environment or it would fail.
+with test results to provide context for the result data.
 
 ::
 
