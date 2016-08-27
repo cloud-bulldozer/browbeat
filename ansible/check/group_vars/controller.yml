@@ -11,6 +11,9 @@ keystone_threads: 6
 keystone_processes: 2
 
 checks :
+    bz1095811 :
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1095811"
+        name: "Network connectivity issues after 1000 netns"
     bz1282491 :
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1282491"
         name: "update default file descriptor setting"
@@ -44,7 +47,17 @@ checks :
     neutron_rootwrap_daemon:
         url: "none"
         name: "Ensure rootwrap has daemon mode enabled"
-    bz1330980:
-        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1330980"
-        name: "Undercloud deployed with 1 keystone worker and cpu_count for threads"
-# vi:syntax=yaml
+    neutron_dnsmasq_mtu:
+        url: "https://bugs.launchpad.net/tripleo/+bug/1590100"
+        name: "Ensure there is no dnsmasq setting to force MTU"
+    neutron_conf_mtu:
+        url: "https://bugs.launchpad.net/tripleo/+bug/1590101"
+        name: "The global_physnet_mtu should not be set unless by Administrator"
+    glance_api_workers:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1361285"
+        name: "Glance API wokres should be set to None , thereby defaulting to number of cores"
+    glance_registry_workers:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1361285"
+    bz1347305:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1347305"
+        name: "Overcloud deployed with keystone as single process leads to abysmal performance"

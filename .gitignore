@@ -9,6 +9,11 @@ ansible/hosts
 # Prevent any fernet keys from sneaking into git repo
 ansible/browbeat/roles/keystone-token/files/[0-9]
 
+# Prevent Ansible Checks data/scripts from entering git repo:
+ansible/check/mysqltuner.pl
+ansible/bug_report.log
+ansible/mysql_report.log
+
 log/*
 
 # Swap files
