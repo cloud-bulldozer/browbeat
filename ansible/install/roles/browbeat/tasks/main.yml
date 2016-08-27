@@ -81,12 +81,16 @@
   git: repo=https://github.com/openstack/browbeat.git dest={{ browbeat_path }} version=master
   when: browbeat_exists.stat.isdir is undefined
 
-- name: Generate hosts and ~/.ssh/config on undercloud
-  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh localhost {{ home_dir }}/.ssh/config
+- name: Generate hosts and ssh-config on undercloud
+  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh localhost
   when: tripleo
 
-- name: Move hosts file to correct location
-  command: mv {{ home_dir }}/hosts {{ browbeat_path }}/ansible/hosts
+- name: Move files to correct location
+  command: mv {{ home_dir }}/{{item}} {{ browbeat_path }}/ansible/{{item}}
+  with_items:
+    - hosts
+    - ssh-config
+    - heat-admin-id_rsa
 
 - name: Install requirements.txt into browbeat-venv
   pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}

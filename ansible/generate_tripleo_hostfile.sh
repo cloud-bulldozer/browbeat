@@ -1,12 +1,12 @@
 #!/bin/bash
-if [ ! $# -ge 2 ]; then
-  echo "Usage: ./generate_tripleo_hostfiles.sh <tripleo_ip_address> <ssh_config_file> "
+if [ ! $# -ge 1 ]; then
+  echo "Usage: ./generate_tripleo_hostfiles.sh <tripleo_ip_address>"
   echo "Generates ssh config file to use with an TripleO undercloud host as a jumpbox and creates ansible inventory file."
   exit
 fi
 tripleo_ip_address=$1
 ansible_inventory_file='hosts'
-ssh_config_file=$2
+ssh_config_file='ssh-config'
 
 # "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${tripleo_ip_address}" == "localhost" ]]; then
@@ -107,9 +107,9 @@ for line in $nodes; do
  fi
  echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
- echo "    ProxyCommand ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa undercloud-stack -W ${IP}:22" | tee -a ${ssh_config_file}
+ echo "    ProxyCommand ssh -F ssh-config -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa stack@${tripleo_ip_address} -W ${IP}:22" | tee -a ${ssh_config_file}
  echo "    User heat-admin" | tee -a ${ssh_config_file}
- echo "    IdentityFile ~/.ssh/heat-admin-id_rsa" | tee -a ${ssh_config_file}
+ echo "    IdentityFile heat-admin-id_rsa" | tee -a ${ssh_config_file}
  echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 done
@@ -180,4 +180,4 @@ echo "---------------------------"
 echo "Copying heat-admin key to local machine(~/.ssh/heat-admin-id_rsa) to for use with ssh config file"
 echo "---------------------------"
 echo ""
-scp -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" "stack@${tripleo_ip_address}":/home/stack/.ssh/id_rsa ~/.ssh/heat-admin-id_rsa
+scp -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" "stack@${tripleo_ip_address}":/home/stack/.ssh/id_rsa heat-admin-id_rsa
