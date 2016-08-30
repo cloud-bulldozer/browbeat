@@ -18,7 +18,7 @@
     dest=/etc/collectd.conf
     owner=root
     group=root
-    mode=0644
+    mode="0644"
   become: true
 
 #
@@ -33,7 +33,7 @@
 
 # This command is not always found?
 - name: Set permissive for collectd
-  shell: semanage permissive -a collectd_t
+  command: semanage permissive -a collectd_t
   become: true
   when: collectd_permissive.rc != 0
   ignore_errors: true
@@ -47,18 +47,18 @@
     dest=/root/custom-collectd.pp
     owner=root
     group=root
-    mode=644
+    mode="0644"
   become: true
 
 - name: Check for collectd custom
-  shell: semodule -l | grep -q custom-collectd
+  command: semodule -l | grep -q custom-collectd
   become: true
   register: collectd_custom
   ignore_errors: true
   changed_when: false
 
 - name: Set custom policy for collectd
-  shell: semodule -i /root/custom-collectd.pp
+  command: semodule -i /root/custom-collectd.pp
   become: true
   when: collectd_custom.rc != 0
 
