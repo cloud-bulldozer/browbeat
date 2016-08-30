@@ -92,6 +92,7 @@ rally:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - subnet-router-create: rally/rally-plugins/subnet-router-create
     - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
+    - nova-create-pbench-uperf: rally/rally-plugins/nova-create-pbench-uperf
   benchmarks:
     - name: authenticate
       enabled: true
@@ -223,4 +224,22 @@ rally:
           image_location: /home/stack/cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/glance-create-boot-delete/glance_create_boot_delete.yml
-
+        - name: nova-create-pbench-uperf
+          enabled: true
+          hypervisor_server: "nova:overcloud-compute-1.localdomain"
+          hypervisor_client: "nova:overcloud-compute-0.localdomain"
+          image_name: pbench-image
+          flavor_name: m1.small
+          cloudname: "my-cloudname"
+          elastic_host: "my-elastic-host.org"
+          elastic_port: 9200
+          user: "root"
+          password: "password"
+          external_network: "public"
+          protocols: "tcp"
+          num_pairs: 1
+          test_types: "stream"
+          samples: 1
+          send_results: True
+          test_name: "browbeat-rally"
+          file: rally/rally-plugins/nova-create-pbench-uperf/nova-create-pbench-uperf.yml
