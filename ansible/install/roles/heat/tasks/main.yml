@@ -3,14 +3,14 @@
 ##
 #
 - name: Check for connmon in heat.conf
-  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/heat/heat.conf
+  command: grep -Eq 'connection\s?=\s?mysql:' /etc/heat/heat.conf
   register: heat_mysql
   become: true
   ignore_errors: true
   changed_when: false
 
 - name: Enable Connmon in heat.conf
-  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/heat/heat.conf
+  command: sed -i 's/mysql:/mysql+connmon:/g' /etc/heat/heat.conf
   when: heat_mysql.rc == 0
   become: true
   notify:
