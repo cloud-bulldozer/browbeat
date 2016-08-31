@@ -31,6 +31,7 @@ Table of Contents
       browbeat <#run-performance-stress-tests-through-browbeat>`__
 
 -  `Running PerfKitBenchmarker <#running-perfkitbenchmarker>`__
+-  `Working with Multiple Clouds <#working-with-multiple-clouds>`__
 -  `Contributing <#contributing>`__
 
    -  `Adding Functionality <#adding-functionality>`__
@@ -94,7 +95,7 @@ From your local machine
     $ ssh-copy-id stack@<undercloud-ip>
     $ git clone https://github.com/openstack/browbeat.git
     $ cd browbeat/ansible
-    $ ./generate_tripleo_hostfile.sh <undercloud-ip> ~/.ssh/config
+    $ ./generate_tripleo_hostfile.sh <undercloud-ip>
     $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     $ ansible-playbook -i hosts install/browbeat.yml
     $ vi install/group_vars/all.yml # Edit browbeat network settings
@@ -158,7 +159,7 @@ From your undercloud
     [root@ospd ~]# su - stack
     [stack@ospd ~]$ git clone https://github.com/openstack/browbeat.git
     [stack@ospd ~]$ cd browbeat/ansible
-    [stack@ospd ansible]$ ./generate_tripleo_hostfile.sh localhost ~/.ssh/config
+    [stack@ospd ansible]$ ./generate_tripleo_hostfile.sh localhost
     [stack@ospd ansible]$ sudo easy_install pip
     [stack@ospd ansible]$ sudo pip install ansible
     [stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
@@ -237,6 +238,25 @@ browbeat-config.yaml:
 ::
 
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py  perfkit -s browbeat-config.yaml
+
+Working with Multiple Clouds
+============================
+
+If you are running playbooks from your local machine you can run against more
+than one cloud at the same time.  To do this, you should create a directory
+per-cloud and clone browbeat into that specific directory:
+
+::
+
+    [browbeat@laptop ~]$ mkdir cloud01; cd cloud01
+    [browbeat@laptop cloud01]$ git clone git@github.com:openstack/browbeat.git
+    ...
+    [browbeat@laptop cloud01]$ cd browbeat/ansible
+    [browbeat@laptop ansible]$ ./generate_tripleo_hostfile.sh <cloud01-ip-address>
+    [browbeat@laptop ansible]$ ansible-playbook -i hosts (Your playbook you wish to run...)
+    [browbeat@laptop ansible]$ ssh -F ssh-config overcloud-controller-0  # Takes you to first controller
+
+Repeat the above steps for as many clouds as you have to run playbooks against your clouds.
 
 Contributing
 ============

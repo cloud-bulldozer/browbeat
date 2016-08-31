@@ -3,6 +3,10 @@
 # Ansible files
 *.retry
 
+# Prevent ssh files from sneaking into the git repo
+ansible/ssh-config
+ansible/heat-admin-id_rsa
+
 # Prevent hosts files from sneaking into the git repo
 ansible/hosts
 
