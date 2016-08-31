@@ -103,6 +103,10 @@
   shell: systemctl restart iptables.service
   ignore_errors: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and es_listen_external
+  tags:
+    # Skip ANSIBLE0013 Use shell only when shell functionality is required
+    # No systemctl module available in current stable release (Ansible 2.1)
+    - skip_ansible_lint
 
 # Firewalld
 - name: Determine if firewalld is in use

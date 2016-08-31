@@ -13,7 +13,8 @@
   become: true
 
 - name: Import fluentd GPG Key
-  rpm_key: key=https://packages.treasuredata.com/GPG-KEY-td-agent
+  rpm_key:
+    key=https://packages.treasuredata.com/GPG-KEY-td-agent
     state=present
 
 - name: Install fluentd
@@ -44,18 +45,30 @@
   ignore_errors: true
   register: firewalld_in_use
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Actually need to determine if firewalld is in use.
+    - skip_ansible_lint
 
 - name: Determine if firewalld is active
   shell: systemctl is-active firewalld.service | grep -vq inactive
   ignore_errors: true
   register: firewalld_is_active
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to know if firewalld is active.
+    - skip_ansible_lint
 
 - name: Determine if TCP/{{fluentd_syslog_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{fluentd_syslog_port}}/tcp"
   ignore_errors: true
   register: firewalld_tcp42185_exists
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to determine is port already in use.
+    - skip_ansible_lint
 
 # add firewall rule via firewall-cmd
 - name: Add firewall rule for TCP/{{fluentd_syslog_port}} (firewalld)
@@ -74,6 +87,10 @@
   register: iptables_tcp42185_exists
   failed_when: iptables_tcp42185_exists == 127
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check firewall rules.
+    - skip_ansible_lint
 
 - name: Add firewall rule for TCP/{{fluentd_syslog_port}} (iptables-services)
   lineinfile:
@@ -89,25 +106,20 @@
   shell: systemctl restart iptables.service
   ignore_errors: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
-
-# Firewalld
-- name: Determine if firewalld is in use
-  shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
-  ignore_errors: true
-  register: firewalld_in_use
-  no_log: true
-
-- name: Determine if firewalld is active
-  shell: systemctl is-active firewalld.service | grep -vq inactive
-  ignore_errors: true
-  register: firewalld_is_active
-  no_log: true
+  tags:
+    # Skip ANSIBLE0013 Use shell only when shell functionality is required
+    # No systemctl module available in current stable release (Ansible 2.1)
+    - skip_ansible_lint
 
 - name: Determine if TCP/{{fluentd_http_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{fluentd_http_port}}/tcp"
   ignore_errors: true
   register: firewalld_tcp9919_exists
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
 
 # add firewall rule via firewall-cmd
 - name: Add firewall rule for TCP/{{fluentd_http_port}} (firewalld)
@@ -126,6 +138,10 @@
   register: iptables_tcp9919_exists
   failed_when: iptables_tcp9919_exists == 127
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
 
 - name: Add firewall rule for TCP/{{fluentd_http_port}} (iptables-services)
   lineinfile:
@@ -141,13 +157,17 @@
   shell: systemctl restart iptables.service
   ignore_errors: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
+  tags:
+    # Skip ANSIBLE0013 Use shell only when shell functionality is required
+    # No systemctl module available in current stable release (Ansible 2.1)
+    - skip_ansible_lint
 
 ### end firewall settings ###
 
 - name: Install fluentd elasticsearch plugin
   gem:
     name=fluent-plugin-elasticsearch
-    state=latest
+    state=present
     include_dependencies=yes
     user_install=no
     executable=/usr/sbin/td-agent-gem
@@ -157,27 +177,19 @@
 - name: Install fluentd beats plugin
   gem:
     name=fluent-plugin-beats
-    state=latest
+    state=present
     include_dependencies=yes
     user_install=no
     executable=/usr/sbin/td-agent-gem
   become: true
   ignore_errors: false
 
-- name: Stage filebeat JSON index template
-  copy:
-    src=filebeat-index-template.json
-    dest=/tmp/filebeat-index-template.json
-    owner=root
-    group=root
-    mode=0644
-  become: true
-
-# note: we can't currently use the Ansible uri module here, curl is a workaround
-# https://github.com/ansible/ansible-modules-core/issues/265
-# http://stackoverflow.com/questions/28997007/translate-curl-put-into-ansible-uri-module
 - name: Load filebeat JSON index template
-  command: curl -XPOST 'http://localhost:9200/_template/filebeat?pretty' -d@/tmp/filebeat-index-template.json
+  uri:
+    url: http://localhost:9200/_template/filebeat?pretty
+    method: POST
+    body: "{{ lookup('file', 'filebeat-index-template.json') }}"
+    body_format: json
   ignore_errors: true
   become: true
 
