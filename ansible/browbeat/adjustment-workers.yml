@@ -6,10 +6,10 @@
 # ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12"
 #
 # Change Workers Example and change Keystone Threads (If deployed in httpd)
-# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12 threads=1"
+# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "service=keystone workers=12 threads=1"
 #
 # Change Workers and Keystone Deployment Example:
-# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "workers=12 keystone_deployment=httpd"
+# ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "service=keystone workers=12 keystone_deployment=httpd"
 #
 
 - hosts: controller
@@ -32,7 +32,7 @@
       debug: msg="keystone_deployment is not set therefore not changing keystone deployment"
       when: keystone_deployment is undefined
   roles:
-    - keystone-workers
-    - nova-workers
-    - neutron-workers
-    - cinder-workers
+    - { role: keystone-workers, when: service == "keystone" }
+    - { role: nova-workers, when: service == "nova" }
+    - { role: neutron-workers, when: service == "neutron" } 
+    - { role: cinder-workers, when: service == "cinder" }
