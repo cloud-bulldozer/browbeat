@@ -7,8 +7,10 @@
 {% for check in hostvars[host]['checks'] %}
 {% if hostvars[host][check]['failed'] == true %}
 Bug: {{ check }}
-Name: {{ hostvars[host]['checks'][check]['name'] }}
+Description: {{ hostvars[host]['checks'][check]['description'] }}
 URL: {{ hostvars[host]['checks'][check]['url'] }}
+Severity: {{ hostvars[host]['checks'][check]['severity'] }}
+Impact: {{ hostvars[host]['checks'][check]['impact'] }}
 
 {% endif %}
 {% endfor %}
@@ -21,8 +23,10 @@ URL: {{ hostvars[host]['checks'][check]['url'] }}
 {% for check in hostvars[host]['checks'] %}
 {% if hostvars[host][check]['failed'] == true %}
 Bug: {{ check }}
-Name: {{ hostvars[host]['checks'][check]['name'] }}
+Description: {{ hostvars[host]['checks'][check]['description'] }}
 URL: {{ hostvars[host]['checks'][check]['url'] }}
+Severity: {{ hostvars[host]['checks'][check]['severity'] }}
+Impact: {{ hostvars[host]['checks'][check]['impact'] }}
 
 {% endif %}
 {% endfor %}
@@ -35,8 +39,10 @@ URL: {{ hostvars[host]['checks'][check]['url'] }}
 {% for check in hostvars[host]['checks'] %}
 {% if hostvars[host][check]['failed'] == true %}
 Bug: {{ check }}
-Name: {{ hostvars[host]['checks'][check]['name'] }}
+Description: {{ hostvars[host]['checks'][check]['description'] }}
 URL: {{ hostvars[host]['checks'][check]['url'] }}
+Severity: {{ hostvars[host]['checks'][check]['severity'] }}
+Impact: {{ hostvars[host]['checks'][check]['impact'] }}
 
 {% endif %}
 {% endfor %}
