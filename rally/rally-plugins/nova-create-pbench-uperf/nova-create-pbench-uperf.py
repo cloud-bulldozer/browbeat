@@ -19,10 +19,9 @@ from rally.common import sshutils
 import time
 import StringIO
 import csv
-import sys
 import json
 import datetime
-import logger
+import logging
 from Elastic import Elastic
 
 LOG = logging.getLogger(__name__)
