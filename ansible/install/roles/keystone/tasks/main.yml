@@ -4,7 +4,7 @@
 #
 
 - name: Determine if keystone is deployed in eventlet
-  shell: ps afx | grep "[Kk]eystone-all" -c
+  command: ps afx | grep "[Kk]eystone-all" -c
   register: deployed
   ignore_errors: true
   changed_when: false
@@ -22,14 +22,14 @@
 #
 
 - name: Check for connmon in keystone.conf
-  shell: grep -Eq 'connection\s?=\s?mysql:' /etc/keystone/keystone.conf
+  command: grep -Eq 'connection\s?=\s?mysql:' /etc/keystone/keystone.conf
   register: keystone_mysql
   become: true
   ignore_errors: true
   changed_when: false
 
 - name: Enable connmon in keystone.conf
-  shell: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
+  command: sed -i 's/mysql:/mysql+connmon:/g' /etc/keystone/keystone.conf
   when: keystone_mysql.rc == 0
   become: true
   notify:
