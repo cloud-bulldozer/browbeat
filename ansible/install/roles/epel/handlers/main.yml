@@ -5,6 +5,6 @@
 - name: remove_epel
   yum:
     name: epel-release
-    absent: yes
+    state: absent
   ignore_errors: true
   become: true
