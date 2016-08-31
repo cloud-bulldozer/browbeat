@@ -21,7 +21,7 @@
     dest=/etc/collectd.conf
     owner=root
     group=root
-    mode=0644
+    mode="0644"
   become: true
 
 - name: Copy collectd-redis.sh
@@ -30,7 +30,7 @@
     dest=/usr/local/bin/collectd-redis.sh
     owner=root
     group=root
-    mode=0755
+    mode="0755"
   become: true
 
 #
@@ -44,7 +44,7 @@
   changed_when: false
 
 - name: Set permissive for collectd
-  shell: semanage permissive -a collectd_t
+  command: semanage permissive -a collectd_t
   become: true
   when: collectd_permissive.rc != 0
 
@@ -57,7 +57,7 @@
     dest=/root/custom-collectd.pp
     owner=root
     group=root
-    mode=644
+    mode="0644"
   become: true
 
 - name: Check for collectd custom
@@ -68,7 +68,7 @@
   changed_when: false
 
 - name: Set custom policy for collectd
-  shell: semodule -i /root/custom-collectd.pp
+  command: semodule -i /root/custom-collectd.pp
   become: true
   when: collectd_custom.rc != 0
 
