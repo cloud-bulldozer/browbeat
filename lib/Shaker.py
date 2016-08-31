@@ -405,8 +405,8 @@ class Shaker(WorkloadBase.WorkloadBase):
                         test_time = default_time
                     for interval in range(0, test_time + 9):
                         es_list.append(
-                                       datetime.datetime.utcnow() +
-                                       datetime.timedelta(0,interval))
+                            datetime.datetime.utcnow() +
+                            datetime.timedelta(0,interval))
 
                     for run in range(self.config['browbeat']['rerun']):
                         self.logger.info("Scenario: {}".format(scenario['name']))
@@ -427,7 +427,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                             time_stamp1, "shaker", scenario['name'], run)
                         self.run_scenario(
                             scenario, result_dir, test_name, fname, shaker_uuid,
-                        es_ts, es_list, run)
+                            es_ts, es_list, run)
                         self.get_stats()
                 else:
                     self.logger.info(

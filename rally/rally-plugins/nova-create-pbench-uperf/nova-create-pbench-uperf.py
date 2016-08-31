@@ -142,7 +142,8 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                     user, sip)
                 s1_exitcode, s1_stdout, s1_stderr = jump_ssh.execute(cmd)
                 if retry < 1:
-                    LOG.error("Error : Issue reaching {} the guests through the Jump host".format(sip))
+                    LOG.error(
+                        "Error : Issue reaching {} the guests through the Jump host".format(sip))
                     return 1
                 if s1_exitcode is 0:
                     ready = True
@@ -157,7 +158,7 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
             self._run_command_over_ssh(jump_ssh, {'remote_path': cmd})
 
         # Quick single test
-        #debug = "--message-sizes=1024 --instances=1"
+        # debug = "--message-sizes=1024 --instances=1"
         debug = None
 
         # Start uperf against private address
