@@ -34,12 +34,17 @@
   - name: Set neutron API Workers fact
     set_fact:
       openstack_neutron_api_workers: "{{ facter_processorcount }}"
-    when: ( neutron_api.stdout == "" or neutron_api.stdout|int < 1)
+    when: ( neutron_api.stdout == "" )
 
   - name: Set neutron API Workers fact
     set_fact:
       openstack_neutron_api_workers: "{{ neutron_api.stdout }}"
-    when: (neutron_api.stdout != "" and neutron_api.stdout|int >= 1)
+    when: (neutron_api.stdout != "" and neutron_api.stdout|int > 1 )
+
+  - name: Set neutron API Workers fact
+    set_fact:
+      openstack_neutron_api_workers: 1
+    when: (neutron_api.stdout != "" and neutron_api.stdout|int <=  1)
 
   - name: Get Neutron RPC Workers
     command:  crudini --get /etc/neutron/neutron.conf DEFAULT rpc_workers
