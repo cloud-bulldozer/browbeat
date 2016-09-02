@@ -15,6 +15,13 @@
     - collectd-turbostat
     - collectd-mysql
 
+# Get mysql's root password
+- name: (Controllers Only) Get mysql root password
+  command: hiera mysql::server::root_password
+  become: true
+  register: mysql_root_password
+  when: "'controller' in group_names"
+
 - name: Configure collectd.conf
   template:
     src={{config_type}}.collectd.conf.j2
@@ -78,4 +85,3 @@
 - name: Setup collectd service
   service: name=collectd state=restarted enabled=true
   become: true
-

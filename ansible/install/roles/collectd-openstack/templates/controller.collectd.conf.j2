@@ -88,6 +88,8 @@ PreCacheChain "PreCache"
 <Plugin mysql>
   <Database "overcloud">
     Host "localhost"
+    User "root"
+    Password "{{mysql_root_password.stdout}}"
     Socket "/var/lib/mysql/mysql.sock"
     InnodbStats true
   </Database>
