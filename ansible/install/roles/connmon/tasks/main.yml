@@ -88,7 +88,7 @@
   ignore_errors: true
   become: true
   register: iptables_tcp5800_exists
-  failed_when: iptables_tcp{{connmon_port}}_exists == 127i
+  failed_when: iptables_tcp{{connmon_port}}_exists == 127
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
