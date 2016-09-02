@@ -10,8 +10,6 @@
 
 - hosts: undercloud
   remote_user: "{{ local_remote_user }}"
-  vars:
-    results_in_httpd: false
   roles:
     - common
     - browbeat

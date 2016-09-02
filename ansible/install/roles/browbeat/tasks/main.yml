@@ -135,30 +135,84 @@
 - name: Install shaker
   pip: name=pyshaker version=0.0.14 virtualenv={{ shaker_venv }}
 
-### begin firewall ###
-# we need TCP/5555 open
-# determine firewall status and take action
-# 1) use firewall-cmd if firewalld is utilized
-# 2) insert iptables rule if iptables is used
+#
+# Serve results out of httpd if browbeat_results_in_httpd is set to true
+#
 
+- name: Setup browbeat.conf in /etc/httpd/conf.d
+  template:
+    src: 00-browbeat.conf.j2
+    dest: /etc/httpd/conf.d/00-browbeat.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: browbeat_results_in_httpd
+  notify:
+    - restart httpd
+
+- name: Set seboolean(httpd_read_user_content)
+  seboolean: name=httpd_read_user_content state=yes persistent=yes
+  become: true
+  when: browbeat_results_in_httpd
+
+- name: Allow httpd to serve content in "{{ home_dir }}"
+  file: path="{{ home_dir }}" state=directory mode=0755
+  when: browbeat_results_in_httpd
+
+# (akrzos) Port 9000 is already in use by zaqar-server (OSPd10) and thus the fact that likely the
+# user will choose a port that is not enabled by selinux to allow httpd to listen, we need to modify
+# the ports enabled by selinux for httpd.  If the port is already defined you will run into this
+# issue if you use the "seport" ansible module:
+# https://github.com/ansible/ansible-modules-extras/pull/2694
+# This is not in upstream Ansible releases as of 2.1.1.0
+- name: Allow httpd to listen to port ({{browbeat_results_port}})
+  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{browbeat_results_port}}"
+  become: true
+  when: browbeat_results_in_httpd
+
+### Begin Shaker port and browbeat_results_port firewall tasks###
 # Firewalld
-- name: (shaker) Determine if firewalld is in use
+- name: Determine if firewalld is in use
   shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
   ignore_errors: true
   register: firewalld_in_use
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if firewall is in use
+    - skip_ansible_lint
 
-- name: (shaker) Determine if firewalld is active
-  shell: systemctl is-active firewalld.service | grep -vq inactive
+- name: Determine if firewalld is active
+  shell: systemctl is-active firewalld.service | egrep -vq 'inactive|unknown'
   ignore_errors: true
   register: firewalld_is_active
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if firewall is active
+    - skip_ansible_lint
 
 - name: (shaker) Determine if TCP/{{shaker_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{shaker_port}}/tcp"
   ignore_errors: true
   register: firewalld_tcp{{shaker_port}}_exists
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
+
+- name: (browbeat_results) Determine if TCP/{{browbeat_results_port}} is already active
+  shell: firewall-cmd --list-ports | egrep -q "^{{browbeat_results_port}}/tcp"
+  when: browbeat_results_in_httpd
+  ignore_errors: true
+  register: firewalld_tcp{{browbeat_results_port}}_exists
+  no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
 
 # add firewall rule via firewall-cmd
 - name: (shaker) Add firewall rule for TCP/{{shaker_port}} (firewalld)
@@ -170,13 +224,40 @@
   become: true
   when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{shaker_port}}_exists.rc != 0
 
+- name: (browbeat_results) Add firewall rule for TCP/{{browbeat_results_port}} (firewalld)
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --zone=public --add-port={{browbeat_results_port}}/tcp --permanent
+    - firewall-cmd --reload
+  ignore_errors: true
+  become: true
+  when: browbeat_results_in_httpd and firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{connmon_port}}_exists.rc != 0
+
 # iptables-services
 - name: (shaker) check firewall rules for TCP/{{shaker_port}} (iptables-services)
   shell: grep "dport {{shaker_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
-  register: iptables_tcp5555_exists
+  become: true
+  register: iptables_tcp{{shaker_port}}_exists
   failed_when: iptables_tcp{{shaker_port}}_exists == 127
   no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
+
+- name: (browbeat_results) Check firewall rules for TCP/{{browbeat_results_port}} (iptables-services)
+  shell: grep "dport {{browbeat_results_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
+  when: browbeat_results_in_httpd
+  ignore_errors: true
+  become: true
+  register: iptables_tcp{{browbeat_results_port}}_exists
+  failed_when: iptables_tcp{{browbeat_results_port}}_exists == 127
+  no_log: true
+  tags:
+    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
+    # Need to check if port is already active
+    - skip_ansible_lint
 
 - name: (shaker) Add firewall rule for TCP/{{shaker_port}} (iptables-services)
   lineinfile:
@@ -185,52 +266,27 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp5555_exists.stdout|int == 0
+  become: true
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp{{shaker_port}}_exists.stdout|int == 0
   register: iptables_needs_restart
 
-- name: (shaker) Restart iptables-services for TCP/{{shaker_port}} (iptables-services)
-  shell: systemctl restart iptables.service
+- name: (browbeat_results) Add firewall rule for TCP/{{browbeat_results_port}} (iptables-services)
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    line: '-A INPUT -p tcp -m tcp --dport {{browbeat_results_port}} -j ACCEPT'
+    regexp: '^INPUT -i lo -j ACCEPT'
+    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    backup: yes
+  become: true
+  when: browbeat_results_in_httpd and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp{{browbeat_results_port}}_exists.stdout|int == 0
+  register: iptables_needs_restart
+
+- name: Restart iptables-services (iptables-services)
+  command: systemctl restart iptables.service
   ignore_errors: true
+  become: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
-
 ### end firewall ###
-#
-# Serve results out of httpd if results_in_httpd is set to true
-#
-
-- name: Setup browbeat.conf in /etc/httpd/conf.d
-  template:
-    src: 00-browbeat.conf.j2
-    dest: /etc/httpd/conf.d/00-browbeat.conf
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-  when: results_in_httpd
-  notify:
-    - restart httpd
-
-- name: Check iptables for browbeat port(9000)
-  shell: iptables -nvL | grep -q "dpt:9000"
-  become: true
-  changed_when: false
-  when: results_in_httpd
-  register: browbeat_results_port
-  ignore_errors: true
-
-- name: Open iptables for browbeat port(9000)
-  shell: /usr/sbin/iptables -I INPUT 1 -p tcp --dport 9000 -j ACCEPT
-  become: true
-  when: results_in_httpd and browbeat_results_port.rc == 1
-
-- name: Set seboolean(httpd_read_user_content)
-  seboolean: name=httpd_read_user_content state=yes persistent=yes
-  become: true
-  when: results_in_httpd
-
-- name: Allow httpd to serve content in "{{ home_dir }}"
-  file: path="{{ home_dir }}" state=directory mode=0755
-  when: results_in_httpd
 
 #
 # Obtain and upload images for use with browbeat
