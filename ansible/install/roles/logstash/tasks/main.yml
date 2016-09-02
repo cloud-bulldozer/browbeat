@@ -94,8 +94,8 @@
 - name: Load filebeat JSON index template
   uri:
     url: http://localhost:9200/_template/filebeat?pretty
-    method: post
-    body: "{{ lookups('file', 'filebeat-index-template.json') }}"
+    method: POST
+    body: "{{ lookup('file', 'filebeat-index-template.json') }}"
     body_format: json
   ignore_errors: true
   become: true
