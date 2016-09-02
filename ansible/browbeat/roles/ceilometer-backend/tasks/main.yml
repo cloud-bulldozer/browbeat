@@ -30,5 +30,5 @@
 
 - name: Configure for gnocchi
   become: true
-  when: ("'{{ ceilometer_backend }}' == 'gnocchi'") and (inventory_hostname == groups['controller'][0])
+  when: "('{{ceilometer_backend}}' == 'gnocchi') and (inventory_hostname == groups['controller'][0])"
   shell:  gnocchi-upgrade --create-legacy-resource-types
