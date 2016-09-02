@@ -61,7 +61,7 @@
   - name: Set ceilometer meter_dispatchers
     set_fact:
       openstack_ceilometer_meter_dispatchers: "database"
-    when: reserved_metadata_length.stdout == ""
+    when: meter_dispatchers.stdout == ""
 
   - name: Get ceilometer pipeline polling interval
     command: crudini --get /etc/ceilometer/ceilometer.conf DEFAULT pipeline_polling_interval
@@ -287,4 +287,3 @@
     set_fact:
       openstack_ceilometer_rabbit_use_ssl: false
     when: (rabbit_use_ssl.stdout == "")
-
