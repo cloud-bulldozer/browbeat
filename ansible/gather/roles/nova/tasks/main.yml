@@ -2,49 +2,14 @@
 #
 # Tasks to get nova facts
 #
-  - name: Get Nova API Workers
-    command: crudini --get /etc/nova/nova.conf DEFAULT osapi_compute_workers
-    register: nova_api
-    ignore_errors: true
 
-  - name: Set nova API Workers fact
-    set_fact:
-      openstack_nova_api_workers: "{{ facter_processorcount }}"
-    when: (nova_api.stdout =="" or nova_api.stdout|int < 1)
+- name: Parse Nova config
+  become: true
+  shell: python /tmp/openstack-config-parser.py nova /etc/nova/nova.conf /tmp/out.yml
 
-  - name: Set nova API Workers fact
-    set_fact:
-      openstack_nova_api_workers: "{{ nova_api.stdout }}"
-    when: (nova_api.stdout !="" and nova_api.stdout|int >= 1)
+- name: Fetch output
+  fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
 
-  - name:  Get Nova conductor workers
-    command: crudini --get /etc/nova/nova.conf conductor workers
-    register: nova_conductor
-    ignore_errors: true
-
-  - name: Set Nova conductor workers
-    set_fact:
-      openstack_nova_conductor_workers: "{{ facter_processorcount }}"
-    when: (nova_conductor.stdout == ""   or nova_conductor.stdout|int < 1)
-
-  - name: Set Nova conductor workers
-    set_fact:
-      openstack_nova_conductor_workers: "{{ nova_conductor.stdout }}"
-    when: (nova_conductor.stdout != ""   and nova_conductor.stdout|int >= 1)
-
-  - name:  Get Nova metadata workers
-    command: crudini --get /etc/nova/nova.conf DEFAULT metadata_workers
-    register: nova_metadata
-    ignore_errors: true
-
-  - name: Set Nova metadata workers
-    set_fact:
-      openstack_nova_metadata_workers: "{{ facter_processorcount }}"
-    when: (nova_metadata.stdout == ""   or nova_metadata.stdout|int < 1)
-
-  - name: Set Nova metadata workers
-    set_fact:
-      openstack_nova_metadata_workers: "{{ nova_metadata.stdout }}"
-    when: (nova_metadata.stdout != ""   and nova_metadata.stdout|int >= 1)
-
+- name: Load configuration variables
+  include_vars: /tmp/out.yml
 

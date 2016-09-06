@@ -63,29 +63,27 @@ class Metadata:
         return env_dict
 
     def get_software_metadata(self, sys_data):
-        soft_all_dict = {}
+        soft_all_dict = []
         for item in sys_data['system_data']:
-            if 'software_details' not in soft_all_dict:
-                soft_all_dict['software_details'] = {}
             nodes = ['controller', 'undercloud', 'compute']
             if any(node in item['inventory_hostname'] for node in nodes):
-                if 'openstack' not in soft_all_dict['software_details']:
-                    soft_all_dict['software_details']['openstack'] = {}
-                if 'config' not in soft_all_dict['software_details']['openstack']:
-                    soft_all_dict['software_details'][
-                        'openstack']['config'] = []
                 software_dict = {}
-                software_dict['node_name'] = item['inventory_hostname']
                 for soft in item:
                     if 'openstack' in soft:
                         service = soft.split('_')
+                        key = soft.split('_', 2)[2]
                         service_name = service[1]
-                        if service_name not in software_dict:
+                        node = item['inventory_hostname']
+                        if service_name in software_dict:
+                            if service_name in soft:
+                                software_dict[service_name][key] = item[soft]
+                        else:
                             software_dict[service_name] = {}
-                        if service_name in soft:
-                            software_dict[service_name][soft] = item[soft]
-                soft_all_dict['software_details']['openstack'][
-                    'config'].append(software_dict)
+                            if service_name in soft:
+                                software_dict[service_name]['node_name'] = node
+                                software_dict[service_name][key] = item[soft]
+
+                soft_all_dict.append(software_dict)
         return soft_all_dict
 
     def write_metadata_file(self, data, filename):
