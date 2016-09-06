@@ -1,0 +1,15 @@
+---
+#
+# Gnocchi tasks for performance checks
+#
+
+- name: Get httpd configuration files
+  shell: 'ls /etc/httpd/conf.d/'
+  register: httpd_confd_files
+
+- name: Gnocchi API httpd process count
+  shell: egrep -o "processes=[0-9]+" /etc/httpd/conf.d/*gnocchi_wsgi.conf | egrep -o "[0-9]+"
+  register: bz1372821
+  failed_when: bz1372821.stdout|int < gnocchi_api_processes and 'gnocchi' in httpd_confd_files.stdout
+  when: (inventory_hostname in groups.controller)
+  ignore_errors: True

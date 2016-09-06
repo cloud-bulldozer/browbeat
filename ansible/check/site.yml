@@ -33,6 +33,7 @@
   - neutron
   - nova
   - glance
+  - gnocchi
 
 - hosts: compute
   name: Checking Compute Nodes for common Performance Issues

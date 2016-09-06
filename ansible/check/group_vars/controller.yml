@@ -9,6 +9,7 @@ nova_vif_timeout: 300
 netdev_max_backlog: 100000
 keystone_threads: 6
 keystone_processes: 2
+gnocchi_api_processes: 2
 
 checks :
     bz1095811 :
@@ -95,4 +96,9 @@ checks :
         url: "https://bugzilla.redhat.com/show_bug.cgi?id=1347305"
         description: "Overcloud deployed with keystone as single process leads to abysmal performance"
         severity: "Critical"
+        impact: "Not tuning the workers properly can cause degraded performance"
+    bz1372821:
+        url: "https://bugzilla.redhat.com/show_bug.cgi?id=1372821"
+        description: "Gnocchi API processes tuned to 1 process"
+        severity: "Suggestion"
         impact: "Not tuning the workers properly can cause degraded performance"
