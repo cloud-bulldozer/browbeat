@@ -81,7 +81,7 @@ per_process_panels:
         - neutron-server
         - neutron-openvswitch-agent
         - neutron-ns-metadata-proxy
-        - neutron-metadata-proxy
+        - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
     - name: "Keystone"
@@ -160,7 +160,7 @@ per_process_panels:
         - neutron-server
         - neutron-openvswitch-agent
         - neutron-ns-metadata-proxy
-        - neutron-metadata-proxy
+        - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
     - name: "Keystone"
@@ -250,6 +250,9 @@ per_process_panels:
     - name: "Neutron"
       processes:
         - neutron-openvswitch-agent
+        - neutron-l3-agent          # DVR enabled case, OSP 10
+        - neutron-ns-metadata-proxy # DVR enabled case, OSP 10
+        - neutron-metadata-agent    # DVR enabled case, OSP 10
     - name: "Ceilometer"
       processes:
         - ceilometer-agent-compute
@@ -307,7 +310,7 @@ per_process_panels:
         - neutron-server
         - neutron-openvswitch-agent
         - neutron-ns-metadata-proxy
-        - neutron-metadata-proxy
+        - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
     - name: "Keystone"
