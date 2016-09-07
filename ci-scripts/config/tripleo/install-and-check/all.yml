@@ -37,8 +37,9 @@ shaker_venv: /home/stack/shaker-venv
 # Shaker version to install
 shaker_version: 0.0.15
 
-# The default PerfKit venv:
+# PerfKitBenchmarker Settings
 perfkit_venv: /home/stack/perfkit-venv
+perfkit_version: v1.7.0
 
 # Guest images for the Overcloud
 images:

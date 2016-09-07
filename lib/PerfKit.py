@@ -82,8 +82,8 @@ class PerfKit(WorkloadBase.WorkloadBase):
                 cmd += " --{}={}".format(parameter, value)
 
         # Remove any old results
-        if os.path.exists("/tmp/perfkitbenchmarker/run_browbeat"):
-            shutil.rmtree("/tmp/perfkitbenchmarker/run_browbeat")
+        if os.path.exists("/tmp/perfkitbenchmarker/runs/browbeat"):
+            shutil.rmtree("/tmp/perfkitbenchmarker/runs/browbeat")
 
         if self.config['connmon']['enabled']:
             self.connmon.start_connmon()
@@ -139,10 +139,10 @@ class PerfKit(WorkloadBase.WorkloadBase):
                 "File missing: {}/pkb.stderr.log".format(result_dir))
 
         # Copy all results
-        for perfkit_file in glob.glob("/tmp/perfkitbenchmarker/run_browbeat/*"):
+        for perfkit_file in glob.glob("/tmp/perfkitbenchmarker/runs/browbeat/*"):
             shutil.move(perfkit_file, result_dir)
-        if os.path.exists("/tmp/perfkitbenchmarker/run_browbeat"):
-            shutil.rmtree("/tmp/perfkitbenchmarker/run_browbeat")
+        if os.path.exists("/tmp/perfkitbenchmarker/runs/browbeat"):
+            shutil.rmtree("/tmp/perfkitbenchmarker/runs/browbeat")
 
         # Grafana integration
         self.grafana.create_grafana_urls(
