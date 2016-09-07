@@ -89,7 +89,6 @@
   command: mv {{ home_dir }}/{{item}} {{ browbeat_path }}/ansible/{{item}}
   with_items:
     - hosts
-    - ssh-config
     - heat-admin-id_rsa
 
 - name: Install requirements.txt into browbeat-venv

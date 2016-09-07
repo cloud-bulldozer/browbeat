@@ -50,8 +50,12 @@ mapping:
     type: map
     allowempty: True
     mapping:
+      ssh_config:
+        type: str
+        required: True
       hosts:
         type: str
+        required: True
       adjust:
         type: map
         mapping:
@@ -68,6 +72,9 @@ mapping:
         required: True
       shaker_build:
         type: str
+      metadata:
+        type: str
+        required: True
 
   connmon:
     type: map

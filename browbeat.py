@@ -12,10 +12,11 @@
 #   limitations under the License.
 
 from lib.Elastic import browbeat_uuid
-from lib import PerfKit
-from lib import Rally
-from lib import Shaker
-from lib import WorkloadBase
+import lib.PerfKit
+import lib.Rally
+import lib.Shaker
+import lib.WorkloadBase
+import lib.Tools
 import argparse
 import logging
 import sys
@@ -56,13 +57,13 @@ def validate_yaml(config, _logger):
 def _run_workload_provider(provider, config):
     _logger = logging.getLogger('browbeat')
     if provider == "perfkit":
-        perfkit = PerfKit.PerfKit(config)
+        perfkit = lib.PerfKit.PerfKit(config)
         perfkit.start_workloads()
     elif provider == "rally":
-        rally = Rally.Rally(config)
+        rally = lib.Rally.Rally(config)
         rally.start_workloads()
     elif provider == "shaker":
-        shaker = Shaker.Shaker(config)
+        shaker = lib.Shaker.Shaker(config)
         shaker.run_shaker()
     else:
         _logger.error("Unknown workload provider: {}".format(provider))
@@ -133,8 +134,19 @@ def main():
             metadata_exists = check_metadata(_config, _logger)
             if not metadata_exists:
                 _logger.error("Elasticsearch has been enabled but"
-                              " metadata files do not exist, exiting")
-                sys.exit(1)
+                              " metadata files do not exist")
+                _logger.info("Gathering Metadata")
+                os.putenv("ANSIBLE_SSH_ARGS"," -F {}".format(_config['ansible']['ssh_config']))
+                tools = lib.Tools.Tools(_config)
+                ansible_cmd = \
+                    'ansible-playbook -i {} {}' \
+                    .format(_config['ansible']['hosts'], _config['ansible']['metadata'])
+                tools.run_cmd(ansible_cmd)
+                if not check_metadata(_config, _logger):
+                    _logger.warning("Metadata could not be gathered")
+                    exit(1)
+                else:
+                    _logger.info("Metadata about cloud has been gathered")
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:
@@ -146,10 +158,10 @@ def main():
             else:
                 _logger.error("{} is missing in {}".format(wkld_provider, _cli_args.setup))
         result_dir = _config['browbeat']['results']
-        WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
+        lib.WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
-        WorkloadBase.WorkloadBase.print_summary()
+        lib.WorkloadBase.WorkloadBase.print_summary()
         _logger.info("Browbeat Finished, UUID: {}".format(browbeat_uuid))
 
 if __name__ == '__main__':

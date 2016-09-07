@@ -6,7 +6,8 @@ if [ ! $# -ge 1 ]; then
 fi
 tripleo_ip_address=$1
 ansible_inventory_file='hosts'
-ssh_config_file='ssh-config'
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ssh_config_file=${DIR}'/ssh-config'
 
 # "Hackish" copy ssh key to self if we are on directly on the undercloud machine:
 if [[ "${tripleo_ip_address}" == "localhost" ]]; then
@@ -107,9 +108,9 @@ for line in $nodes; do
  fi
  echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
- echo "    ProxyCommand ssh -F ssh-config -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa stack@${tripleo_ip_address} -W ${IP}:22" | tee -a ${ssh_config_file}
+ echo "    ProxyCommand ssh -F ${ssh_config_file} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=60 -i ~/.ssh/id_rsa stack@${tripleo_ip_address} -W ${IP}:22" | tee -a ${ssh_config_file}
  echo "    User heat-admin" | tee -a ${ssh_config_file}
- echo "    IdentityFile heat-admin-id_rsa" | tee -a ${ssh_config_file}
+ echo "    IdentityFile ${DIR}/heat-admin-id_rsa" | tee -a ${ssh_config_file}
  echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 done
