@@ -53,6 +53,8 @@
 - hosts: localhost
   gather_facts: False
   become: false
+  vars:
+    ansible_python_interpreter: "/usr/bin/python"
   name: Generating bug report
   tasks:
     - local_action: template src=templates/bug_report.j2 dest={{result_dir}}/bug_report.log
