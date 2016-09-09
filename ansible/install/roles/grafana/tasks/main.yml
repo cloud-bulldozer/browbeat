@@ -73,7 +73,7 @@
 - name: (grafana) Determine if TCP/{{grafana_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{grafana_port}}/tcp"
   ignore_errors: true
-  register: firewalld_tcp{{grafana_port}}_exists
+  register: firewalld_grafana_port_exists
   no_log: true
   tags:
     # Skip ANSIBLE0012] Commands should not change things if nothing needs doing
@@ -88,14 +88,14 @@
     - firewall-cmd --reload
   ignore_errors: true
   become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{grafana_port}}_exists.rc != 0
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_grafana_port_exists.rc != 0
 
 # iptables-services
 - name: (grafana) check firewall rules for TCP/{{grafana_port}} (iptables-services)
   shell: grep "dport {{grafana_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
-  register: iptables_tcp3000_exists
-  failed_when: iptables_tcp{{grafana_port}}_exists == 127
+  register: iptables_grafana_port_exists
+  failed_when: iptables_grafana_port_exists == 127
   no_log: true
   tags:
     # Skip ANSIBLE0012] Commands should not change things if nothing needs doing
@@ -109,11 +109,10 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp3000_exists.stdout|int == 0
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_grafana_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: (grafana) Restart iptables-services for TCP/{{grafana_port}} (iptables-services)
-  # TODO: replace with systemd module when Ansible 2.2 is the foundation
   command: systemctl restart iptables.service
   ignore_errors: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0

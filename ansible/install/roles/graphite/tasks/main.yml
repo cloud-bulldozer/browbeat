@@ -63,7 +63,7 @@
 - name: (graphite-web) Determine if TCP/{{graphite_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{graphite_port}}/tcp"
   ignore_errors: true
-  register: firewalld_tcp{{graphite_port}}_exists
+  register: firewalld_graphite_port_exists
   no_log: true
 
 # add firewall rule via firewall-cmd
@@ -74,14 +74,14 @@
     - firewall-cmd --reload
   ignore_errors: true
   become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{graphite_port}}_exists.rc != 0
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_graphite_port_exists.rc != 0
 
 # iptables-services
 - name: (graphite-web) check firewall rules for TCP/{{graphite_port}} (iptables-services)
   shell: grep "dport {{graphite_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
-  register: iptables_tcp80_exists
-  failed_when: iptables_tcp{{graphite_port}}_exists == 127
+  register: iptables_graphite_port_exists
+  failed_when: iptables_graphite_port_exists == 127
   no_log: true
 
 - name: (graphite-web) Add firewall rule for TCP/{{graphite_port}} (iptables-services)
@@ -91,7 +91,7 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp80_exists.stdout|int == 0
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_graphite_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: (graphite-web) Restart iptables-services for TCP/{{graphite_port}} (iptables-services)
