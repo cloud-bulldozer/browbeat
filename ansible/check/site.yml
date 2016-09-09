@@ -57,9 +57,10 @@
     ansible_python_interpreter: "/usr/bin/python"
   name: Generating bug report
   tasks:
-    - local_action: template src=templates/bug_report.j2 dest={{result_dir}}/bug_report.log
+    - file: "path={{result_dir}} state=directory"
+    - template: src=templates/bug_report.j2 dest={{result_dir}}/bug_report.log
       become: false
-    - local_action: template src=templates/mysql_report.j2 dest={{result_dir}}/mysql_report.log
+    - template: src=templates/mysql_report.j2 dest={{result_dir}}/mysql_report.log
       become: false
     - replace: dest={{result_dir}}/mysql_report.log regexp='\[([^\s+]+)' replace=''
     - replace: dest={{result_dir}}/mysql_report.log regexp='\r' replace=''
