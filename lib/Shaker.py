@@ -98,11 +98,11 @@ class Shaker(WorkloadBase.WorkloadBase):
                 'browbeat_scenario': browbeat_scenario,
                 'shaker_uuid': str(shaker_uuid),
                 'record': record,
-                'run': run
+                'browbeat_rerun': run
             }
 
             result = self.elastic.combine_metadata(shaker_stats)
-            self.elastic.index_result(result)
+            self.elastic.index_result(result, _type='error')
             return
         # Dictionary to capture common test data
         shaker_test_meta = {}
@@ -160,7 +160,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                         # record afterrecord after flattening out data
                         shaker_stats = {
                             'record': data['records'][record],
-                            'run': run,
+                            'browbeat_rerun': run,
                             'shaker_test_info': shaker_test_meta['shaker_test_info'],
                             'timestamp': elastic_timestamp,
                             'accommodation': shaker_test_meta['deployment']['accommodation'],
@@ -178,6 +178,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                 # shaker_stats dictionary to ES
                 shaker_stats = {
                     'record': data['records'][record],
+                    'browbeat_rerun': run,
                     'shaker_test_info': shaker_test_meta['shaker_test_info'],
                     'timestamp': str(es_ts).replace(" ", "T"),
                     'accommodation': shaker_test_meta['deployment']['accommodation'],
@@ -186,7 +187,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                     'grafana_url': [self.grafana.grafana_urls()],
                     'shaker_uuid': str(shaker_uuid)}
                 result = self.elastic.combine_metadata(shaker_stats)
-                self.elastic.index_result(result)
+                self.elastic.index_result(result, _type='error')
 
     def set_scenario(self, scenario, fname, default_time):
         stream = open(fname, 'r')
