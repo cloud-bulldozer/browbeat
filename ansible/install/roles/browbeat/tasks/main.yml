@@ -326,5 +326,8 @@
 # Add additional flavor to overcloud
 #
 
-- name: Add extra tiny flavor to overcloud
-  shell: . {{ overcloudrc }}; nova flavor-create m1.xtiny auto 64 1 1
+# Ignore errors here incase the flavors already exist.
+- name: Add flavors to overcloud
+  shell: . {{ overcloudrc }}; nova flavor-create {{item.name}} auto {{item.memory}} {{item.disk}} {{item.cpu}}
+  with_items: "{{browbeat_flavors}}"
+  ignore_errors: true
