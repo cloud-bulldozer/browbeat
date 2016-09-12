@@ -29,15 +29,13 @@ class Metadata:
         except IOError:
             print("Machine facts json is missing")
             exit(1)
-        new_json = re.sub(r"}\n{", r"},\n{", json_str, re.M)
-        convert = "{ \"machines\": [" + new_json + "] }"
         sys_data = {}
-        sys_data['system_data'] = json.loads(convert)
+        sys_data['system_data'] = json.loads(json_str)
         return sys_data
 
     def get_hardware_metadata(self, sys_data):
         hard_dict = {}
-        for item in sys_data['system_data']['machines']:
+        for item in sys_data['system_data']:
             if 'hardware_details' not in hard_dict:
                 hard_dict['hardware_details'] = []
             hardware_dict = {}
@@ -57,7 +55,7 @@ class Metadata:
 
     def get_environment_metadata(self, sys_data):
         env_dict = {}
-        for item in sys_data['system_data']['machines']:
+        for item in sys_data['system_data']:
             if 'environment_setup' not in env_dict:
                 env_dict['environment_setup'] = {}
             for key, value in item.items():
@@ -67,7 +65,7 @@ class Metadata:
 
     def get_software_metadata(self, sys_data):
         soft_all_dict = {}
-        for item in sys_data['system_data']['machines']:
+        for item in sys_data['system_data']:
             if 'software_details' not in soft_all_dict:
                 soft_all_dict['software_details'] = {}
             nodes = ['controller', 'undercloud', 'compute']
@@ -93,7 +91,7 @@ class Metadata:
 
     def write_metadata_file(self, data, filename):
         with open(filename, 'w') as json_file:
-            json.dump(data, json_file)
+            json.dump(data, json_file, indent=4, sort_keys=True)
 
 
 def main():
