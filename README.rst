@@ -130,7 +130,7 @@ Run Overcloud checks
 
     $ ansible-playbook -i hosts check/site.yml
 
-Your Overcloud check output is located in check/bug_report.log
+Your Overcloud check output is located in results/bug_report.log
 
 NOTE: It is strongly advised to not run the ansible playbooks in a venv.
 
@@ -196,7 +196,7 @@ Run Overcloud checks
 
     [stack@ospd ansible]$ ansible-playbook -i hosts check/site.yml
 
-Your Overcloud check output is located in check/bug_report.log
+Your Overcloud check output is located in results/bug_report.log
 
 Run performance stress tests through browbeat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
