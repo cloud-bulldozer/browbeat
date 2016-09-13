@@ -65,7 +65,7 @@
 - name: (connmon) Determine if TCP/{{connmon_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{connmon_port}}/tcp"
   ignore_errors: true
-  register: firewalld_tcp{{connmon_port}}_exists
+  register: firewalld_connmon_port_exists
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -80,15 +80,15 @@
     - firewall-cmd --reload
   ignore_errors: true
   become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp{{connmon_port}}_exists.rc != 0
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_connmon_port_exists.rc != 0
 
 # iptables-services
 - name: (connmon) check firewall rules for TCP/{{connmon_port}} (iptables-services)
   shell: grep "dport {{connmon_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
   become: true
-  register: iptables_tcp5800_exists
-  failed_when: iptables_tcp{{connmon_port}}_exists == 127
+  register: iptables_connmon_port_exists
+  failed_when: iptables_connmon_port_exists == 127
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -103,7 +103,7 @@
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
   become: true
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp5800_exists.stdout|int == 0
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_connmon_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: (connmon) Restart iptables-services for TCP/{{connmon_port}} (iptables-services)

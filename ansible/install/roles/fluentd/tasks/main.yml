@@ -63,7 +63,7 @@
 - name: Determine if TCP/{{fluentd_syslog_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{fluentd_syslog_port}}/tcp"
   ignore_errors: true
-  register: firewalld_tcp42185_exists
+  register: firewalld_fluentd_syslog_port_exists
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -78,14 +78,14 @@
     - firewall-cmd --reload
   ignore_errors: true
   become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp42185_exists.rc != 0
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_fluentd_syslog_port_exists.rc != 0
 
 # iptables-services
 - name: check firewall rules for TCP/{{fluentd_syslog_port}} (iptables-services)
   shell: grep "dport {{fluentd_syslog_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
-  register: iptables_tcp42185_exists
-  failed_when: iptables_tcp42185_exists == 127
+  register: iptables_fluentd_syslog_port_exists
+  failed_when: iptables_fluentd_syslog_port_exists == 127
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -99,7 +99,7 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp42185_exists.stdout|int == 0
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_fluentd_syslog_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: Restart iptables-services for TCP/{{fluentd_syslog_port}} (iptables-services)
@@ -114,7 +114,7 @@
 - name: Determine if TCP/{{fluentd_http_port}} is already active
   shell: firewall-cmd --list-ports | egrep -q "^{{fluentd_http_port}}/tcp"
   ignore_errors: true
-  register: firewalld_tcp9919_exists
+  register: firewalld_fluentd_http_port_exists
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -129,14 +129,14 @@
     - firewall-cmd --reload
   ignore_errors: true
   become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_tcp9919_exists.rc != 0
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_fluentd_http_port_exists.rc != 0
 
 # iptables-services
 - name: check firewall rules for TCP/{{fluentd_http_port}} (iptables-services)
   shell: grep "dport {{fluentd_http_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
-  register: iptables_tcp9919_exists
-  failed_when: iptables_tcp9919_exists == 127
+  register: iptables_fluentd_http_port_exists
+  failed_when: iptables_fluentd_http_port_exists == 127
   no_log: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
@@ -150,7 +150,7 @@
     regexp: '^INPUT -i lo -j ACCEPT'
     insertbefore: '-A INPUT -i lo -j ACCEPT'
     backup: yes
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_tcp9919_exists.stdout|int == 0
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_fluentd_http_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
 - name: Restart iptables-services for TCP/{{fluentd_http_port}} (iptables-services)
