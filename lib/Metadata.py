@@ -11,7 +11,6 @@
 #   limitations under the License.
 
 import json
-import re
 import sys
 import os
 
