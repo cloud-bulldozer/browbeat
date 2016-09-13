@@ -14,6 +14,8 @@ elasticsearch:
       file: metadata/environment-metadata.json
     - name: software-metadata
       file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
 ansible:
   hosts: ansible/hosts
   adjust:
@@ -348,4 +350,3 @@ shaker:
       time: 60
       placement: single_room
       file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
- 

@@ -14,6 +14,8 @@ elasticsearch:
       file: metadata/environment-metadata.json
     - name: software-metadata
       file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
 ansible:
   hosts: ansible/hosts
   adjust:
@@ -66,4 +68,3 @@ rally:
         - name: list-images
           enabled: true
           file: rally/glance/list-images-cc.yml
-

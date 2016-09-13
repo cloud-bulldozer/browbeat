@@ -1,4 +1,5 @@
 # Ignore everything in this directory (placeholder directory)
+# version.json is provided as an example
 *
 # Except this file
 !.gitignore

@@ -1,0 +1,13 @@
+{
+  "title": "Browbeat Rally Keystone Token Creation/Validation Concurrencies",
+  "hits": 0,
+  "description": "",
+  "panelsJSON": "[{\"col\":1,\"id\":\"BrowbeatRallyKeystoneUsage\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"AuthenticateKeystoneConcurrency-lg\",\"panelIndex\":2,\"row\":5,\"size_x\":4,\"size_y\":4,\"type\":\"visualization\"},{\"id\":\"AuthenticateValidateNovaConcurrency-lg\",\"type\":\"visualization\",\"panelIndex\":3,\"size_x\":4,\"size_y\":4,\"col\":5,\"row\":5},{\"id\":\"AuthenticateValidateNeutronConcurrency-lg\",\"type\":\"visualization\",\"panelIndex\":4,\"size_x\":4,\"size_y\":4,\"col\":9,\"row\":5},{\"id\":\"AuthenticateKeystoneErrorsConcurrency-bg\",\"type\":\"visualization\",\"panelIndex\":5,\"size_x\":4,\"size_y\":2,\"col\":1,\"row\":9},{\"id\":\"AuthenticateValidateNovaErrorsConcurrency-bg\",\"type\":\"visualization\",\"panelIndex\":6,\"size_x\":4,\"size_y\":2,\"col\":5,\"row\":9},{\"id\":\"AuthenticateValidateNeutronErrorsConcurrency-bg\",\"type\":\"visualization\",\"panelIndex\":7,\"size_x\":4,\"size_y\":2,\"col\":9,\"row\":9}]",
+  "optionsJSON": "{\"darkTheme\":false}",
+  "uiStateJSON": "{}",
+  "version": 1,
+  "timeRestore": false,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"\",\"analyze_wildcard\":true}}}]}"
+  }
+}

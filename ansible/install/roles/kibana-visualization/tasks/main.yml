@@ -1,4 +1,46 @@
 ---
+#
+# Tasks to upload Searches/Visuals/Dashboards to Kibana
+#
+
+- name: Generate Keystone Visualizations
+  template:
+    src: "{{item.template}}"
+    dest: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
+  with_items: "{{keystone_visualizations}}"
+
+- name: Remove Searches
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/search/{{ item | basename | regex_replace('\.json','') }}
+    method: DELETE
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+    status_code: 404, 200
+  with_fileglob:
+    - "{{ browbeat_path }}/visualization/*/search/*"
+  ignore_errors: true
+
+- name: Remove Visuals
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/visualization/{{ item | basename | regex_replace('\.json','')}}
+    method: DELETE
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+    status_code: 404, 200
+  with_fileglob:
+    - "{{ browbeat_path }}/visualization/*/visualization/*"
+  ignore_errors: true
+
+- name: Remove Dashboards
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/dashboard/{{ item | basename | regex_replace('\.json','')}}
+    method: DELETE
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+    status_code: 404, 200
+  with_fileglob:
+    - "{{ browbeat_path }}/visualization/*/dashboard/*"
+  ignore_errors: true
 
 - name: Upload Searches
   uri:
@@ -6,8 +48,9 @@
     method: PUT
     body: "{{ lookup('file', item) }}"
     body_format: json
+    status_code: 201
   with_fileglob:
-  - "{{ browbeat_path }}/visualization/*/search/*"
+    - "{{ browbeat_path }}/visualization/*/search/*"
   ignore_errors: true
 
 - name: Upload Visuals
@@ -16,8 +59,9 @@
     method: PUT
     body: "{{ lookup('file', item) }}"
     body_format: json
+    status_code: 201
   with_fileglob:
-  - "{{ browbeat_path }}/visualization/*/visualization/*"
+    - "{{ browbeat_path }}/visualization/*/visualization/*"
   ignore_errors: true
 
 - name: Upload Dashboards
@@ -26,6 +70,13 @@
     method: PUT
     body: "{{ lookup('file', item) }}"
     body_format: json
+    status_code: 201
   with_fileglob:
-  - "{{ browbeat_path }}/visualization/*/dashboard/*"
+    - "{{ browbeat_path }}/visualization/*/dashboard/*"
   ignore_errors: true
+
+- name: Cleanup Keystone Visualizations
+  file:
+    path: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
+    state: absent
+  with_items: "{{keystone_visualizations}}"

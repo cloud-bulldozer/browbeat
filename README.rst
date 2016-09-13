@@ -2,9 +2,9 @@ Table of Contents
 =================
 
 -  `Browbeat <#browbeat>`__
--  `Before running browbeat <#before-running-browbeat>`__
--  `How to run Browbeat? <#how-to-run-browbeat>`__
--  `What is necessary? <#what-is-necessary>`__
+-  `Before running Browbeat <#before-running-browbeat>`__
+-  `How to run Browbeat Stress Tests <#how-to-run-browbeat-stress-tests>`__
+-  `What is necessary <#what-is-necessary>`__
 -  `Detailed Install, Check and Run <#detailed-install-check-and-run>`__
 -  `Install Browbeat from your local
    machine <#install-browbeat-from-your-local-machine>`__
@@ -15,7 +15,7 @@ Table of Contents
       dashboards <#optional-install-collectd-graphite-dashboards>`__
    -  `(Optional) Install connmon <#optional-install-connmon>`__
    -  `Run Overcloud checks <#run-overcloud-checks>`__
-   -  `Run performance stress tests through browbeat on the
+   -  `Run performance stress tests through Browbeat on the
       undercloud <#run-performance-stress-tests-through-browbeat-on-the-undercloud>`__
 
 -  `Install Browbeat directly on
@@ -28,7 +28,7 @@ Table of Contents
    -  `(Optional) Install connmon <#optional-install-connmon>`__
    -  `Run Overcloud checks <#run-overcloud-checks>`__
    -  `Run performance stress tests through
-      browbeat <#run-performance-stress-tests-through-browbeat>`__
+      Browbeat <#run-performance-stress-tests-through-browbeat>`__
 
 -  `Running PerfKitBenchmarker <#running-perfkitbenchmarker>`__
 -  `Working with Multiple Clouds <#working-with-multiple-clouds>`__
@@ -47,27 +47,33 @@ since grown into a set of Ansible playbooks to help check deployments
 for known issues, install tools, run performance stress workloads and
 change parameters of the overcloud.
 
-Before running browbeat
+Before running Browbeat
 =======================
 
--  Execute the ansible/generate_tripleo_hostfile.sh script (builds the ssh config)
+-  Execute the ansible/generate_tripleo_hostfile.sh script (builds ssh-config file)
 -  Configure browbeat-config.yaml to match your tests
+-  (Optional) Set your Openstack version metadata in metadata/version.json
 
-How to run Browbeat Stress Tests?
+Currently Keystone Dashboards only depend on osp_series but may be extended to show
+build date in the future, thus build is also provided but not required.  You can
+add whatever other version related metadata you would like to metadata/version.json.
+Typically, whatever automation you have to produce builds should provide this file.
+
+How to run Browbeat Stress Tests
 =================================
 
-On the Undercloud host, as the Stack user jump into the browbeat venv
+On the Undercloud host, as the Stack user jump into the Browbeat venv
 and you simply run:
 
 ::
 
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py --help
 
-However, the playbook required to install browbeat and its
+However, the playbook required to install Browbeat and its
 dependencies(Rally, Shaker, Perfkit) needs to be run before this.
 DEtailed install and run instructions are presented in a section below.
 
-What is necessary?
+What is necessary
 ==================
 
 -  Ansible
@@ -98,7 +104,7 @@ From your local machine
     $ ./generate_tripleo_hostfile.sh <undercloud-ip>
     $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     $ ansible-playbook -i hosts install/browbeat.yml
-    $ vi install/group_vars/all.yml # Edit browbeat network settings
+    $ vi install/group_vars/all.yml # Edit Browbeat network settings
     $ ansible-playbook -i hosts install/browbeat_network.yml
     $ ansible-playbook -i hosts install/shaker_build.yml
 
@@ -134,7 +140,7 @@ Your Overcloud check output is located in results/bug_report.log
 
 NOTE: It is strongly advised to not run the ansible playbooks in a venv.
 
-Run performance stress tests through browbeat on the undercloud:
+Run performance stress tests through Browbeat on the undercloud:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
@@ -164,7 +170,7 @@ From your undercloud
     [stack@ospd ansible]$ sudo pip install ansible
     [stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
-    [stack@ospd ansible]$ vi install/group_vars/all.yml # Edit browbeat network settings
+    [stack@ospd ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
     [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml
     [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 
@@ -198,7 +204,7 @@ Run Overcloud checks
 
 Your Overcloud check output is located in results/bug_report.log
 
-Run performance stress tests through browbeat
+Run performance stress tests through Browbeat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
@@ -212,18 +218,18 @@ Running PerfKitBenchmarker
 ==========================
 
 Work is on-going to utilize PerfKitBenchmarker as a workload provider to
-browbeat. Many benchmarks work out of the box with browbeat. You must
+Browbeat. Many benchmarks work out of the box with Browbeat. You must
 ensure that your network is setup correctly to run those benchmarks and
 you will need to configure the settings in
-ansible/install/group_vars/all.yml for browbeat public/private
+ansible/install/group_vars/all.yml for Browbeat public/private
 networks. Currently tested benchmarks include: aerospike, bonnie++,
 cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, mesh_network,
 mongodb_ycsb, netperf, object_storage_service, ping, scimark2, and
 sysbench_oltp.
 
-To run browbeat's PerfKit Benchmarks, you can start by viewing the
+To run Browbeat's PerfKit Benchmarks, you can start by viewing the
 tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml.
-You must add them to your specific browbeat config yaml file or
+You must add them to your specific Browbeat config yaml file or
 enable/disable the benchmarks you wish to run in the default config file
 (browbeat-config.yaml). There are many flags exposed in the
 configuration files to tune how those benchmarks run. Additional flags
@@ -232,7 +238,7 @@ Google Cloud Github_.
 
 .. _Github: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker
 
-Example running only PerfKitBenchmarker benchmarks with browbeat from
+Example running only PerfKitBenchmarker benchmarks with Browbeat from
 browbeat-config.yaml:
 
 ::
@@ -244,7 +250,7 @@ Working with Multiple Clouds
 
 If you are running playbooks from your local machine you can run against more
 than one cloud at the same time.  To do this, you should create a directory
-per-cloud and clone browbeat into that specific directory:
+per-cloud and clone Browbeat into that specific directory:
 
 ::
 
@@ -333,7 +339,7 @@ Now you're ready to submit your changes for review:
 
 
 If you want to make another patchset from the same commit you can
-use the ammend feature after further modification and saving.
+use the amend feature after further modification and saving.
 
 ::
 
@@ -343,7 +349,7 @@ use the ammend feature after further modification and saving.
 
 If you want to submit a new patchset from a different location
 (perhaps on a different machine or computer for example) you can
-clone the browbeat repo again (if it doesn't already exist) and then
+clone the Browbeat repo again (if it doesn't already exist) and then
 use git review against your unique Change-ID:
 
 ::
@@ -353,7 +359,7 @@ use git review against your unique Change-ID:
 Change-Id is the change id number as seen in Gerrit and will be
 generated after your first successful submission.
 
-The above command downloads your patch onto a seperate branch. You might
+The above command downloads your patch onto a separate branch. You might
 need to rebase your local branch with remote master before running it to
 avoid merge conflicts when you resubmit the edited patch.  To avoid this
 go back to a "safe" commit using:
