@@ -1,0 +1,6 @@
+---
+
+- hosts: localhost
+  remote_user: "{{ local_remote_user }}"
+  roles:
+    - { role: es-template }

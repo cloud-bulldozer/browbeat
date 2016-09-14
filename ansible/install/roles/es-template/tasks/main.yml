@@ -1,0 +1,11 @@
+---
+
+- name: Upload templates
+  uri:
+    url: http://{{ es_ip }}:{{ es_local_port }}/_template/{{ item | basename | regex_replace('\.json','') }}*
+    method: PUT
+    body: "{{ lookup('file', item) }}"
+    body_format: json
+  with_fileglob:
+  - "{{ browbeat_path }}/elastic/templates/browbeat*"
+  ignore_errors: true

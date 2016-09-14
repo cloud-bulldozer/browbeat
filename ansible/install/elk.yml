@@ -13,3 +13,8 @@
     - { role: nginx }
     - { role: curator, when: install_curator_tool }
     - { role: kibana }
+
+- hosts: localhost
+  remote_user: "{{ local_remote_user }}"
+  roles:
+    - { role: es-template }

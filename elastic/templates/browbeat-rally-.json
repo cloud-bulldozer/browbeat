@@ -1,0 +1,72 @@
+{
+    template: "browbeat-rally-*",
+    mappings: {
+        result: {
+            properties: {
+                action: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                browbeat_uuid: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                cloud_name: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                grafana_url: {
+                    properties: {
+                        openstack-general-system-performance: {
+                            index: "not_analyzed",
+                            type: "string"
+                        }
+                    }
+                },
+                result: {
+                    type: "string"
+                },
+                scenario: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                timestamp: {
+                    type: "date",
+                    format: "strict_date_optional_time||epoch_millis"
+                }
+            }
+        },
+        error: {
+            properties: {
+                action: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                action_name: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                browbeat_uuid: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                cloud_name: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                error_msg: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                error_type: {
+                    index: "not_analyzed",
+                    type: "string"
+                },
+                timestamp: {
+                    type: "date",
+                    format: "strict_date_optional_time||epoch_millis"
+                }
+            }
+        }
+    }
+}
