@@ -56,6 +56,26 @@ class Shaker(WorkloadBase.WorkloadBase):
             "Current number of Shaker tests failed: {}".format(
                 self.error_count))
 
+    def accommodation_to_dict(self, accommodation):
+        accommodation_dict = {}
+        for item in accommodation:
+            if isinstance(item, dict):
+                accommodation_dict.update(item)
+            else:
+                accommodation_dict[item] = True
+        return accommodation_dict
+
+    def accommodation_to_list(self, accommodation):
+        accommodation_list = []
+        for key, value in accommodation.iteritems():
+            if value is True:
+                accommodation_list.append(key)
+            else:
+                temp_dict = {}
+                temp_dict[key] = value
+                accommodation_list.append(temp_dict)
+        return accommodation_list
+
     def final_stats(self, total):
         self.logger.info(
             "Total Shaker scenarios enabled by user: {}".format(total))
@@ -120,19 +140,29 @@ class Shaker(WorkloadBase.WorkloadBase):
                         'shaker_test_info']['execution']:
                     shaker_test_meta['shaker_test_info'][
                         'execution']['progression'] = "all"
-                var = data['scenarios'][scenario][
-                    'deployment'].pop('accommodation')
+                accommodation = self.accommodation_to_dict(data['scenarios'][scenario][
+                    'deployment'].pop('accommodation'))
             if 'deployment' not in shaker_test_meta:
                 shaker_test_meta['deployment'] = {}
                 shaker_test_meta['deployment']['accommodation'] = {}
-                shaker_test_meta['deployment'][
-                    'accommodation']['distribution'] = var[0]
-                shaker_test_meta['deployment'][
-                    'accommodation']['placement'] = var[1]
-                shaker_test_meta['deployment']['accommodation'][
-                    'density'] = var[2]['density']
-                shaker_test_meta['deployment']['accommodation'][
-                    'compute_nodes'] = var[3]['compute_nodes']
+                if 'single' in accommodation:
+                    shaker_test_meta['deployment'][
+                        'accommodation']['distribution'] = 'single'
+                elif 'pair' in accommodation:
+                    shaker_test_meta['deployment'][
+                        'accommodation']['distribution'] = 'pair'
+                if 'single_room' in accommodation:
+                    shaker_test_meta['deployment'][
+                        'accommodation']['placement'] = 'single_room'
+                elif 'double_room' in accommodation:
+                    shaker_test_meta['deployment'][
+                        'accommodation']['placement'] = 'double_room'
+                if 'density' in accommodation:
+                    shaker_test_meta['deployment']['accommodation'][
+                        'density'] = accommodation['density']
+                if 'compute_nodes' in accommodation:
+                    shaker_test_meta['deployment']['accommodation'][
+                        'compute_nodes'] = accommodation['compute_nodes']
                 shaker_test_meta['deployment']['template'] = data[
                     'scenarios'][scenario]['deployment']['template']
         # Iterating through each record to get result values
@@ -213,25 +243,32 @@ class Shaker(WorkloadBase.WorkloadBase):
         stream = open(fname, 'r')
         data = yaml.load(stream)
         stream.close()
-        default_placement = "double_room"
         default_density = 1
         default_compute = 1
         default_progression = "linear"
-        if "placement" in scenario:
-            data['deployment']['accommodation'][1] = scenario['placement']
+        accommodation = self.accommodation_to_dict(data['deployment']['accommodation'])
+        if 'placement' in scenario and any(k in accommodation for k in ('single_room',
+                                                                        'double_room')):
+            if 'single_room' in accommodation and scenario['placement'] == 'double_room':
+                accommodation.pop('single_room', None)
+                accommodation['double_room'] = True
+            elif 'double_room' in accommodation and scenario['placement'] == 'single_room':
+                accommodation['single_room'] = True
+                accommodation.pop('double_room', None)
         else:
-            data['deployment']['accommodation'][1] = default_placement
-        if "density" in scenario:
-            data['deployment']['accommodation'][
-                2]['density'] = scenario['density']
-        else:
-            data['deployment']['accommodation'][2]['density'] = default_density
-        if "compute" in scenario:
-            data['deployment']['accommodation'][3][
-                'compute_nodes'] = scenario['compute']
-        else:
-            data['deployment']['accommodation'][3][
-                'compute_nodes'] = default_compute
+            accommodation['double_room'] = True
+            accommodation.pop('single_room', None)
+        if 'density' in scenario and 'density' in accommodation:
+            accommodation['density'] = scenario['density']
+        elif 'density' in accommodation:
+            accommodation['density'] = default_density
+        if "compute" in scenario and 'compute_nodes' in accommodation:
+            accommodation['compute_nodes'] = scenario['compute']
+        elif 'compute_nodes' in accommodation:
+            accommodation['compute_nodes'] = default_compute
+        accommodation = self.accommodation_to_list(accommodation)
+        self.logger.debug("Using accommodation {}".format(accommodation))
+        data['deployment']['accommodation'] = accommodation
         if "progression" in scenario:
             if scenario['progression'] is None:
                 data['execution'].pop('progression', None)
@@ -245,6 +282,7 @@ class Shaker(WorkloadBase.WorkloadBase):
         else:
             for test in data['execution']['tests']:
                 test['time'] = default_time
+        self.logger.debug("Execution time of each test set to {}".format(test['time']))
         with open(fname, 'w') as yaml_file:
             yaml_file.write(yaml.dump(data, default_flow_style=False))
 
@@ -297,7 +335,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                        from_time, new_test_name, workload, index_status):
         self.logger.info("Completed Test: {}".format(scenario['name']))
         self.logger.info("Saved report to: {}.html".
-                         format(os.path.join(result_dir,test_name)))
+                         format(os.path.join(result_dir, test_name)))
         self.logger.info("saved log to: {}.log".format(os.path.join(result_dir,
                                                                     test_name)))
         self.update_pass_tests()
@@ -315,16 +353,29 @@ class Shaker(WorkloadBase.WorkloadBase):
         timeout = self.config['shaker']['join_timeout']
         self.logger.info(
             "The uuid for this shaker scenario is {}".format(shaker_uuid))
-        cmd_1 = (
+        cmd_env = (
             "source {}/bin/activate; source /home/stack/overcloudrc").format(venv)
-        cmd_2 = (
-            "shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}"
-            " --os-region-name {7} --agent-join-timeout {6}"
-            " --report {4}/{5}.html --output {4}/{5}.json"
-            " --book {4}/{5} --debug > {4}/{5}.log 2>&1").format(
-            server_endpoint, port_no, flavor, filename,
-            result_dir, test_name, timeout, shaker_region)
-        cmd = ("{}; {}").format(cmd_1, cmd_2)
+        if 'external' in filename and 'external_host' in self.config['shaker']:
+            external_host = self.config['shaker']['external_host']
+            cmd_shaker = (
+                'shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}'
+                ' --os-region-name {7} --agent-join-timeout {6}'
+                ' --report {4}/{5}.html --output {4}/{5}.json'
+                ' --book {4}/{5} --matrix "{{host: {8}}}" --debug'
+                ' > {4}/{5}.log 2>&1').format(server_endpoint,
+                                              port_no, flavor, filename, result_dir,
+                                              test_name, timeout, shaker_region,
+                                              external_host)
+        else:
+            cmd_shaker = (
+                'shaker --server-endpoint {0}:{1} --flavor-name {2} --scenario {3}'
+                ' --os-region-name {7} --agent-join-timeout {6}'
+                ' --report {4}/{5}.html --output {4}/{5}.json'
+                ' --book {4}/{5} --debug'
+                ' > {4}/{5}.log 2>&1').format(server_endpoint, port_no, flavor,
+                                              filename, result_dir, test_name,
+                                              timeout, shaker_region)
+        cmd = ("{}; {}").format(cmd_env, cmd_shaker)
         from_ts = int(time.time() * 1000)
         if 'sleep_before' in self.config['shaker']:
             time.sleep(self.config['shaker']['sleep_before'])
@@ -374,7 +425,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                     for interval in range(0, test_time + 9):
                         es_list.append(
                             datetime.datetime.utcnow() +
-                            datetime.timedelta(0,interval))
+                            datetime.timedelta(0, interval))
 
                     for run in range(self.config['browbeat']['rerun']):
                         self.logger.info("Scenario: {}".format(scenario['name']))
