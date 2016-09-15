@@ -44,11 +44,11 @@ deployCloud()
   pushd $WORKSPACE/tripleo-quickstart
   bash quickstart.sh \
   --tags all \
-  -e undercloud_image_url="http://artifacts.ci.centos.org/artifacts/rdo/images/$RELEASE/$BUILD_SYS/$LOCATION/undercloud.qcow2" \
-  --config $WORKSPACE/config/general_config/$CONFIG.yml \
-  --working-dir $WORKSPACE/ \
-  --teardown all \
-  --no-clone \
+  --playbook quickstart-extras.yml \
+  --requirements quickstart-extras-requirements.txt \
+  -R mitaka \
+  --bootstrap \
+  --working-dir $WORKSPACE \
   $VIRTHOST $RELEASE
   popd
 }
@@ -100,12 +100,13 @@ runCheck()
 
  ansible-playbook --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" -i $WORKSPACE/hosts check/site.yml
 
- if [[ $($SSH_CMD "cat /home/stack/ansible/bug_report.log") == "" ]]
+ pushd $WORKSPACE/browbeat/results
+ if [[ $(cat bug_report.log) == "" ]]
  then
    #checks failed to create the bug_report.log
    exit 1
  fi
-
+ popd
  popd
 }
 
