@@ -18,9 +18,9 @@ from rally.task import types
 from rally.task import validation
 
 
-class NeutronBootFipPingPlugin(neutron_utils.NeutronScenario,
-                               vm_utils.VMScenario,
-                               scenario.Scenario):
+class BrowbeatPlugin(neutron_utils.NeutronScenario,
+                     vm_utils.VMScenario,
+                     scenario.Scenario):
     #
     # Create network
     # Create subnet
@@ -36,12 +36,13 @@ class NeutronBootFipPingPlugin(neutron_utils.NeutronScenario,
     @validation.image_valid_on_flavor("flavor", "image")
     @validation.required_openstack(users=True)
     @scenario.configure(context={"cleanup": ["nova", "neutron"],
-                                 "keypair": {}, "allow_ssh": {}})
-    def create_network_nova_boot_ping(self, image, flavor, ext_net, floating=False, router=None,
+                        "keypair": {}, "allow_ssh": {}})
+    def create_network_nova_boot_ping(self, image, flavor, ext_net, floating=True,
+                                      router_create_args=None, router=None,
                                       network_create_args=None, subnet_create_args=None,
                                       **kwargs):
         if router is None:
-            router = self._create_router({}, ext_net)
+            router = self._create_router(router_create_args, ext_net)
 
         network = self._create_network(network_create_args or {})
         subnet = self._create_subnet(network, subnet_create_args or {})

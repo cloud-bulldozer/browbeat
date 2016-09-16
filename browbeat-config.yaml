@@ -90,6 +90,7 @@ rally:
   venv: /home/stack/rally-venv/bin/activate
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
     - subnet-router-create: rally/rally-plugins/subnet-router-create
     - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
     - nova-create-pbench-uperf: rally/rally-plugins/nova-create-pbench-uperf
@@ -215,6 +216,12 @@ rally:
           image_name: cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+        - name: netcreate-boot-ping
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.xtiny
+          net_id: 790354c7-f286-4fd1-a4a1-ec9749c61fbf
+          file: rally/rally-plugins/netcreate-boot-ping/netcreate_nova-boot-fip-ping.yml
         - name: subnet-router-create
           enabled: true
           num_networks:  10
