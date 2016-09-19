@@ -1,0 +1,3 @@
+---
+- name: Copy config parser script to remote
+  copy: src=openstack-config-parser.py dest=/tmp/openstack-config-parser.py
