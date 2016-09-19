@@ -67,6 +67,15 @@ def _run_workload_provider(provider, config):
     else:
         _logger.error("Unknown workload provider: {}".format(provider))
 
+def check_metadata(config, _logger):
+     _logger.debug("Checking if configured metadata files are present")
+     meta = config['elasticsearch']['metadata_files']
+     for _meta in meta:
+         if not os.path.isfile(_meta['file']):
+             _logger.error("Metadata file {} is not present".format(_meta['file']))
+             return False
+     return True
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -119,6 +128,13 @@ def main():
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         _logger.info("Browbeat test suite kicked off")
         _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
+        if _config['elasticsearch']['enabled']:
+            _logger.info("Checking for Metadata")
+            metadata_exists = check_metadata(_config, _logger)
+            if not metadata_exists:
+                _logger.error("Elasticsearch has been enabled but"
+                              " metadata files do not exist, exiting")
+                sys.exit(1)
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:

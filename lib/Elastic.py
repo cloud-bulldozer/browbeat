@@ -15,6 +15,7 @@ import logging
 import json
 import datetime
 import uuid
+import sys
 
 browbeat_uuid = uuid.uuid4()
 
@@ -72,8 +73,11 @@ class Elastic:
                 except (IOError, OSError):
                     self.logger.error(
                         "Error loading Metadata file : {}".format(_meta['file']))
-                    return False
-            return result
+                    self.logger.error("Please make sure the metadata file exists and"
+                                      " is valid JSON or run the playbook ansible/gather/site.yml"
+                                      " before running the Browbeat test Suite")
+                    sys.exit(1)
+        return result
 
     """
     """
