@@ -12,6 +12,8 @@
         image:
             name: "{{image_name}}"
         force_delete: false
+        nics:
+            - net-id: {{net_id}}
         detailed: true
       runner:
         concurrency: {{concurrency}}
