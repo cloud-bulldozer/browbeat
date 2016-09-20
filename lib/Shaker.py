@@ -82,7 +82,8 @@ class Shaker(WorkloadBase.WorkloadBase):
     # Method to process JSON outputted by Shaker, model data in a format that can be consumed
     # by ElasticSearch and ship the data to ES
 
-    def send_to_elastic(self, outputfile, browbeat_scenario, shaker_uuid, es_ts, es_list, run):
+    def send_to_elastic(self, outputfile, browbeat_scenario,
+                        shaker_uuid, es_ts, es_list, run, test_name):
         fname = outputfile
         # Load output json
         try:
@@ -102,7 +103,7 @@ class Shaker(WorkloadBase.WorkloadBase):
             }
 
             result = self.elastic.combine_metadata(shaker_stats)
-            self.elastic.index_result(result, _type='error')
+            self.elastic.index_result(result, test_name, _type='error')
             return
         # Dictionary to capture common test data
         shaker_test_meta = {}
@@ -172,7 +173,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                             'shaker_uuid': str(shaker_uuid)}
                         # Ship Data to ES when record status is ok
                         result = self.elastic.combine_metadata(shaker_stats)
-                        self.elastic.index_result(result)
+                        self.elastic.index_result(result, test_name)
             else:
                 # If the status of the record is not ok, ship minimal
                 # shaker_stats dictionary to ES
@@ -187,7 +188,7 @@ class Shaker(WorkloadBase.WorkloadBase):
                     'grafana_url': [self.grafana.grafana_urls()],
                     'shaker_uuid': str(shaker_uuid)}
                 result = self.elastic.combine_metadata(shaker_stats)
-                self.elastic.index_result(result, _type='error')
+                self.elastic.index_result(result, test_name, _type='error')
 
     def set_scenario(self, scenario, fname, default_time):
         stream = open(fname, 'r')
@@ -382,7 +383,7 @@ class Shaker(WorkloadBase.WorkloadBase):
         # Send Data to elastic
         if self.config['elasticsearch']['enabled']:
             self.send_to_elastic(outputfile, scenario['name'], shaker_uuid,
-                                 es_ts, es_list, run)
+                                 es_ts, es_list, run, test_name)
 
     def run_shaker(self):
         self.logger.info("Starting Shaker workloads")
