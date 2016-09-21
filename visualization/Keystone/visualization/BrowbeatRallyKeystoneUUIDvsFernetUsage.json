@@ -1,0 +1,10 @@
+{
+  "title": "Rally Keystone UUID vs Fernet Usage",
+  "visState": "{\"title\":\"Rally Keystone Token Creation/Validation Concurrencies Usage\",\"type\":\"markdown\",\"params\":{\"markdown\":\"## Using Browbeat Keystone UUID vs Fernet Dashboard\\n\\n1. Select relevant search terms to **\\\"namespace\\\"** your results\\n2. Pick time period in top right corner to cover period of time of testing\\n3. Review results in graphs\\n\\n\\n## Search Terms\\n* cloud_name\\n* version.osp_version\\n* browbeat_rerun\\n* browbeat_uuid\\n\\n\\n\\n## Examples\\n\\nAll runs for OSP10:\\n* cloud_name: cloud09 AND version.osp_version: 10\\n\\nFirst rerun for OSP10:\\n* cloud_name: cloud09 AND version.osp_version: 10 AND browbeat_rerun: 0\\n\\nSecond run for OSP9 on specific Browbeat run:\\n* cloud_name: cloud09 AND version.osp_version: 9 AND browbeat_rerun: 1 AND browbeat_uuid: e6e66688-60d1-4d5d-bb00-7089b3b4d32f\"},\"aggs\":[],\"listeners\":{}}",
+  "uiStateJSON": "{}",
+  "description": "",
+  "version": 1,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Rally Authenticate.validate_nova Concurrency",
+  "visState": "{\"aggs\":[{\"id\":\"1\",\"params\":{\"field\":\"raw\"},\"schema\":\"metric\",\"type\":\"min\"},{\"id\":\"5\",\"params\":{\"field\":\"raw\"},\"schema\":\"metric\",\"type\":\"avg\"},{\"id\":\"2\",\"params\":{\"field\":\"raw\",\"percents\":[50,95,99]},\"schema\":\"metric\",\"type\":\"percentiles\"},{\"id\":\"3\",\"params\":{\"field\":\"raw\"},\"schema\":\"metric\",\"type\":\"max\"},{\"id\":\"4\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\",\"order\":\"asc\",\"orderBy\":\"_term\",\"size\":50},\"schema\":\"segment\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"radiusRatio\":\"37\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"yAxis\":{}},\"title\":\"Rally Authenticate.validate_nova Concurrency\",\"type\":\"line\"}",
+  "uiStateJSON": "{}",
+  "description": "",
+  "version": 1,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"rally_setup.name: Authenticate.validate_nova\",\"analyze_wildcard\":true}},\"filter\":[]}"
+  }
+}

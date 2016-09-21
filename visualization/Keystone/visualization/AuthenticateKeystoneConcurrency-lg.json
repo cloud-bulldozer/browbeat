@@ -1,0 +1,10 @@
+{
+  "title": "Rally Authenticate.Keystone Concurrency",
+  "visState": "{\n  \"title\": \"Rally Authenticate.Keystone Concurrency\",\n  \"type\": \"line\",\n  \"params\": {\n    \"addLegend\": true,\n    \"addTimeMarker\": false,\n    \"addTooltip\": true,\n    \"defaultYExtents\": false,\n    \"drawLinesBetweenPoints\": true,\n    \"interpolate\": \"linear\",\n    \"radiusRatio\": \"37\",\n    \"scale\": \"linear\",\n    \"setYExtents\": false,\n    \"shareYAxis\": true,\n    \"showCircles\": true,\n    \"smoothLines\": false,\n    \"times\": [],\n    \"yAxis\": {}\n  },\n  \"aggs\": [\n    {\n      \"id\": \"1\",\n      \"type\": \"min\",\n      \"schema\": \"metric\",\n      \"params\": {\n        \"field\": \"raw\"\n      }\n    },\n  {\n      \"id\": \"2\",\n      \"type\": \"percentiles\",\n      \"schema\": \"metric\",\n      \"params\": {\n        \"field\": \"raw\",\n        \"percents\": [\n          50,\n          95,\n          99\n        ]\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"type\": \"max\",\n      \"schema\": \"metric\",\n      \"params\": {\n        \"field\": \"raw\"\n      }\n    },\n    {\n      \"id\": \"4\",\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"rally_setup.kw.runner.concurrency\",\n        \"size\": 50,\n        \"order\": \"asc\",\n        \"orderBy\": \"_term\"\n      }\n    }\n  ],\n  \"listeners\": {}\n}",
+  "uiStateJSON": "{}",
+  "description": "",
+  "version": 1,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\n  \"index\": \"[browbeat-rally-]YYYY.MM.DD\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"rally_setup.name: Authenticate.keystone\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": []\n}"
+  }
+}

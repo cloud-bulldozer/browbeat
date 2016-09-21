@@ -1,0 +1,13 @@
+{
+  "title": "Browbeat Keystone UUID vs Fernet Token Creation/Validation",
+  "hits": 0,
+  "description": "",
+  "panelsJSON": "[{\"col\":1,\"id\":\"AuthenticateKeystoneUUIDvsFernet\",\"panelIndex\":1,\"row\":4,\"size_x\":12,\"size_y\":4,\"type\":\"visualization\"},{\"col\":1,\"id\":\"AuthenticateValidateNovaUUIDvsFernet\",\"panelIndex\":2,\"row\":8,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"col\":7,\"id\":\"AuthenticateValidateNeutronUUIDvsFernet\",\"panelIndex\":3,\"row\":8,\"size_x\":6,\"size_y\":4,\"type\":\"visualization\"},{\"id\":\"BrowbeatRallyKeystoneUUIDvsFernetUsage\",\"type\":\"visualization\",\"panelIndex\":4,\"size_x\":12,\"size_y\":3,\"col\":1,\"row\":1}]",
+  "optionsJSON": "{\"darkTheme\":false}",
+  "uiStateJSON": "{}",
+  "version": 1,
+  "timeRestore": false,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"\"}}}]}"
+  }
+}

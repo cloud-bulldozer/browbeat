@@ -1,0 +1,10 @@
+{
+  "title": "Rally Keystone Authenticate.validate_neutron UUID vs Fernet",
+  "visState": "{\"title\":\"Rally Keystone Authenticate.validate_neutron UUID vs Fernet\",\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"5\",\"type\":\"min\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\"}},{\"id\":\"1\",\"type\":\"percentiles\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\",\"percents\":[50,95,99]}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"software-metadata.keystone.provider\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"_term\",\"row\":false}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\",\"size\":50,\"orderAgg\":{\"id\":\"3-orderAgg\",\"type\":\"max\",\"schema\":\"orderAgg\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\"}},\"order\":\"asc\",\"orderBy\":\"custom\"}},{\"id\":\"4\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\"}}],\"listeners\":{}}",
+  "uiStateJSON": "{\"spy\":{\"mode\":{\"fill\":false,\"name\":null}}}",
+  "description": "",
+  "version": 1,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"_type: result AND rally_setup.name: Authenticate.validate_neutron\",\"analyze_wildcard\":true}},\"filter\":[]}"
+  }
+}

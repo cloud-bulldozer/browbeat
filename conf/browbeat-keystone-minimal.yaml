@@ -15,7 +15,8 @@ elasticsearch:
       file: metadata/environment-metadata.json
     - name: software-metadata
       file: metadata/software-metadata.json
-
+    - name: version
+      file: metadata/version.json
 ansible:
   ssh_config: ansible/ssh-config
   hosts: ansible/hosts
