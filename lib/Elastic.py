@@ -70,7 +70,7 @@ class Elastic:
                 try:
                     with open(_meta['file']) as jdata:
                         result[_meta['name']] = json.load(jdata)
-                except (IOError, OSError):
+                except Exception:
                     self.logger.error(
                         "Error loading Metadata file : {}".format(_meta['file']))
                     self.logger.error("Please make sure the metadata file exists and"
