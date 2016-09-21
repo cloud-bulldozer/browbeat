@@ -13,12 +13,16 @@
 #
 
 - name: Generate Generic Dashboards
+  vars:
+    ansible_python_interpreter: "/usr/bin/python"
   template:
     src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
     dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
   with_items: "{{dashboards}}"
 
 - name: Generate Cloud Specific CPU/Memory/Disk/Network Dashboards
+  vars:
+    ansible_python_interpreter: "/usr/bin/python"
   template:
     src: "{{item}}.json.j2"
     dest: "{{role_path}}/files/{{item}}.json"
