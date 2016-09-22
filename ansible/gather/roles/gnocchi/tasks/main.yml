@@ -1,0 +1,14 @@
+---
+#
+# Tasks to get gnocchi config data
+#
+
+- name: Parse Gnocchi config
+  become: true
+  shell: python /tmp/openstack-config-parser.py gnocchi /etc/gnocchi/gnocchi.conf /tmp/out.yml
+
+- name: Fetch output
+  fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+
+- name: Load configuration variables
+  include_vars: /tmp/out.yml
