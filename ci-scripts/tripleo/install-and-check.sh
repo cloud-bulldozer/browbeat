@@ -47,6 +47,7 @@ deployCloud()
   --playbook quickstart-extras.yml \
   --requirements quickstart-extras-requirements.txt \
   -R mitaka \
+  -S overcloud-validate \
   --bootstrap \
   --working-dir $WORKSPACE \
   $VIRTHOST $RELEASE
