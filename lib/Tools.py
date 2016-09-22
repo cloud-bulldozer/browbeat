@@ -15,7 +15,7 @@ import os
 import subprocess
 
 
-class Tools:
+class Tools(object):
 
     def __init__(self, config=None):
         self.logger = logging.getLogger('browbeat.Tools')

@@ -14,7 +14,7 @@ import logging
 import subprocess
 
 
-class Grafana:
+class Grafana(object):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.Grafana')

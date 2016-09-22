@@ -16,7 +16,7 @@ import os
 import yaml
 
 
-class WorkloadBase:
+class WorkloadBase(object):
     __metaclass__ = abc.ABCMeta
     logger = logging.getLogger('browbeat.WorkloadBase')
     success = 0

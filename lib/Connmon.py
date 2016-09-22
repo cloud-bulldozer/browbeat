@@ -15,7 +15,7 @@ import os
 import logging
 import shutil
 
-class Connmon:
+class Connmon(object):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.Connmon')

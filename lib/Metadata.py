@@ -15,7 +15,7 @@ import sys
 import os
 
 
-class Metadata:
+class Metadata(object):
 
     def __init__(self):
         pass
