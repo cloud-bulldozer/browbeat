@@ -2,13 +2,20 @@
 #
 # Tasks to get cinder facts
 #
+- name: Check that Ceilometer is installed
+  become: true
+  stat: path=/etc/cinder/cinder.conf
+  register: cinder_config
 
 - name: Parse Cinder config
   become: true
   shell: python /tmp/openstack-config-parser.py cinder /etc/cinder/cinder.conf /tmp/out.yml
+  when: cinder_config.stat.exists
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  when: cinder_config.stat.exists
 
 - name: Load configuration variables
   include_vars: /tmp/out.yml
+  when: cinder_config.stat.exists

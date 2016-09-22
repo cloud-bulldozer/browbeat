@@ -3,12 +3,20 @@
 # Tasks to get heat facts
 #
 
+- name: Check that Heat is installed
+  become: true
+  stat: path=/etc/heat/heat.conf
+  register: heat_config
+
 - name: Parse Heat config
   become: true
   shell: python /tmp/openstack-config-parser.py heat /etc/heat/heat.conf /tmp/out.yml
+  when: heat_config.stat.exists
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  when: heat_config.stat.exists
 
 - name: Load configuration variables
   include_vars: /tmp/out.yml
+  when: heat_config.stat.exists

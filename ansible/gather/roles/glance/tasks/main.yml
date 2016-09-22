@@ -3,18 +3,19 @@
 # Tasks to get Glance facts
 #
 
-- name: Parse Glance config
+- name: Get config files for Glance
+  shell: "ls /etc/glance/*.conf"
+  register: glance_config
+
+- name: Parse Glance config files
   become: true
-  shell: python /tmp/openstack-config-parser.py glance {{ item }} /tmp/{{ item | basename }}.yml
-  with_fileglob:
-  - /etc/glance/*.conf
+  shell: "python /tmp/openstack-config-parser.py glance {{ item }} /tmp/{{ item | basename }}.yml"
+  with_items: "{{ glance_config.stdout_lines }}"
 
 - name: Fetch output
-  fetch: src=/tmp/{{ item | basename }}.yml dest=/tmp/{{ item | basename  }}.yml flat=yes
-  with_fileglob:
-  - /etc/glance/*.conf
+  fetch: "src=/tmp/{{ item | basename }}.yml dest=/tmp/{{ item | basename  }}.yml flat=yes"
+  with_items: "{{ glance_config.stdout_lines }}"
 
 - name: Load configuration variables
-  include_vars: /tmp/{{ item | basename }}.yml
-  with_fileglob:
-  - /etc/glance/*.conf
+  include_vars: "/tmp/{{ item | basename }}.yml"
+  with_items: "{{ glance_config.stdout_lines }}"
