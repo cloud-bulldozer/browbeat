@@ -142,8 +142,14 @@ class Rally(WorkloadBase.WorkloadBase):
                                 rally_data[value] = []
                             rally_data[value].append(metrics[workload][value])
             if len(metrics['error']) > 0:
-                error = {'action_name': value,
+                iteration = 1
+                workload_name = value
+                if value.find('(') is not -1:
+                    iteration = re.findall('\d+', value)
+                    workload_name = value.split('(')[0]
+                error = {'action': workload_name.strip(),
                          'browbeat_rerun': run,
+                         'iteration': iteration,
                          'error_type': metrics['error'][0],
                          'error_msg': metrics['error'][1],
                          'result': task_id,
@@ -161,7 +167,7 @@ class Rally(WorkloadBase.WorkloadBase):
                     iteration = re.findall('\d+', workload)
                     workload_name = workload.split('(')[0]
                 rally_stats = {'result': task_id,
-                               'action': workload_name,
+                               'action': workload_name.strip(),
                                'browbeat_rerun': run,
                                'iteration': iteration,
                                'timestamp': str(es_ts).replace(" ", "T"),
