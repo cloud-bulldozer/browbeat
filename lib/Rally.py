@@ -125,7 +125,7 @@ class Rally(WorkloadBase.WorkloadBase):
         result['rally_metadata'] = meta
         return result
 
-    def json_result(self, task_id, scenario_name, run):
+    def json_result(self, task_id, scenario_name, run, test_name):
         rally_data = {}
         self.logger.info("Loadding Task_ID {} JSON".format(task_id))
         rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
@@ -147,12 +147,12 @@ class Rally(WorkloadBase.WorkloadBase):
                          'error_type': metrics['error'][0],
                          'error_msg': metrics['error'][1],
                          'result': task_id,
-                         'timestamp': es_ts,
+                         'timestamp': str(es_ts).replace(" ", "T"),
                          'rally_setup': rally_json[0]['key'],
                          'scenario': scenario_name,
                          }
                 error_result = self.elastic.combine_metadata(error)
-                self.elastic.index_result(error_result, 'error')
+                self.elastic.index_result(error_result, test_name, 'error')
         for workload in rally_data:
             if not type(rally_data[workload]) is dict:
                 iteration = 1
@@ -164,13 +164,13 @@ class Rally(WorkloadBase.WorkloadBase):
                                'action': workload_name,
                                'browbeat_rerun': run,
                                'iteration': iteration,
-                               'timestamp': es_ts,
+                               'timestamp': str(es_ts).replace(" ", "T"),
                                'grafana_url': [self.grafana.grafana_urls()],
                                'scenario': scenario_name,
                                'rally_setup': rally_json[0]['key'],
                                'raw': rally_data[workload]}
                 result = self.elastic.combine_metadata(rally_stats)
-                self.elastic.index_result(result)
+                self.elastic.index_result(result, test_name)
         return True
 
     def start_workloads(self):
@@ -288,7 +288,7 @@ class Rally(WorkloadBase.WorkloadBase):
                                         if self.config['elasticsearch']['enabled']:
                                             # Start indexing
                                             self.json_result(
-                                                task_id, scenario_name, run)
+                                                task_id, scenario_name, run, test_name)
                                     else:
                                         self.logger.error(
                                             "Cannot find task_id")
