@@ -1,0 +1,359 @@
+---
+#
+# Keystone OSP Version Token Comparsion Dashboards
+#
+
+keystone_osp_version_token_dashboards:
+  # Authenticate.keystone Dashboard
+  - file_name: "BrowbeatAuthenticateKeystoneVersionCompare.json"
+    title: "Browbeat Authenticate.keystone Version Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUID-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 6
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernet-md"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 6
+        size_y: 2
+        col: 7
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUIDResultCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernetResultCount-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUIDErrorCount-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernetErrorCount-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUIDMin-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernetMin-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUID50th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernet50th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 12
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUID95th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernet95th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUID99th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernet99th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareUUIDMax-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 21
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyVersionCompareFernetMax-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 21
+
+  # Authenticate.validate_nova Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNovaVersionCompare.json"
+    title: "Browbeat Authenticate.validate_nova Version Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUID-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 6
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernet-md"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 6
+        size_y: 2
+        col: 7
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUIDResultCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernetResultCount-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUIDErrorCount-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernetErrorCount-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUIDMin-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernetMin-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUID50th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernet50th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUID95th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernet95th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUID99th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernet99th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareUUIDMax-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 21
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyVersionCompareFernetMax-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 21
+
+  # Authenticate.validate_neutron Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNeutronVersionCompare.json"
+    title: "Browbeat Authenticate.validate_neutron Version Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUID-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 6
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernet-md"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 6
+        size_y: 2
+        col: 7
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUIDResultCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernetResultCount-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUIDErrorCount-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernetErrorCount-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUIDMin-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernetMin-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUID50th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernet50th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUID95th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernet95th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUID99th-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernet99th-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareUUIDMax-bg"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 21
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyVersionCompareFernetMax-bg"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 21

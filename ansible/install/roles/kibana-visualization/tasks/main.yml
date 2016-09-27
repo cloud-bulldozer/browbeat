@@ -1,13 +1,23 @@
 ---
 #
-# Tasks to upload Searches/Visuals/Dashboards to Kibana
+# Tasks to generate/upload Searches/Visuals/Dashboards to Kibana
 #
 
 - name: Generate Keystone Visualizations
   template:
     src: "{{item.template}}"
     dest: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
-  with_items: "{{keystone_visualizations}}"
+  with_flattened:
+    - "{{keystone_osp_version_token_visualizations}}"
+    - "{{keystone_processes_threads_visualizations}}"
+
+- name: Generate Keystone Dashboards
+  template:
+    src: dashboard.json.j2
+    dest: "{{browbeat_path}}/visualization/Keystone/dashboard/{{item.file_name}}"
+  with_flattened:
+    - "{{keystone_osp_version_token_dashboards}}"
+    - "{{keystone_processes_threads_dashboards}}"
 
 - name: Remove Searches
   uri:
@@ -79,4 +89,14 @@
   file:
     path: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
     state: absent
-  with_items: "{{keystone_visualizations}}"
+  with_flattened:
+    - "{{keystone_osp_version_token_visualizations}}"
+    - "{{keystone_processes_threads_visualizations}}"
+
+- name: Cleanup Keystone Dashboards
+  file:
+    path: "{{browbeat_path}}/visualization/Keystone/dashboard/{{item.file_name}}"
+    state: absent
+  with_flattened:
+    - "{{keystone_osp_version_token_dashboards}}"
+    - "{{keystone_processes_threads_dashboards}}"
