@@ -3787,7 +3787,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.$Node.tail-*.counter-total, 2)"
+                "target": "aliasByNode(aliasSub(aliasSub(aliasSub($Cloud.$Node.tail-*.*, 'counter-', ''), 'total', ''), 'tail-', ''), 2, 3)"
               }
             ],
             "timeFrom": null,
