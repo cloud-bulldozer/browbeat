@@ -5,6 +5,6 @@
     "description": "",
     "version": 1,
     "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"_type: error AND action_name: neutron*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"_type: error AND action: neutron*\",\"analyze_wildcard\":true}},\"filter\":[]}"
     }
 }
