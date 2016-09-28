@@ -35,6 +35,7 @@ class Elastic(object):
              'port': self.config['elasticsearch']['port']}],
             send_get_body_as='POST'
         )
+        self.workload = workload
         today = datetime.datetime.today()
         self.index = "{}-{}-{}".format(tool, workload, today.strftime('%Y.%m.%d'))
 
@@ -95,9 +96,14 @@ class Elastic(object):
                               body=result,
                               doc_type=_type,
                               refresh=True)
-                self.logger.info("Pushed data to Elasticsearch to index {}"
-                                 " and browbeat UUID {}" .format(self.index,
-                                                                 result['browbeat_uuid']))
+                if self.workload == "shaker":
+                    self.logger.debug("Pushed data to Elasticsearch to index {}"
+                                      " and browbeat UUID {}" .
+                                      format(self.index, result['browbeat_uuid']))
+                else:
+                     self.logger.info("Pushed data to Elasticsearch to index {}"
+                                      " and browbeat UUID {}" .
+                                       format(self.index, result['browbeat_uuid']))
                 break
             except Exception:
                 self.logger.error("Error pushing data to Elasticsearch, going to retry"
