@@ -172,8 +172,11 @@ class Shaker(WorkloadBase.WorkloadBase):
                                 self.grafana.grafana_urls()],
                             'shaker_uuid': str(shaker_uuid)}
                         # Ship Data to ES when record status is ok
-                        result = self.elastic.combine_metadata(shaker_stats)
-                        self.elastic.index_result(result, test_name)
+                        if result['value'] is None:
+                            self.logger.debug("Ignoring sending null values to ES")
+                        else:
+                            result = self.elastic.combine_metadata(shaker_stats)
+                            self.elastic.index_result(result, test_name)
             else:
                 # If the status of the record is not ok, ship minimal
                 # shaker_stats dictionary to ES
