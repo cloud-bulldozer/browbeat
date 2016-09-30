@@ -50,11 +50,12 @@ perfkit:
     openstack_image_username: centos
     openstack_floating_ip_pool: browbeat_public
     openstack_network: browbeat_private
+    timing_measurements: runtimes
   benchmarks:
     - name: fio-centos-m1-small
       enabled: false
       benchmarks: fio
-      data_disk_size: 4
+      openstack_volume_size: 1
 rally:
   enabled: true
   sleep_before: 5

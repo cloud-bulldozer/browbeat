@@ -94,30 +94,39 @@
 - name: Install requirements.txt into browbeat-venv
   pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
 
-- name: Determine if perfkit is already cloned
+# PerfKitBenchmarker Install
+- name: Determine if PerfKitBenchmarker is already cloned
   stat: path={{ perfkit_venv }}/PerfKitBenchmarker
   register: perfkit_exists
 
-- debug: msg="PerfKit already exists on the host"
+- debug: msg="PerfKitBenchmarker already exists on the host"
   when: perfkit_exists.stat.isdir is defined and perfkit_exists.stat.isdir
 
 - name: Clone PerfKitBenchmarker on undercloud
   git:
-    repo=https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git
-    dest={{ perfkit_venv }}/PerfKitBenchmarker
-    version=v1.4.0
+    repo: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git
+    dest: "{{perfkit_venv}}/PerfKitBenchmarker"
+    version: "{{perfkit_version}}"
   when: perfkit_exists.stat.isdir is undefined
-
 
 - name: Install PerfKitBenchmarker requirements into perfkit-venv
   pip:
-     requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements.txt
-     virtualenv={{ perfkit_venv }}
+     requirements: "{{perfkit_venv}}/PerfKitBenchmarker/requirements.txt"
+     virtualenv: "{{perfkit_venv}}"
 
 - name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
   pip:
-     requirements={{ perfkit_venv }}/PerfKitBenchmarker/requirements-openstack.txt
-     virtualenv={{ perfkit_venv }}
+     requirements: "{{ perfkit_venv }}/PerfKitBenchmarker/perfkitbenchmarker/providers/openstack/requirements.txt"
+     virtualenv: "{{perfkit_venv}}"
+
+# (akrzos) - Using 2.6 seems most stable, Using latest or >2.6 as per PerfKitBenchmarker
+# openstack/requirements.txt results in an openstack cli error.
+- name: Downgrade python-openstackclient inside perfkit-venv
+  pip:
+    name: python-openstackclient
+    version: 2.6.0
+    virtualenv: "{{perfkit_venv}}"
+# End PerfKitBenchmarker Install
 
 - name: Install rally into rally-venv
   pip: name=rally version={{ rally_version }} virtualenv={{ rally_venv }}

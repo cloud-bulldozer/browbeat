@@ -4,14 +4,14 @@
 #
 
 - name: Create browbeat public network
-  shell: ". {{overcloudrc}}; neutron net-create {{browbeat_pub_net_name}} --router:external | grep -E ' id ' | awk '{print $4}'"
+  shell: ". {{overcloudrc}}; neutron net-create {{browbeat_pub_net_name}} --shared --router:external | grep -E ' id ' | awk '{print $4}'"
   register: public_net_id
 
 - name: Create browbeat public subnet
   shell: ". {{overcloudrc}}; neutron subnet-create {{public_net_id.stdout}} {{browbeat_pub_subnet}} --allocation-pool start={{browbeat_pub_pool_start}},end={{browbeat_pub_pool_end}} --gateway={{browbeat_pub_pool_gw}} --disable-dhcp"
 
 - name: Create browbeat private network
-  shell: ". {{overcloudrc}}; neutron net-create {{browbeat_pri_net_name}} | grep -E ' id ' | awk '{print $4}'"
+  shell: ". {{overcloudrc}}; neutron net-create {{browbeat_pri_net_name}} --shared | grep -E ' id ' | awk '{print $4}'"
   register: private_net_id
 
 - name: Create browbeat private subnet

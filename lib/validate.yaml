@@ -151,6 +151,12 @@ mapping:
           openstack_network:
             type: str
             required: True
+          ignore_package_requirements:
+            type: bool
+            required: False
+          timing_measurements:
+            type: str
+            required: False
       benchmarks:
         type: seq
         sequence:
