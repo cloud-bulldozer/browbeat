@@ -7,10 +7,14 @@ Interval {{collectd_interval}}
 # Hostname for this machine, if not defined, use gethostname(2) system call
 Hostname "{{inventory_hostname}}"
 
-# Allow collectd to log
-LoadPlugin syslog
-
 # Loaded Plugins:
+LoadPlugin "logfile"
+<Plugin "logfile">
+  LogLevel "info"
+  File "/var/log/collectd.log"
+  Timestamp true
+</Plugin>
+
 LoadPlugin write_graphite
 LoadPlugin cpu
 LoadPlugin conntrack
@@ -127,6 +131,33 @@ PreCacheChain "PreCache"
 
   <File "/var/log/neutron/openvswitch-agent.log">
     Instance "neutron-openvswitch-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/l3-agent.log">
+    Instance "neutron-l3-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/neutron/metadata-agent.log">
+    Instance "neutron-metadata-agent"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/ceilometer/compute.log">
+    Instance "ceilometer-compute"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"

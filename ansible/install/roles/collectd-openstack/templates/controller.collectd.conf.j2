@@ -7,10 +7,14 @@ Interval {{collectd_interval}}
 # Hostname for this machine, if not defined, use gethostname(2) system call
 Hostname "{{inventory_hostname}}"
 
-# Allow collectd to log
-LoadPlugin syslog
-
 # Loaded Plugins:
+LoadPlugin "logfile"
+<Plugin "logfile">
+  LogLevel "info"
+  File "/var/log/collectd.log"
+  Timestamp true
+</Plugin>
+
 LoadPlugin write_graphite
 LoadPlugin cpu
 LoadPlugin conntrack
@@ -228,6 +232,25 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
+  <File "/var/log/httpd/keystone_wsgi_admin_error.log">
+    Instance "keystone-wsgi-admin"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/httpd/keystone_wsgi_main_error.log">
+    Instance "keystone-wsgi-main"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
 
   <File "/var/log/nova/nova-api.log">
     Instance "nova-api"
@@ -240,6 +263,24 @@ PreCacheChain "PreCache"
   </File>
   <File "/var/log/nova/nova-conductor.log">
     Instance "nova-conductor"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-consoleauth.log">
+    Instance "nova-consoleauth"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/nova/nova-novncproxy.log">
+    Instance "nova-novncproxy"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -330,6 +371,123 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
+
+  <File "/var/log/glance/api.log">
+    Instance "glance-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/glance/registry.log">
+    Instance "glance-registry"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  # Swift logs all into the same file
+  <File "/var/log/swift/swift.log">
+    Instance "swift"
+    <Match>
+      Regex "account-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server"
+    </Match>
+    <Match>
+      Regex "container-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server"
+    </Match>
+    <Match>
+      Regex "object-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server"
+    </Match>
+  </File>
+
+  <File "/var/log/ceilometer/agent-notification.log">
+    Instance "ceilometer-agent-notification"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/ceilometer/central.log">
+    Instance "ceilometer-central"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/ceilometer/collector.log">
+    Instance "ceilometer-collector"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/httpd/ceilometer_wsgi_error.log">
+    Instance "ceilometer-wsgi-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/gnocchi/app.log">
+    Instance "gnocchi-app"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/gnocchi/metricd.log">
+    Instance "gnocchi-metricd"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/gnocchi/statsd.log">
+    Instance "gnocchi-statsd"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/httpd/gnocchi_wsgi_error.log">
+    Instance "gnocchi-wsgi-api"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
 </Plugin>
 
 # Include other collectd configuration files
