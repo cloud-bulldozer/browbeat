@@ -65,7 +65,8 @@ class WorkloadBase(object):
             self.logger.addHandler(file)
         return None
 
-    def get_time_dict(self, to_time, from_time, benchmark, test_name, workload, status):
+    def get_time_dict(self, to_time, from_time, benchmark, test_name, workload, status,
+                      index_status="disabled"):
         time_diff = (to_time - from_time)
         if workload not in WorkloadBase.browbeat:
             WorkloadBase.browbeat[workload] = {}
@@ -73,8 +74,13 @@ class WorkloadBase(object):
             WorkloadBase.browbeat[workload][benchmark] = {}
         if 'tests' not in WorkloadBase.browbeat[workload][benchmark]:
             WorkloadBase.browbeat[workload][benchmark]['tests'] = []
+        if index_status is True:
+            index_status = "success"
+        elif index_status is False:
+            index_status = "failure"
         WorkloadBase.browbeat[workload][benchmark]['tests'].append(
-            {'Test name': test_name, 'Time': time_diff, 'status': status})
+            {'Test name': test_name, 'Time': time_diff, 'Test Status': status,
+             'Elasticsearch Indexing': index_status})
 
     @staticmethod
     def print_report(result_dir, time_stamp):
