@@ -103,7 +103,7 @@ class Elastic(object):
                 else:
                      self.logger.info("Pushed data to Elasticsearch to index {}"
                                       " and browbeat UUID {}" .
-                                       format(self.index, result['browbeat_uuid']))
+                                      format(self.index, result['browbeat_uuid']))
                 break
             except Exception:
                 self.logger.error("Error pushing data to Elasticsearch, going to retry"
