@@ -1,4 +1,4 @@
-{% set vars = {'panel_idx': 0, 'initial': 0, 'initial2': 0} %}
+{% set vars = {'panel_idx': 0, 'initial1': 0, 'initial2': 0, 'initial3': 0} %}
 {% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
 {
   "dashboard": {
@@ -16,8 +16,115 @@
 {% for group in dashboard_groups %}
   {% if group in groups %}
     {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
-      {% if vars.initial == 0 %}
-         {% if vars.update({'initial': (vars.initial + 1)}) %} {% endif %}
+      {% if vars.initial1 == 0 %}
+         {% if vars.update({'initial1': (vars.initial1 + 1)}) %} {% endif %}
+      {% else %}
+        },
+      {% endif %}
+        {
+          "collapse": true,
+          "editable": true,
+          "height": "250px",
+          "panels": [
+      {% for index, host in batched_hosts %}
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "leftLogBase": 1,
+                "leftMax": null,
+                "leftMin": null,
+                "rightLogBase": 1,
+                "rightMax": null,
+                "rightMin": null,
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+              "id": {{vars.panel_idx}},
+              "isNew": true,
+              "legend": {
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": true,
+                "min": true,
+                "rightSide": true,
+                "show": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [
+                {
+                  "alias": "Weighted Time",
+                  "yaxis": 2
+                }
+              ],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "refId": "A",
+                  "target": "alias(scale({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_io_time.io_time, 0.1), 'Time')"
+                },
+                {
+                  "refId": "B",
+                  "target": "alias({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_io_time.weighted_io_time, 'Weighted Time')"
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "{{host}} - ${{group}}_disk Throughput",
+              "tooltip": {
+                "shared": true,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "x-axis": true,
+              "y-axis": true,
+              "y_formats": [
+                "percent",
+                "ms"
+              ]
+      {% if loop.last %}
+            }
+      {% else %}
+            },
+      {% endif %}
+      {% endfor %}
+          ],
+      {% if 'undercloud' in group %}
+          "title": "{{group}} IO Time",
+      {% else %}
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) IO Time",
+      {% endif %}
+          "showTitle": true
+    {% endfor %}
+  {% endif %}
+  {% if loop.last %}
+        },
+  {% endif %}
+{% endfor %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if vars.initial2 == 0 %}
+         {% if vars.update({'initial2': (vars.initial2 + 1)}) %} {% endif %}
       {% else %}
         },
       {% endif %}
@@ -123,8 +230,8 @@
 {% for group in dashboard_groups %}
   {% if group in groups %}
     {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
-      {% if vars.initial2 == 0 %}
-         {% if vars.update({'initial2': (vars.initial2 + 1)}) %} {% endif %}
+      {% if vars.initial3 == 0 %}
+         {% if vars.update({'initial3': (vars.initial3 + 1)}) %} {% endif %}
       {% else %}
         },
       {% endif %}
