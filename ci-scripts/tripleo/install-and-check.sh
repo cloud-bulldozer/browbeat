@@ -67,15 +67,19 @@ deployBrowbeat()
 
   pushd $WORKSPACE/browbeat/ansible
 
-  cp $WORKSPACE/browbeat/ci-scripts/config/tripleo/install-and-check/all.yml $WORKSPACE/browbeat/ansible/install/group_vars/all.yml
-
   #Clone repo from ci (with current changes) to $VIRTHOST so that we test the current commit
   $SCP_CMD -r $WORKSPACE/browbeat undercloud:
 
-  ansible-playbook --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" -i $WORKSPACE/hosts install/browbeat.yml
+  ansible-playbook --extra-vars @$WORKSPACE/browbeat/ci-scripts/config/tripleo/install-and-check/all.yml \
+                   --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" \
+                   -i $WORKSPACE/hosts \
+                   install/browbeat.yml
 
 
-  ansible-playbook --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" -i $WORKSPACE/hosts install/browbeat_network.yml
+  ansible-playbook --extra-vars @$WORKSPACE/browbeat/ci-scripts/config/tripleo/install-and-check/all.yml \
+                   --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" \
+                   -i $WORKSPACE/hosts \
+                   install/browbeat_network.yml
 
   #Non functional until upstream fix released (jkipatr)
   #ansible-playbook --ssh-common-args="-F $WORKSPACE/ssh.config.ansible" -i $WORKSPACE/hosts install/shaker_build.yml
