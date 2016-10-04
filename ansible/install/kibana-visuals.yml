@@ -1,8 +1,17 @@
 ---
 #
+# Uploads static Searches/Visualizations/Dashboards, also generates Visualizations and Dashboards
+# for upload as well.
 #
 
 - hosts: localhost
   remote_user: "{{ local_remote_user }}"
+  vars_files:
+    # Vars for templatized Visualizations:
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_osp_version_token_visualizations.yml"
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_processes_threads_visualizations.yml"
+    # Vars for templatized Dashboards:
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_osp_version_token_dashboards.yml"
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_processes_threads_dashboards.yml"
   roles:
     - kibana-visualization

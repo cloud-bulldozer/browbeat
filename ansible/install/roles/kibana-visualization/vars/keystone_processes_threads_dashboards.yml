@@ -1,0 +1,370 @@
+---
+#
+# Keystone Process/Thread Count Comparsion Dashboards
+#
+
+keystone_processes_threads_dashboards:
+  # Process Count Comparsion Dashboards
+  - file_name: "BrowbeatAuthenticateKeystoneProcessCountCompare.json"
+    title: "Browbeat Authenticate.keystone Process Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyProcessCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  - file_name: "BrowbeatAuthenticateValidateNovaProcessCountCompare.json"
+    title: "Browbeat Authenticate.validate_nova Process Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyProcessCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  - file_name: "BrowbeatAuthenticateValidateNeutronProcessCountCompare.json"
+    title: "Browbeat Authenticate.validate_neutron Process Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyProcessCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+
+
+  # Thread Count Comparsion Dashboards
+  - file_name: "BrowbeatAuthenticateKeystoneThreadCountCompare.json"
+    title: "Browbeat Authenticate.keystone Thread Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyThreadCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  - file_name: "BrowbeatAuthenticateValidateNovaThreadCountCompare.json"
+    title: "Browbeat Authenticate.validate_nova Thread Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyThreadCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  - file_name: "BrowbeatAuthenticateValidateNeutronThreadCountCompare.json"
+    title: "Browbeat Authenticate.validate_neutron Thread Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyThreadCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
