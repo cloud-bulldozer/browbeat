@@ -106,9 +106,10 @@ class Elastic(object):
                                       " and browbeat UUID {}" .
                                       format(self.index, result['browbeat_uuid']))
                 return True
-            except Exception:
+            except Exception as Err:
                 self.logger.error("Error pushing data to Elasticsearch, going to retry"
                                   " in 10 seconds")
+                self.logger.error("Exception: {}".format(Err))
                 time.sleep(10)
                 if i == (retry-1):
                         self.logger.error("Pushing Data to Elasticsearch failed in spite of retry,"
