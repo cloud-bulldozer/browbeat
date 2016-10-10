@@ -54,11 +54,11 @@ class Tools(object):
 
     # Create directory for results
     def create_results_dir(self, results_dir, timestamp, service, scenario):
-        try:
-            os.makedirs("{}/{}/{}/{}".format(results_dir,
-                                             timestamp, service, scenario))
-            self.logger.debug("{}/{}/{}/{}".format(os.path.dirname(results_dir), timestamp, service,
-                                                   scenario))
-            return "{}/{}/{}/{}".format(os.path.dirname(results_dir), timestamp, service, scenario)
-        except OSError:
-            return False
+        the_directory = "{}/{}/{}/{}".format(results_dir, timestamp, service, scenario)
+        if not os.path.isdir(the_directory):
+            try:
+                os.makedirs(the_directory)
+            except OSError as err:
+                self.logger.error("Error creating the results directory: {}".format(err))
+                return False
+        return the_directory
