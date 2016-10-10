@@ -85,7 +85,8 @@ class Elastic(object):
     """
     """
 
-    def index_result(self, result, test_name, _type='result', _id=None):
+    def index_result(self, result, test_name, result_dir, identifier=None, _type='result',
+                     _id=None):
         retry = 2
         result['browbeat_uuid'] = str(browbeat_uuid)
         result['cloud_name'] = self.config['browbeat']['cloud_name']
@@ -104,17 +105,19 @@ class Elastic(object):
                      self.logger.info("Pushed data to Elasticsearch to index {}"
                                       " and browbeat UUID {}" .
                                       format(self.index, result['browbeat_uuid']))
-                break
+                return True
             except Exception:
                 self.logger.error("Error pushing data to Elasticsearch, going to retry"
                                   " in 10 seconds")
                 time.sleep(10)
                 if i == (retry-1):
-                    self.logger.error("Pushing Data to Elasticsearch failed in spite of retry,"
-                                      " dumping JSON")
-                    elastic_file = os.path.join(self.config['browbeat']['results'],
-                                                test_name + '-elastic' + '.' + 'json')
-                    with open(elastic_file, 'w') as result_file:
-                        json.dump(result, result_file, indent=4, sort_keys=True)
-                        self.logger.info("Saved Elasticsearch consumable result JSON to {}".
-                                         format(elastic_file))
+                        self.logger.error("Pushing Data to Elasticsearch failed in spite of retry,"
+                                          " dumping JSON")
+                        elastic_file = os.path.join(result_dir,
+                                                    test_name + '-' + identifier + '-elastic' +
+                                                    '.' + 'json')
+                        with open(elastic_file, 'w') as result_file:
+                            json.dump(result, result_file, indent=4, sort_keys=True)
+                            self.logger.info("Saved Elasticsearch consumable result JSON to {}".
+                                             format(elastic_file))
+                        return False

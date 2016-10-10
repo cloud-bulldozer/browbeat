@@ -125,9 +125,10 @@ class Rally(WorkloadBase.WorkloadBase):
         result['rally_metadata'] = meta
         return result
 
-    def json_result(self, task_id, scenario_name, run, test_name):
+    def json_result(self, task_id, scenario_name, run, test_name, result_dir):
         rally_data = {}
-        self.logger.info("Loadding Task_ID {} JSON".format(task_id))
+        failure = False
+        self.logger.info("Loading Task_ID {} JSON".format(task_id))
         rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
         es_ts = datetime.datetime.utcnow()
         if len(rally_json) < 1:
@@ -158,7 +159,10 @@ class Rally(WorkloadBase.WorkloadBase):
                          'scenario': scenario_name,
                          }
                 error_result = self.elastic.combine_metadata(error)
-                self.elastic.index_result(error_result, test_name, 'error')
+                index_status = self.elastic.index_result(error_result, test_name, result_dir,
+                                                         workload, 'error')
+                if index_status is False:
+                    failure = True
         for workload in rally_data:
             if not type(rally_data[workload]) is dict:
                 iteration = 1
@@ -176,8 +180,13 @@ class Rally(WorkloadBase.WorkloadBase):
                                'rally_setup': rally_json[0]['key'],
                                'raw': rally_data[workload]}
                 result = self.elastic.combine_metadata(rally_stats)
-                self.elastic.index_result(result, test_name)
-        return True
+                index_status = self.elastic.index_result(result, test_name, result_dir, workload)
+                if index_status is False:
+                    failure = True
+        if failure:
+            return False
+        else:
+            return True
 
     def start_workloads(self):
         """Iterates through all rally scenarios in browbeat yaml config file"""
@@ -287,14 +296,18 @@ class Rally(WorkloadBase.WorkloadBase):
                                         results[run].append(task_id)
                                         self.update_pass_tests()
                                         self.update_total_pass_tests()
-                                        self.get_time_dict(
-                                            to_time, from_time, benchmark[
-                                                'name'], new_test_name,
-                                            workload, "pass")
                                         if self.config['elasticsearch']['enabled']:
                                             # Start indexing
-                                            self.json_result(
-                                                task_id, scenario_name, run, test_name)
+                                            index_status = self.json_result(
+                                                task_id, scenario_name, run, test_name, result_dir)
+                                            self.get_time_dict(to_time, from_time,
+                                                               benchmark['name'], new_test_name,
+                                                               workload, "pass", index_status)
+                                        else:
+                                            self.get_time_dict(to_time, from_time, benchmark[
+                                                               'name'], new_test_name,
+                                                               workload, "pass", )
+
                                     else:
                                         self.logger.error(
                                             "Cannot find task_id")
