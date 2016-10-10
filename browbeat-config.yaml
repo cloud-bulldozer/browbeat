@@ -184,21 +184,36 @@ rally:
         - 8
       times: 10
       scenarios:
-        - name: boot-snapshot-delete
+        - name: boot-snapshot-delete-cirros
           enabled: true
           file: rally/nova/nova-boot-snapshot-cc.yml
           image_name: cirros
-          flavor_name: m1.tiny
-        - name: boot-list-centos
-          enabled: false
-          file: rally/nova/nova-boot-list-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
+          flavor_name: m1.xtiny
+          net_id:
         - name: boot-list-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-list-cc.yml
-          flavor_name: m1.tiny
+          flavor_name: m1.xtiny
+          net_id:
+        - name: boot-show-cirros
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-boot-show-cc.yml
+          flavor_name: m1.xtiny
+          net_id:
+        - name: boot-bounce-delete-cirros
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-boot-bounce-delete-cc.yml
+          flavor_name: m1.xtiny
+          net_id:
+        - name: boot-lock-unlock-cirros
+          enabled: true
+          image_name: cirros
+          file: rally/nova/nova-lock-unlock-cc.yml
+          flavor_name: m1.xtiny
+          net_id:
     - name: glance
       enabled: true
       concurrency:
