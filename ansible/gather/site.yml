@@ -19,6 +19,7 @@
     - heat
     - mysql
     - rabbitmq
+    - glance
 
 - hosts: undercloud
   remote_user: "{{ local_remote_user }}"

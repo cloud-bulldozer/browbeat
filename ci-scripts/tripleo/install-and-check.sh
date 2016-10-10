@@ -125,7 +125,7 @@ time deployCloud
 time deployBrowbeat
 
 pushd $WORKSPACE/browbeat
-if [[ $($DIFF_CMD | grep -i metadata) != "" ]]
+if [[ $($DIFF_CMD | grep -i gather) != "" ]]
 then
   time runGather
 fi

@@ -1,0 +1,20 @@
+---
+#
+# Tasks to get Glance facts
+#
+
+- name: Parse Glance config
+  become: true
+  shell: python /tmp/openstack-config-parser.py glance {{ item }} /tmp/{{ item | basename }}.yml
+  with_fileglob:
+  - /etc/glance/*.conf
+
+- name: Fetch output
+  fetch: src=/tmp/{{ item | basename }}.yml dest=/tmp/{{ item | basename  }}.yml flat=yes
+  with_fileglob:
+  - /etc/glance/*.conf
+
+- name: Load configuration variables
+  include_vars: /tmp/{{ item | basename }}.yml
+  with_fileglob:
+  - /etc/glance/*.conf
