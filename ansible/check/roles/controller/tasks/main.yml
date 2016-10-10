@@ -59,7 +59,7 @@
   failed_when: bz1293712.rc == 0
 
 - name : Check rabbitmq for partitions
-  shell: rabbitmqctl cluster_status | grep -v alarm | grep partitions -A 1 | grep -q controller
+  shell: rabbitmqctl cluster_status |  grep partitions -A 1 | grep -v alarm | grep -q controller
   register: rabbit_partitioned
   changed_when: no
   failed_when: rabbit_partitioned.rc == 0
