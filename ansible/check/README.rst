@@ -8,7 +8,7 @@ Output from Checks
 ------------------
 
 Once the Checks playbook completes there will be a report generated in
-the checks directory.
+the browbeat results directory.
 
 ::
 

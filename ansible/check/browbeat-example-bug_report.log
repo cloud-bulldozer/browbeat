@@ -1,93 +1,76 @@
 # Browbeat generated bug report
+
+---------------------------------------
+| Issues for host : undercloud
+---------------------------------------
+Bug: bz1281584
+Description: Director does not create an haproxy configuration that conforms to our best-practice recommendations
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1281584
+Severity: Suggestion
+Impact: HAProxy config should match our best practices
+
+Bug: neutron_rootwrap_daemon
+Description: Ensure rootwrap has daemon mode enabled
+URL: none
+Severity: Suggestion
+Impact: The Red Hat Neutron team recommends having rootwrap in Daemon mode
+
+Bug: bz1330980
+Description: Undercloud deployed with 1 keystone worker and cpu_count for threads
+URL: https://bugzilla.redhat.com/show_bug.cgi?id=1330980
+Severity: Critical
+Impact: Not tuning the workers properly can cause degraded performance
+
+
 ---------------------------------------
 | Issues for host : overcloud-controller-0
 ---------------------------------------
 Bug: bz1095811
-Name: Network connectivity issues after 1000 netns
+Description: Network connectivity issues after 1000 netns
 URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
+Severity: Suggestion
+Impact: Networking can become flaky after 1000 net namespaces
 
-Bug: nova_vif_timeout_result
-Name: Nova VIF timeout should be >= 300
+Bug: neutron_rootwrap_daemon
+Description: Ensure rootwrap has daemon mode enabled
 URL: none
+Severity: Suggestion
+Impact: Neutron team recommends to have rootwrap daemon enabled
 
-Bug: bz1264740
-Name: RHEL OSP Director must be configure with nova-event-callback by default
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
-
----------------------------------------
-| Issues for host : overcloud-controller-1
----------------------------------------
-Bug: bz1095811
-Name: Network connectivity issues after 1000 netns
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
-
-Bug: nova_vif_timeout_result
-Name: Nova VIF timeout should be >= 300
+Bug: buffer_pool_size
+Description: mariadb buffer pool size tuning
 URL: none
-
-Bug: bz1264740
-Name: RHEL OSP Director must be configure with nova-event-callback by default
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
-
----------------------------------------
-| Issues for host : overcloud-controller-2
----------------------------------------
-Bug: bz1095811
-Name: Network connectivity issues after 1000 netns
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1095811
-
-Bug: nova_vif_timeout_result
-Name: Nova VIF timeout should be >= 300
-URL: none
-
-Bug: bz1264740
-Name: RHEL OSP Director must be configure with nova-event-callback by default
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
+Severity: Suggestion
+Impact: Tune the buffer pool size to increase performance
 
 
 ---------------------------------------
 | Issues for host : overcloud-novacompute-0
 ---------------------------------------
-Bug: bz1282644
-Name: increase reserved_host_memory_mb
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1282644
-
-Bug: bz1264740
-Name: RHEL OSP Director must be configure with nova-event-callback by default
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
-
 Bug: tuned_profile_result
-Name: Ensure Tuned Profile is set to {{ tuned_profile }}
+Description: Ensure Tuned Profile is set to virtual-host
 URL: none
+Severity: Suggestion
+Impact: Incorrect Tuned Profile will not result in better performance
 
 Bug: bz1245714
-Name: No Swap Space allocated
+Description: No Swap Space allocated
 URL: https://bugzilla.redhat.com/show_bug.cgi?id=1245714
-
-Bug: nova_vif_timeout_result
-Name: Nova VIF timeout should be >= 300
-URL: none
+Severity: Critical
+Impact: The Compute node can hit OOM since we deploy with no swap
 
 ---------------------------------------
 | Issues for host : overcloud-novacompute-1
 ---------------------------------------
-Bug: bz1282644
-Name: increase reserved_host_memory_mb
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1282644
-
-Bug: bz1264740
-Name: RHEL OSP Director must be configure with nova-event-callback by default
-URL: https://bugzilla.redhat.com/show_bug.cgi?id=1264740
-
 Bug: tuned_profile_result
-Name: Ensure Tuned Profile is set to {{ tuned_profile }}
+Description: Ensure Tuned Profile is set to virtual-host
 URL: none
+Severity: Suggestion
+Impact: Incorrect Tuned Profile will not result in better performance
 
 Bug: bz1245714
-Name: No Swap Space allocated
+Description: No Swap Space allocated
 URL: https://bugzilla.redhat.com/show_bug.cgi?id=1245714
-
-Bug: nova_vif_timeout_result
-Name: Nova VIF timeout should be >= 300
-URL: none
+Severity: Critical
+Impact: The Compute node can hit OOM since we deploy with no swap
 
