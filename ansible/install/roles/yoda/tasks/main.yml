@@ -1,0 +1,18 @@
+---
+#
+# YODA Install
+#
+
+- name: Create yoda virtualenv
+  command: virtualenv {{ yoda_venv }} creates={{ yoda_venv }}
+
+- name: Install yoda requirements
+  pip: name={{item}} virtualenv={{yoda_venv}}
+  with_items:
+         - openstacksdk
+         - python-heatclient
+         - python-tripleoclient
+         - elasticsearch
+         - pykwalify
+         - python-dateutil
+         - git+https://github.com/jkilpatr/ostag/#egg=ostag

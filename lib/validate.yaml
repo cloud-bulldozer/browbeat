@@ -281,3 +281,86 @@ mapping:
                   file:
                     type: str
                     required: True
+
+  yoda:
+    required: False
+    type: map
+    allowempty: True
+    mapping:
+      enabled:
+        type: bool
+        required: True
+      instackenv:
+        type: str
+        required: True
+      stackrc:
+        type: str
+        required: True
+      venv:
+        type: str
+        required: True
+      benchmarks:
+        type: seq
+        required: True
+        sequence:
+        - type: map
+          mapping:
+            name:
+              type: str
+              required: True
+            type:
+              type: str
+              required: True
+            enabled:
+              required: True
+              type: bool
+            ntp_server:
+              type: str
+              required: False
+            templates:
+              type: seq
+              required: False
+              sequence:
+              - type: str
+            instackenv:
+              type: str
+              required: false
+            times:
+              type: int
+              required: True
+            step:
+              type: int
+              required: False
+            method:
+              type: str
+              required: False
+            timeout:
+              type: int
+              required: True
+            max_fail_amnt:
+              type: float
+              required: False
+            batch_size:
+              type: int
+              required: False
+            keep_stack:
+              type: bool
+              required: False
+            node_pinning:
+              type: bool
+              required: False
+            cloud:
+              type: seq
+              sequence:
+              - type: map
+                allowempty: True
+                mapping:
+                  node:
+                    type: str
+                    required: True
+                  start_scale:
+                    type: int
+                    required: True
+                  end_scale:
+                    type: int
+                    required: True

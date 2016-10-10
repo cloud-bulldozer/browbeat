@@ -39,7 +39,7 @@ class Shaker(WorkloadBase.WorkloadBase):
 
     def shaker_checks(self):
         cmd = "source /home/stack/overcloudrc; glance image-list | grep -w shaker-image"
-        if self.tools.run_cmd(cmd) == "":
+        if self.tools.run_cmd(cmd)['stdout'] == "":
             self.logger.error("Shaker Image is not built, try again")
             exit(1)
         else:

@@ -1,10 +1,14 @@
 [
-{% for host in groups['controller'] %}
-{{hostvars[host]| to_nice_json}},
-{% endfor %}
-{% for host in groups['compute'] %}
-{{hostvars[host]| to_nice_json}},
-{% endfor %}
+{% if groups['controller'] is defined %}
+ {% for host in groups['controller'] %}
+  {{hostvars[host]| to_nice_json}},
+ {% endfor %}
+{% endif %}
+{% if groups['compute'] is defined %}
+ {% for host in groups['compute'] %}
+  {{hostvars[host]| to_nice_json}},
+ {% endfor %}
+{% endif %}
 {% for host in groups['undercloud'] %}
 {{hostvars[host]| to_nice_json}}
 {% endfor %}

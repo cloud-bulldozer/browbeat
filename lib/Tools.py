@@ -13,6 +13,7 @@
 import PerfKit
 import Rally
 import Shaker
+import Yoda
 import logging
 import os
 import subprocess
@@ -29,16 +30,37 @@ class Tools(object):
         self.config = config
         return None
 
+    # Returns true if ping successful, false otherwise
+    def is_pingable(self, ip):
+        cmd = "ping -c1 " + ip
+        result = self.run_cmd(cmd)
+        if result['rc'] == 0:
+            return True
+        else:
+            return False
+
+    # Run command async from the python main thread, return Popen handle
+    def run_async_cmd(self, cmd):
+        FNULL = open(os.devnull, 'w')
+        self.logger.debug("Running command : %s" % cmd)
+        process = subprocess.Popen(cmd, shell=True, stdout=FNULL)
+        return process
+
     # Run command, return stdout as result
     def run_cmd(self, cmd):
         self.logger.debug("Running command : %s" % cmd)
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        if len(stderr) > 0:
-            return None
-        else:
-            return stdout.strip()
+        output_dict = {}
+        output_dict['stdout'] = stdout.strip()
+        output_dict['stderr'] = stderr.strip()
+        output_dict['rc'] = process.returncode
+        if process.returncode > 0:
+          self.logger.error("Command {} returned with error".format(cmd))
+          self.logger.error("stdout: {}".format(stdout))
+          self.logger.error("stderr: {}".format(stderr))
+        return output_dict
 
     # Find Command on host
     def find_cmd(self, cmd):
@@ -103,6 +125,9 @@ class Tools(object):
         elif provider == "shaker":
             shaker = Shaker.Shaker(self.config)
             shaker.run_shaker()
+        elif provider == "yoda":
+            yoda = Yoda.Yoda(self.config)
+            yoda.start_workloads()
         else:
             self.logger.error("Unknown workload provider: {}".format(provider))
 
@@ -118,6 +143,7 @@ class Tools(object):
     def gather_metadata(self):
         os.putenv("ANSIBLE_SSH_ARGS",
                   " -F {}".format(self.config['ansible']['ssh_config']))
+
         ansible_cmd = \
             'ansible-playbook -i {} {}' \
             .format(self.config['ansible']['hosts'], self.config['ansible']['metadata'])
@@ -175,3 +201,15 @@ class Tools(object):
                 if workload is "perfkit":
                     # Stub for PerfKit.
                     continue
+
+    def load_stackrc(self, filepath):
+        values = {}
+        with open(filepath) as stackrc:
+            for line in stackrc:
+                pair = line.split('=')
+                if 'export' not in line and '#' not in line and '$(' not in line:
+                   values[pair[0].strip()] = pair[1].strip()
+                elif '$(' in line and 'for key' not in line:
+                   values[pair[0].strip()] = \
+                       self.run_cmd("echo " + pair[1].strip())['stdout'].strip()
+        return values

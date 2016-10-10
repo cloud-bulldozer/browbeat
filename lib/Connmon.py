@@ -61,7 +61,7 @@ class Connmon(object):
     def connmon_graphs(self, result_dir, test_name):
         cmd = "python graphing/connmonplot.py {}/connmon/{}.csv".format(result_dir,
                                                                         test_name)
-        return self.tools.run_cmd(cmd)
+        return self.tools.run_cmd(cmd)['stdout']
 
     # Move connmon results
     def move_connmon_results(self, result_dir, test_name):

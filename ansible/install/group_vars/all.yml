@@ -39,6 +39,9 @@ shaker_venv: "{{home_dir}}/shaker-venv"
 # Shaker version to Install
 shaker_version: 0.0.17
 
+# The default YODA venv
+yoda_venv: /home/stack/yoda-venv
+
 # PerfKitBenchmarker Settings
 perfkit_venv: "{{home_dir}}/perfkit-venv"
 perfkit_version: v1.12.0

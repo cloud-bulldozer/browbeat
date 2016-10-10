@@ -369,3 +369,34 @@ shaker:
       time: 60
       placement: single_room
       file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+#yoda scenarios WILL redeploy your overcloud
+yoda:
+  enabled: false
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+  venv: "/home/stack/yoda-venv/bin/activate"
+  benchmarks:
+    - name: scale-deploy
+      type: overcloud
+      ntp_server: pool.ntp.org
+      enabled: true
+      templates:
+        - ""
+      timeout: 600 #deploy timeout in minutes
+      step: 1
+      keep_stack: false
+      times: 3
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: 1
+        - node: "control"
+          start_scale: 1
+          end_scale: 3
+    - name: introspect-batch
+      type: introspection
+      enabled: true
+      method: individual #other option is bulk
+      times: 3
+      timeout: 900 #introspection timeout in seconds
+      batch_size: 2

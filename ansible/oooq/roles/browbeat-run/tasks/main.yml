@@ -4,4 +4,4 @@
   shell:
     "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; \
      cd {{ ansible_env.HOME }}/browbeat/; \
-     python browbeat.py rally > {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"
+     python browbeat.py all > {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"

@@ -66,7 +66,7 @@ class Rally(WorkloadBase.WorkloadBase):
         cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(
             plugin_string, task_file, task_args, test_name)
         from_time = time.time()
-        self.tools.run_cmd(cmd)
+        self.tools.run_cmd(cmd)['stdout']
         to_time = time.time()
         if 'sleep_after' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_after'])
@@ -93,7 +93,7 @@ class Rally(WorkloadBase.WorkloadBase):
     def get_task_id(self, test_name):
         cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(
             test_name)
-        return self.tools.run_cmd(cmd)
+        return self.tools.run_cmd(cmd)['stdout']
 
     def _get_details(self):
         self.logger.info(
@@ -111,17 +111,17 @@ class Rally(WorkloadBase.WorkloadBase):
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task report --task {} --out {}.html".format(
             all_task_ids, test_name)
-        return self.tools.run_cmd(cmd)
+        return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json(self, task_id):
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task results {}".format(task_id)
-        return self.tools.run_cmd(cmd)
+        return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json_file(self, task_id, test_name):
         cmd = "source {}; ".format(self.config['rally']['venv'])
         cmd += "rally task results {} > {}.json".format(task_id, test_name)
-        return self.tools.run_cmd(cmd)
+        return self.tools.run_cmd(cmd)['stdout']
 
     def rally_metadata(self, result, meta):
         result['rally_metadata'] = meta

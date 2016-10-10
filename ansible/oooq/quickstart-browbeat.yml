@@ -20,6 +20,7 @@
     - browbeat/perfkitbenchmarker
     - browbeat/rally
     - browbeat/shaker
+    - browbeat/yoda
     - browbeat/flavors
     - browbeat/images
     - browbeat/browbeat-network
