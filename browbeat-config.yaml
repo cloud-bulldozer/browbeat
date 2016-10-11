@@ -99,6 +99,7 @@ rally:
     - subnet-router-create: rally/rally-plugins/subnet-router-create
     - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
     - nova-create-pbench-uperf: rally/rally-plugins/nova-create-pbench-uperf
+    - neutron-securitygroup-port: rally/rally-plugins/neutron-securitygroup-port
   benchmarks:
     - name: authenticate
       enabled: true
@@ -251,6 +252,9 @@ rally:
           image_location: /home/stack/cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/glance-create-boot-delete/glance_create_boot_delete.yml
+        - name: neutron-securitygroup-port
+          enabled: false
+          file: rally/rally-plugins/neutron-securitygroup-port/neutron-securitygroup-port.yml
         - name: nova-create-pbench-uperf
           enabled: true
           hypervisor_server: "nova:overcloud-compute-1.localdomain"
