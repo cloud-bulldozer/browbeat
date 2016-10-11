@@ -3,7 +3,7 @@
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 {% set num_networks = num_networks or 1 %}
 ---
-NeutronPlugin.create_router_and_net:
+BrowbeatPlugin.create_router_and_net:
   -
     args:
       network_create_args: {}

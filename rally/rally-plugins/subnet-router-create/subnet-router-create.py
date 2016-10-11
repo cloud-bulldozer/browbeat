@@ -15,8 +15,8 @@ from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import types
 from rally.task import validation
 
-class NeutronPlugin(neutron_utils.NeutronScenario,
-                    scenario.Scenario):
+class BrowbeatPlugin(neutron_utils.NeutronScenario,
+                     scenario.Scenario):
 
     @types.convert(image={"type": "glance_image"},
                    flavor={"type": "nova_flavor"})
