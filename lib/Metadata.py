@@ -13,6 +13,7 @@
 import json
 import sys
 import os
+import argparse
 
 
 class Metadata(object):
@@ -49,6 +50,7 @@ class Metadata(object):
             hardware_dict['ip'] = item['ansible_default_ipv4']['address']
             hardware_dict['num_interface'] = len(item['ansible_interfaces'])
             hardware_dict['machine_make'] = item['ansible_product_name']
+            hardware_dict['processor_type'] = ' '.join(item['facter_processor0'].split())
             hard_dict['hardware_details'].append(hardware_dict)
         return hard_dict
 
@@ -92,18 +94,22 @@ class Metadata(object):
 
 
 def main():
-    _filename = os.path.join(sys.argv[1], 'machine_facts.json')
+    parser = argparse.ArgumentParser(description='Metadata Generation')
+    parser.add_argument(dest='path', help='Location of machine-facts')
+    args = parser.parse_args()
+    _filename = os.path.join(args.path, 'machine_facts.json')
     metadata = Metadata()
     sysdata = metadata.load_file(_filename)
     env_data = metadata.get_environment_metadata(sysdata)
+
     metadata.write_metadata_file(
-        env_data, os.path.join(sys.argv[1], 'environment-metadata.json'))
+        env_data, os.path.join(args.path, 'environment-metadata.json'))
     hardware_data = metadata.get_hardware_metadata(sysdata)
     metadata.write_metadata_file(
-        hardware_data, os.path.join(sys.argv[1], 'hardware-metadata.json'))
+        hardware_data, os.path.join(args.path, 'hardware-metadata.json'))
     software_data = metadata.get_software_metadata(sysdata)
     metadata.write_metadata_file(
-        software_data, os.path.join(sys.argv[1], 'software-metadata.json'))
+        software_data, os.path.join(args.path, 'software-metadata.json'))
 
 if __name__ == '__main__':
     sys.exit(main())
