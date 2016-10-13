@@ -24,9 +24,6 @@ browbeat_uuid = uuid.uuid4()
 
 class Elastic(object):
 
-    """
-    """
-
     def __init__(self, config, workload, tool="browbeat"):
         self.config = config
         self.logger = logging.getLogger('browbeat.Elastic')
@@ -39,17 +36,11 @@ class Elastic(object):
         today = datetime.datetime.today()
         self.index = "{}-{}-{}".format(tool, workload, today.strftime('%Y.%m.%d'))
 
-    """
-    """
-
     def load_json(self, result):
         json_data = None
         self.logger.info("Loading JSON")
         json_data = json.loads(result)
         return json_data
-
-    """
-    """
 
     def load_json_file(self, result):
         json_data = None
@@ -61,9 +52,6 @@ class Elastic(object):
             self.logger.error("Error loading JSON file : {}".format(result))
             return False
         return json_data
-
-    """
-    """
 
     def combine_metadata(self, result):
         if (self.config['elasticsearch']['metadata_files'] is not None and
@@ -82,10 +70,7 @@ class Elastic(object):
                     sys.exit(1)
         return result
 
-    """
-    """
-
-    def index_result(self, result, test_name, result_dir, identifier=None, _type='result',
+    def index_result(self, result, test_name, result_dir, identifier='', _type='result',
                      _id=None):
         retry = 2
         result['browbeat_uuid'] = str(browbeat_uuid)

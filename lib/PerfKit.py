@@ -10,6 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import ast
 import Connmon
 import datetime
 import Elastic
@@ -55,8 +56,8 @@ class PerfKit(WorkloadBase.WorkloadBase):
         split_data[0] = split_data[0][1:]
         split_data[-1] = split_data[-1][:-1]
         for item in split_data:
-            split_item = item.replace('.', '_').split(':')
-            dict_data[split_item[0]] = split_item[1]
+            split_item = item.replace('.', '_').split(':', 1)
+            dict_data[split_item[0]] = ast.literal_eval("'" + split_item[1] + "'")
         return dict_data
 
     def update_tests(self):
@@ -80,37 +81,38 @@ class PerfKit(WorkloadBase.WorkloadBase):
         return error_details
 
     def index_results(self, sucessful_run, result_dir, test_name, browbeat_rerun, benchmark_config):
-        complete_result_json = {'browbeat_scenario': benchmark_config}
         es_ts = datetime.datetime.utcnow()
+        index_success = True
         if sucessful_run:
-            complete_result_json['results'] = {'unit':{}, 'value': {}}
-            # PerfKit json is newline delimited and thus each newline json needs to be loaded
+            # PerfKit json is newline delimited and thus each newline json needs to be indexed
             with open('{}/perfkitbenchmarker_results.json'.format(result_dir)) \
                     as perfkit_results_json:
-                for json_result in perfkit_results_json:
+                for result_count, json_result in enumerate(perfkit_results_json):
+                    complete_result_json = {'browbeat_scenario': benchmark_config}
+                    complete_result_json['results'] = {'unit':{}, 'value': {}}
                     single_result = self.elastic.load_json(json_result.strip())
-                    if 'browbeat_rerun' not in complete_result_json:
-                        complete_result_json['browbeat_rerun'] = browbeat_rerun
-                    if 'timestamp' not in complete_result_json:
-                        complete_result_json['timestamp'] = str(es_ts).replace(" ", "T")
-                    if 'grafana_url' not in complete_result_json:
-                        complete_result_json['grafana_url'] = self.grafana.grafana_urls()
-                    if 'perfkit_setup' not in complete_result_json:
-                        complete_result_json['perfkit_setup'] = \
-                            self.string_to_dict(single_result['labels'])
+                    complete_result_json['browbeat_rerun'] = browbeat_rerun
+                    complete_result_json['timestamp'] = str(es_ts).replace(" ", "T")
+                    complete_result_json['grafana_url'] = self.grafana.grafana_urls()
+                    complete_result_json['perfkit_setup'] = \
+                        self.string_to_dict(single_result['labels'])
                     result_metric = single_result['metric'].lower().replace(' ', '_'). \
                         replace('.', '_')
                     complete_result_json['results']['value'][result_metric] = single_result['value']
                     complete_result_json['results']['unit'][result_metric] = single_result['unit']
-                result_type = 'result'
+                    result = self.elastic.combine_metadata(complete_result_json)
+                    if not self.elastic.index_result(result, test_name, result_dir,
+                                                     str(result_count), 'result'):
+                        index_success = False
         else:
+            complete_result_json = {'browbeat_scenario': benchmark_config}
             complete_result_json['perfkit_errors'] = self.get_error_details(result_dir)
             complete_result_json['browbeat_rerun'] = browbeat_rerun
             complete_result_json['timestamp'] = str(es_ts).replace(" ", "T")
             complete_result_json['grafana_url'] = self.grafana.grafana_urls()
-            result_type = 'error'
-        result = self.elastic.combine_metadata(complete_result_json)
-        self.elastic.index_result(result, test_name, result_type)
+            result = self.elastic.combine_metadata(complete_result_json)
+            index_success = self.elastic.index_result(result, test_name, result_dir, _type='error')
+        return index_success
 
     def run_benchmark(self, benchmark_config, result_dir, test_name, cloud_type="OpenStack"):
         self.logger.debug("--------------------------------")
@@ -161,27 +163,15 @@ class PerfKit(WorkloadBase.WorkloadBase):
                 self.logger.error(
                     "Connmon Result data missing, Connmon never started")
 
-        workload = self.__class__.__name__
-        new_test_name = test_name.split('-')
-        new_test_name = new_test_name[2:]
-        new_test_name = '-'.join(new_test_name)
         # Determine success
         success = False
         try:
             with open("{}/pkb.stderr.log".format(result_dir), 'r') as stderr:
                 if any('SUCCEEDED' in line for line in stderr):
                     self.logger.info("Benchmark completed.")
-                    self.update_pass_tests()
-                    self.update_total_pass_tests()
-                    self.get_time_dict(to_ts, from_ts, benchmark_config['benchmarks'],
-                                       new_test_name, workload, "pass")
                     success = True
                 else:
                     self.logger.error("Benchmark failed.")
-                    self.update_fail_tests()
-                    self.update_total_fail_tests()
-                    self.get_time_dict(to_ts, from_ts, benchmark_config['benchmarks'],
-                                       new_test_name, workload, "fail")
         except IOError:
             self.logger.error(
                 "File missing: {}/pkb.stderr.log".format(result_dir))
@@ -201,7 +191,7 @@ class PerfKit(WorkloadBase.WorkloadBase):
             from_ts, to_ts, result_dir, test_name)
         self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
-        return success
+        return success, to_ts, from_ts
 
     def start_workloads(self):
         self.logger.info("Starting PerfKitBenchmarker Workloads.")
@@ -226,10 +216,28 @@ class PerfKit(WorkloadBase.WorkloadBase):
                         test_name = "{}-{}-{}".format(time_stamp, benchmark['name'], run)
                         workload = self.__class__.__name__
                         self.workload_logger(result_dir, workload)
-                        sucess = self.run_benchmark(benchmark, result_dir, test_name)
-                        self._log_details()
+                        success, to_ts, from_ts = self.run_benchmark(benchmark, result_dir,
+                                                                     test_name)
+                        index_success = 'disabled'
                         if self.config['elasticsearch']['enabled']:
-                            self.index_results(sucess, result_dir, test_name, run, benchmark)
+                            index_success = self.index_results(success, result_dir, test_name, run,
+                                                               benchmark)
+                        new_test_name = test_name.split('-')
+                        new_test_name = new_test_name[2:]
+                        new_test_name = '-'.join(new_test_name)
+                        if success:
+                            self.update_pass_tests()
+                            self.update_total_pass_tests()
+                            self.get_time_dict(to_ts, from_ts, benchmark['benchmarks'],
+                                               new_test_name, self.__class__.__name__, "pass",
+                                               index_success)
+                        else:
+                            self.update_fail_tests()
+                            self.update_total_fail_tests()
+                            self.get_time_dict(to_ts, from_ts, benchmark['benchmarks'],
+                                               new_test_name, self.__class__.__name__, "fail",
+                                               index_success)
+                        self._log_details()
                 else:
                     self.logger.info(
                         "Skipping {} benchmark, enabled: false".format(benchmark['name']))
