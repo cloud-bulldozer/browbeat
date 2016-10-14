@@ -134,6 +134,11 @@ rally:
           file: rally/keystonebasic/create_tenant-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
+        - name: authenticate_user_and_validate_token
+          enabled: true
+          file: rally/keystonebasic/authenticate_user_and_validate_token-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
         - name: create-tenant-with-users
           enabled: true
           file: rally/keystonebasic/create_tenant_with_users-cc.yml

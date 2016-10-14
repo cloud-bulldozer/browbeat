@@ -29,7 +29,7 @@ browbeat_venv: /home/stack/browbeat-venv
 rally_venv: /home/stack/rally-venv
 
 # Rally version to install
-rally_version: 0.5.0
+rally_version: 0.7.0
 
 # The default Shaker venv
 shaker_venv: /home/stack/shaker-venv
