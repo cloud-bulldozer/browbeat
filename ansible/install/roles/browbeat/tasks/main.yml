@@ -271,8 +271,7 @@
   lineinfile:
     dest: /etc/sysconfig/iptables
     line: '-A INPUT -p tcp -m tcp --dport {{shaker_port}} -j ACCEPT'
-    regexp: '^INPUT -i lo -j ACCEPT'
-    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    insertbefore: '^-A INPUT -i lo'
     backup: yes
   become: true
   when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_shaker_port_exists.stdout|int == 0
@@ -282,8 +281,7 @@
   lineinfile:
     dest: /etc/sysconfig/iptables
     line: '-A INPUT -p tcp -m tcp --dport {{browbeat_results_port}} -j ACCEPT'
-    regexp: '^INPUT -i lo -j ACCEPT'
-    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    insertbefore: '^-A INPUT -i lo'
     backup: yes
   become: true
   when: browbeat_results_in_httpd and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_browbeat_results_port_exists.stdout|int == 0
