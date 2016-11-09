@@ -124,7 +124,6 @@ PreCacheChain "PreCache"
 
   # Everything Else (OpenStack Installed)
   # (Processes displayed under "Everything Else" on Grafana Dashboards)
-  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 9,10
   ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # -9,-10
   Process "httpd"                                                                       # 9,10
   Process "memcached"                                                                   # 9,10
@@ -145,7 +144,7 @@ PreCacheChain "PreCache"
   ProcessMatch "ironic-api" "python.+ironic-api"                                        # 9,10
   ProcessMatch "ironic-conductor" "python.+ironic-conductor"                            # 9,10
   ProcessMatch "ironic-inspector" "python.+ironic-inspector"                            # 9,10
-  ProcessMatch "dnsmasq-ironic" "/sbin/dnsmasq.+/etc/dnsmasq-ironic.conf"               # 9,10
+  ProcessMatch "dnsmasq-ironic" "dnsmasq.+/etc/dnsmasq-ironic.conf"                     # 9,10
   ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 9,10
 
   # Keystone (OpenStack Installed)
@@ -154,7 +153,9 @@ PreCacheChain "PreCache"
   ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9,10
 
   # Mistral (Openstack Installed)
-  ProcessMatch "mistral-server" "python.+mistral-server"                                # -9,10
+  ProcessMatch "mistral-server-api" "python.+mistral-server.+api"                       # -9,10
+  ProcessMatch "mistral-server-engine" "python.+mistral-server.+engine"                 # -9,10
+  ProcessMatch "mistral-server-executor" "python.+mistral-server.+executor"             # -9,10
 
   # Neutron (OpenStack Installed)
   ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 9,10
@@ -208,6 +209,24 @@ PreCacheChain "PreCache"
     Instance "keystone"
     <Match>
       Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/httpd/keystone_wsgi_admin_error.log">
+    Instance "keystone-wsgi-admin"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/httpd/keystone_wsgi_main_error.log">
+    Instance "keystone-wsgi-main"
+    <Match>
+      Regex ":error"
       DSType "CounterInc"
       Type "counter"
       Instance "total"
@@ -298,8 +317,8 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
-  <File "/var/log/heat/heat-api-cfn.log">
-    Instance "heat-api-cfn"
+  <File "/var/log/ironic-inspector/ironic-inspector.log">
+    Instance "ironic-inspector"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -307,8 +326,9 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
-  <File "/var/log/heat/heat-api-cloudwatch.log">
-    Instance "heat-api-cloudwatch"
+
+  <File "/var/log/heat/heat-api-cfn.log">
+    Instance "heat-api-cfn"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -334,6 +354,77 @@ PreCacheChain "PreCache"
       Instance "total"
     </Match>
   </File>
+
+  <File "/var/log/glance/api.log">
+    Instance "glance-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/glance/registry.log">
+    Instance "glance-registry"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/mistral/api.log">
+    Instance "mistral-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/mistral/engine.log">
+    Instance "mistral-engine"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+  <File "/var/log/mistral/executor.log">
+    Instance "mistral-executor"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  # Swift logs all into the same file
+  <File "/var/log/swift/swift.log">
+    Instance "swift"
+    <Match>
+      Regex "account-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server"
+    </Match>
+    <Match>
+      Regex "container-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server"
+    </Match>
+    <Match>
+      Regex "object-server: ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server"
+    </Match>
+  </File>
+
 </Plugin>
 
 # Include other collectd configuration files
