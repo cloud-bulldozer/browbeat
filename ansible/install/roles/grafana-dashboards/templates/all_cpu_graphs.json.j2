@@ -75,35 +75,35 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-system), 'System')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-system), 'System')"
                 },
                 {
                   "refId": "B",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-user), 'User')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-user), 'User')"
                 },
                 {
                   "refId": "C",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-nice), 'Nice')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-nice), 'Nice')"
                 },
                 {
                   "refId": "D",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-steal), 'Steal')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-steal), 'Steal')"
                 },
                 {
                   "refId": "E",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')"
                 },
                 {
                   "refId": "F",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')"
                 },
                 {
                   "refId": "G",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-wait), 'Wait')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-wait), 'Wait')"
                 },
                 {
                   "refId": "H",
-                  "target": "alias(averageSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-idle), 'Idle')"
+                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-idle), 'Idle')"
                 }
               ],
               "timeFrom": null,
