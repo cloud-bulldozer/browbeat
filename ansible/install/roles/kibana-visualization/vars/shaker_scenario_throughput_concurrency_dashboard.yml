@@ -1,0 +1,52 @@
+---
+#
+# Shaker Scenario Throughput vs Concurrency Dashboard
+#
+
+shaker_scenario_throughput_concurrency_dashboard:
+  - file_name: "ShakerScenarioThroughputConcurrency.json"
+    title: "Browbeat Shaker Scenarios with Throughput vs Concurrency"
+    darkTheme: "true"
+    panels:
+      - id: "Shaker-L2"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "Browbeat-Shaker-L2"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 4
+        col: 1
+        row: 3
+      - id: "Shaker-L3-ES"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 7
+      - id: "Browbeat-Shaker-L3-East-West"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 4
+        col: 1
+        row: 9
+      - id: "Shaker-L3-NS"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 13
+      - id: "Browbeat-Shaker-L3-North-South"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 4
+        col: 1
+        row: 15

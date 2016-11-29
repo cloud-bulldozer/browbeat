@@ -1,0 +1,4 @@
+# This .gitignore is included to ensure this directory exists
+*
+# Ignores everything, except this file
+!.gitignore

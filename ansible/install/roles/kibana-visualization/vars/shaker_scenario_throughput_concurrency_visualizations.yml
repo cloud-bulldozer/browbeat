@@ -1,0 +1,24 @@
+---
+#
+# Shaker Scenario-Throughput-Concurrency - Visualizations Variables
+#
+
+shaker_scenario_throughput_concurrency_visualizations:
+  - title: "Shaker-L2"
+    template: "markdown.json.j2"
+    markdown: "# Shaker-L2-Avg Throughput vs Concurency\\\\n[Browbeat](https://github.com/openstack/browbeat)\\\\n\\\\n[Shaker-L2](https://github.com/openstack/shaker/blob/master/doc/source/examples/full_l2.rst)"
+  - title: "Browbeat-Shaker-L2"
+    template: "shaker-throughput-concurrency.json.j2"
+    query: "shaker_test_info.deployment.template: l2.hot"
+  - title: "Shaker-L3-ES"
+    template: "markdown.json.j2"
+    markdown: "# Shaker-L3-East-West-Avg Throughput vs Concurency\\\\n[Browbeat](https://github.com/openstack/browbeat)\\\\n\\\\n[Shaker-L3-East-West](https://github.com/openstack/shaker/blob/master/doc/source/examples/full_l3_east_west.rst)"
+  - title: "Browbeat-Shaker-L3-East-West"
+    template: "shaker-throughput-concurrency.json.j2"
+    query: "shaker_test_info.deployment.template: l3_east_west.hot"
+  - title: "Shaker-L3-NS"
+    template: "markdown.json.j2"
+    markdown: "# Shaker-L3-North-South-Avg Throughput vs Concurency\\\\n[Browbeat](https://github.com/openstack/browbeat)\\\\n\\\\n[Shaker-L3-East-West](https://github.com/openstack/shaker/blob/master/doc/source/examples/full_l3_north_south.rst)"
+  - title:  "Browbeat-Shaker-L3-North-South"
+    template: "shaker-throughput-concurrency.json.j2"
+    query: "shaker_test_info.deployment.template: l3_north_south.hot"

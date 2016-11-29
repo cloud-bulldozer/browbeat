@@ -19,6 +19,21 @@
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
 
+- name: Generate Shaker Visualizations
+  template:
+    src: "{{item.template}}"
+    dest: "{{browbeat_path}}/visualization/Shaker/visualization/{{item.title}}.json"
+  with_flattened:
+    - "{{shaker_scenario_throughput_concurrency_visualizations}}"
+
+- name: Generate Shaker Dashboard
+  template:
+    src: dashboard.json.j2
+    dest: "{{browbeat_path}}/visualization/Shaker/dashboard/{{item.file_name}}"
+  with_flattened:
+    - "{{shaker_scenario_throughput_concurrency_dashboard}}"
+
+
 - name: Remove Searches
   uri:
     url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/search/{{ item | basename | regex_replace('\.json','') }}
@@ -100,3 +115,17 @@
   with_flattened:
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
+
+- name: Cleanup Shaker Visualizations
+  file:
+    path: "{{browbeat_path}}/visualization/Shaker/visualization/{{item.title}}.json"
+    state: absent
+  with_items:
+    - "{{shaker_scenario_throughput_concurrency_visualizations}}"
+
+- name: Cleanup Shaker Dashboards
+  file:
+    path: "{{browbeat_path}}/visualization/Shaker/dashboard/{{item.file_name}}"
+    state: absent
+  with_items:
+    - "{{shaker_scenario_throughput_concurrency_dashboard}}"
