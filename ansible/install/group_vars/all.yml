@@ -148,13 +148,8 @@ browbeat_router_name: browbeat_router
 ########################################
 # ELK Server Variables
 ########################################
-### nginx ###
-# add nonstandard port here for undercloud usage
-# usage: port nginx listens to reverse-proxy Kibana
-# e.g. 8888
-nginx_kibana_port: 80
 #
-# usage: port filebeat client grabs the client SSL certificate
+# port filebeat client grabs the client SSL certificate
 # e.g. 9999
 elk_server_ssl_cert_port: 8080
 #
@@ -181,7 +176,16 @@ fluentd_debug_port: 24230
 es_ip:
 es_local_port: 9200
 es_listen_external: true
+### kibana options ###
+# change this to affect nginx-wrapped htpasswd authentication
+kibana_user: admin
+kibana_password: admin
 es_kibana_index: .kibana
+### kibana nginx ###
+# add nonstandard port here for undercloud usage
+# usage: port nginx listens to reverse-proxy Kibana
+# e.g. 8888
+nginx_kibana_port: 80
 ### install curator tool ###
 # curator is the recommended tool for managing elasticsearch indexes
 # https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html
