@@ -64,9 +64,6 @@ per_process_panels:
         - httpd
         - memcached
         - mysqld
-        - ovs-vswitchd
-        - ovsdb-client
-        - ovsdb-server
         - rabbitmq
         - docker-registry
     - name: "Nova"
@@ -83,6 +80,11 @@ per_process_panels:
         - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-client
+        - ovsdb-server
     - name: "Keystone"
       processes:
         - keystone-all
@@ -143,9 +145,6 @@ per_process_panels:
         - memcached
         - mongod
         - mysqld
-        - ovs-vswitchd
-        - ovsdb-client
-        - ovsdb-server
         - rabbitmq
         - redis-server
     - name: "Nova"
@@ -164,6 +163,12 @@ per_process_panels:
         - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-client
+        - ovsdb-server
+        - ovn-northd
     - name: "Keystone"
       processes:
         - keystone-all
@@ -239,11 +244,8 @@ per_process_panels:
   # This dashboard should only contain OpenStack Compute Node processes
   #
   OpenStack-Compute:
-    - name: "Everything Else"
+    - name: "QEMU-KVM"
       processes:
-        - ovs-vswitchd
-        - ovsdb-client
-        - ovsdb-server
         - qemu-kvm
     - name: "Nova"
       processes:
@@ -254,6 +256,13 @@ per_process_panels:
         - neutron-l3-agent          # DVR enabled case, OSP 10
         - neutron-ns-metadata-proxy # DVR enabled case, OSP 10
         - neutron-metadata-agent    # DVR enabled case, OSP 10
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-client
+        - ovsdb-server
+        - ovn-controller
+        - ovn-controller-vtep
     - name: "Ceilometer"
       processes:
         - ceilometer-agent-compute
@@ -289,9 +298,6 @@ per_process_panels:
         - memcached
         - mongod
         - mysqld
-        - ovs-vswitchd
-        - ovsdb-client
-        - ovsdb-server
         - qemu-kvm
         - rabbitmq
         - redis-server
@@ -314,6 +320,14 @@ per_process_panels:
         - neutron-metadata-agent
         - neutron-l3-agent
         - neutron-dhcp-agent
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-client
+        - ovsdb-server
+        - ovn-northd
+        - ovn-controller
+        - ovn-controller-vtep
     - name: "Keystone"
       processes:
         - keystone-all
