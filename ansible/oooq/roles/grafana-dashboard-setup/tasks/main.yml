@@ -1,0 +1,18 @@
+---
+# Sets up Grafana dashboards for the system data. this must be run after
+#  the overcloud setup because it checks the hosts file to determine what
+#  hosts exist to be dasboarded
+
+- name: Setup Grafana Dashboards
+  shell:
+    "cd {{ ansible_env.HOME }}/browbeat/ansible; \
+     ansible-playbook -vvv -i hosts \
+     --extra-vars grafana_host={{ grafana_host_template }} \
+     --extra-vars grafana_username={{ grafana_username_template }} \
+     --extra-vars grafana_password={{ grafana_password_template }} \
+     --extra-vars dashboard_cloud_name={{ graphite_prefix_template }} \
+     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+     install/grafana-dashboards.yml > {{ ansible_env.HOME }}/browbeat/results/dashboards.log"
+  environment:
+    ANSIBLE_SSH_ARGS: "-F {{ ansible_env.HOME }}/browbeat/ansible/ssh-config"
+  when: "{{ grafana_enabled_template }}"

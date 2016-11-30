@@ -1,0 +1,25 @@
+- name: Template undercloud only hosts file
+  template:
+    "src=hosts.j2 \
+     dest={{ ansible_env.HOME }}/browbeat/ansible/hosts"
+
+- name: Template ssh-config
+  template:
+    "src=ssh-config.j2 \
+     dest={{ ansible_env.HOME }}/browbeat/ansible/ssh-config"
+
+- name: Install CollectD
+  shell:
+    "cd {{ ansible_env.HOME }}/browbeat/ansible; \
+     ansible-playbook -i hosts -c local \
+     --extra-vars graphite_host={{ graphite_host_template }} \
+     --extra-vars graphite_prefix={{ graphite_prefix_template }} \
+     install/collectd-openstack.yml \
+     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+     > {{ ansible_env.HOME }}/browbeat/results/collecd_install.log"
+  register: collectd_install
+  until: collectd_install.rc == 0
+  retries: 2
+  delay: 60
+  environment:
+    ANSIBLE_SSH_ARGS: "-F {{ ansible_env.HOME }}/browbeat/ansible/ssh-config"
