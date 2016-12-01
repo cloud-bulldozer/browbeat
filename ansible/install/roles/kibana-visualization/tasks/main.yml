@@ -10,6 +10,7 @@
   with_flattened:
     - "{{keystone_osp_version_token_visualizations}}"
     - "{{keystone_processes_threads_visualizations}}"
+    - "{{keystone_ssl_visualizations}}"
 
 - name: Generate Keystone Dashboards
   template:
@@ -18,6 +19,7 @@
   with_flattened:
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
+    - "{{keystone_ssl_dashboards}}"
 
 - name: Generate Shaker Visualizations
   template:
@@ -107,6 +109,7 @@
   with_flattened:
     - "{{keystone_osp_version_token_visualizations}}"
     - "{{keystone_processes_threads_visualizations}}"
+    - "{{keystone_ssl_visualizations}}"
 
 - name: Cleanup Keystone Dashboards
   file:
@@ -115,6 +118,7 @@
   with_flattened:
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
+    - "{{keystone_ssl_dashboards}}"
 
 - name: Cleanup Shaker Visualizations
   file:

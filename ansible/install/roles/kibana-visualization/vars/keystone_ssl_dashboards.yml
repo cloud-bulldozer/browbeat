@@ -1,0 +1,434 @@
+---
+#
+# Keystone SSL/TLS Comparsion Dashboards
+#
+
+keystone_ssl_dashboards:
+  # Authenticate.keystone Dashboard
+  - file_name: "BrowbeatAuthenticateKeystoneSSLCompare.json"
+    title: "Browbeat Authenticate.keystone SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_cinder Dashboard
+  - file_name: "BrowbeatAuthenticateValidateCinderSSLCompare.json"
+    title: "Browbeat Authenticate.validate_cinder SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_glance Dashboard
+  - file_name: "BrowbeatAuthenticateValidateGlanceSSLCompare.json"
+    title: "Browbeat Authenticate.validate_glance SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_heat Dashboard
+  - file_name: "BrowbeatAuthenticateValidateHeatSSLCompare.json"
+    title: "Browbeat Authenticate.validate_heat SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_neutron Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNeutronSSLCompare.json"
+    title: "Browbeat Authenticate.validate_neutron SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  #  Authenticate.validate_nova Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNovaSSLCompare.json"
+    title: "Browbeat Authenticate.validate_nova SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+
+  # KeystoneBasic.authenticate_user_and_validate_token Dashboard
+  - file_name: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenSSLCompare.json"
+    title: "Browbeat KeystoneBasic.authenticate_user_and_validate_token SSL Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencySSLCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21

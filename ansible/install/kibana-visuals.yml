@@ -10,11 +10,12 @@
     # Vars for templatized Visualizations:
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_osp_version_token_visualizations.yml"
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_processes_threads_visualizations.yml"
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_ssl_visualizations.yml"
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/shaker_scenario_throughput_concurrency_visualizations.yml"
     # Vars for templatized Dashboards:
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_osp_version_token_dashboards.yml"
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_processes_threads_dashboards.yml"
+    - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/keystone_ssl_dashboards.yml"
     - "{{browbeat_path}}/ansible/install/roles/kibana-visualization/vars/shaker_scenario_throughput_concurrency_dashboard.yml"
-
   roles:
     - kibana-visualization

@@ -1,10 +1,13 @@
+{% if item.include_pattern is not defined %}
+  {% if item.update({'include_pattern': ''}) %} {% endif %}
+{% endif %}
 {
   "title": "{{item.title}}",
-  "visState": "{\n  \"title\": \"{{item.title}}\",\n  \"type\": \"histogram\",\n  \"params\": {\n    \"addLegend\": true,\n    \"addTimeMarker\": false,\n    \"addTooltip\": true,\n    \"defaultYExtents\": false,\n    \"mode\": \"grouped\",\n    \"scale\": \"linear\",\n    \"setYExtents\": false,\n    \"shareYAxis\": true,\n    \"times\": [],\n    \"yAxis\": {}\n  },\n  \"aggs\": [\n    {\n      \"id\": \"2\",\n      \"type\": \"terms\",\n      \"schema\": \"group\",\n      \"params\": {\n        \"field\": \"{{item.split_bars_field}}\",\n        \"size\": 5,\n        \"order\": \"desc\",\n        \"orderBy\": \"_term\"\n      }\n    },\n    {\n      \"id\": \"3\",\n      \"type\": \"terms\",\n      \"schema\": \"segment\",\n      \"params\": {\n        \"field\": \"rally_setup.kw.runner.concurrency\",\n        \"size\": 50,\n        \"orderAgg\": {\n          \"id\": \"3-orderAgg\",\n          \"type\": \"max\",\n          \"schema\": \"orderAgg\",\n          \"params\": {\n            \"field\": \"rally_setup.kw.runner.concurrency\"\n          }\n        },\n        \"order\": \"asc\",\n        \"orderBy\": \"custom\"\n      }\n    },\n    {\n      \"id\": \"8\",\n      \"type\": \"{{item.metric_type}}\",\n      \"schema\": \"metric\",\n      \"params\": {\n        \"field\": \"raw\"\n      }\n    }\n  ],\n  \"listeners\": {}\n}",
-  "uiStateJSON": "{\n  \"spy\": {\n    \"mode\": {\n      \"name\": null,\n      \"fill\": false\n    }\n  }\n}",
+  "visState": "{\"title\":\"{{item.title}}\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"mode\":\"grouped\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"{{item.split_bars_field}}\", {{item.include_pattern}} \"size\":5,\"order\":\"desc\",\"orderBy\":\"_term\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\",\"size\":50,\"orderAgg\":{\"id\":\"3-orderAgg\",\"type\":\"max\",\"schema\":\"orderAgg\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\"}},\"order\":\"asc\",\"orderBy\":\"custom\"}},{\"id\":\"8\",\"type\":\"{{item.metric_type}}\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\"}}],\"listeners\":{}}",
+  "uiStateJSON": "{\"spy\":{\"mode\":{\"name\":null,\"fill\":false}}}",
   "description": "",
   "version": 1,
   "kibanaSavedObjectMeta": {
-    "searchSourceJSON": "{\n  \"index\": \"[browbeat-rally-]YYYY.MM.DD\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"{{item.query}}\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": []\n}"
+    "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"{{item.query}}\",\"analyze_wildcard\":true}},\"filter\":[]}"
   }
 }

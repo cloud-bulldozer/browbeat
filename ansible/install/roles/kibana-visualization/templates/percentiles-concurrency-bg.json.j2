@@ -1,6 +1,9 @@
+{% if item.include_pattern is not defined %}
+  {% if item.update({'include_pattern': ''}) %} {% endif %}
+{% endif %}
 {
   "title": "{{item.title}}",
-  "visState": "{\"title\":\"{{item.title}}\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"mode\":\"grouped\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"{{item.split_bars_field}}\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"_term\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\",\"size\":50,\"orderAgg\":{\"id\":\"3-orderAgg\",\"type\":\"max\",\"schema\":\"orderAgg\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\"}},\"order\":\"asc\",\"orderBy\":\"custom\"}},{\"id\":\"7\",\"type\":\"percentiles\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\",\"percents\":{{item.percents}}}}],\"listeners\":{}}",
+  "visState": "{\"title\":\"{{item.title}}\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"mode\":\"grouped\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"{{item.split_bars_field}}\", {{item.include_pattern}} \"size\":5,\"order\":\"desc\",\"orderBy\":\"_term\"}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\",\"size\":50,\"orderAgg\":{\"id\":\"3-orderAgg\",\"type\":\"max\",\"schema\":\"orderAgg\",\"params\":{\"field\":\"rally_setup.kw.runner.concurrency\"}},\"order\":\"asc\",\"orderBy\":\"custom\"}},{\"id\":\"7\",\"type\":\"percentiles\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\",\"percents\":{{item.percents}}}}],\"listeners\":{}}",
   "uiStateJSON": "{\"spy\":{\"mode\":{\"name\":null,\"fill\":false}}}",
   "description": "",
   "version": 1,
