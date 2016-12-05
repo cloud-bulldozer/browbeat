@@ -22,20 +22,14 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                    flavor={"type": "nova_flavor"})
     @validation.required_openstack(users=True)
     @scenario.configure(context={"cleanup": ["neutron"]})
-    def create_router_and_net(self,num_networks=1,network_create_args=None,
-                              subnet_create_args=None,**kwargs):
+    def create_router_and_net(self, num_networks=1, network_create_args=None,
+                              subnet_create_args=None, **kwargs):
         router = self._create_router({})
         subnets = []
-        if num_networks == 1 :
+        for net in range(num_networks):
             network = self._create_network(network_create_args or {})
             subnet = self._create_subnet(network, subnet_create_args or {})
             subnets.append(subnet)
             self._add_interface_router(subnet['subnet'],router['router'])
-        else :
-            for net in range(1,num_networks):
-                network = self._create_network(network_create_args or {})
-                subnet = self._create_subnet(network, subnet_create_args or {})
-                subnets.append(subnet)
-                self._add_interface_router(subnet['subnet'],router['router'])
         for subnet in subnets :
             self._remove_interface_router(subnet['subnet'],router['router'])
