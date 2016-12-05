@@ -6,6 +6,7 @@
 - name: pacemaker default unmanaged
   become: true
   command: pcs property set is-managed-default=false
+  when: pacemaker_controlled
 
 - name: restart ceilometer services
   become: true
@@ -15,6 +16,7 @@
     - openstack-ceilometer-central
     - openstack-ceilometer-collector
     - openstack-ceilometer-notification
+  when: pacemaker_controlled
 
 - name: restart gnocchi services
   become: true
@@ -26,6 +28,7 @@
 - name: pacemaker default managed
   become: true
   command: pcs property set is-managed-default=true
+  when: pacemaker_controlled
 
 - name: pacemaker cleanup ceilometer
   become: true
@@ -35,7 +38,7 @@
     - openstack-ceilometer-central
     - openstack-ceilometer-collector
     - openstack-ceilometer-notification
-  when: inventory_hostname == groups['controller'][0]
+  when: inventory_hostname == groups['controller'][0] and pacemaker_controlled
 
 - name: pacemaker cleanup gnocchi
   become: true
@@ -43,4 +46,4 @@
   with_items:
     - openstack-gnocchi-metricd
     - openstack-gnocchi-statsd
-  when: inventory_hostname == groups['controller'][0]
+  when: inventory_hostname == groups['controller'][0] and pacemaker_controlled

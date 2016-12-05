@@ -9,6 +9,7 @@
   with_items:
     - openstack-cinder-api
   ignore_errors: true
+  when: pacemaker_controlled
 
 - name: restart cinder services
   become: true
@@ -22,6 +23,7 @@
   with_items:
     - openstack-cinder-api
   ignore_errors: true
+  when: pacemaker_controlled
 
 - name: cleanup cinder services
   become: true
@@ -29,3 +31,4 @@
   with_items:
     - openstack-cinder-api
   ignore_errors: true
+  when: pacemaker_controlled

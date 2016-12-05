@@ -1,0 +1,3 @@
+---
+# If Pacemaker is managing services or not
+pacemaker_controlled: false

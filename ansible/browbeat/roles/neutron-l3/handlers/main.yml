@@ -9,6 +9,8 @@
     - neutron-server
     - neutron-metadata-agent
   ignore_errors: true
+  when: pacemaker_controlled
+
 
 - name: restart neutron services
   service: name={{ item }} state=restarted
@@ -22,6 +24,7 @@
     - neutron-server
     - neutron-metadata-agent
   ignore_errors: true
+  when: pacemaker_controlled
 
 - name: cleanup neutron services
   command: pcs resource cleanup {{ item }}
@@ -29,3 +32,4 @@
     - neutron-server
     - neutron-metadata-agent
   ignore_errors: true
+  when: pacemaker_controlled
