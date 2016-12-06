@@ -51,6 +51,9 @@ images:
 # DNS Server to add
 dns_server: 8.8.8.8
 
+# Disables dns lookup by overcloud sshd process
+disable_ssh_dns: false
+
 # epel7 rpm for collectd packages
 epel7_rpm: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 

@@ -6,6 +6,7 @@
 - hosts: controller
   remote_user: "{{ host_remote_user }}"
   roles:
+    - no-sshd-dns
     - shaker-check
 
 - hosts: undercloud
@@ -13,3 +14,8 @@
   roles:
     - common
     - browbeat
+
+- hosts: compute
+  remote_user: "{{ host_remote_user }}"
+  roles:
+    - no-sshd-dns
