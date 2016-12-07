@@ -4,7 +4,7 @@ export OPT_DEBUG_ANSIBLE=1
 export USER=root
 export HW_ENV_DIR=$WORKSPACE/tripleo-environments/hardware_environments/$HW_ENV
 export NETWORK_ISOLATION=no_vlan
-export REQUIREMENTS=quickstart-extras-requirements.txt
+export REQS=quickstart-extras-requirements.txt
 export PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
 export RELEASE=$RELEASE
 export VARS="elastic_enabled_template=true \
@@ -19,9 +19,18 @@ export VARS="elastic_enabled_template=true \
 --extra-vars graphite_prefix_template=$CLOUD_NAME \
 --extra-vars dlrn_hash=$current_build"
 
+#For Pipeline builds we need to get the pipeline image
+#we check that the pipeline image var is set and then
+#configure it to be used.
+if [ -z "$current_build" ]
+ then
+  export VARS='$VARS --extra-vars undercloud_image_url=$current_build'
+fi
+
+
+#used to ensure concurrent jobs on the same executor work
 socketdir=$(mktemp -d /tmp/sockXXXXXX)
 export ANSIBLE_SSH_CONTROL_PATH=$socketdir/%%h-%%r
-export REQS=quickstart-extras-requirements.txt
 
 
 pushd $WORKSPACE/tripleo-quickstart
