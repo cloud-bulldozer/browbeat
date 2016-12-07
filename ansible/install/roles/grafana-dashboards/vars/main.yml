@@ -90,6 +90,7 @@ per_process_panels:
         - keystone-all
         - keystone-admin
         - keystone-main
+        - keystone-token-flush
     - name: "Heat"
       processes:
         - heat-api
@@ -174,6 +175,7 @@ per_process_panels:
         - keystone-all
         - keystone-admin
         - keystone-main
+        - keystone-token-flush
     - name: "Cinder"
       processes:
         - cinder-api
@@ -333,6 +335,7 @@ per_process_panels:
         - keystone-all
         - keystone-admin
         - keystone-main
+        - keystone-token-flush
     - name: "Cinder"
       processes:
         - cinder-api

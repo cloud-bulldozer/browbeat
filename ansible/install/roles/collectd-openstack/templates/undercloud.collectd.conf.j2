@@ -151,6 +151,7 @@ PreCacheChain "PreCache"
   ProcessMatch "keystone-all" "python.+keystone-all"                                    # -9,-10
   ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 9,10
   ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9,10
+  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 9,10
 
   # Mistral (Openstack Installed)
   ProcessMatch "mistral-server-api" "python.+mistral-server.+api"                       # -9,10

@@ -162,6 +162,7 @@ PreCacheChain "PreCache"
   ProcessMatch "keystone-all" "python.+keystone-all"                                    # -9,-10
   ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 9,10
   ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9,10
+  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 9,10
 
   # Neutron (OpenStack Installed)
   ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 9,10
