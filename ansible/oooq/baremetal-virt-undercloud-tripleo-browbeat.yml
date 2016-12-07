@@ -18,6 +18,7 @@
     - browbeat/common
     - browbeat/browbeat
     - browbeat/browbeat-network
+    - browbeat/no-sshd-dns
 
 - name: Run Browbeat
   hosts: undercloud
