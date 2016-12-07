@@ -105,12 +105,12 @@
     mode: 0644
     backup: true
   with_items:
-    - ip_address: "{{ admin_ip_addr.stdout }}"
+    - ip_address: "{{ admin_ip_addr.stdout | default('') }}"
       interface: "admin"
       processes: "{{ workers }}"
       port: 35357
       threads: "{{ threads }}"
-    - ip_address: "{{ public_ip_addr.stdout }}"
+    - ip_address: "{{ public_ip_addr.stdout | default('') }}"
       interface: "main"
       processes: "{{ workers }}"
       port: 5000
@@ -128,8 +128,8 @@
     line: "Listen {{item}}"
     backup: true
   with_items:
-    - "{{ public_ip_addr.stdout }}:5000"
-    - "{{ admin_ip_addr.stdout }}:35357"
+    - "{{ public_ip_addr.stdout | default('') }}:5000"
+    - "{{ admin_ip_addr.stdout | default('') }}:35357"
   when: "'httpd' in '{{ keystone_deployment }}'"
   notify:
     - pacemaker unmanaged default
@@ -145,8 +145,8 @@
     line: "Listen {{item}}"
     state: absent
   with_items:
-    - "{{ public_ip_addr.stdout }}:5000"
-    - "{{ admin_ip_addr.stdout }}:35357"
+    - "{{ public_ip_addr.stdout | default('') }}:5000"
+    - "{{ admin_ip_addr.stdout | default('') }}:35357"
   when: "'eventlet' in '{{ keystone_deployment }}'"
   notify:
     - pacemaker unmanaged default

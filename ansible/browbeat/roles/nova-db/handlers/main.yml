@@ -10,6 +10,7 @@
     - openstack-nova-scheduler
     - openstack-nova-conductor
   ignore_errors: true
+  when: pacemaker_controlled
 
 - name: restart nova services
   service: name={{ item }} state=restarted
@@ -25,6 +26,7 @@
     - openstack-nova-scheduler
     - openstack-nova-conductor
   ignore_errors: true
+  when: pacemaker_controlled
 
 - name: cleanup nova services
   command: pcs resource cleanup {{ item }}
@@ -33,3 +35,4 @@
     - openstack-nova-scheduler
     - openstack-nova-conductor
   ignore_errors: true
+  when: pacemaker_controlled

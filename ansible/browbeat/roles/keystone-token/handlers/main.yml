@@ -6,6 +6,7 @@
 - name: pacemaker default unmanaged
   become: true
   command: pcs property set is-managed-default=false
+  when: pacemaker_controlled
 
 - name: stop keystone service
   become: true
@@ -25,10 +26,9 @@
 - name: pacemaker default managed
   become: true
   command: pcs property set is-managed-default=true
-  when: "'eventlet' in '{{ keystone_deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}' and pacemaker_controlled"
 
-- name: pacemaker cleanup keystone
   become: true
   command: pcs resource cleanup openstack-keystone
-  when: "'eventlet' in '{{ keystone_deployment }}'"
+  when: "'eventlet' in '{{ keystone_deployment }}' and pacemaker_controlled"
   ignore_errors: true
