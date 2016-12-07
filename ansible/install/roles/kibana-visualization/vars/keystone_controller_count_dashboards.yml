@@ -1,0 +1,434 @@
+---
+#
+# Keystone Controller Count Comparsion Dashboards
+#
+
+keystone_controller_count_dashboards:
+  # Authenticate.keystone Dashboard
+  - file_name: "BrowbeatAuthenticateKeystoneControllerCountCompare.json"
+    title: "Browbeat Authenticate.keystone Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateKeystoneConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_cinder Dashboard
+  - file_name: "BrowbeatAuthenticateValidateCinderControllerCountCompare.json"
+    title: "Browbeat Authenticate.validate_cinder Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateCinderConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_glance Dashboard
+  - file_name: "BrowbeatAuthenticateValidateGlanceControllerCountCompare.json"
+    title: "Browbeat Authenticate.validate_glance Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateGlanceConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_heat Dashboard
+  - file_name: "BrowbeatAuthenticateValidateHeatControllerCountCompare.json"
+    title: "Browbeat Authenticate.validate_heat Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateHeatConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  # Authenticate.validate_neutron Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNeutronControllerCountCompare.json"
+    title: "Browbeat Authenticate.validate_neutron Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNeutronConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+  #  Authenticate.validate_nova Dashboard
+  - file_name: "BrowbeatAuthenticateValidateNovaControllerCountCompare.json"
+    title: "Browbeat Authenticate.validate_nova Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatAuthenticateValidateNovaConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
+
+  # KeystoneBasic.authenticate_user_and_validate_token Dashboard
+  - file_name: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenControllerCountCompare.json"
+    title: "Browbeat KeystoneBasic.authenticate_user_and_validate_token Controller Count Comparsion"
+    darkTheme: "true"
+    panels:
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompare-md"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 12
+        size_y: 2
+        col: 1
+        row: 1
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompareResultCount-bg"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 3
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompareErrorCount-bg"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 6
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompareMin-bg"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompare50th-bg"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 12
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompare95th-bg"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 15
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompare99th-bg"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 18
+      - id: "BrowbeatKeystoneBasicAuthenticateUserAndValidateTokenConcurrencyControllerCountCompareMax-bg"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 12
+        size_y: 3
+        col: 1
+        row: 21
