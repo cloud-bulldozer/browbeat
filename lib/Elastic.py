@@ -82,14 +82,9 @@ class Elastic(object):
                               body=result,
                               doc_type=_type,
                               refresh=True)
-                if self.workload == "shaker":
-                    self.logger.debug("Pushed data to Elasticsearch to index {}"
-                                      " and browbeat UUID {}" .
-                                      format(self.index, result['browbeat_uuid']))
-                else:
-                     self.logger.info("Pushed data to Elasticsearch to index {}"
-                                      " and browbeat UUID {}" .
-                                      format(self.index, result['browbeat_uuid']))
+                self.logger.debug("Pushed data to Elasticsearch to index {}"
+                                  "and browbeat UUID {}".
+                                  format(self.index, result['browbeat_uuid']))
                 return True
             except Exception as Err:
                 self.logger.error("Error pushing data to Elasticsearch, going to retry"
