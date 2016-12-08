@@ -1,13 +1,13 @@
 #!/bin/bash
+set -eu
 
-export OPT_DEBUG_ANSIBLE=1
-export USER=root
-export HW_ENV_DIR=$WORKSPACE/tripleo-environments/hardware_environments/$HW_ENV
-export NETWORK_ISOLATION=no_vlan
-export REQS=quickstart-extras-requirements.txt
-export PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
-export RELEASE=$RELEASE
-export VARS="elastic_enabled_template=true \
+OPT_DEBUG_ANSIBLE=1
+USER=root
+HW_ENV_DIR=$WORKSPACE/tripleo-environments/hardware_environments/$HW_ENV
+NETWORK_ISOLATION=no_vlan
+REQS=quickstart-extras-requirements.txt
+PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
+VARS="elastic_enabled_template=true \
 --extra-vars graphite_enabled_template=true \
 --extra-vars elastic_host_template=$ELASTIC_HOST \
 --extra-vars graphite_host_template=$GRAPH_HOST \
@@ -26,7 +26,12 @@ if [ ! -z ${current_build+x} ]
   source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
   hash=$(get_delorean_hash_from_url $current_build)
   cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
-  export VARS='$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash'
+  VARS='$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash'
+
+#If we are not in the pipeline downstream builds need to use current-passed-ci
+elif [[ $RELEASE == *rhos-* ]]
+ then
+  RELEASE="$RELEASE-current-passed-ci"
 fi
 
 
