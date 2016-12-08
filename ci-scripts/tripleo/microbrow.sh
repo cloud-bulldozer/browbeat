@@ -16,15 +16,17 @@ export VARS="elastic_enabled_template=true \
 --extra-vars grafana_password_template=$GRAFANA_PASS \
 --extra-vars browbeat_cloud_name=$CLOUD_NAME \
 --extra-vars browbeat_config_file=$BENCHMARK \
---extra-vars graphite_prefix_template=$CLOUD_NAME \
---extra-vars dlrn_hash=$current_build"
+--extra-vars graphite_prefix_template=$CLOUD_NAME"
 
 #For Pipeline builds we need to get the pipeline image
 #we check that the pipeline image var is set and then
 #configure it to be used.
-if [ -z "$current_build" ]
+if [ ! -z ${current_build+x} ]
  then
-  export VARS='$VARS --extra-vars undercloud_image_url=$current_build'
+  source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
+  hash=$(get_delorean_hash_from_url $current_build)
+  cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
+  export VARS='$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash'
 fi
 
 
