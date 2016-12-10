@@ -26,7 +26,7 @@ if [ ! -z ${current_build+x} ]
   source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
   hash=$(get_delorean_hash_from_url $current_build)
   cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
-  export VARS='$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash'
+  export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
 elif [[ $RELEASE == *rhos-* ]]
