@@ -8,6 +8,7 @@
     src: "{{item.template}}"
     dest: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
   with_flattened:
+    - "{{keystone_controller_count_visualizations}}"
     - "{{keystone_osp_version_token_visualizations}}"
     - "{{keystone_processes_threads_visualizations}}"
     - "{{keystone_ssl_visualizations}}"
@@ -17,6 +18,7 @@
     src: dashboard.json.j2
     dest: "{{browbeat_path}}/visualization/Keystone/dashboard/{{item.file_name}}"
   with_flattened:
+    - "{{keystone_controller_count_dashboards}}"
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
     - "{{keystone_ssl_dashboards}}"
@@ -35,7 +37,6 @@
   with_flattened:
     - "{{shaker_scenario_throughput_concurrency_dashboard}}"
 
-
 - name: Remove Searches
   uri:
     url: http://{{ es_ip }}:{{ es_local_port }}/{{ es_kibana_index }}/search/{{ item | basename | regex_replace('\.json','') }}
@@ -44,7 +45,10 @@
     body_format: json
     status_code: 404, 200
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/search/*"
+    - "{{ browbeat_path }}/visualization/Keystone/search/*"
+    - "{{ browbeat_path }}/visualization/Neutron/search/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
+    - "{{ browbeat_path }}/visualization/Shaker/search/*"
   ignore_errors: true
 
 - name: Remove Visuals
@@ -55,7 +59,10 @@
     body_format: json
     status_code: 404, 200
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/visualization/*"
+    - "{{ browbeat_path }}/visualization/Keystone/visualization/*"
+    - "{{ browbeat_path }}/visualization/Neutron/visualization/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
+    - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
   ignore_errors: true
 
 - name: Remove Dashboards
@@ -66,7 +73,10 @@
     body_format: json
     status_code: 404, 200
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Keystone/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Neutron/dashboard/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
   ignore_errors: true
 
 - name: Upload Searches
@@ -77,7 +87,10 @@
     body_format: json
     status_code: 201
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/search/*"
+    - "{{ browbeat_path }}/visualization/Keystone/search/*"
+    - "{{ browbeat_path }}/visualization/Neutron/search/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
+    - "{{ browbeat_path }}/visualization/Shaker/search/*"
   ignore_errors: true
 
 - name: Upload Visuals
@@ -88,7 +101,10 @@
     body_format: json
     status_code: 201
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/visualization/*"
+    - "{{ browbeat_path }}/visualization/Keystone/visualization/*"
+    - "{{ browbeat_path }}/visualization/Neutron/visualization/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
+    - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
   ignore_errors: true
 
 - name: Upload Dashboards
@@ -99,7 +115,10 @@
     body_format: json
     status_code: 201
   with_fileglob:
-    - "{{ browbeat_path }}/visualization/*/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Keystone/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Neutron/dashboard/*"
+    - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
   ignore_errors: true
 
 - name: Cleanup Keystone Visualizations
@@ -107,6 +126,7 @@
     path: "{{browbeat_path}}/visualization/Keystone/visualization/{{item.title}}.json"
     state: absent
   with_flattened:
+    - "{{keystone_controller_count_visualizations}}"
     - "{{keystone_osp_version_token_visualizations}}"
     - "{{keystone_processes_threads_visualizations}}"
     - "{{keystone_ssl_visualizations}}"
@@ -116,6 +136,7 @@
     path: "{{browbeat_path}}/visualization/Keystone/dashboard/{{item.file_name}}"
     state: absent
   with_flattened:
+    - "{{keystone_controller_count_dashboards}}"
     - "{{keystone_osp_version_token_dashboards}}"
     - "{{keystone_processes_threads_dashboards}}"
     - "{{keystone_ssl_dashboards}}"
