@@ -1,84 +1,64 @@
 ---
 #
-# Generate Browbeat OpenStack Grafana Dashboards
+# Generate & Upload Browbeat OpenStack Grafana Dashboards
 #
 # Three types of Grafana Dashboards:
 # * Static Dashboards (Ex. cloud_system_performance_comparsion.json)
-# * Generic Generated Dashboards (Ex. OpenStack General System Performance)
-# * Cloud Specific Dashboards (All Nodes CPU Graphs (for a specific cloud))
+# * Generated General Dashboards (Ex. OpenStack General System Performance)
+# * Generated Cloud Specific Dashboards ("Cloud01" CPU Graphs (for a specific cloud))
 #
 # The Cloud Specific Dashboards are the only ones that require a cloud's inventory be defined.
-# You can deploy all of the Pre-Generated and Generated Dashboards and not the Cloud Specific
-# Dashboards with cloud_dashboards=false
+# You can deploy the Static and General Dashboards without the Cloud Specific Dashboards
+# with cloud_dashboards=false
 #
 
-- name: Generate Generic Dashboards
-  vars:
-    ansible_python_interpreter: "/usr/bin/python"
+- name: Generate General Dashboards
   template:
     src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
     dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
-  with_items: "{{dashboards}}"
+  with_items: "{{general_dashboards}}"
 
-- name: Generate Cloud Specific CPU/Memory/Disk/Network Dashboards
+- name: Generate Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   vars:
     ansible_python_interpreter: "/usr/bin/python"
   template:
-    src: "{{item}}.json.j2"
-    dest: "{{role_path}}/files/{{item}}.json"
-  with_items:
-    - all_cpu_graphs
-    - all_memory_graphs
-    - all_disk_graphs
-    - all_network_graphs
+    src: "cloud_specific_{{item}}.json.j2"
+    dest: "{{role_path}}/files/cloud_specific_{{item}}.json"
+  with_items: "{{cloud_specific_dashboards}}"
   when: cloud_dashboards
 
 - name: Remove Existing Static Dashboard(s)
   command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
   when: overwrite_existing
-  with_items:
-    - cloud-system-performance-comparsion
+  with_items: "{{static_dashboards}}"
 
-- name: Remove Existing Generic Dashboards
+- name: Remove Existing General Dashboards
   command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
   when: overwrite_existing
-  with_items: "{{dashboards}}"
+  with_items: "{{general_dashboards}}"
 
-- name: Remove Existing Cloud Specific CPU/Memory/Disk/Network Dashboards
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
+- name: Remove Existing Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item}}"
   when: overwrite_existing and cloud_dashboards
-  with_items:
-    - "{{dashboard_cloud_name}}-all-nodes-cpu"
-    - "{{dashboard_cloud_name}}-all-nodes-memory"
-    - "{{dashboard_cloud_name}}-all-nodes-disk"
-    - "{{dashboard_cloud_name}}-all-nodes-network"
+  with_items: "{{cloud_specific_dashboards}}"
 
 - name: Upload Static Dashboards to Grafana
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items:
-    - "{{role_path}}/files/cloud_system_performance_comparsion.json"
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  with_items: "{{static_dashboards}}"
 
-- name: Upload Generic Dashboards to Grafana
+- name: Upload General Dashboards to Grafana
   command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items: "{{dashboards}}"
+  with_items: "{{general_dashboards}}"
 
-- name: Upload Cloud Specific CPU/Memory/Disk/Network Dashboards
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{item}} http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items:
-    - "{{role_path}}/files/all_cpu_graphs.json"
-    - "{{role_path}}/files/all_memory_graphs.json"
-    - "{{role_path}}/files/all_disk_graphs.json"
-    - "{{role_path}}/files/all_network_graphs.json"
+- name: Upload Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/cloud_specific_{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  with_items: "{{cloud_specific_dashboards}}"
   when: cloud_dashboards
 
-- name: Remove leftover json file(s) from Generic Dashboards
+- name: Remove leftover json file(s) from Generated General Dashboards
   file: path={{role_path}}/files/{{item.process_list_name}}_general_system_performance.json state=absent
-  with_items: "{{dashboards}}"
+  with_items: "{{general_dashboards}}"
 
-- name: Remove leftover json file(s) from Cloud Specific CPU/Memory/Disk/Network Dashboards
-  file: path={{role_path}}/files/{{item}} state=absent
-  with_items:
-    - all_cpu_graphs.json
-    - all_memory_graphs.json
-    - all_disk_graphs.json
-    - all_network_graphs.json
+- name: Remove leftover json file(s) from Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
+  file: path={{role_path}}/files/cloud_specific_{{item}}.json state=absent
+  with_items: "{{cloud_specific_dashboards}}"

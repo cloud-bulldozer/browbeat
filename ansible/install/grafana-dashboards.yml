@@ -2,7 +2,7 @@
 #
 # Uploads and Builds Dashboards for Browbeat analysis of System Performance Metrics
 #
-# You can upload just the Static and Generated Generic Dashboards with:
+# You can upload just the Static and Generated General Dashboards with:
 # ansible-playbook -i hosts install/grafana-dashboards.yml -e 'cloud_dashboards=false'
 #
 #
@@ -13,7 +13,15 @@
     ansible_connection: local
     cloud_dashboards: true
     overwrite_existing: true
-    dashboards:
+    static_dashboards:
+      - cloud-system-performance-comparsion
+    cloud_specific_dashboards:
+      - cpu
+      - memory
+      - disk
+      - network
+      - log
+    general_dashboards:
       - template_name: openstack
         template_node_type: undercloud
         process_list_name: OpenStack-Undercloud

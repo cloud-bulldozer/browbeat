@@ -3,7 +3,7 @@
 {
   "dashboard": {
       "id": null,
-      "title": "{{dashboard_cloud_name}} - All Nodes CPU",
+      "title": "{{dashboard_cloud_name}} - Log",
       "tags": [
         "{{dashboard_cloud_name}}"
       ],
@@ -75,40 +75,12 @@
               "targets": [
                 {
                   "refId": "A",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-system), 'System')"
-                },
-                {
-                  "refId": "B",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-user), 'User')"
-                },
-                {
-                  "refId": "C",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-nice), 'Nice')"
-                },
-                {
-                  "refId": "D",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-steal), 'Steal')"
-                },
-                {
-                  "refId": "E",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')"
-                },
-                {
-                  "refId": "F",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')"
-                },
-                {
-                  "refId": "G",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-wait), 'Wait')"
-                },
-                {
-                  "refId": "H",
-                  "target": "alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-idle), 'Idle')"
+                  "target": "aliasByNode(aliasSub(aliasSub(aliasSub({{dashboard_cloud_name}}.{{host}}.tail-*.*, 'counter-', ''), 'total', ''), 'tail-', ''), 2, 3)"
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "{{host}} CPU Usage",
+              "title": "{{host}} Tail",
               "tooltip": {
                 "shared": true,
                 "value_type": "individual"
@@ -117,7 +89,7 @@
               "x-axis": true,
               "y-axis": true,
               "y_formats": [
-                "percent",
+                "short",
                 "short"
               ]
       {% if loop.last %}
@@ -128,9 +100,9 @@
       {% endfor %}
           ],
       {% if 'undercloud' in group %}
-          "title": "{{group}} CPU Usage",
+          "title": "{{group}} Logs",
       {% else %}
-          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) CPU Usage",
+          "title": "{{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Logs",
       {% endif %}
           "showTitle": true
     {% endfor %}

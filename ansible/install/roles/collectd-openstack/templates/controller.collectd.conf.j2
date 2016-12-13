@@ -227,6 +227,27 @@ PreCacheChain "PreCache"
 
 # Tail plugin configuration
 <Plugin "tail">
+
+  <File "/var/log/mysqld.log">
+    Instance "mysqld"
+    <Match>
+      Regex "[ERROR]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
+  <File "/var/log/rabbitmq/rabbit\@{{ansible_hostname}}.log">
+    Instance "rabbitmq"
+    <Match>
+      Regex "ERROR REPORT"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "total"
+    </Match>
+  </File>
+
   <File "/var/log/keystone/keystone.log">
     Instance "keystone"
     <Match>
