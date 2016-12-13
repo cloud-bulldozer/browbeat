@@ -8,6 +8,7 @@ elasticsearch:
   enabled: {{ elastic_enabled_template }}
   host: {{ elastic_host_template }}
   port: 9200
+  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json

@@ -4,9 +4,10 @@ browbeat:
   rerun: 1
   cloud_name: openstack
 elasticsearch:
-  enabled: false
+  enabled: true
   host: 1.1.1.1
   port: 9200
+  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -39,7 +40,7 @@ grafana:
     enabled: false
     snapshot_compute: false
 perfkit:
-  enabled: true
+  enabled: false
   sleep_before: 0
   sleep_after: 0
   venv: /home/stack/perfkit-venv/bin/activate
@@ -163,7 +164,7 @@ rally:
       times: 100
       scenarios:
         - name: create-list-network
-          enabled: false
+          enabled: true
           file: rally/neutron/neutron-create-list-network-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0

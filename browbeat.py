@@ -20,65 +20,16 @@ import lib.Tools
 import argparse
 import logging
 import sys
-import yaml
 import time
 import datetime
 import os
-from pykwalify import core as pykwalify_core
-from pykwalify import errors as pykwalify_errors
 
 _workload_opts = ['perfkit', 'rally', 'shaker']
 _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
 
-def _load_config(path, _logger):
-    try:
-        stream = open(path, 'r')
-    except IOError:
-        _logger.error("Configuration file {} passed is missing".format(path))
-        exit(1)
-    config = yaml.load(stream)
-    stream.close()
-    validate_yaml(config, _logger)
-    return config
-
-def validate_yaml(config, _logger):
-    _logger.info("Validating the configuration file passed by the user")
-    stream = open("lib/validate.yaml", 'r')
-    schema = yaml.load(stream)
-    check = pykwalify_core.Core(source_data=config, schema_data=schema)
-    try:
-        check.validate(raise_exception=True)
-        _logger.info("Validation successful")
-    except pykwalify_errors.SchemaError as e:
-        _logger.error("Schema Validation failed")
-        raise Exception('File does not conform to schema: {}'.format(e))
-
-def _run_workload_provider(provider, config):
-    _logger = logging.getLogger('browbeat')
-    if provider == "perfkit":
-        perfkit = lib.PerfKit.PerfKit(config)
-        perfkit.start_workloads()
-    elif provider == "rally":
-        rally = lib.Rally.Rally(config)
-        rally.start_workloads()
-    elif provider == "shaker":
-        shaker = lib.Shaker.Shaker(config)
-        shaker.run_shaker()
-    else:
-        _logger.error("Unknown workload provider: {}".format(provider))
-
-def check_metadata(config, _logger):
-     _logger.debug("Checking if configured metadata files are present")
-     meta = config['elasticsearch']['metadata_files']
-     for _meta in meta:
-         if not os.path.isfile(_meta['file']):
-             _logger.error("Metadata file {} is not present".format(_meta['file']))
-             return False
-     return True
-
-
 def main():
+    tools = lib.Tools.Tools()
     parser = argparse.ArgumentParser(
         description="Browbeat Performance and Scale testing for Openstack")
     parser.add_argument(
@@ -111,7 +62,7 @@ def main():
     _logger.debug("CLI Args: {}".format(_cli_args))
 
     # Load Browbeat yaml config file:
-    _config = _load_config(_cli_args.setup, _logger)
+    _config = tools._load_config(_cli_args.setup)
 
     # Default to all workloads
     if _cli_args.workloads == []:
@@ -131,27 +82,21 @@ def main():
         _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
         if _config['elasticsearch']['enabled']:
             _logger.info("Checking for Metadata")
-            metadata_exists = check_metadata(_config, _logger)
+            metadata_exists = tools.check_metadata()
             if not metadata_exists:
                 _logger.error("Elasticsearch has been enabled but"
                               " metadata files do not exist")
                 _logger.info("Gathering Metadata")
-                os.putenv("ANSIBLE_SSH_ARGS"," -F {}".format(_config['ansible']['ssh_config']))
-                tools = lib.Tools.Tools(_config)
-                ansible_cmd = \
-                    'ansible-playbook -i {} {}' \
-                    .format(_config['ansible']['hosts'], _config['ansible']['metadata'])
-                tools.run_cmd(ansible_cmd)
-                if not check_metadata(_config, _logger):
-                    _logger.warning("Metadata could not be gathered")
-                    exit(1)
-                else:
-                    _logger.info("Metadata about cloud has been gathered")
+                tools.gather_metadata()
+            elif _config['elasticsearch']['regather'] :
+                _logger.info("Regathering Metadata")
+                tools.gather_metadata()
+
         _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:
                 if _config[wkld_provider]['enabled']:
-                    _run_workload_provider(wkld_provider, _config)
+                    tools._run_workload_provider(wkld_provider)
                 else:
                     _logger.warning("{} is not enabled in {}".format(wkld_provider,
                                                                      _cli_args.setup))

@@ -10,10 +10,15 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import PerfKit
+import Rally
+import Shaker
 import logging
 import os
 import subprocess
-
+import yaml
+from pykwalify import core as pykwalify_core
+from pykwalify import errors as pykwalify_errors
 
 class Tools(object):
 
@@ -62,3 +67,62 @@ class Tools(object):
                 self.logger.error("Error creating the results directory: {}".format(err))
                 return False
         return the_directory
+
+    def _load_config(self, path):
+        try:
+            stream = open(path, 'r')
+        except IOError:
+            self.logger.error("Configuration file {} passed is missing".format(path))
+            exit(1)
+        config = yaml.load(stream)
+        stream.close()
+        self.config = config
+        self.validate_yaml()
+        return config
+
+    def validate_yaml(self):
+        self.logger.info("Validating the configuration file passed by the user")
+        stream = open("lib/validate.yaml", 'r')
+        schema = yaml.load(stream)
+        check = pykwalify_core.Core(source_data=self.config, schema_data=schema)
+        try:
+            check.validate(raise_exception=True)
+            self.logger.info("Validation successful")
+        except pykwalify_errors.SchemaError as e:
+            self.logger.error("Schema Validation failed")
+            raise Exception('File does not conform to schema: {}'.format(e))
+
+    def _run_workload_provider(self, provider):
+        self.logger = logging.getLogger('browbeat')
+        if provider == "perfkit":
+            perfkit = PerfKit.PerfKit(self.config)
+            perfkit.start_workloads()
+        elif provider == "rally":
+            rally = Rally.Rally(self.config)
+            rally.start_workloads()
+        elif provider == "shaker":
+            shaker = Shaker.Shaker(self.config)
+            shaker.run_shaker()
+        else:
+            self.logger.error("Unknown workload provider: {}".format(provider))
+
+    def check_metadata(self):
+        meta = self.config['elasticsearch']['metadata_files']
+        for _meta in meta:
+            if not os.path.isfile(_meta['file']):
+                self.logger.error("Metadata file {} is not present".format(_meta['file']))
+                return False
+        return True
+
+    def gather_metadata(self):
+        os.putenv("ANSIBLE_SSH_ARGS"," -F {}".format(self.config['ansible']['ssh_config']))
+        ansible_cmd = \
+            'ansible-playbook -i {} {}' \
+            .format(self.config['ansible']['hosts'], self.config['ansible']['metadata'])
+        self.run_cmd(ansible_cmd)
+        if not self.check_metadata():
+            self.logger.warning("Metadata could not be gathered")
+            return False
+        else:
+            self.logger.info("Metadata about cloud has been gathered")
+            return True
