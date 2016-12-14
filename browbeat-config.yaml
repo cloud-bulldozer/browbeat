@@ -234,6 +234,7 @@ rally:
       scenarios:
         - name: netcreate-boot
           enabled: true
+          enable_dhcp: true
           image_name: cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
