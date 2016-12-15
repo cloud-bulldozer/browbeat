@@ -42,6 +42,9 @@ export ANSIBLE_SSH_CONTROL_PATH=$socketdir/%%h-%%r
 
 pushd $WORKSPACE/tripleo-quickstart
 
+# Solves Ansible issue 13278
+sed -i '/defaults/a timeout = 60' ansible.cfg
+
 
 echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 
