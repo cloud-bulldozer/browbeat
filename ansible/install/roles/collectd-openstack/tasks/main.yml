@@ -1,6 +1,6 @@
 ---
 #
-# Install/run collectd for browbeat
+# Install/run collectd for Browbeat
 #
 
 #
@@ -22,23 +22,45 @@
   register: mysql_root_password
   when: "'controller' in group_names"
 
+- name: Get overcloudrc
+  remote_user: "{{local_remote_user}}"
+  shell: "cat /home/stack/overcloudrc | grep 'OS' | awk '{gsub(/export /,\"Environment=\");print }'"
+  delegate_to: "{{groups['undercloud'][0]}}"
+  register: overcloudrc_file
+  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+
+- name: Add environment variables to collectd.service systemd file
+  become: true
+  lineinfile:
+    dest: /usr/lib/systemd/system/collectd.service
+    insertafter: '\[Service\]'
+    line: "{{item}}"
+  with_items: "{{overcloudrc_file.stdout_lines | default(omit)}}"
+  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+
+- name: Reload systemd units
+  command: systemctl daemon-reload
+  become: true
+  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+
 - name: Configure collectd.conf
   template:
-    src={{config_type}}.collectd.conf.j2
-    dest=/etc/collectd.conf
-    owner=root
-    group=root
-    mode="0644"
+    src: "{{config_type}}.collectd.conf.j2"
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
   become: true
 
-- name: Copy collectd-redis.sh
+- name: Copy collectd_gnocchi_status.py
   copy:
-    src=collectd-redis.sh
-    dest=/usr/local/bin/collectd-redis.sh
-    owner=root
-    group=root
-    mode="0755"
+    src: collectd_gnocchi_status.py
+    dest: /usr/local/bin/collectd_gnocchi_status.py
+    owner: root
+    group: root
+    mode: 0755
   become: true
+  when: gnocchi_status_python_plugin
 
 #
 # Configure selinux bits
@@ -60,11 +82,11 @@
 #
 - name: Collectd policy customization
   copy:
-    src=custom-collectd.pp
-    dest=/root/custom-collectd.pp
-    owner=root
-    group=root
-    mode="0644"
+    src: custom-collectd.pp
+    dest: /root/custom-collectd.pp
+    owner: root
+    group: root
+    mode: 0644
   become: true
 
 - name: Check for collectd custom
@@ -83,5 +105,8 @@
 # Start collectd service
 #
 - name: Setup collectd service
-  service: name=collectd state=restarted enabled=true
+  service:
+    name: collectd
+    state: restarted
+    enabled: true
   become: true
