@@ -19,6 +19,7 @@
       - cpu
       - memory
       - disk
+      - disks_all
       - network
       - log
     general_dashboards:
