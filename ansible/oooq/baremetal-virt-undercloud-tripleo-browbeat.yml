@@ -18,6 +18,12 @@
     - browbeat/common
     - browbeat/browbeat
     - browbeat/browbeat-network
+
+- name: Disable sshd dns
+  hosts: overcloud
+  vars:
+    disable_ssh_dns: true
+  roles:
     - browbeat/no-sshd-dns
 
 - name: Run Browbeat

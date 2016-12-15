@@ -3,13 +3,21 @@
 # Tasks to get nova facts
 #
 
+- name: Check that Nova is installed
+  become: true
+  stat: path=/etc/nova/nova.conf
+  register: nova_config
+
 - name: Parse Nova config
   become: true
   shell: python /tmp/openstack-config-parser.py nova /etc/nova/nova.conf /tmp/out.yml
+  when: nova_config.stat.exists
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  when: nova_config.stat.exists
 
 - name: Load configuration variables
   include_vars: /tmp/out.yml
+  when: nova_config.stat.exists
 

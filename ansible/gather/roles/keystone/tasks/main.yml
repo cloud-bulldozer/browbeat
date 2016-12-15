@@ -3,15 +3,23 @@
 # Tasks to set keystone facts
 #
 
+- name: Check that Keystone is installed
+  become: true
+  stat: path=/etc/keystone/keystone.conf
+  register: keystone_config
+
 - name: Parse Keystone config
   become: true
   shell: python /tmp/openstack-config-parser.py keystone /etc/keystone/keystone.conf /tmp/out.yml
+  when: keystone_config.stat.exists
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  when: keystone_config.stat.exists
 
 - name: Load configuration variables
   include_vars: /tmp/out.yml
+  when: keystone_config.stat.exists
 
 - name: Determine if Keystone is deployed in eventlet
   shell: ps afx | grep "[Kk]eystone-all" -c

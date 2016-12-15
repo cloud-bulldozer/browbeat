@@ -2,13 +2,20 @@
 #
 # Tasks to get ceilometer facts
 #
+- name: Check that Ceilometer is installed
+  become: true
+  stat: path=/etc/ceilometer/ceilometer.conf
+  register: ceilometer_config
 
 - name: Parse Ceilometer config
   become: true
   shell: python /tmp/openstack-config-parser.py ceilometer /etc/ceilometer/ceilometer.conf /tmp/out.yml
+  when: ceilometer_config.stat.exists
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  when: ceilometer_config.stat.exists
 
 - name: Load configuration variables
   include_vars: /tmp/out.yml
+  when: ceilometer_config.stat.exists
