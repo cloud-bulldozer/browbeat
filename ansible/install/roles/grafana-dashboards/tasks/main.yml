@@ -38,7 +38,7 @@
   with_items: "{{general_dashboards}}"
 
 - name: Remove Existing Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item}}"
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item|replace('_', '-')}}"
   when: overwrite_existing and cloud_dashboards
   with_items: "{{cloud_specific_dashboards}}"
 
