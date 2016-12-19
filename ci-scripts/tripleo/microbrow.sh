@@ -49,7 +49,6 @@ sed -i '/defaults/a timeout = 60' ansible.cfg
 echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 
 ./quickstart.sh \
---requirements $REQS \
 --playbook $PLAYBOOK \
 --working-dir $WORKSPACE \
 --bootstrap \
