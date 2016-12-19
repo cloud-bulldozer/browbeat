@@ -8,7 +8,7 @@ export NETWORK_ISOLATION=no_vlan
 export REQS=quickstart-extras-requirements.txt
 export PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
 export VARS="elastic_enabled_template=true \
---extra-vars graphite_enabled_template=true \
+--extra-vars grafana_enabled_template=true \
 --extra-vars elastic_host_template=$ELASTIC_HOST \
 --extra-vars graphite_host_template=$GRAPH_HOST \
 --extra-vars grafana_host_template=$GRAPH_HOST \
