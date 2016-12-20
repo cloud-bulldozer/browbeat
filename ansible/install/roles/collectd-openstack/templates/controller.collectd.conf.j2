@@ -89,6 +89,26 @@ PreCacheChain "PreCache"
 #  Exec nobody "/usr/local/bin/collectd-redis.sh"
 #</Plugin>
 
+{%if gnocchi_status_python_plugin %}
+{%if inventory_hostname == groups['controller'][0] %}
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_gnocchi_status"
+  <Module collectd_gnocchi_status>
+    interval {{gnocchi_status_interval}}
+  </Module>
+</Plugin>
+{% else %}
+# Gnocchi status plugin installed and enabled on {{groups['controller'][0]}}
+{% endif %}
+{% endif %}
+
 <Plugin mysql>
   <Database "overcloud">
     Host "localhost"

@@ -71,6 +71,17 @@ collectd_controller: true
 collectd_ceph: true
 collectd_compute: false
 
+# Collect plugins configuration:
+########################
+# Gnocchi backlog plugin
+########################
+# This should only be enabled on a single controller when monitoring Gnocchi for
+# performance/scale. This plugin does create a token each interval and adds load
+# to Gnocchi-api each time it polls for measurements and thus your cloud will pay
+# a monitoring "tax" by enabling this plugin.
+gnocchi_status_python_plugin: false
+gnocchi_status_interval: 30
+
 ########################################
 # Docker related
 # (use these if deploying graphite/carbon/grafana as containers)

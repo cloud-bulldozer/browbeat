@@ -1,5 +1,6 @@
 {% set vars = {'panel_idx': 0, 'temp_count': 0} %}
 {% set mariadb_groups = ['undercloud', 'controller', '*'] %}
+{% set gnocchi_groups = ['controller', '*'] %}
 {
   "dashboard": {
     "annotations": {
@@ -3732,6 +3733,94 @@
         ],
         "showTitle": true,
         "title": "MYSQL INNODB"
+      },
+      {% endif %}
+      {% if item.template_node_type in gnocchi_groups %}
+      {
+        "title": "Gnocchi Backlog",
+        "height": "250px",
+        "editable": true,
+        "collapse": true,
+        "panels": [
+          {
+            "title": "Metrics/Measures Backlog",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+            "id": 185,
+            "targets": [
+              {
+                "target": "aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))",
+                "refId": "B",
+                "textEditor": false
+              }
+            ],
+            "datasource": null,
+            "renderer": "flot",
+            "yaxes": [
+              {
+                "label": null,
+                "show": true,
+                "logBase": 1,
+                "min": null,
+                "max": null,
+                "format": "short"
+              },
+              {
+                "label": null,
+                "show": true,
+                "logBase": 1,
+                "min": null,
+                "max": null,
+                "format": "short"
+              }
+            ],
+            "xaxis": {
+              "show": true
+            },
+            "grid": {
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": true,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true,
+              "sort": 0,
+              "msResolution": false
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          }
+        ],
+        "showTitle": true
       },
       {% endif %}
       {
