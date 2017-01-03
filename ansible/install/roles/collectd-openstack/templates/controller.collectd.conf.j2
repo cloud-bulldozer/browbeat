@@ -85,10 +85,6 @@ PreCacheChain "PreCache"
   IgnoreSelected false
 </Plugin>
 
-#<Plugin exec>
-#  Exec nobody "/usr/local/bin/collectd-redis.sh"
-#</Plugin>
-
 {%if gnocchi_status_python_plugin %}
 {%if inventory_hostname == groups['controller'][0] %}
 <LoadPlugin python>

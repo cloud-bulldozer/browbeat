@@ -27,18 +27,37 @@ if [ ${#controller_id} -lt 1 ]; then
    echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
 fi
+objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+if [ ${#objectstorage_id} -lt 1 ]; then
+   echo "Error: ObjectStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
+cephstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud CephStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+if [ ${#cephstorage_id} -lt 1 ]; then
+   echo "Error: CephStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
 compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#controller_id} -lt 1 ]; then
+if [ ${#compute_id} -lt 1 ]; then
    echo "Error: Compute ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
 fi
+
 controller_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${controller_id} > >(grep -i controller) 2>/dev/null" | awk '{print $2}')
-if [ ${#controller_id} -lt 1 ]; then
+if [ ${#controller_ids} -lt 1 ]; then
    echo "Error: Controller IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
 fi
+objectstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${objectstorage_id} > >(grep -i objectstorage) 2>/dev/null" | awk '{print $2}')
+if [ ${#objectstorage_ids} -lt 1 ]; then
+   echo "Info: No ObjectStorage resources."
+fi
+cephstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${cephstorage_id} > >(grep -i cephstorage) 2>/dev/null" | awk '{print $2}')
+if [ ${#cephstorage_ids} -lt 1 ]; then
+   echo "Info: No CephStorage resources."
+fi
 compute_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${compute_id} > >(grep -i compute) 2>/dev/null" | awk '{print $2}')
-if [ ${#controller_id} -lt 1 ]; then
+if [ ${#compute_ids} -lt 1 ]; then
    echo "Error: Compute IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
 fi
@@ -51,6 +70,24 @@ do
    controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
  else
    controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${controller_id} ${controller} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+ fi
+done
+objectstorage_uuids=()
+for objectstorage in ${objectstorage_ids}
+do
+ if [[ ${version_tripleo} -lt 2 ]] ; then
+   objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${objectstorage_id} ${objectstorage} | grep -i nova_server_resource" | awk '{print $4}')
+ else
+   objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${objectstorage_id} ${objectstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+ fi
+done
+cephstorage_uuids=()
+for cephstorage in ${cephstorage_ids}
+do
+ if [[ ${version_tripleo} -lt 2 ]] ; then
+   cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${cephstorage_id} ${cephstorage} | grep -i nova_server_resource" | awk '{print $4}')
+ else
+   cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${cephstorage_id} ${cephstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
  fi
 done
 compute_uuids=()
@@ -101,10 +138,14 @@ for line in $nodes; do
  IP=$(echo $line | awk '{print $12}' | cut -d "=" -f2)
  if grep -q $uuid <<< {$controller_uuids}; then
   controller_hn+=("$host")
+ elif grep -q $uuid <<< {$objectstorage_uuids}; then
+  objectstorage_hn+=("$host")
+ elif grep -q $uuid <<< {$cephstorage_uuids}; then
+  cephstorage_hn+=("$host")
  elif grep -q $uuid <<< {$compute_uuids}; then
   compute_hn+=("$host")
  else
-  ceph_hn+=("$host")
+  other_hn+=("$host")
  fi
  echo "" | tee -a ${ssh_config_file}
  echo "Host ${host}" | tee -a ${ssh_config_file}
@@ -129,6 +170,20 @@ if [[ ${#controller_hn} -gt 0 ]]; then
   echo "${ct}" | tee -a ${ansible_inventory_file}
  done
 fi
+if [[ ${#objectstorage_hn} -gt 0 ]]; then
+ echo "" | tee -a ${ansible_inventory_file}
+ echo "[objectstorage]" | tee -a ${ansible_inventory_file}
+ for objectstorage in ${objectstorage_hn[@]}; do
+  echo "${objectstorage}" | tee -a ${ansible_inventory_file}
+ done
+fi
+if [[ ${#cephstorage_hn} -gt 0 ]]; then
+ echo "" | tee -a ${ansible_inventory_file}
+ echo "[cephstorage]" | tee -a ${ansible_inventory_file}
+ for cephstorage in ${cephstorage_hn[@]}; do
+  echo "${cephstorage}" | tee -a ${ansible_inventory_file}
+ done
+fi
 if [[ ${#compute_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[compute]" | tee -a ${ansible_inventory_file}
@@ -136,11 +191,11 @@ if [[ ${#compute_hn} -gt 0 ]]; then
   echo "${c}" | tee -a ${ansible_inventory_file}
  done
 fi
-if [[ ${#ceph_hn} -gt 0 ]]; then
+if [[ ${#other_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
- echo "[ceph]" | tee -a ${ansible_inventory_file}
- for ceph in ${ceph_hn[@]}; do
-  echo "${ceph}" | tee -a ${ansible_inventory_file}
+ echo "[other]" | tee -a ${ansible_inventory_file}
+ for other in ${other_hn[@]}; do
+  echo "${other}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}

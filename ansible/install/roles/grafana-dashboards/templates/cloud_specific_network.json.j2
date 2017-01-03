@@ -1,5 +1,5 @@
 {% set vars = {'panel_idx': 0, 'initial': 0, 'initial2': 0} %}
-{% set dashboard_groups = ['undercloud', 'controller', 'ceph', 'compute'] %}
+{% set dashboard_groups = ['undercloud', 'controller', 'objectstorage', 'cephstorage', 'compute'] %}
 {
   "dashboard": {
       "id": null,
@@ -302,9 +302,26 @@
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "ceph_interface",
+            "name": "objectstorage_interface",
             "options": [],
-            "query": "{{dashboard_cloud_name}}.*ceph*.interface-*",
+            "query": "{{dashboard_cloud_name}}.*objectstorage*.interface-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
+              "text": "None",
+              "value": "",
+              "isNone": true
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "cephstorage_interface",
+            "options": [],
+            "query": "{{dashboard_cloud_name}}.*cephstorage*.interface-*",
             "refresh": true,
             "type": "query"
           },

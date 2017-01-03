@@ -30,11 +30,14 @@
         template_node_type: controller
         process_list_name: OpenStack-Controller
       - template_name: openstack
+        template_node_type: objectstorage
+        process_list_name: OpenStack-ObjectStorage
+      - template_name: openstack
+        template_node_type: cephstorage
+        process_list_name: OpenStack-CephStorage
+      - template_name: openstack
         template_node_type: compute
         process_list_name: OpenStack-Compute
-      - template_name: openstack
-        template_node_type: ceph
-        process_list_name: OpenStack-Ceph
       - template_name: openstack
         template_node_type: "*"
         process_list_name: OpenStack
