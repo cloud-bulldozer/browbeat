@@ -8,7 +8,8 @@
 # Or use tags:
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "undercloud"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "controller"
-# ansible-playbook -i hosts install/collectd-openstack.yml --tag "ceph"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "objectstorage"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "cephstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "compute"
 #
 
@@ -45,21 +46,37 @@
       ignore_errors: true
   tags: controller
 
-- hosts: ceph
+- hosts: objectstorage
   remote_user: "{{ host_remote_user }}"
   vars:
-    config_type: ceph
+    config_type: objectstorage
   roles:
-    - { role: common, when: collectd_ceph }
-    - { role: epel, when: collectd_ceph }
-    - { role: collectd-openstack, when: collectd_ceph }
+    - { role: common, when: collectd_objectstorage }
+    - { role: epel, when: collectd_objectstorage }
+    - { role: collectd-openstack, when: collectd_objectstorage }
   tasks:
-    - name: Collectd off if not collectd_ceph
+    - name: Collectd off if not collectd_objectstorage
       service: name=collectd state=stopped enabled=false
       become: true
-      when: not collectd_ceph
+      when: not collectd_objectstorage
       ignore_errors: true
-  tags: ceph
+  tags: objectstorage
+
+- hosts: cephstorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: cephstorage
+  roles:
+    - { role: common, when: collectd_cephstorage }
+    - { role: epel, when: collectd_cephstorage }
+    - { role: collectd-openstack, when: collectd_cephstorage }
+  tasks:
+    - name: Collectd off if not collectd_cephstorage
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_cephstorage
+      ignore_errors: true
+  tags: cephstorage
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"

@@ -243,6 +243,46 @@ per_process_panels:
         - collectd
 
   #
+  # This dashboard should only contain OpenStack ObjectStorage Node processes
+  #
+  OpenStack-ObjectStorage:
+    - name: "Swift"
+      processes:
+        - swift-account-auditor
+        - swift-account-reaper
+        - swift-account-replicator
+        - swift-account-server
+        - swift-container-auditor
+        - swift-container-replicator
+        - swift-container-server
+        - swift-container-updater
+        - swift-object-auditor
+        - swift-object-replicator
+        - swift-object-server
+        - swift-object-updater
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-server
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
+  # This dashboard should only contain OpenStack CephStorage Node processes
+  #
+  OpenStack-CephStorage:
+    - name: "Ceph"
+      processes:
+        - ceph-osd
+        - ceph-mon
+        - salt-minion
+        - diamond
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
   # This dashboard should only contain OpenStack Compute Node processes
   #
   OpenStack-Compute:
@@ -269,20 +309,6 @@ per_process_panels:
       processes:
         - ceilometer-agent-compute
         - ceilometer-polling
-    - name: "Collectd"
-      processes:
-        - collectd
-
-  #
-  # This dashboard should only contain OpenStack Ceph Node processes
-  #
-  OpenStack-Ceph:
-    - name: "Ceph"
-      processes:
-        - ceph-osd
-        - ceph-mon
-        - salt-minion
-        - diamond
     - name: "Collectd"
       processes:
         - collectd
