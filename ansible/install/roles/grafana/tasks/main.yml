@@ -21,6 +21,7 @@
 - name: Import grafana GPG Key
   rpm_key: key=https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
     state=present
+  become: true
 
 - name: Install grafana RPM
   yum: name={{ item }} state=present
