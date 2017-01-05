@@ -1,6 +1,6 @@
 browbeat:
   results : results/
-  rerun: 1
+  rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
 elasticsearch:
   enabled: {{ elastic_enabled_template }}
@@ -50,7 +50,6 @@ rally:
     - name: authenticate
       enabled: true
       concurrency:
-        - 8
         - 16
         - 24
       times: 2500
@@ -70,7 +69,6 @@ rally:
     - name: neutron
       enabled: true
       concurrency:
-        - 4
         - 8
         - 12
       times: 128
@@ -93,7 +91,6 @@ rally:
     - name: nova
       enabled: true
       concurrency:
-        - 4
         - 8
         - 12
       times: 64
@@ -113,7 +110,6 @@ rally:
     - name: glance
       enabled: true
       concurrency:
-        - 4
         - 8
         - 12
       times: 64
@@ -126,7 +122,6 @@ rally:
     - name: plugins
       enabled: true
       concurrency:
-        - 4
         - 8
         - 12
       times: 64
