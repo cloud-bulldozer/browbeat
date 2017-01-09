@@ -168,7 +168,7 @@
   file: path="{{ home_dir }}" state=directory mode=0755
   when: browbeat_results_in_httpd
 
-# (akrzos) Port 9000 is already in use by zaqar-server (OSPd10) and thus the fact that likely the
+# (akrzos) Port 9000 is already in use by zaqar-server with Newton and thus the fact that likely the
 # user will choose a port that is not enabled by selinux to allow httpd to listen, we need to modify
 # the ports enabled by selinux for httpd.  If the port is already defined you will run into this
 # issue if you use the "seport" ansible module:
@@ -316,17 +316,10 @@
     - "{{ images }}"
     - "{{ image_exists.results }}"
 
-- name: Upload image into cloud (OSP8)
+- name: Upload image into cloud (Liberty and >Liberty versions)
   shell: . {{ overcloudrc }}; glance image-create --name {{ item }} --visibility public --disk-format=qcow2 --container-format=bare < {{ home_dir }}/{{ item }}
-  register: image_osp8
   ignore_errors: true
   with_items: "{{ images }}"
-
-- name: Upload image into cloud (OSP7)
-  shell: . {{ overcloudrc }}; glance image-create --name {{ item.item }} --is-public true --disk-format=qcow2 --container-format=bare < {{ home_dir }}/{{ item.item }}
-  when: not item.rc == 0
-  ignore_errors: true
-  with_items: "{{ image_osp8.results }}"
 
 #
 # Add additional flavor to overcloud

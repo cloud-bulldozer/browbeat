@@ -1,6 +1,6 @@
 ---
 #
-# Playbook to install Browbeat (Rally + Shaker) on undercloud
+# Playbook to install Browbeat (Rally + Shaker + PerfKitBenchmarker) on undercloud
 #
 
 - hosts: controller
