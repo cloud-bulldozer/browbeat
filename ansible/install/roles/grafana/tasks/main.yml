@@ -21,7 +21,7 @@
 - name: Import grafana GPG Key
   rpm_key: key=https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
     state=present
-  become: true
+  become: True
 
 - name: Install grafana RPM
   yum: name={{ item }} state=present
@@ -29,7 +29,7 @@
   with_items:
     - grafana
 
-- name: Set grafana server port
+- name: Set grafana config values
   ini_file:
     dest=/etc/grafana/grafana.ini
     section={{item.section}}
@@ -42,6 +42,12 @@
     - section: auth.anonymous
       option: enabled
       value: true
+    - section: security
+      option: admin_user
+      value: "{{grafana_username}}"
+    - section: security
+      option: admin_password
+      value: "{{grafana_password}}"
   become: true
 
 ### begin firewall ###
