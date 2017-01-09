@@ -55,9 +55,11 @@ def create_keystone_session():
 os_username = os.environ.get('OS_USERNAME')
 os_password = os.environ.get('OS_PASSWORD')
 os_tenant = os.environ.get('OS_TENANT_NAME')
+if os_tenant is None:
+  os_tenant = os.environ.get('OS_PROJECT_NAME')
 os_auth_url = os.environ.get('OS_AUTH_URL')
 
-collectd.info('gnocchi_status: Connecting with user={}, password={}, tenant={}, '
+collectd.info('gnocchi_status: Connecting with user={}, password={}, tenant/project={}, '
     'auth_url={}'.format(os_username, os_password, os_tenant, os_auth_url))
 
 keystone_session = create_keystone_session()

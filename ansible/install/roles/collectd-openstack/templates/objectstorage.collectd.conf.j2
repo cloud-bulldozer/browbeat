@@ -92,22 +92,22 @@ PreCacheChain "PreCache"
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
 
   # Swift (OpenStack Installed)
-  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10
-  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10
-  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10
-  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10
-  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10
-  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10
-  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10
-  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10
-  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10
-  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10
-  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10
-  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,11
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,11
+  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,11
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,11
+  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,11
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,11
+  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11
 </Plugin>
 
 <Plugin swap>
