@@ -67,6 +67,7 @@ rally:
     - name: authenticate
       enabled: true
       concurrency:
+        - 16
         - 8
         - 16
       times: 50

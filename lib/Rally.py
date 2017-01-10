@@ -239,6 +239,7 @@ class Rally(WorkloadBase.WorkloadBase):
                                 del scenario['concurrency']
                             else:
                                 concurrencies = def_concurrencies
+                            concurrency_count_dict = collections.Counter(concurrencies)
                             if 'times' not in scenario:
                                 scenario['times'] = def_times
 
@@ -249,8 +250,17 @@ class Rally(WorkloadBase.WorkloadBase):
                                         results[run] = []
                                     self.update_tests()
                                     self.update_total_tests()
-                                    test_name = "{}-browbeat-{}-{}-iteration-{}".format(
-                                        dir_ts, scenario_name, concurrency, run)
+                                    if concurrency_count_dict[concurrency] == 1:
+                                        test_name = "{}-browbeat-{}-{}-iteration-{}".format(
+                                                    dir_ts, scenario_name, concurrency, run)
+                                    else:
+                                        test_name = "{}-browbeat-{}-{}-{}-iteration-{}".format(
+                                                    dir_ts, scenario_name, concurrency,
+                                                    concurrency_count_dict[concurrency], run)
+                                        self.logger.debug("Duplicate concurrency {} found,"
+                                                          " setting test name"
+                                                          " to {}".format(concurrency, test_name))
+                                        concurrency_count_dict[concurrency] -= 1
 
                                     if not result_dir:
                                         self.logger.error(
