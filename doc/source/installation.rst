@@ -58,7 +58,7 @@ From your local machine
 
 ::
 
-    $ ansible-playbook -i hosts install/dashboards-openstack.yml
+    $ ansible-playbook -i hosts install/grafana-dashboards.yml
 
 (Optional) Install connmon
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
