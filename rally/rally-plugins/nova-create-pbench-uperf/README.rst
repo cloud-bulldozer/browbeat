@@ -55,7 +55,7 @@ This section with describe the args in the nova-create-pbench-uperf.yml
 Before you begin:
 -----------------
 1. Create a pbench-image that has PBench preinstalled into the guest.
-    1a. Use https://www.x86.trystack.org/dashboard/static/rook/centos-noreqtty.qcow2 image
+    1a. Use http://www.x86.trystack.org/dashboard/static/rook/centos-noreqtty.qcow2 image
     1b. You can use : helper-script/pbench-user.file
     2a. This will not setup the image for root access
 2. Rally cannot use a snapshot to launch the guest, so export the image you created above, and re-import it.
