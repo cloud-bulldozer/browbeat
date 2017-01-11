@@ -8,9 +8,8 @@
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0 disk_allocation_ratio=10.0"
 #
 # * Note not setting a variable does not change that configuration item then. Setting no variables
-#   and running the playbook sets all configuration items back to defaults
+#   and running the playbook sets all configuration items to defaults (cpu/ram/disk - 16/1/1)
 #
-# Defaults (defaults being what OSPd9 comes with out of the box cpu/ram/disk - 16/1/1)
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml
 #
 
