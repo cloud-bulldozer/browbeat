@@ -5,8 +5,6 @@ Collectd configurations are built for these types of machines:
   * baremetal
   * guest
   * graphite/grafana
-  * ose
-  * satellite6
 
 To install collectd agent and configure collectd to send metrics to your
 Graphite server, simply add the host to your ansible inventory file
@@ -28,8 +26,11 @@ Complete Example Inventory file:
     overcloud-compute-0
     overcloud-compute-1
 
-    [ceph]
+    [cephstorage]
     overcloud-cephstorage-0
+
+    [objectstorage]
+    overcloud-objectstorage-0
 
     [baremetal]
     x.x.x.x # An ip adddress or fqdn or specificed host in ~/.ssh/config
@@ -40,20 +41,15 @@ Complete Example Inventory file:
     [graphite]
     x.x.x.x # An ip address of a Graphite/Grafana Server
 
-    [ose]
-    x.x.x.x # An ip address of a Red Hat Openshift Enterprise Node
-
-    [satellite6]
-    x.x.x.x # An ip address of a Red Hat Satellite 6 Server
 
 Example running the collectd-generic playbook on the above specified
-satellite6 machine:
+baremetal machine:
 
 ::
 
-    # ansible-playbook -i hosts install/collectd-generic.yml --tags "satellite6"
+    # ansible-playbook -i hosts install/collectd-generic.yml --tags "baremetal"
 
-Replace "satellite6" with whatever machines you intend to install collectd on.
+Replace "baremetal" with whatever machines you intend to install collectd on.
 
-Note: Openstack host groups (undercloud, controller, compute, ceph) are
-ignored with the collectd-generic.yml playbook.
+Note: Openstack host groups (undercloud, controller, compute, cephstorage,
+objectstorage) are ignored with the collectd-generic.yml playbook.

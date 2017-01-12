@@ -43,7 +43,7 @@
   - compute
   - nova
 
-- hosts: ceph
+- hosts: cephstorage
   name: Checking Ceph Hosts for common Performance Issues
   remote_user: heat-admin
   roles:

@@ -7,7 +7,7 @@
   roles:
      - { role: filebeat }
 
-- hosts: controller,compute,ceph
+- hosts: controller,compute,cephstorage
   remote_user: "{{ host_remote_user }}"
   roles:
     - { role: filebeat }
