@@ -106,6 +106,7 @@ graphite_port: 80
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
 # Graphite username and password for login on the dashboard
+# credential aren't created when you deploy graphite, use manage.py
 graphite_username: root
 graphite_password: calvin
 
@@ -114,6 +115,10 @@ graphite_password: calvin
 ########################################
 # Grafana Server IP Address/Port (Can be hosted on the Graphite server)
 # you must fill out grafana_host prior to playbook execution
+# If you are deploying grafana the username/password combination will be set
+# (if you're using the grafana-docker playbook this does not currently work,
+# it will deploy with admin/admin). If you're uploading dashboards be sure to
+# set the password here to whatever it actually is.
 grafana_host:
 grafana_port: 3000
 grafana_username: admin
