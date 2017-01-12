@@ -1,0 +1,10 @@
+{
+    "title": "All Results - UUID Max (v2)",
+    "visState": "{\"title\":\"All Results - UUID Max (v2)\",\"type\":\"histogram\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"mode\":\"grouped\",\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"6\",\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"raw\"}},{\"id\":\"7\",\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"action\",\"size\":25,\"order\":\"desc\",\"orderBy\":\"6\",\"row\":false}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"action\",\"size\":25,\"order\":\"desc\",\"orderBy\":\"_term\"}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"cloud_name\",\"size\":25,\"order\":\"desc\",\"orderBy\":\"6\"}}],\"listeners\":{}}",
+    "uiStateJSON": "{}",
+    "description": "",
+    "version": 1,
+    "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[browbeat-rally-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+    }
+}
