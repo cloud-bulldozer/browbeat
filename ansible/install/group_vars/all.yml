@@ -117,6 +117,12 @@ graphite_prefix: openstack
 # credential aren't created when you deploy graphite, use manage.py
 graphite_username: root
 graphite_password: calvin
+# List of cloud names taken by other infrastructure
+# attempting to use them should fail.
+forbidden_cloud_names:
+  - "statsd"
+  - "stats"
+  - "stats_counts"
 
 ########################################
 # Grafana Dashboarding Configuration
@@ -135,6 +141,14 @@ grafana_password: admin
 dashboards_batch: 20
 # For use with all-{cpu, memory, disk, network} openstack dashboards, uses the graphite prefix to create dashboards for specific openstack cloud
 dashboard_cloud_name: "{{graphite_prefix}}"
+
+########################################
+# StatsD Configuration
+# Points at configured Graphite instance
+########################################
+statsd_host:
+statsd_port: 8125
+statsd_enabled: False
 
 ########################################
 # Shaker Configuration

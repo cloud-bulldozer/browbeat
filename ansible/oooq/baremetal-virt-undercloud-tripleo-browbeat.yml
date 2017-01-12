@@ -14,10 +14,12 @@
   hosts: undercloud
   vars:
     results_in_httpd: false
+    statsd_host: "{{ graphite_host }}"
   roles:
     - browbeat/common
     - browbeat/browbeat
     - browbeat/browbeat-network
+    - browbeat/statsd-ironic
 
 - name: Disable sshd dns
   hosts: overcloud

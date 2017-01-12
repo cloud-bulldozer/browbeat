@@ -1,0 +1,30 @@
+---
+- name: Configure Ironic to use StatsD for metrics
+  ini_file:
+    dest: /etc/ironic/ironic.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  become: True
+  with_items:
+    - { section: 'metrics', option: 'backend', value: 'statsd' }
+    - { section: 'metrics', option: 'agent_backend', value: 'statsd' }
+    - { section: 'metrics', option: 'global_prefix', value: '{{graphite_prefix}}' }
+    - { section: 'metrics', option: 'agent_global_prefix', value: '{{graphite_prefix}}' }
+    - { section: 'metrics_statsd', option: 'statsd_host', value: "{{ statsd_host }}"}
+    - { section: 'metrics_statsd', option: 'statsd_port', value: "{{ statsd_port }}"}
+    - { section: 'metrics_statsd', option: 'agent_statsd_host', value: "{{ statsd_host }}"}
+    - { section: 'metrics_statsd', option: 'agent_statsd_port', value: "{{ statsd_port }}"}
+  when: "{{ statsd_enabled }}"
+
+- name: Restart Ironic services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  become: True
+  with_items:
+    - openstack-ironic-api
+    - openstack-ironic-conductor
+    - openstack-ironic-inspector-dnsmasq
+    - openstack-ironic-inspector
+  when: "{{ statsd_enabled }}"

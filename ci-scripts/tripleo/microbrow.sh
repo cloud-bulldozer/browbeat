@@ -22,6 +22,8 @@ export VARS="elastic_enabled_template=true \
 --extra-vars grafana_enabled_template=false \
 --extra-vars elastic_host_template=$ELASTIC_HOST \
 --extra-vars graphite_host_template=$GRAPH_HOST \
+--extra-vars statsd_host=$GRAPH_HOST \
+--extra-vars statsd_enabled=True \
 --extra-vars grafana_host_template=$GRAPH_HOST \
 --extra-vars grafana_username_template=$GRAFANA_USER \
 --extra-vars grafana_password_template=$GRAFANA_PASS \

@@ -1,0 +1,9 @@
+---
+#
+# Installs a StatsD server on the StatsD host with the default port, does not secure it
+
+- hosts: statsd
+  remote_user: root
+  roles:
+    - epel
+    - statsd-install

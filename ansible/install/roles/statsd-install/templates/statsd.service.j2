@@ -1,0 +1,26 @@
+# This is a systemd file to make statsd work well
+# To make this work:
+#  * place this file in /etc/systemd/system and run the commands:
+#
+# Credit for this template goes to the venerable Kambiz
+#
+#  systemctl daemon-reload
+#  systemctl enable graphite-web
+#  systemctl start graphite-web
+#
+[Unit]
+Description=statsd
+
+[Service]
+Type=simple
+TimeoutStartSec=5m
+
+ExecStart=statsd /etc/statsd/conf.js
+
+ExecReload=statsd /etc/statsd/conf.js
+
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target

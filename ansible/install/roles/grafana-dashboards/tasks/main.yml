@@ -12,6 +12,12 @@
 # with cloud_dashboards=false
 #
 
+- name: Check Cloud Name
+  fail:
+    msg: "The Cloud name {{dashboard_cloud_name}} is reserved for a service, please use a different one"
+  when: item == dashboard_cloud_name
+  with_items: "{{forbidden_cloud_names}}"
+
 - name: Generate General Dashboards
   template:
     src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
@@ -39,7 +45,7 @@
 
 - name: Remove Existing Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item|replace('_', '-')}}"
-  when: overwrite_existing and cloud_dashboards
+  when: "{{overwrite_existing}} and {{cloud_dashboards}}"
   with_items: "{{cloud_specific_dashboards}}"
 
 - name: Upload Static Dashboards to Grafana

@@ -1,0 +1,8 @@
+---
+#
+# enables Ironic StatsD metrics and points at the StatsD host configured in groupvars/all.yml
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  roles:
+    - statsd-ironic

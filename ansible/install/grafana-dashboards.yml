@@ -18,6 +18,7 @@
       - cloud_system_performance_comparsion
       - cloud_gnocchi_status
       - three_node_performance_food_groups
+      - openstack_ironic_metrics
     cloud_specific_dashboards:
       - cpu
       - memory
