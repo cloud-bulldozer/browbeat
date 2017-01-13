@@ -300,7 +300,7 @@ shaker:
       progression: linear
       time: 60
       file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name: l2-4-8
+    - name: l2-8-2
       enabled: true
       density: 8
       compute: 2
