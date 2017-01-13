@@ -103,14 +103,10 @@ PreCacheChain "PreCache"
   ProcessMatch "aodh-notifier" "python.+aodh-notifier"                                  # 9,-10
 
   # Ceilometer (OpenStack Installed)
-  ProcessMatch "ceilometer-agent-central" "python.+ceilometer-agent-central"            # -9,-10
-  ProcessMatch "ceilometer-agent-compute" "python.+ceilometer-agent-compute"            # -9,-10
-  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"  # 9,-10
-  ProcessMatch "ceilometer-alarm-evaluator" "python.+ceilometer-alarm-evaluator"        # -9,-10
-  ProcessMatch "ceilometer-alarm-notifier" "python.+ceilometer-alarm-notifier"          # -9,-10
-  ProcessMatch "ceilometer-api" "python.+ceilometer-api"                                # 9,-10
-  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"                    # 9,-10
-  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9,-10
+  ProcessMatch "ceilometer-agent-notification" "python.+ceilometer-agent-notification"  # 9,10
+  ProcessMatch "ceilometer-api" "python.+ceilometer-api"                                # 9,-10(httpd)
+  ProcessMatch "ceilometer-collector" "python.+ceilometer-collector"                    # 9,10
+  ProcessMatch "ceilometer-polling" "python.+ceilometer-polling"                        # 9,10
 
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
@@ -132,12 +128,10 @@ PreCacheChain "PreCache"
   ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # -9,-10
   ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 9,10
   Process "redis-server"                                                                # -9,-10
-  ProcessMatch "tuskar-api" "python.+tuskar-api"                                        # -9,-10
 
   # Heat (OpenStack Installed)
   ProcessMatch "heat-api" "python.+heat-api"                                            # 9,10
   ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 9,10
-  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # -9,-10
   ProcessMatch "heat-engine" "python.+heat-engine"                                      # 9,10
 
   # Ironic (OpenStack Installed)
@@ -148,7 +142,6 @@ PreCacheChain "PreCache"
   ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 9,10
 
   # Keystone (OpenStack Installed)
-  ProcessMatch "keystone-all" "python.+keystone-all"                                    # -9,-10
   ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 9,10
   ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 9,10
   ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 9,10
@@ -213,8 +206,24 @@ PreCacheChain "PreCache"
       Regex "[ERROR]"
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex "[Warning]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex "[Note]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/rabbitmq/rabbit\@{{ansible_hostname}}.log">
@@ -223,8 +232,24 @@ PreCacheChain "PreCache"
       Regex "ERROR REPORT"
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex "WARNING REPORT"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex "INFO REPORT"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/keystone/keystone.log">
@@ -233,8 +258,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/httpd/keystone_wsgi_admin_error.log">
     Instance "keystone-wsgi-admin"
@@ -242,7 +283,7 @@ PreCacheChain "PreCache"
       Regex ":error"
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
   </File>
   <File "/var/log/httpd/keystone_wsgi_main_error.log">
@@ -251,7 +292,7 @@ PreCacheChain "PreCache"
       Regex ":error"
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
   </File>
 
@@ -261,8 +302,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/nova/nova-compute.log">
     Instance "nova-compute"
@@ -270,8 +327,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/nova/nova-conductor.log">
     Instance "nova-conductor"
@@ -279,8 +352,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/nova/nova-scheduler.log">
     Instance "nova-scheduler"
@@ -288,8 +377,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/neutron/dhcp-agent.log">
@@ -298,8 +403,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/neutron/openvswitch-agent.log">
     Instance "neutron-openvswitch-agent"
@@ -307,8 +428,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/neutron/server.log">
     Instance "neutron-server"
@@ -316,8 +453,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/ironic/ironic-api.log">
@@ -326,8 +479,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/ironic/ironic-conductor.log">
     Instance "ironic-conductor"
@@ -335,8 +504,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/ironic-inspector/ironic-inspector.log">
@@ -345,8 +530,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/heat/heat-api-cfn.log">
@@ -355,8 +556,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/heat/heat-api.log">
     Instance "heat-api"
@@ -364,8 +581,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/heat/heat-engine.log">
     Instance "heat-engine"
@@ -373,8 +606,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/glance/api.log">
@@ -383,8 +632,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/glance/registry.log">
     Instance "glance-registry"
@@ -392,8 +657,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/mistral/api.log">
@@ -402,8 +683,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/mistral/engine.log">
     Instance "mistral-engine"
@@ -411,8 +708,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/mistral/executor.log">
     Instance "mistral-executor"
@@ -420,8 +733,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   # Swift logs all into the same file
@@ -431,20 +760,60 @@ PreCacheChain "PreCache"
       Regex "account-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "account-server"
+      Instance "account-server-error"
     </Match>
     <Match>
       Regex "container-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "container-server"
+      Instance "container-server-error"
     </Match>
     <Match>
       Regex "object-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "object-server"
+      Instance "object-server-error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex "account-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server-warn"
+    </Match>
+    <Match>
+      Regex "container-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server-warn"
+    </Match>
+    <Match>
+      Regex "object-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server-warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex "account-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server-info"
+    </Match>
+    <Match>
+      Regex "container-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server-info"
+    </Match>
+    <Match>
+      Regex "object-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server-info"
+    </Match>
+{% endif %}
   </File>
 
 </Plugin>

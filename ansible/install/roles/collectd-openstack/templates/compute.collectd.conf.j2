@@ -128,8 +128,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 
   <File "/var/log/neutron/openvswitch-agent.log">
@@ -138,8 +154,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/neutron/l3-agent.log">
     Instance "neutron-l3-agent"
@@ -147,8 +179,24 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
   <File "/var/log/neutron/metadata-agent.log">
     Instance "neutron-metadata-agent"
@@ -156,17 +204,50 @@ PreCacheChain "PreCache"
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
+
   <File "/var/log/ceilometer/compute.log">
     Instance "ceilometer-compute"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "total"
+      Instance "error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
   </File>
 </Plugin>
 
