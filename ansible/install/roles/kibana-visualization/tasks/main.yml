@@ -29,13 +29,15 @@
     dest: "{{browbeat_path}}/visualization/Shaker/visualization/{{item.title}}.json"
   with_flattened:
     - "{{shaker_scenario_throughput_concurrency_visualizations}}"
+    - "{{shaker_cloud_comparison_visualizations}}"
 
-- name: Generate Shaker Dashboard
+- name: Generate Shaker Dashboards
   template:
     src: dashboard.json.j2
     dest: "{{browbeat_path}}/visualization/Shaker/dashboard/{{item.file_name}}"
   with_flattened:
     - "{{shaker_scenario_throughput_concurrency_dashboard}}"
+    - "{{shaker_cloud_comparison_dashboard}}"
 
 - name: Remove Searches
   uri:
@@ -147,6 +149,8 @@
     state: absent
   with_items:
     - "{{shaker_scenario_throughput_concurrency_visualizations}}"
+    - "{{shaker_cloud_comparison_visualizations}}"
+
 
 - name: Cleanup Shaker Dashboards
   file:
@@ -154,3 +158,4 @@
     state: absent
   with_items:
     - "{{shaker_scenario_throughput_concurrency_dashboard}}"
+    - "{{shaker_cloud_comparison_dashboard}}"

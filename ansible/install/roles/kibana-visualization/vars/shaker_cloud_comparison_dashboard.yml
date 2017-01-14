@@ -1,0 +1,94 @@
+---
+#
+# Shaker Scenario Throughput vs Concurrency Dashboard
+#
+
+shaker_cloud_comparison_dashboard:
+  - file_name: "ShakerCloudComparison.json"
+    title: "Browbeat Shaker Cloud Performance Comparison"
+    darkTheme: "true"
+    panels:
+      - id: "Shaker-Cloud-Comparison-L2-Throughput"
+        type: "visualization"
+        panelIndex: 1
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 1
+      - id: "Browbeat-Shaker-Cloud-Comprison-L2-Throughput"
+        type: "visualization"
+        panelIndex: 2
+        size_x: 6
+        size_y: 5
+        col: 1
+        row: 4
+      - id: "Shaker-Cloud-Comparison-L2-Latency"
+        type: "visualization"
+        panelIndex: 3
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 1
+      - id: "Browbeat-Shaker-Cloud-Comprison-L2-Latency"
+        type: "visualization"
+        panelIndex: 4
+        size_x: 6
+        size_y: 5
+        col: 7
+        row: 4
+      - id: "Shaker-Cloud-Comparison-L3-ES-Throughput"
+        type: "visualization"
+        panelIndex: 5
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 9
+      - id: "Shaker-Cloud-Comparison-L3-East-West-Latency"
+        type: "visualization"
+        panelIndex: 6
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 9
+      - id: "Browbeat-Shaker-Cloud-Comparison-L3-East-West-Throughput"
+        type: "visualization"
+        panelIndex: 7
+        size_x: 6
+        size_y: 5
+        col: 1
+        row: 12
+      - id: "Browbeat-Shaker-Cloud-Comparison-L3-East-West-Latency"
+        type: "visualization"
+        panelIndex: 8
+        size_x: 6
+        size_y: 5
+        col: 7
+        row: 12
+      - id: "Shaker-Cloud-Comparison-L3-North-South-Throughput"
+        type: "visualization"
+        panelIndex: 9
+        size_x: 6
+        size_y: 3
+        col: 1
+        row: 17
+      - id: "Shaker-Cloud-Comparison-L3-North-South-Latency"
+        type: "visualization"
+        panelIndex: 10
+        size_x: 6
+        size_y: 3
+        col: 7
+        row: 17
+      - id: "Browbeat-Shaker-Cloud-Comparison-L3-North-South-Throughput"
+        type: "visualization"
+        panelIndex: 11
+        size_x: 6
+        size_y: 5
+        col: 1
+        row: 20
+      - id: "Browbeat-Shaker-Cloud-Comparison-L3-North-South-Latency"
+        type: "visualization"
+        panelIndex: 12
+        size_x: 6
+        size_y: 5
+        col: 7
+        row: 20
