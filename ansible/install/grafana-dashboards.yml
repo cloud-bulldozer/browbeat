@@ -30,6 +30,9 @@
         template_node_type: controller
         process_list_name: OpenStack-Controller
       - template_name: openstack
+        template_node_type: blockstorage
+        process_list_name: OpenStack-BlockStorage
+      - template_name: openstack
         template_node_type: objectstorage
         process_list_name: OpenStack-ObjectStorage
       - template_name: openstack

@@ -8,6 +8,7 @@
 # Or use tags:
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "undercloud"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "controller"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "blockstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "objectstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "cephstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "compute"
@@ -45,6 +46,22 @@
       when: not collectd_controller
       ignore_errors: true
   tags: controller
+
+- hosts: blockstorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: blockstorage
+  roles:
+    - { role: common, when: collectd_blockstorage }
+    - { role: epel, when: collectd_blockstorage }
+    - { role: collectd-openstack, when: collectd_blockstorage }
+  tasks:
+    - name: Collectd off if not collectd_blockstorage
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_blockstorage
+      ignore_errors: true
+  tags: blockstorage
 
 - hosts: objectstorage
   remote_user: "{{ host_remote_user }}"

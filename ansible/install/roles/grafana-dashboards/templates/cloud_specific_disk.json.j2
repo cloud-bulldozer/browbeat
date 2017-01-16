@@ -1,5 +1,5 @@
 {% set vars = {'panel_idx': 0, 'initial1': 0, 'initial2': 0, 'initial3': 0} %}
-{% set dashboard_groups = ['undercloud', 'controller', 'objectstorage', 'cephstorage', 'compute'] %}
+{% set dashboard_groups = ['undercloud', 'controller', 'blockstorage', 'objectstorage', 'cephstorage', 'compute'] %}
 {
   "dashboard": {
       "id": null,
@@ -401,6 +401,39 @@
           {
             "allFormat": "glob",
             "current": {
+              "text": "disk-sda",
+              "value": "disk-sda"
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "compute_disk",
+            "options": [],
+            "query": "{{dashboard_cloud_name}}.*compute*.disk-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
+              "text": "None",
+              "value": "",
+              "isNone": true
+            },
+            "datasource": null,
+            "includeAll": false,
+            "multi": false,
+            "multiFormat": "glob",
+            "name": "cephstorage_disk",
+            "options": [],
+            "query": "{{dashboard_cloud_name}}.*cephstorage*.disk-*",
+            "refresh": true,
+            "type": "query"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
               "text": "None",
               "value": "",
               "isNone": true
@@ -426,25 +459,9 @@
             "includeAll": false,
             "multi": false,
             "multiFormat": "glob",
-            "name": "cephstorage_disk",
+            "name": "blockstorage_disk",
             "options": [],
-            "query": "{{dashboard_cloud_name}}.*cephstorage*.disk-*",
-            "refresh": true,
-            "type": "query"
-          },
-          {
-            "allFormat": "glob",
-            "current": {
-              "text": "disk-sda",
-              "value": "disk-sda"
-            },
-            "datasource": null,
-            "includeAll": false,
-            "multi": false,
-            "multiFormat": "glob",
-            "name": "compute_disk",
-            "options": [],
-            "query": "{{dashboard_cloud_name}}.*compute*.disk-*",
+            "query": "{{dashboard_cloud_name}}.*blockstorage*.disk-*",
             "refresh": true,
             "type": "query"
           }
