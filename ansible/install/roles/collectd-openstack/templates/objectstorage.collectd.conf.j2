@@ -125,20 +125,60 @@ PreCacheChain "PreCache"
       Regex "account-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "account-server"
+      Instance "account-server-error"
     </Match>
     <Match>
       Regex "container-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "container-server"
+      Instance "container-server-error"
     </Match>
     <Match>
       Regex "object-server: ERROR "
       DSType "CounterInc"
       Type "counter"
-      Instance "object-server"
+      Instance "object-server-error"
     </Match>
+{%if regex_warn %}
+    <Match>
+      Regex "account-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server-warn"
+    </Match>
+    <Match>
+      Regex "container-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server-warn"
+    </Match>
+    <Match>
+      Regex "object-server: WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server-warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex "account-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "account-server-info"
+    </Match>
+    <Match>
+      Regex "container-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server-info"
+    </Match>
+    <Match>
+      Regex "object-server: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "object-server-info"
+    </Match>
+{% endif %}
   </File>
 
 </Plugin>

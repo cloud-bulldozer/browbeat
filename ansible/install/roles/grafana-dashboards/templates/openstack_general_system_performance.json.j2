@@ -3876,12 +3876,144 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub(aliasSub($Cloud.$Node.tail-*.*, 'counter-', ''), 'total', ''), 'tail-', ''), 2, 3)"
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*error, 'tail-', ''), 'counter-', ''), 10), 'max'), 2, 3)"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "$Cloud - $Node - Tail",
+            "title": "$Cloud - $Node - ERROR Rate in logs",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*warn, 'tail-', ''), 'counter-', ''), 10), 'max'), 2, 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - WARN Rate in logs",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*info, 'tail-', ''), 'counter-', ''), 10), 'max'), 2, 3)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node - INFO Rate in logs",
             "tooltip": {
               "shared": true,
               "value_type": "individual"
@@ -3896,7 +4028,7 @@
           }
         ],
         "showTitle": true,
-        "title": "Tail"
+        "title": "Logs"
       }
     ],
     "schemaVersion": 8,

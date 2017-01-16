@@ -83,6 +83,13 @@ collectd_compute: false
 gnocchi_status_python_plugin: false
 gnocchi_status_interval: 30
 
+########################
+# tail plugin
+########################
+# Determines if WARN/INFO messages are also counted
+regex_warn: false
+regex_info: false
+
 ########################################
 # Docker related
 # (use these if deploying graphite/carbon/grafana as containers)
