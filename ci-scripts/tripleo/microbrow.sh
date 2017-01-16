@@ -4,7 +4,7 @@ set -eu
 pushd $WORKSPACE
  git clone https://github.com/openstack/tripleo-quickstart-extras
  pushd $WORKSPACE/tripleo-quickstart-extras
-  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/77/403677/9 && git checkout FETCH_HEAD
+  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/77/403677/13 && git checkout FETCH_HEAD
  popd
 popd
 
