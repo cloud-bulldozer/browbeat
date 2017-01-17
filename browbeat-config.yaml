@@ -67,6 +67,7 @@ shaker:
   sleep_after: 5
   venv: /home/stack/shaker-venv
   shaker_region: regionOne
+  external_host: 2.2.2.2
   scenarios:
     - name: l2
       enabled: true

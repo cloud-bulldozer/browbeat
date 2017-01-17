@@ -209,6 +209,10 @@ mapping:
       shaker_region:
         type: str
         required: true
+      external_host:
+        type: str
+        required: False
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
       scenarios:
         type: seq
         sequence:

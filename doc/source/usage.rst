@@ -68,6 +68,82 @@ browbeat-config.yaml:
 
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py  perfkit -s browbeat-config.yaml
 
+Running Shaker
+==============
+Running Shaker requires the shaker image to be built, which in turn requires
+instances to be able to access the internet. The playbooks for this installation
+have been described in the installation documentation but for the sake of
+convenience they are being mentioned here as well.
+
+::
+
+    $ ansible-playbook -i hosts install/browbeat_network.yml
+    $ ansible-playbook -i hosts install/shaker_build.yml
+
+.. note:: The playbook to setup networking is provided as an example only and
+might not work for you based on your underlay/overlay network setup. In such
+cases, the exercise of setting up networking for instances to be able to access
+the internet is left to the user.
+
+Once the shaker image is built, you can run Shaker via Browbeat by filling in a
+few configuration options in the configuration file. The meaning of each option is
+summarized below:
+
+**shaker:**
+   :enabled: Boolean ``true`` or ``false``, enable shaker or not
+   :server: IP address of the shaker-server for agent to talk to (undercloud IP
+    by default)
+   :port: Port to connect to the shaker-server (undercloud port 5555 by default)
+   :flavor: OpenStack instance flavor you want to use
+   :join_timeout: Timeout in seconds for agents to join
+   :sleep_before: Time in seconds to sleep before executing a scenario
+   :sleep_after: Time in seconds to sleep after executing a scenario
+   :venv: venv to execute shaker commands in, ``/home/stack/shaker-venv`` by
+    default
+   :shaker_region: OpenStack region you want to use
+   :external_host: IP of a server for  external tests (should have
+    ``browbeat/util/shaker-external.sh`` executed on it previously and have
+    iptables/firewalld/selinux allowing connections on the ports used by network
+    testing tools netperf and iperf)
+
+   **scenarios:** List of scenarios you want to run
+       :\- name: Name for the scenario. It is used to create directories/files
+             accordingly
+       :enabled: Boolean ``true`` or ``false`` depending on whether or not you
+        want to execute the scenario
+       :density: Number of instances
+       :compute: Number of compute nodes across which to spawn instances
+       :placement: ``single_room`` would mean one instance per compute node and
+        ``double_room`` would give you two instances per compute node
+       :progression: ``null`` means all agents are involved, ``linear`` means
+        execution starts with one agent and increases linearly, ``quadratic``
+        would result in quadratic growth in number of agents participating
+        in the test concurrently
+       :time: Time in seconds you want each test in the scenario
+        file to run
+       :file: The base shaker scenario file to use to override
+        options (this would depend on whether you want to run L2, L3 E-W or L3
+        N-S tests and also on the class of tool you want to use such as flent or
+        iperf3)
+
+To analyze results sent to Elasticsearch (you must have Elasticsearch enabled
+and the IP of the Elasticsearch host provided in the browbeat configuration
+file), you can use the following playbook to setup some prebuilt dashboards for
+you:
+
+::
+
+    $ ansible-playbook -i hosts install/kibana-visuals.yml
+
+Alternatively you can create your own visualizations of specific shaker runs
+using some simple searches such as:
+
+::
+
+   shaker_uuid: 97092334-34e8-446c-87d6-6a0f361b9aa8 AND record.concurrency: 1 AND result.result_type: bandwidth
+   shaker_uuid: c918a263-3b0b-409b-8cf8-22dfaeeaf33e AND record.concurrency:1 AND record.test:Bi-Directional
+
+
 Working with Multiple Clouds
 ============================
 

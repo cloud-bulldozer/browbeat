@@ -43,8 +43,13 @@ From your local machine
     $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     $ ansible-playbook -i hosts install/browbeat.yml
     $ vi install/group_vars/all.yml # Edit Browbeat network settings
-    $ ansible-playbook -i hosts install/browbeat_network.yml
+    $ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
     $ ansible-playbook -i hosts install/shaker_build.yml
+
+.. note:: ``browbeat-network.yml`` will more than likely not work for you
+depending on your underlay/overlay network setup. In such cases, user needs
+to create appropriate networks for instances to allow them to reach the
+internet.
 
 (Optional) Install collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
