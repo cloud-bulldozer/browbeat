@@ -1,9 +1,10 @@
 # Tests to be compleated for the install-and-check.sh script minimal and short workloads are performed
 #  to confirm functionality.
 browbeat:
-  results : results/
+  results : "$HOME/browbeat/results"
   rerun: 1
   cloud_name: {{ browbeat_cloud_name }}
+  log : "$HOME/browbeat/log"
 elasticsearch:
   enabled: {{ elastic_enabled_template }}
   host: {{ elastic_host_template }}

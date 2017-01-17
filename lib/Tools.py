@@ -126,3 +126,20 @@ class Tools(object):
         else:
             self.logger.info("Metadata about cloud has been gathered")
             return True
+
+    # Takes a string with $FOO and returns a string
+    # with those variables replaced with their env paths.
+    def sub_env_vars(self, path):
+        path_list = path.split('/')
+        new_path = []
+        for item in path_list:
+            if item.startswith('$'):
+                var = item.translate(None, '$')
+                replacement = os.environ[var]
+                if replacement == None:
+                    new_path.extend(item + "/")
+                else:
+                    new_path.extend(replacement + "/")
+            else:
+                new_path.extend(item + "/")
+        return ''.join(new_path)

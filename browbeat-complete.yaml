@@ -1,8 +1,9 @@
 # Complete set of Stress Tests, this can take a long time (day(s))
 browbeat:
-  results : results/
+  results : "$HOME/.browbeat/results/"
   rerun: 3
   cloud_name: openstack
+  log : "$HOME/.browbeat/log/"
 elasticsearch:
   enabled: false
   host: 1.1.1.1
