@@ -41,6 +41,8 @@ def main():
     parser.add_argument('workloads', nargs='*', help='Browbeat workload(s). Takes a space separated'
                         ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
     parser.add_argument('--debug', action='store_true', help='Enable Debug messages')
+    parser.add_argument('-p','--postprocess',
+                        dest="path",help="Path to process, ie results/20170101/")
     _cli_args = parser.parse_args()
 
     _logger = logging.getLogger('browbeat')
@@ -67,6 +69,8 @@ def main():
     # Default to all workloads
     if _cli_args.workloads == []:
         _cli_args.workloads.append('all')
+    if _cli_args.path :
+        return tools.post_process(_cli_args)
 
     if len(_cli_args.workloads) == 1 and 'all' in _cli_args.workloads:
         _cli_args.workloads = _workload_opts

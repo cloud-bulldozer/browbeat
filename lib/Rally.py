@@ -23,6 +23,7 @@ import shutil
 import time
 import Tools
 import WorkloadBase
+import json
 
 
 class Rally(WorkloadBase.WorkloadBase):
@@ -33,7 +34,8 @@ class Rally(WorkloadBase.WorkloadBase):
         self.tools = Tools.Tools(self.config)
         self.connmon = Connmon.Connmon(self.config)
         self.grafana = Grafana.Grafana(self.config)
-        self.elastic = Elastic.Elastic(self.config, self.__class__.__name__.lower())
+        self.elastic = Elastic.Elastic(
+            self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -125,16 +127,44 @@ class Rally(WorkloadBase.WorkloadBase):
         result['rally_metadata'] = meta
         return result
 
-    def json_result(self, task_id, scenario_name, run, test_name, result_dir):
+    def file_to_json(self, filename, push_to_es=False):
+        self.logger.info("Loading rally JSON file {} JSON".format(filename))
+        rally_json = self.elastic.load_json_file(filename)
+        errors, results = self.json_parse(rally_json)
+        for error in errors:
+            error_result = self.elastic.combine_metadata(error)
+            with open("{}/{}-error_index-es.json".format(os.path.dirname(filename),
+                                                         os.path.basename(filename)),
+                      'w+') as error_file:
+                json.dump(error_result, error_file)
+        for result in results:
+            result_doc = self.elastic.combine_metadata(result)
+            with open("{}/{}-result_index-es.json".format(os.path.dirname(filename),
+                                                          os.path.splitext(
+                                                          os.path.basename(filename))[0]),
+                      'w+') as result_file:
+                json.dump(result_doc, result_file)
+        return errors, results
+
+    def json_parse(self, json_doc, metadata={}):
+        """Function to extract data out of a json document
+
+        Args:
+            json_doc (json): json document to parse
+            metadata (dict): dict containing run specific metadata, ie rally UUID.
+
+        Returns:
+            errors (list) : errors contained within the json_doc
+            results (list) : results contained within the json_doc
+        """
         rally_data = {}
-        failure = False
-        self.logger.info("Loading Task_ID {} JSON".format(task_id))
-        rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
-        es_ts = datetime.datetime.utcnow()
-        if len(rally_json) < 1:
-            self.logger.error("Issue with Rally Results")
+        errors = []
+        results = []
+        if len(json_doc) < 1:
+            self.logger.error("Issue with JSON document")
             return False
-        for metrics in rally_json[0]['result']:
+        es_ts = datetime.datetime.utcnow()
+        for metrics in json_doc[0]['result']:
             for workload in metrics:
                 if type(metrics[workload]) is dict:
                     for value in metrics[workload]:
@@ -146,47 +176,56 @@ class Rally(WorkloadBase.WorkloadBase):
                 iteration = 1
                 workload_name = value
                 if value.find('(') is not -1:
-                    iteration = re.findall('\d+', value)
+                    iteration = re.findall('\d+', value)[0]
                     workload_name = value.split('(')[0]
                 error = {'action': workload_name.strip(),
-                         'browbeat_rerun': run,
                          'iteration': iteration,
                          'error_type': metrics['error'][0],
                          'error_msg': metrics['error'][1],
-                         'result': task_id,
                          'timestamp': str(es_ts).replace(" ", "T"),
-                         'rally_setup': rally_json[0]['key'],
-                         'scenario': scenario_name,
+                         'rally_setup': json_doc[0]['key']
                          }
-                error_result = self.elastic.combine_metadata(error)
-                index_status = self.elastic.index_result(error_result, test_name, result_dir,
-                                                         workload, 'error')
-                if index_status is False:
-                    failure = True
+                if len(metadata) > 0:
+                    error.update(metadata)
+                errors.append(error)
         for workload in rally_data:
             if not type(rally_data[workload]) is dict:
                 iteration = 1
                 workload_name = workload
                 if workload.find('(') is not -1:
-                    iteration = re.findall('\d+', workload)
+                    iteration = re.findall('\d+', workload)[0]
                     workload_name = workload.split('(')[0]
-                rally_stats = {'result': task_id,
-                               'action': workload_name.strip(),
-                               'browbeat_rerun': run,
+                rally_stats = {'action': workload_name.strip(),
                                'iteration': iteration,
                                'timestamp': str(es_ts).replace(" ", "T"),
                                'grafana_url': [self.grafana.grafana_urls()],
-                               'scenario': scenario_name,
-                               'rally_setup': rally_json[0]['key'],
+                               'rally_setup': json_doc[0]['key'],
                                'raw': rally_data[workload]}
-                result = self.elastic.combine_metadata(rally_stats)
-                index_status = self.elastic.index_result(result, test_name, result_dir, workload)
-                if index_status is False:
-                    failure = True
-        if failure:
-            return False
-        else:
-            return True
+                if len(metadata) > 0:
+                    rally_stats.update(metadata)
+                results.append(rally_stats)
+        return errors, results
+
+    def json_result(self, task_id, scenario_name, run, test_name, result_dir):
+        success = True
+        self.logger.info("Loading Task_ID {} JSON".format(task_id))
+        rally_json = self.elastic.load_json(self.gen_scenario_json(task_id))
+        errors, results = self.json_parse(rally_json, {'scenario': scenario_name,
+                                                       'browbeat_rerun': run,
+                                                       'result': task_id})
+        for error in errors:
+            error_result = self.elastic.combine_metadata(error)
+            status = self.elastic.index_result(error_result, test_name, result_dir,
+                                               'rally', 'error')
+            if not status:
+                success = False
+        for result in results:
+            result = self.elastic.combine_metadata(result)
+            status = self.elastic.index_result(
+                result, test_name, result_dir, 'rally')
+            if not status:
+                success = False
+        return success
 
     def start_workloads(self):
         """Iterates through all rally scenarios in browbeat yaml config file"""
@@ -239,7 +278,8 @@ class Rally(WorkloadBase.WorkloadBase):
                                 del scenario['concurrency']
                             else:
                                 concurrencies = def_concurrencies
-                            concurrency_count_dict = collections.Counter(concurrencies)
+                            concurrency_count_dict = collections.Counter(
+                                concurrencies)
                             if 'times' not in scenario:
                                 scenario['times'] = def_times
 
@@ -260,7 +300,8 @@ class Rally(WorkloadBase.WorkloadBase):
                                         self.logger.debug("Duplicate concurrency {} found,"
                                                           " setting test name"
                                                           " to {}".format(concurrency, test_name))
-                                        concurrency_count_dict[concurrency] -= 1
+                                        concurrency_count_dict[
+                                            concurrency] -= 1
 
                                     if not result_dir:
                                         self.logger.error(
@@ -311,7 +352,8 @@ class Rally(WorkloadBase.WorkloadBase):
                                             index_status = self.json_result(
                                                 task_id, scenario_name, run, test_name, result_dir)
                                             self.get_time_dict(to_time, from_time,
-                                                               benchmark['name'], new_test_name,
+                                                               benchmark[
+                                                                   'name'], new_test_name,
                                                                workload, "pass", index_status)
                                         else:
                                             self.get_time_dict(to_time, from_time, benchmark[
