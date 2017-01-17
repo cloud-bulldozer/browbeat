@@ -27,6 +27,11 @@ if [ ${#controller_id} -lt 1 ]; then
    echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
 fi
+blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+if [ ${#blockstorage_id} -lt 1 ]; then
+   echo "Error: BlockStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+   exit 1
+fi
 objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
 if [ ${#objectstorage_id} -lt 1 ]; then
    echo "Error: ObjectStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
@@ -47,6 +52,10 @@ controller_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChec
 if [ ${#controller_ids} -lt 1 ]; then
    echo "Error: Controller IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
    exit 1
+fi
+blockstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${blockstorage_id} > >(grep -i blockstorage) 2>/dev/null" | awk '{print $2}')
+if [ ${#blockstorage_ids} -lt 1 ]; then
+   echo "Info: No BlockStorage resources."
 fi
 objectstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${objectstorage_id} > >(grep -i objectstorage) 2>/dev/null" | awk '{print $2}')
 if [ ${#objectstorage_ids} -lt 1 ]; then
@@ -70,6 +79,15 @@ do
    controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
  else
    controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${controller_id} ${controller} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+ fi
+done
+blockstorage_uuids=()
+for blockstorage in ${blockstorage_ids}
+do
+ if [[ ${version_tripleo} -lt 2 ]] ; then
+   blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${blockstorage_id} ${blockstorage} | grep -i nova_server_resource" | awk '{print $4}')
+ else
+   blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${blockstorage_id} ${blockstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
  fi
 done
 objectstorage_uuids=()
@@ -130,7 +148,9 @@ echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
 compute_hn=()
 controller_hn=()
-ceph_hn=()
+blockstorage_hn=()
+objectstorage_hn=()
+cephstorage_hn=()
 IFS=$'\n'
 for line in $nodes; do
  uuid=$(echo $line | awk '{print $2}')
@@ -138,6 +158,8 @@ for line in $nodes; do
  IP=$(echo $line | awk '{print $12}' | cut -d "=" -f2)
  if grep -q $uuid <<< {$controller_uuids}; then
   controller_hn+=("$host")
+elif grep -q $uuid <<< {$blockstorage_uuids}; then
+  blockstorage_hn+=("$host")
  elif grep -q $uuid <<< {$objectstorage_uuids}; then
   objectstorage_hn+=("$host")
  elif grep -q $uuid <<< {$cephstorage_uuids}; then
@@ -168,6 +190,13 @@ if [[ ${#controller_hn} -gt 0 ]]; then
  echo "[controller]" | tee -a ${ansible_inventory_file}
  for ct in ${controller_hn[@]}; do
   echo "${ct}" | tee -a ${ansible_inventory_file}
+ done
+fi
+if [[ ${#blockstorage_hn} -gt 0 ]]; then
+ echo "" | tee -a ${ansible_inventory_file}
+ echo "[blockstorage]" | tee -a ${ansible_inventory_file}
+ for blockstorage in ${blockstorage_hn[@]}; do
+  echo "${blockstorage}" | tee -a ${ansible_inventory_file}
  done
 fi
 if [[ ${#objectstorage_hn} -gt 0 ]]; then

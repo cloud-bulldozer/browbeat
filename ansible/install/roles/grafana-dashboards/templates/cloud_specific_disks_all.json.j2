@@ -1,5 +1,5 @@
 {% set vars = {'panel_idx': 0, 'initial1': 0, 'initial2': 0, 'initial3': 0} %}
-{% set dashboard_groups = ['undercloud', 'controller', 'objectstorage', 'cephstorage', 'compute'] %}
+{% set dashboard_groups = ['undercloud', 'controller', 'blockstorage', 'objectstorage', 'cephstorage', 'compute'] %}
 {
   "dashboard": {
       "id": null,
@@ -401,9 +401,9 @@
             "includeAll": true,
             "multi": true,
             "multiFormat": "glob",
-            "name": "objectstorage_disk",
+            "name": "compute_disk",
             "options": [],
-            "query": "{{dashboard_cloud_name}}.*objectstorage*.disk-*",
+            "query": "{{dashboard_cloud_name}}.*compute*.disk-*",
             "refresh": true,
             "type": "query",
             "regex": "/disk-[a-z]*$/"
@@ -435,9 +435,26 @@
             "includeAll": true,
             "multi": true,
             "multiFormat": "glob",
-            "name": "compute_disk",
+            "name": "objectstorage_disk",
             "options": [],
-            "query": "{{dashboard_cloud_name}}.*compute*.disk-*",
+            "query": "{{dashboard_cloud_name}}.*objectstorage*.disk-*",
+            "refresh": true,
+            "type": "query",
+            "regex": "/disk-[a-z]*$/"
+          },
+          {
+            "allFormat": "glob",
+            "current": {
+              "text": "all",
+              "value": "all"
+            },
+            "datasource": null,
+            "includeAll": true,
+            "multi": true,
+            "multiFormat": "glob",
+            "name": "blockstorage_disk",
+            "options": [],
+            "query": "{{dashboard_cloud_name}}.*blockstorage*.disk-*",
             "refresh": true,
             "type": "query",
             "regex": "/disk-[a-z]*$/"

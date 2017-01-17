@@ -243,6 +243,21 @@ per_process_panels:
         - collectd
 
   #
+  # This dashboard should only contain OpenStack BlockStorage Node processes
+  #
+  OpenStack-BlockStorage:
+    - name: "Cinder"
+      processes:
+        - cinder-volume
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-server
+    - name: "Collectd"
+      processes:
+        - collectd
+
+  #
   # This dashboard should only contain OpenStack ObjectStorage Node processes
   #
   OpenStack-ObjectStorage:

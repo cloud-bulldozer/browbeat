@@ -68,6 +68,7 @@ collectd_interval: 10
 # Run collectd on specific openstack nodes:
 collectd_undercloud: true
 collectd_controller: true
+collectd_blockstorage: true
 collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
