@@ -5,12 +5,3 @@
     "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; \
      cd {{ ansible_env.HOME }}/browbeat/; \
      python browbeat.py rally > {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"
-
-- name: Run Browbeat Test Regather
-  shell:
-    "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; \
-     cd {{ ansible_env.HOME }}/browbeat/; \
-     rm metadata/software-metadata.json; \
-     rm metadata/hardware-metadata.json; \
-     rm metadata/environment-metadata.json; \
-     python browbeat.py rally > {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"

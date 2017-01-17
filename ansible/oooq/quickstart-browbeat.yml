@@ -21,7 +21,6 @@
   hosts: undercloud
   roles:
     - browbeat/collectd
-    - browbeat/gather-metadata
     - browbeat/bug-check
     - browbeat/grafana-dashboard-setup
     - browbeat/browbeat-run
