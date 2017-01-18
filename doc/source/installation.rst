@@ -46,10 +46,13 @@ From your local machine
     $ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
     $ ansible-playbook -i hosts install/shaker_build.yml
 
-.. note:: ``browbeat-network.yml`` will more than likely not work for you
-depending on your underlay/overlay network setup. In such cases, user needs
-to create appropriate networks for instances to allow them to reach the
-internet.
+
+.. note:: ``browbeat-network.yml`` might not work for you depending on your 
+   underlay/overlay network setup. In such cases, user needs to create 
+   appropriate networks for instances to allow them to reach the
+   internet. Some useful documentation can be found at:
+   https://access.redhat.com/documentation/en/red-hat-openstack-platform/10/\
+   single/networking-guide/
 
 (Optional) Install collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,8 +94,16 @@ From your undercloud
     [stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
     [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
     [stack@ospd ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml
+    [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shakerimage)
     [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
+
+.. note:: ``browbeat-network.yml`` might not work for you depending on your
+   underlay/overlay network setup. In such cases, user needs to create
+   appropriate networks for instances to allow them to reach the
+   internet. Some useful documentation can be found at:
+   https://access.redhat.com/documentation/en/red-hat-openstack-platform/10/\
+   single/networking-guide/
+
 
 (Optional) Install collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
