@@ -10,18 +10,34 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.plugins.openstack import scenario
+from rally import consts
+from rally.task import scenario
 from rally.plugins.openstack.scenarios.nova import utils as nova_utils
 from rally.task import types
 from rally.task import validation
 
+@types.convert(image={"type": "glance_image"},
+               flavor={"type": "nova_flavor"})
+@validation.image_valid_on_flavor("flavor", "image")
+@validation.required_services(consts.Service.NOVA)
+@validation.required_openstack(users=True)
+@scenario.configure(context={},
+                    name="BrowbeatPlugin.nova_boot_persist")
+class NovaBootPersist(nova_utils.NovaScenario):
 
-class BrowbeatPlugin(nova_utils.NovaScenario, scenario.OpenStackScenario):
-
-    @types.convert(image={"type": "glance_image"},
-                   flavor={"type": "nova_flavor"})
-    @validation.image_valid_on_flavor("flavor", "image")
-    @validation.required_openstack(users=True)
-    @scenario.configure(context={})
-    def nova_boot_persist(self, image, flavor, **kwargs):
+    def run(self, image, flavor, **kwargs):
         self._boot_server(image, flavor)
+
+
+@types.convert(image={"type": "glance_image"},
+               flavor={"type": "nova_flavor"})
+@validation.image_valid_on_flavor("flavor", "image")
+@validation.required_contexts("browbeat_persist_network")
+@validation.required_services(consts.Service.NOVA)
+@validation.required_openstack(users=True)
+@scenario.configure(context={},
+                    name="BrowbeatPlugin.nova_boot_persist_with_network")
+class NovaBootPersistWithNetwork(nova_utils.NovaScenario):
+
+    def run(self, image, flavor, **kwargs):
+        self._boot_server(image, flavor, **kwargs)

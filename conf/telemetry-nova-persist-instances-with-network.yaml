@@ -1,8 +1,9 @@
 # Stress test designed for telemetry services (ceilometer, gnocchi) by
 # booting persisting xtiny cirros instances. It boots 100 each iteration
 # with a concurrency of 20 instances. A total of 1000 instances are
-# booted.  View how system resources degrade over each new set of
-# instances booted.
+# booted.  These instances are attached to a network which creates
+# additional telemetry load  View how system resources degrade over each
+# new set of instances booted.
 browbeat:
   results : results/
   rerun: 1
@@ -52,61 +53,72 @@ rally:
   venv: /home/stack/rally-venv/bin/activate
   plugins:
     - nova: rally/rally-plugins/nova
+    - neutron: rally/rally-plugins/neutron
   benchmarks:
     # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms
-    - name: BrowbeatNovaPersist01
+    - name: BrowbeatNovaPersistWithNetwork01
       enabled: true
       concurrency:
         - 20
       times: 100
       scenarios:
-        - name: nova-boot-100-01
+        - name: nova-boot-persist-with-network-100-01
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-02
+          network_start_cidr: 10.1.0.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-02
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-03
+          network_start_cidr: 10.1.2.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-03
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-04
+          network_start_cidr: 10.1.4.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-04
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-05
+          network_start_cidr: 10.1.6.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-05
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-06
+          network_start_cidr: 10.1.8.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-06
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-07
+          network_start_cidr: 10.1.10.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-07
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-08
+          network_start_cidr: 10.1.12.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-08
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-09
+          network_start_cidr: 10.1.14.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-09
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-        - name: nova-boot-100-10
+          network_start_cidr: 10.1.16.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
+        - name: nova-boot-persist-with-network-100-10
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
+          network_start_cidr: 10.1.18.0/23
+          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml

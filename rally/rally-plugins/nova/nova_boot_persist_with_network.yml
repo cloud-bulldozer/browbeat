@@ -1,0 +1,41 @@
+{% set image_name = image_name or "cirros" %}
+{% set flavor_name = flavor_name or "m1.xtiny" %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+{% set network_start_cidr = network_start_cidr or '10.1.0.0/23' %}
+---
+BrowbeatPlugin.nova_boot_persist_with_network:
+  -
+    args:
+      flavor:
+        name: '{{flavor_name}}'
+      image:
+        name: '{{image_name}}'
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: "constant"
+    context:
+      browbeat_persist_network:
+        networks_per_tenant: 1
+        subnets_per_network: 1
+        start_cidr: {{network_start_cidr}}
+      users:
+        tenants: 1
+        users_per_tenant: 8
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
