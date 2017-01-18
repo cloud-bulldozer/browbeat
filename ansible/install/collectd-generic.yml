@@ -1,6 +1,6 @@
 ---
 #
-# Generic Playbook to install collectd on generic machine types, use tags to seperate machine type:
+# Generic Playbook to install collectd on generic machine types, use tags to separate machine type:
 #
 # Examples:
 #
