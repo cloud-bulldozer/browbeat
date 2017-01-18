@@ -42,6 +42,26 @@
                 run: {
                     type: "long"
                 },
+                record: {
+                    properties: {
+                        agent: {
+                            index: "not_analyzed",
+                            type: "string"
+                        },
+                        node: {
+                            index: "not_analyzed",
+                            type: "string"
+                        },
+                        scenario: {
+                            index: "not_analyzed",
+                            type: "string"
+                        },
+                        test: {
+                            index: "not_analyzed",
+                            type: "string"
+                        }
+                    }
+                },
                 shaker_test_info: {
                     properties: {
                         deployment: {
@@ -53,6 +73,10 @@
                             }
                         },
                         description: {
+                            index: "not_analyzed",
+                            type: "string"
+                        },
+                        title: {
                             index: "not_analyzed",
                             type: "string"
                         },
