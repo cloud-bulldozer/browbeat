@@ -101,13 +101,13 @@ rally:
           file: rally/nova/nova-boot-snapshot-cc.yml
           image_name: cirros
           flavor_name: m1.tiny
-          net_id:
+          net_id: browbeat-private
         - name: boot-list
           enabled: true
           file: rally/nova/nova-boot-list-cc.yml
           image_name: cirros
           flavor_name: m1.tiny
-          net_id:
+          net_id: browbeat-private
     - name: glance
       enabled: true
       concurrency:
