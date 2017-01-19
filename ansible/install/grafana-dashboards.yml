@@ -14,7 +14,10 @@
     cloud_dashboards: true
     overwrite_existing: true
     static_dashboards:
-      - cloud-system-performance-comparsion
+      - cloud_instance_count
+      - cloud_system_performance_comparsion
+      - cloud_gnocchi_status
+      - three_node_performance_food_groups
     cloud_specific_dashboards:
       - cpu
       - memory
