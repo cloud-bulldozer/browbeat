@@ -21,13 +21,7 @@ def configure(configobj):
 def read(data=None):
     starttime = time.time()
 
-    auth = v2.Password(username=os_username,
-        password=os_password,
-        tenant_name=os_tenant,
-        auth_url=os_auth_url)
-    sess = session.Session(auth=auth)
-
-    gnocchi = client.Client(session=sess)
+    gnocchi = client.Client(session=keystone_session)
     status = gnocchi.status.get()
 
     metric = collectd.Values()
@@ -51,6 +45,13 @@ def read(data=None):
         collectd.warning('gnocchi_status: Took: {} > {}'.format(round(timediff, 2),
             INTERVAL))
 
+def create_keystone_session():
+    auth = v2.Password(username=os_username,
+        password=os_password,
+        tenant_name=os_tenant,
+        auth_url=os_auth_url)
+    return session.Session(auth=auth)
+
 os_username = os.environ.get('OS_USERNAME')
 os_password = os.environ.get('OS_PASSWORD')
 os_tenant = os.environ.get('OS_TENANT_NAME')
@@ -58,4 +59,6 @@ os_auth_url = os.environ.get('OS_AUTH_URL')
 
 collectd.info('gnocchi_status: Connecting with user={}, password={}, tenant={}, '
     'auth_url={}'.format(os_username, os_password, os_tenant, os_auth_url))
+
+keystone_session = create_keystone_session()
 collectd.register_config(configure)
