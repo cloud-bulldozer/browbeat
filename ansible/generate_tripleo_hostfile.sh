@@ -220,6 +220,25 @@ if [[ ${#compute_hn} -gt 0 ]]; then
   echo "${c}" | tee -a ${ansible_inventory_file}
  done
 fi
+if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#objectstorage_hn} -gt 0 ]] || [[ ${#cephstorage_hn} -gt 0 ]] || [[ ${#compute_hn} -gt 0 ]]; then
+ echo "" | tee -a ${ansible_inventory_file}
+ echo "[overcloud:children]" | tee -a ${ansible_inventory_file}
+ if [[ ${#controller_hn} -gt 0 ]]; then
+  echo "controller" | tee -a ${ansible_inventory_file}
+ fi
+ if [[ ${#blockstorage_hn} -gt 0 ]]; then
+  echo "blockstorage" | tee -a ${ansible_inventory_file}
+ fi
+ if [[ ${#objectstorage_hn} -gt 0 ]]; then
+  echo "objectstorage" | tee -a ${ansible_inventory_file}
+ fi
+ if [[ ${#cephstorage_hn} -gt 0 ]]; then
+  echo "cephstorage" | tee -a ${ansible_inventory_file}
+ fi
+ if [[ ${#compute_hn} -gt 0 ]]; then
+  echo "compute" | tee -a ${ansible_inventory_file}
+ fi
+fi
 if [[ ${#other_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}
  echo "[other]" | tee -a ${ansible_inventory_file}
