@@ -9,6 +9,7 @@ browbeat:
   cloud_name: openstack
 elasticsearch:
   enabled: false
+  regather: false
   host: 1.1.1.1
   port: 9200
   regather: true

@@ -29,7 +29,8 @@
   shell: /root/setup-graphite-db.exp {{ graphite_username }} {{ graphite_password }} && chown apache:apache /var/lib/graphite-web/graphite.db
   become: true
   when: graphite_db_installed.rc != 0
-  register: apache_needs_restart
+  notify:
+     - restart apache
 
 - name: Setup httpd graphite-web config
   template:
@@ -39,7 +40,8 @@
     group=root
     mode=0644
   become: true
-  register: apache_needs_restart
+  notify:
+     - restart apache
 
 ### begin firewall ###
 # we need TCP/80 open
@@ -110,12 +112,8 @@
 - name: Remove httpd welcome config
   become: true
   file: path=/etc/httpd/conf.d/welcome.conf state=absent
-  register: apache_needs_restart
-
-- name: Bounce Apache
-  service: name=httpd state=restarted enabled=true
-  become: true
-  when: apache_needs_restart.changed
+  notify:
+     - restart apache
 
 #
 # setup the python-carbon service
@@ -133,7 +131,8 @@
     group=root
     mode=0644
   become: true
-  register: carbon_cache_needs_restart
+  notify:
+     - restart carbon-cache
 
 - name: copy carbon storage aggregation config
   copy:
@@ -143,7 +142,8 @@
     group=root
     mode=0644
   become: true
-  register: carbon_cache_needs_restart
+  notify:
+     - restart carbon-cache
 
 - name: copy carbon config
   copy:
@@ -153,10 +153,7 @@
     group=root
     mode=0644
   become: true
-  register: carbon_cache_needs_restart
+  notify:
+     - restart carbon-cache
 
-- name: bounce carbon cache
-  service: name=carbon-cache state=restarted enabled=true
-  become: true
-  when: carbon_cache_needs_restart.changed
 

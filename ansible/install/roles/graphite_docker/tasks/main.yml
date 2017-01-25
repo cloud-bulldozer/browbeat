@@ -87,12 +87,8 @@
     group=root
     mode=0644
   become: true
-  register: systemd_graphite_needs_restart
+  notify: restart systemd-graphite
 
-- name: bounce systemd and graphite-web container
-  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable graphite-web && /usr/bin/systemctl restart graphite-web
-  become: true
-  when: systemd_graphite_needs_restart.changed
 
 - name: Setup carbon-cache systemd config
   template:
@@ -102,10 +98,6 @@
     group=root
     mode=0644
   become: true
-  register: systemd_carbon_needs_restart
+  notify: restart systemd-graphite
 
-- name: bounce systemd and carbon-cache container
-  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable carbon-cache && /usr/bin/systemctl restart carbon-cache
-  become: true
-  when: systemd_carbon_needs_restart.changed
 

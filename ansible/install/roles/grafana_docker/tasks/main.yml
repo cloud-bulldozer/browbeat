@@ -65,10 +65,6 @@
     group=root
     mode=0644
   become: true
-  register: systemd_grafana_needs_restart
+  notify: restart systemd-grafana
 
-- name: bounce systemd and grafana-server container
-  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable grafana-server && /usr/bin/systemctl restart grafana-server
-  become: true
-  when: systemd_grafana_needs_restart.changed
 
