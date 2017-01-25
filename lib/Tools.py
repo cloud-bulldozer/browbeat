@@ -136,7 +136,7 @@ class Tools(object):
             if item.startswith('$'):
                 var = item.translate(None, '$')
                 replacement = os.environ[var]
-                if replacement == None:
+                if replacement is None:
                     new_path.extend(item + "/")
                 else:
                     new_path.extend(replacement + "/")

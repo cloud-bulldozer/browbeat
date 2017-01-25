@@ -68,7 +68,7 @@ def main():
 
     _logger.debug("CLI Args: {}".format(_cli_args))
 
-        # Default to all workloads
+    # Default to all workloads
     if _cli_args.workloads == []:
         _cli_args.workloads.append('all')
 
