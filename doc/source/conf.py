@@ -12,6 +12,7 @@
 
 import os
 import sys
+import datetime
 
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
@@ -36,7 +37,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'browbeat'
-copyright = u'2013, OpenStack Foundation'
+copyright = u"%d, OpenStack Foundation" % datetime.datetime.now().year
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
