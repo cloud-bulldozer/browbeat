@@ -1,9 +1,8 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
-  results : "$HOME/.browbeat/results"
+  results : results/
   rerun: 1
   cloud_name: openstack
-  log: "$HOME/.browbeat/log"
 elasticsearch:
   enabled: true
   host: 1.1.1.1

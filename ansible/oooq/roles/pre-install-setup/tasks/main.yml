@@ -44,6 +44,3 @@
 - name: Install Ansible
   pip: name=ansible state=present
   become: true
-
-- name: Make results directory
-  file: "path={{ ansible_env.HOME }}/browbeat/results state=directory"
