@@ -303,7 +303,7 @@
   with_items: "{{ images }}"
 
 - name: Determine if image exists
-  shell: . {{ overcloudrc }}; glance image-list | grep '{{ item }}'
+  shell: . {{ overcloudrc }}; openstack image list | grep '{{ item }}'
   register: image_exists
   ignore_errors: true
   changed_when: false
@@ -316,8 +316,8 @@
     - "{{ images }}"
     - "{{ image_exists.results }}"
 
-- name: Upload image into cloud (Liberty and >Liberty versions)
-  shell: . {{ overcloudrc }}; glance image-create --name {{ item }} --visibility public --disk-format=qcow2 --container-format=bare < {{ home_dir }}/{{ item }}
+- name: Upload image into cloud (Newton and Ocata versions)
+  shell: . {{ overcloudrc }}; openstack image create --public --disk-format=qcow2 --container-format=bare {{ item }} < {{ home_dir }}/{{ item }}
   ignore_errors: true
   with_items: "{{ images }}"
 
