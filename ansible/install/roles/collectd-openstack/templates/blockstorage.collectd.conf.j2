@@ -88,15 +88,15 @@ PreCacheChain "PreCache"
 # OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
+  # Cinder (OpenStack Installed)
+  ProcessMatch "cinder-volume" "python.+cinder-volume"                                  # 10,11
+
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10
-
-  # Cinder (OpenStack Installed)
-  ProcessMatch "cinder-volume" "python.+cinder-volume"                                  # 10
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
 </Plugin>
 
 <Plugin swap>

@@ -90,14 +90,14 @@ PreCacheChain "PreCache"
 <Plugin processes>
   # Ceph (OpenStack Installed)
   ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"                                          # -10
-  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"                                          # 10
+  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"                                          # 10,11
 
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
 </Plugin>
 
 <Plugin swap>
