@@ -1,8 +1,7 @@
 browbeat:
-  results : "$HOME/browbeat/results"
+  results : results/
   rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
-  log : "$HOME/browbeat/log"
 elasticsearch:
   enabled: {{ elastic_enabled_template }}
   host: {{ elastic_host_template }}

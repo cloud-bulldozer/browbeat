@@ -26,10 +26,10 @@ import os
 
 _workload_opts = ['perfkit', 'rally', 'shaker']
 _config_file = 'browbeat-config.yaml'
+debug_log_file = 'log/debug.log'
 
 def main():
     tools = lib.Tools.Tools()
-
     parser = argparse.ArgumentParser(
         description="Browbeat Performance and Scale testing for Openstack")
     parser.add_argument(
@@ -47,14 +47,7 @@ def main():
     _logger.setLevel(logging.DEBUG)
     _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)7s - %(message)s')
     _formatter.converter = time.gmtime
-
-    # Load Browbeat yaml config file:
-    _config = tools._load_config(_cli_args.setup)
-    debug_log_path = tools.sub_env_vars(_config['browbeat']['log'])
-    # create log dir during run time
-    if not os.path.exists(debug_log_path):
-        os.makedirs(debug_log_path)
-    _dbg_file = logging.FileHandler(os.path.join(debug_log_path, 'debug.log'))
+    _dbg_file = logging.FileHandler(debug_log_file)
     _dbg_file.setLevel(logging.DEBUG)
     _dbg_file.setFormatter(_formatter)
     _ch = logging.StreamHandler()
@@ -67,6 +60,9 @@ def main():
     _logger.addHandler(_ch)
 
     _logger.debug("CLI Args: {}".format(_cli_args))
+
+    # Load Browbeat yaml config file:
+    _config = tools._load_config(_cli_args.setup)
 
     # Default to all workloads
     if _cli_args.workloads == []:
@@ -106,10 +102,8 @@ def main():
                                                                      _cli_args.setup))
             else:
                 _logger.error("{} is missing in {}".format(wkld_provider, _cli_args.setup))
-        result_dir = tools.sub_env_vars(_config['browbeat']['results'])
+        result_dir = _config['browbeat']['results']
         lib.WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
-        if not os.path.exists(result_dir):
-            os.makedirs(result_dir)
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
         lib.WorkloadBase.WorkloadBase.print_summary()

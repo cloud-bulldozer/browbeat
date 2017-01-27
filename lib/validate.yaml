@@ -15,9 +15,6 @@ mapping:
       cloud_name:
         type: str
         required: True
-      log:
-        type: str
-        required: True
 
   elasticsearch:
     required: True
