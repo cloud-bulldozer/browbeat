@@ -67,7 +67,7 @@ echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 -t all \
 -S overcloud-validate \
 -R $RELEASE \
---config $HW_ENV_DIR/network_configs/no_vlan/config_files/config.yml \
+--config $HW_ENV_DIR/network_configs/$NETWORK_ISOLATION/config_files/config.yml \
 --extra-vars @$HW_ENV_DIR/network_configs/$NETWORK_ISOLATION/env_settings.yml \
 --extra-vars $VARS \
 $VIRTHOST
