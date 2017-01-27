@@ -81,9 +81,9 @@ convenience they are being mentioned here as well.
     $ ansible-playbook -i hosts install/shaker_build.yml
 
 .. note:: The playbook to setup networking is provided as an example only and
-might not work for you based on your underlay/overlay network setup. In such
-cases, the exercise of setting up networking for instances to be able to access
-the internet is left to the user.
+    might not work for you based on your underlay/overlay network setup. In such
+    cases, the exercise of setting up networking for instances to be able to access
+    the internet is left to the user.
 
 Once the shaker image is built, you can run Shaker via Browbeat by filling in a
 few configuration options in the configuration file. The meaning of each option is

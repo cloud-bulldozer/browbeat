@@ -13,6 +13,7 @@
 import os
 import sys
 import datetime
+import openstackdocstheme
 
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
@@ -49,9 +50,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme_path = []
-html_theme = "default"
-# html_static_path = ['static']
+html_theme = 'openstackdocs'
+html_theme_path = [openstackdocstheme.get_html_theme_path()]
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
