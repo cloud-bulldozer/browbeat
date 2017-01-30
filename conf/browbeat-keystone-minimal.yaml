@@ -8,6 +8,7 @@ elasticsearch:
   enabled: false
   host: 1.1.1.1
   port: 9200
+  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -194,5 +195,10 @@ rally:
         - name: create-and-delete-ec2credentials
           enabled: true
           file: rally/keystonebasic/create_and_delete_ec2credentials-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-and-get-role
+          enabled: true
+          file: rally/keystonebasic/create_and_get_role-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
