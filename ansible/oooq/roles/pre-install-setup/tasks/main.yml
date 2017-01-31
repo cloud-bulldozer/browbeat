@@ -21,7 +21,7 @@
 
 - name: Fetch CI vars file
   fetch:
-    "src={{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
+    "src={{ lookup('env','HW_ENV_DIR') }}/all.yml \
      dest=/tmp/install_vars.yml \
      flat=yes"
 

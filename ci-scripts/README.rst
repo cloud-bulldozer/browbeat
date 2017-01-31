@@ -153,7 +153,9 @@ serious benchmarking.
 To run the baremetal CI follow the requisite steps to setup a hardware
 environment (this is nontrival) then create a workspace folder and clone
 TripleO Quickstart and Browbeat into that workspace. Set the variables below
-and then run ``microbrow.sh``.
+and then run ``microbrow.sh``. There must be an all.yml file in the HW_ENV
+directory for overriding some browbeat variables with ones specific to the CI
+environment.
 
 ::
 

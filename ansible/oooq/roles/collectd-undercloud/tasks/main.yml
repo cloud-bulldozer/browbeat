@@ -15,7 +15,6 @@
      --extra-vars graphite_host={{ graphite_host_template }} \
      --extra-vars graphite_prefix={{ graphite_prefix_template }} \
      install/collectd-openstack.yml \
-     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
      > {{ ansible_env.HOME }}/browbeat/results/collecd_install.log"
   register: collectd_install
   until: collectd_install.rc == 0
