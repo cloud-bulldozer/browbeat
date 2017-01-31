@@ -28,7 +28,7 @@
   when: cloud_dashboards
 
 - name: Remove Existing Static Dashboard(s)
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item}}"
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item|replace('_', '-')}}"
   when: overwrite_existing
   with_items: "{{static_dashboards}}"
 

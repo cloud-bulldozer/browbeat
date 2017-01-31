@@ -1684,6 +1684,7 @@
           "name": "Node1",
           "options": [],
           "query": "$Cloud1.*",
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "refresh": true,
           "type": "query"
         },
@@ -1702,6 +1703,7 @@
           "options": [],
           "query": "$Cloud2.*",
           "refresh": true,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         },
         {

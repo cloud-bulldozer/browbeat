@@ -1,0 +1,1278 @@
+{
+  "dashboard": {
+    "annotations": {
+      "list": []
+    },
+    "editable": true,
+    "gnetId": null,
+    "hideControls": false,
+    "id": null,
+    "links": [],
+    "rows": [
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 1,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-system), 'System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-user), 'User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-nice), 'Nice')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-steal), 'Steal')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-softirq), 'SoftIRQ')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-interrupt), 'Interrupt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-wait), 'Wait')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(sumSeries($Cloud.$Node1.cpu-*.cpu-idle), 'Idle')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node1 - All CPUs Sum",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 2,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-system), 'System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-user), 'User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-nice), 'Nice')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-steal), 'Steal')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-softirq), 'SoftIRQ')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-interrupt), 'Interrupt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-wait), 'Wait')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(sumSeries($Cloud.$Node2.cpu-*.cpu-idle), 'Idle')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node2 - All CPUs Sum",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 3,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-system), 'System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-user), 'User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-nice), 'Nice')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-steal), 'Steal')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-softirq), 'SoftIRQ')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-interrupt), 'Interrupt')"
+              },
+              {
+                "refId": "G",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-wait), 'Wait')"
+              },
+              {
+                "refId": "H",
+                "target": "alias(sumSeries($Cloud.$Node3.cpu-*.cpu-idle), 'Idle')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node3 - All CPUs Sum",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Controllers CPU"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 4,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node1.memory.memory-slab_unrecl, 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node1.memory.memory-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node1.memory.memory-buffered, 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node1.memory.memory-slab_recl, 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node1.memory.memory-cached, 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node1.memory.memory-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node1 - Memory in Bytes",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 5,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node2.memory.memory-slab_unrecl, 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node2.memory.memory-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node2.memory.memory-buffered, 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node2.memory.memory-slab_recl, 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node2.memory.memory-cached, 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node2.memory.memory-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node2 - Memory in Bytes",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 6,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 4,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node3.memory.memory-slab_unrecl, 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node3.memory.memory-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node3.memory.memory-buffered, 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node3.memory.memory-slab_recl, 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node3.memory.memory-cached, 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node3.memory.memory-free, 'Free')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node3 - Memory in Bytes",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Memory"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 7,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Weighted Time",
+                "yaxis": 2
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(scale($Cloud.$Node1.$Node1_disks.disk_io_time.io_time, 0.1), 'disk-', ''), 2)",
+                "textEditor": true
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node1  IO Util",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "ms",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 8,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Weighted Time",
+                "yaxis": 2
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(scale($Cloud.$Node2.$Node2_disks.disk_io_time.io_time, 0.1), 'disk-', ''), 2)",
+                "textEditor": true
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node2  IO Util",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "ms",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 9,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Weighted Time",
+                "yaxis": 2
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(scale($Cloud.$Node3.$Node3_disks.disk_io_time.io_time, 0.1), 'disk-', ''), 2)",
+                "textEditor": true
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node3  IO Util",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "ms",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Disk % Util"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 10,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*\\.rx/",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node1.*.if_octets.tx, 'interface-', ''), 2, 4)"
+              },
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub($Cloud.$Node1.*.if_octets.rx, 'interface-', ''), 2, 4)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node1 Throughput",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "Bps",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 11,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*\\.rx/",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node2.*.if_octets.tx, 'interface-', ''), 2, 4)"
+              },
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub($Cloud.$Node2.*.if_octets.rx, 'interface-', ''), 2, 4)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node2 Throughput",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "Bps",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 12,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": false,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*\\.rx/",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node3.*.if_octets.tx, 'interface-', ''), 2, 4)"
+              },
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub($Cloud.$Node3.*.if_octets.rx, 'interface-', ''), 2, 4)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node3 Throughput",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "Bps",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Network Throughput"
+      }
+    ],
+    "schemaVersion": 12,
+    "sharedCrosshair": false,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "Cloud",
+          "options": [],
+          "query": "*",
+          "refresh": 1,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "overcloud-controller-0",
+            "value": "overcloud-controller-0"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "Node1",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": 0,
+          "regex": "",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "overcloud-controller-1",
+            "value": "overcloud-controller-1"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "Node2",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": 0,
+          "regex": "",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "overcloud-controller-2",
+            "value": "overcloud-controller-2"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "Node3",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": null,
+          "hide": 2,
+          "includeAll": true,
+          "multi": true,
+          "name": "Node1_disks",
+          "options": [],
+          "query": "$Cloud.$Node1.disk-*",
+          "refresh": 0,
+          "regex": "/disk-[a-z]*$/",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": null,
+          "hide": 2,
+          "includeAll": true,
+          "multi": true,
+          "name": "Node2_disks",
+          "options": [],
+          "query": "$Cloud.$Node2.disk-*",
+          "refresh": 0,
+          "regex": "/disk-[a-z]*$/",
+          "type": "query"
+        },
+        {
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": null,
+          "hide": 2,
+          "includeAll": true,
+          "multi": true,
+          "name": "Node3_disks",
+          "options": [],
+          "query": "$Cloud.$Node3.disk-*",
+          "refresh": 0,
+          "regex": "/disk-[a-z]*$/",
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "utc",
+    "title": "Three Node Performance Food Groups",
+    "version": 6
+  }
+}
