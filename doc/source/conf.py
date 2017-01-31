@@ -13,7 +13,6 @@
 import os
 import sys
 import datetime
-import openstackdocstheme
 
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
@@ -21,6 +20,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = []
+
+# Executing on Read The Docs?
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+
+if not on_rtd:
+    extensions.append("oslosphinx")
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
@@ -33,8 +38,10 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'OpenStack Browbeat'
+project = u'Browbeat'
 copyright = u"%d, OpenStack Foundation" % datetime.datetime.now().year
+bug_tracker = u'Launchpad'
+bug_tracker_uri = u'https://launchpad.net/openstack-browbeat'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -47,11 +54,6 @@ add_module_names = True
 pygments_style = 'sphinx'
 
 # -- Options for HTML output --------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  Major themes that come with
-# Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'openstackdocs'
-html_theme_path = [openstackdocstheme.get_html_theme_path()]
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
