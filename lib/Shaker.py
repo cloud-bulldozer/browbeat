@@ -167,7 +167,8 @@ class Shaker(WorkloadBase.WorkloadBase):
                     'scenarios'][scenario]['deployment']['template']
         # Iterating through each record to get result values
         for record in data['records'].iterkeys():
-            if data['records'][record]['status'] == "ok":
+            if data['records'][record]['status'] == "ok" and data[
+                    'records'][record]['executor'] != "shell":
                 if 'stdout' in data['records'][record]:
                     del data['records'][record]['stdout']
                 metadata = data['records'][record].pop('meta')
@@ -216,7 +217,8 @@ class Shaker(WorkloadBase.WorkloadBase):
                             if index_status is False:
                                 failure = True
             else:
-                # If the status of the record is not ok, ship minimal
+                # If the status of the record is not OK or if the type of
+                # executor is shell, ship minimal
                 # shaker_stats dictionary to ES
                 shaker_stats = {
                     'record': data['records'][record],
@@ -269,14 +271,14 @@ class Shaker(WorkloadBase.WorkloadBase):
         accommodation = self.accommodation_to_list(accommodation)
         self.logger.debug("Using accommodation {}".format(accommodation))
         data['deployment']['accommodation'] = accommodation
-        if "progression" in scenario:
+        if 'progression' in scenario and 'progression' in data['execution']:
             if scenario['progression'] is None:
                 data['execution'].pop('progression', None)
             else:
                 data['execution']['progression'] = scenario['progression']
-        else:
+        elif 'progression' in data['execution']:
             data['execution']['progression'] = default_progression
-        if "time" in scenario:
+        if 'time' in scenario:
             for test in data['execution']['tests']:
                 test['time'] = scenario['time']
         else:
