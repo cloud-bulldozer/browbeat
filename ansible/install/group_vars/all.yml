@@ -35,7 +35,7 @@ rally_version: 0.8.1
 shaker_venv: /home/stack/shaker-venv
 
 # Shaker version to Install
-shaker_version: 0.0.16
+shaker_version: 0.0.17
 
 # PerfKitBenchmarker Settings
 perfkit_venv: /home/stack/perfkit-venv
