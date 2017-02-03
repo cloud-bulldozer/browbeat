@@ -1,8 +1,0 @@
-#variables to override for Browbeat install
-dns_server: 192.168.23.1
-disable_ssh_dns: true
-browbeat_pub_subnet: 192.0.2.0/24
-browbeat_pub_pool_start: 192.0.2.100
-browbeat_pub_pool_end: 192.0.2.200
-browbeat_pub_pool_gw: 192.0.2.1
-browbeat_pri_pool_dns: 192.168.23.1

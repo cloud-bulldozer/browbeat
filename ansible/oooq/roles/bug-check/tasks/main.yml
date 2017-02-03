@@ -6,7 +6,6 @@
   shell:
     "cd {{ ansible_env.HOME }}/browbeat/ansible; \
      ansible-playbook -i hosts \
-     --extra-vars @{{ ansible_env.HOME }}/browbeat/ci-scripts/config/tripleo/oooq/all.yml \
      check/site.yml > {{ ansible_env.HOME }}/browbeat/results/check.log"
   register: check_run
   ignore_errors: true
