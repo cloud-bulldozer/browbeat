@@ -8,6 +8,7 @@
      --extra-vars collectd_compute=true \
      --extra-vars graphite_host={{ graphite_host_template }} \
      --extra-vars graphite_prefix={{ graphite_prefix_template }} \
+     --extra-vars dns_server={{ dns_server }} \
      install/collectd-openstack.yml \
      > {{ ansible_env.HOME }}/browbeat/results/collecd_install.log"
   register: collectd_install
