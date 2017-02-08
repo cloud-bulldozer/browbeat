@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eu
 
+
 pushd $WORKSPACE
  pushd $WORKSPACE/tripleo-quickstart-extras
   git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/46/437946/1 && git checkout FETCH_HEAD
@@ -42,7 +43,15 @@ if [ ! -z ${current_build+x} ]
  then
   source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
   hash=$(get_delorean_hash_from_url $current_build)
-  cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
+
+  #Ocata pipeling moving to new folder structure
+  if [[ $RELEASE == *ocata* ]]
+   then
+    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/rdo_trunk/current-tripleo/$hash/undercloud.qcow2"
+  else
+    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
+  fi
+
   export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
@@ -50,6 +59,7 @@ elif [[ $RELEASE == *rhos-* ]]
  then
   export RELEASE="$RELEASE-current-passed-ci"
 fi
+
 
 
 #used to ensure concurrent jobs on the same executor work
