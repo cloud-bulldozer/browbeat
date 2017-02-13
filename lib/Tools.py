@@ -177,10 +177,6 @@ class Tools(object):
                     rally = Rally.Rally(self.config)
                     for file in workload_results[workload]:
                         errors, results = rally.file_to_json(file)
-                    return True
-                if cli.es:
-                    # Stub for when we want to push to ES.
-                    continue
                 if workload is "shaker":
                     # Stub for Shaker.
                     continue
