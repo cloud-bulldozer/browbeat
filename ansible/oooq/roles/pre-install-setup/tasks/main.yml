@@ -19,14 +19,8 @@
 - name: Load Browbeat vars
   include_vars: /tmp/all.yml
 
-- name: Fetch CI vars file
-  fetch:
-    "src={{ lookup('env','HW_ENV_DIR') }}/all.yml \
-     dest=/tmp/install_vars.yml \
-     flat=yes"
-
 - name: Load CI vars
-  include_vars: /tmp/install_vars.yml
+  include_vars: "{{ lookup('env','HW_ENV_DIR') }}/all.yml"
 
 - name: Template Browbeat configuration
   template:
