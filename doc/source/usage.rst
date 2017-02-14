@@ -144,6 +144,23 @@ using some simple searches such as:
    shaker_uuid: c918a263-3b0b-409b-8cf8-22dfaeeaf33e AND record.concurrency:1 AND record.test:Bi-Directional
 
 
+Interpreting Browbeat Results
+=============================
+
+By default results for each test will be placed in a timestamped folder `results/` inside your Browbeat folder.
+Each run folder will contain output files from the various workloads and benchmarks that ran during that Browbeat
+run, as well as a report card that summarizes the results of the tests.
+
+Browbeat for the most part tries to restrict itself to running tests, it will only exit with a nonzero return code
+if a workload failed to run. If, for example, Rally where to run but not be able to boot any instances on your cloud
+Browbeat would return with RC 0 without any complaints, only by looking into the Rally results for that Browbeat run
+would you determine that your cloud had a problem that made benchmarking it impossible.
+
+Likewise if Rally manages to run at a snails pace, Browbeat will still exit without complaint. Be aware of this when
+running Browbeat and take the time to either view the contents of the results folder after a run. Or setup Elasticsearch
+and Kibana to view them more easily.
+
+
 Working with Multiple Clouds
 ============================
 
