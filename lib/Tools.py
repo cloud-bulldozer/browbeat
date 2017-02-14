@@ -52,17 +52,9 @@ class Tools(object):
         else:
             return command.strip()
 
-    def create_run_dir(self, results_dir, run):
-        try:
-            os.makedirs("%s/run-%s" % (results_dir, run))
-            return "%s/run-%s" % (results_dir, run)
-        except OSError:
-            return False
-
-    # Create directory for results
-    def create_results_dir(self, results_dir, timestamp, service, scenario):
-        the_directory = "{}/{}/{}/{}".format(results_dir,
-                                             timestamp, service, scenario)
+   # Create directory for results
+    def create_results_dir(self, *args):
+        the_directory = '/'.join(args)
         if not os.path.isdir(the_directory):
             try:
                 os.makedirs(the_directory)

@@ -264,9 +264,10 @@ class Rally(WorkloadBase.WorkloadBase):
                                     "Overriding Scenario Args: {}".format(scenario))
 
                             result_dir = self.tools.create_results_dir(
-                                self.config['browbeat'][
-                                    'results'], dir_ts, benchmark['name'],
-                                scenario_name)
+                                self.config['browbeat']['results'], dir_ts,
+                                self.__class__.__name__.lower(),
+                                benchmark['name'], scenario_name
+                            )
                             self.logger.debug(
                                 "Created result directory: {}".format(result_dir))
                             workload = self.__class__.__name__
