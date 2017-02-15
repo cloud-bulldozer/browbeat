@@ -17,106 +17,110 @@ if [[ "${tripleo_ip_address}" == "localhost" ]]; then
  sudo bash -c "chmod 0600 /root/.ssh/authorized_keys"
 fi
 
-nodes=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
-if [ ${#nodes} -lt 1 ]; then
+# Check if there are any clouds built.
+clouds=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack list | grep -i -E 'overcloud'")
+if [ ${#clouds} -gt 0 ]; then
+  nodes=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
+  if [ ${#nodes} -lt 1 ]; then
     echo "ERROR: nova list failed to execute properly, please check the openstack-nova-api on the undercloud."
     exit 1
-fi
-controller_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Controller > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#controller_id} -lt 1 ]; then
-   echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
-blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#blockstorage_id} -lt 1 ]; then
-   echo "Error: BlockStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
-objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#objectstorage_id} -lt 1 ]; then
-   echo "Error: ObjectStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
-cephstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud CephStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#cephstorage_id} -lt 1 ]; then
-   echo "Error: CephStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
-compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-if [ ${#compute_id} -lt 1 ]; then
-   echo "Error: Compute ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
+  fi
+  controller_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Controller > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#controller_id} -lt 1 ]; then
+     echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
+  blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#blockstorage_id} -lt 1 ]; then
+     echo "Error: BlockStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
+  objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#objectstorage_id} -lt 1 ]; then
+     echo "Error: ObjectStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
+  cephstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud CephStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#cephstorage_id} -lt 1 ]; then
+     echo "Error: CephStorage ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
+  compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#compute_id} -lt 1 ]; then
+     echo "Error: Compute ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
 
-controller_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${controller_id} > >(grep -i controller) 2>/dev/null" | awk '{print $2}')
-if [ ${#controller_ids} -lt 1 ]; then
-   echo "Error: Controller IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
-blockstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${blockstorage_id} > >(grep -i blockstorage) 2>/dev/null" | awk '{print $2}')
-if [ ${#blockstorage_ids} -lt 1 ]; then
-   echo "Info: No BlockStorage resources."
-fi
-objectstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${objectstorage_id} > >(grep -i objectstorage) 2>/dev/null" | awk '{print $2}')
-if [ ${#objectstorage_ids} -lt 1 ]; then
-   echo "Info: No ObjectStorage resources."
-fi
-cephstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${cephstorage_id} > >(grep -i cephstorage) 2>/dev/null" | awk '{print $2}')
-if [ ${#cephstorage_ids} -lt 1 ]; then
-   echo "Info: No CephStorage resources."
-fi
-compute_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${compute_id} > >(grep -i compute) 2>/dev/null" | awk '{print $2}')
-if [ ${#compute_ids} -lt 1 ]; then
-   echo "Error: Compute IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
-   exit 1
-fi
+  controller_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${controller_id} > >(grep -i controller) 2>/dev/null" | awk '{print $2}')
+  if [ ${#controller_ids} -lt 1 ]; then
+     echo "Error: Controller IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
+  blockstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${blockstorage_id} > >(grep -i blockstorage) 2>/dev/null" | awk '{print $2}')
+  if [ ${#blockstorage_ids} -lt 1 ]; then
+     echo "Info: No BlockStorage resources."
+  fi
+  objectstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${objectstorage_id} > >(grep -i objectstorage) 2>/dev/null" | awk '{print $2}')
+  if [ ${#objectstorage_ids} -lt 1 ]; then
+     echo "Info: No ObjectStorage resources."
+  fi
+  cephstorage_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${cephstorage_id} > >(grep -i cephstorage) 2>/dev/null" | awk '{print $2}')
+  if [ ${#cephstorage_ids} -lt 1 ]; then
+     echo "Info: No CephStorage resources."
+  fi
+  compute_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${compute_id} > >(grep -i compute) 2>/dev/null" | awk '{print $2}')
+  if [ ${#compute_ids} -lt 1 ]; then
+     echo "Error: Compute IDs is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
+     exit 1
+  fi
 
-version_tripleo=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} "rpm -qa | egrep 'openstack-tripleo-heat-templates-[[:digit:]]'" | awk -F- '{print $5}' | awk -F. '{print $1}')
-controller_uuids=()
-for controller in ${controller_ids}
-do
- if [[ ${version_tripleo} -lt 2 ]] ; then
-   controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
+  version_tripleo=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} "rpm -qa | egrep 'openstack-tripleo-heat-templates-[[:digit:]]'" | awk -F- '{print $5}' | awk -F. '{print $1}')
+  controller_uuids=()
+  for controller in ${controller_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
+   else
+     controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${controller_id} ${controller} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+  blockstorage_uuids=()
+  for blockstorage in ${blockstorage_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${blockstorage_id} ${blockstorage} | grep -i nova_server_resource" | awk '{print $4}')
+   else
+     blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${blockstorage_id} ${blockstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+  objectstorage_uuids=()
+  for objectstorage in ${objectstorage_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${objectstorage_id} ${objectstorage} | grep -i nova_server_resource" | awk '{print $4}')
+   else
+     objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${objectstorage_id} ${objectstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+  cephstorage_uuids=()
+  for cephstorage in ${cephstorage_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${cephstorage_id} ${cephstorage} | grep -i nova_server_resource" | awk '{print $4}')
+   else
+     cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${cephstorage_id} ${cephstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+  compute_uuids=()
+  for compute in ${compute_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${compute_id} ${compute} | grep -i nova_server_resource" | awk '{print $4}')
  else
-   controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${controller_id} ${controller} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
- fi
-done
-blockstorage_uuids=()
-for blockstorage in ${blockstorage_ids}
-do
- if [[ ${version_tripleo} -lt 2 ]] ; then
-   blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${blockstorage_id} ${blockstorage} | grep -i nova_server_resource" | awk '{print $4}')
- else
-   blockstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${blockstorage_id} ${blockstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
- fi
-done
-objectstorage_uuids=()
-for objectstorage in ${objectstorage_ids}
-do
- if [[ ${version_tripleo} -lt 2 ]] ; then
-   objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${objectstorage_id} ${objectstorage} | grep -i nova_server_resource" | awk '{print $4}')
- else
-   objectstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${objectstorage_id} ${objectstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
- fi
-done
-cephstorage_uuids=()
-for cephstorage in ${cephstorage_ids}
-do
- if [[ ${version_tripleo} -lt 2 ]] ; then
-   cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${cephstorage_id} ${cephstorage} | grep -i nova_server_resource" | awk '{print $4}')
- else
-   cephstorage_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${cephstorage_id} ${cephstorage} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
- fi
-done
-compute_uuids=()
-for compute in ${compute_ids}
-do
- if [[ ${version_tripleo} -lt 2 ]] ; then
-   compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${compute_id} ${compute} | grep -i nova_server_resource" | awk '{print $4}')
- else
-   compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${compute_id} ${compute} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
- fi
-done
+     compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${compute_id} ${compute} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+fi
 
 echo ""
 echo "---------------------------"
