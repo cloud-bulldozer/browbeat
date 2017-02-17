@@ -111,7 +111,12 @@ def main():
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
         lib.WorkloadBase.WorkloadBase.print_summary()
-        _logger.info("Browbeat Finished, UUID: {}".format(browbeat_uuid))
+        if lib.WorkloadBase.WorkloadBase.failure > 0:
+           _logger.info("Browbeat Finished with Failures, UUID: {}".format(browbeat_uuid))
+           sys.exit(1)
+        else:
+           _logger.info("Browbeat Finished Successfully, UUID: {}".format(browbeat_uuid))
+           sys.exit(0)
 
 if __name__ == '__main__':
     sys.exit(main())
