@@ -12,8 +12,9 @@
   become: true
   with_items:
     - collectd
-    - collectd-turbostat
+    - collectd-apache
     - collectd-mysql
+    - collectd-turbostat
 
 # Get mysql's root password
 - name: (Controllers Only) Get mysql root password
@@ -37,6 +38,35 @@
     line: "{{item}}"
   with_items: "{{overcloudrc_file.stdout_lines | default(omit)}}"
   when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+
+# Apache Monitoring
+- name: Deploy Apache mod_status conf
+  template:
+    src: 00-browbeat_mod_status.conf.j2
+    dest: /etc/httpd/conf.d/00-browbeat_mod_status.conf
+    owner: root
+    group: root
+  become: true
+  when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
+
+- name: (Undercloud Only) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
+  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
+  become: true
+  when: "('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true)"
+
+- name: (Controller Only) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
+  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
+  become: true
+  when: "('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
+
+- name: Restart Apache
+  service:
+    name: httpd
+    state: restarted
+    enabled: true
+  become: true
+  when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
+# End Apache Monitoring
 
 - name: Reload systemd units
   command: systemctl daemon-reload

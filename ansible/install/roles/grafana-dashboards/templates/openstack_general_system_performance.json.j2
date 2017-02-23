@@ -1,7 +1,8 @@
 {% set vars = {'panel_idx': 0, 'temp_count': 0} %}
-{% set mariadb_groups = ['undercloud', 'controller', '*'] %}
 {% set gnocchi_groups = ['controller', '*'] %}
+{% set httpd_groups = ['undercloud', 'controller', '*'] %}
 {% set ironic_groups = ['undercloud'] %}
+{% set mariadb_groups = ['undercloud', 'controller', '*'] %}
 {
   "dashboard": {
     "annotations": {
@@ -2594,6 +2595,290 @@
       },
     {% endfor %}
 {# End Loop over per-process options here #}
+      {% if item.template_node_type in httpd_groups %}
+      {
+        "title": "Apache",
+        "height": "250px",
+        "editable": true,
+        "collapse": true,
+        "panels": [
+          {
+            "title": "Apache Bytes",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasSub(aliasByNode($Cloud.$Node.apache-status.apache_bytes, 3), 'apache_', '')",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "Apache Requests",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "ops",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "C",
+                "target": "aliasSub(aliasByNode($Cloud.$Node.apache-status.apache_requests, 3), 'apache_', '')",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "Apache Connections/Workers",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasSub(aliasByNode($Cloud.$Node.apache-status.apache_connections, 3), 'apache_', '')",
+                "textEditor": false
+              },
+              {
+                "refId": "B",
+                "target": "aliasSub(aliasByNode($Cloud.$Node.apache-status.apache_idle_workers, 3), 'apache_', '')",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          },
+          {
+            "title": "Apache Scoreboard",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "datasource": null,
+            "renderer": "flot",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "short",
+              "short"
+            ],
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "rightMax": null,
+              "leftMin": null,
+              "rightMin": null,
+              "rightLogBase": 1,
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 1,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": true,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": false,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "individual",
+              "shared": true
+            },
+            "timeFrom": null,
+            "timeShift": null,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasSub(aliasByNode($Cloud.$Node.apache-status.apache_scoreboard-*, 3), 'apache_scoreboard-', '')",
+                "textEditor": false
+              }
+            ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          }
+        ],
+        "showTitle": true
+      },
+      {% endif %}
       {% if item.template_node_type in mariadb_groups %}
       {
         "collapse": true,

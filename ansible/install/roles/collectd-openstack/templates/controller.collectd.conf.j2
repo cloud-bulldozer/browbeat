@@ -16,6 +16,9 @@ LoadPlugin "logfile"
 </Plugin>
 
 LoadPlugin write_graphite
+{% if apache_controller_collectd_plugin %}
+LoadPlugin apache
+{% endif %}
 LoadPlugin cpu
 LoadPlugin conntrack
 LoadPlugin df
@@ -76,6 +79,13 @@ PreCacheChain "PreCache"
   </Carbon>
 </Plugin>
 
+{% if apache_controller_collectd_plugin %}
+<Plugin apache>
+  <Instance "status">
+    URL "http://127.0.0.1:{{apache_controller_mod_status_port}}/mod_status?auto"
+  </Instance>
+</Plugin>
+{% endif %}
 <Plugin df>
   ValuesPercentage true
 </Plugin>

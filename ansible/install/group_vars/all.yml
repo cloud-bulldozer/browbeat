@@ -75,6 +75,16 @@ collectd_compute: false
 
 # Collect plugins configuration:
 ########################
+# Apache plugin
+########################
+# Undercloud
+apache_undercloud_collectd_plugin: false
+apache_undercloud_mod_status_port: 5001
+# Overcloud Controller
+apache_controller_collectd_plugin: false
+apache_controller_mod_status_port: 5001
+
+########################
 # Gnocchi backlog plugin
 ########################
 # This should only be enabled on a single controller when monitoring Gnocchi for
