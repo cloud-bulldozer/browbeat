@@ -3,7 +3,12 @@ set -eu
 
 pushd $WORKSPACE
  pushd $WORKSPACE/tripleo-quickstart-extras
-  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/77/403677/13 && git checkout FETCH_HEAD
+  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/46/437946/1 && git checkout FETCH_HEAD
+  set +eu
+   source $WORKSPACE/bin/activate
+   pip uninstall -y tripleo-quickstart-extras
+   pip uninstall -y tripleo-internal-environments
+  set -eu
  popd
 popd
 
