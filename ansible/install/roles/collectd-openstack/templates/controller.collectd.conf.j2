@@ -32,6 +32,11 @@ LoadPlugin memory
 LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
+{%if gnocchi_status_python_plugin or rabbitmq_controller_collectd_plugin %}
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+{% endif %}
 LoadPlugin swap
 LoadPlugin tail
 LoadPlugin turbostat
@@ -97,10 +102,6 @@ PreCacheChain "PreCache"
 
 {%if gnocchi_status_python_plugin %}
 {%if inventory_hostname == groups['controller'][0] %}
-<LoadPlugin python>
-  Globals true
-</LoadPlugin>
-
 <Plugin python>
   ModulePath "/usr/local/bin/"
   LogTraces true
@@ -110,11 +111,12 @@ PreCacheChain "PreCache"
     interval {{gnocchi_status_interval}}
   </Module>
 </Plugin>
+
 {% else %}
 # Gnocchi status plugin installed and enabled on {{groups['controller'][0]}}
-{% endif %}
-{% endif %}
 
+{% endif %}
+{% endif %}
 <Plugin mysql>
   <Database "overcloud">
     Host "localhost"
@@ -171,11 +173,11 @@ PreCacheChain "PreCache"
   ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11
 
   # Gnocchi (OpenStack Installed)
-  ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd:.*master"                      # 11
-  ProcessMatch "gnocchi-metricd-scheduler" "gnocchi-metricd:.*scheduler"                # 11
-  ProcessMatch "gnocchi-metricd-processing" "gnocchi-metricd:.*processing"              # 11
-  ProcessMatch "gnocchi-metricd-reporting" "gnocchi-metricd:.*reporting"                # 11
-  ProcessMatch "gnocchi-metricd-janitor" "gnocchi-metricd:.*janitor"                    # 11
+  ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd.*master"                       # 11
+  ProcessMatch "gnocchi-metricd-scheduler" "gnocchi-metricd.*scheduler"                 # 10,11
+  ProcessMatch "gnocchi-metricd-processing" "gnocchi-metricd.*processing"               # 10,11
+  ProcessMatch "gnocchi-metricd-reporting" "gnocchi-metricd.*reporting"                 # 10,11
+  ProcessMatch "gnocchi-metricd-janitor" "gnocchi-metricd.*janitor"                     # 10,11
   ProcessMatch "gnocchi-metricd" "gnocchi-metricd "                                     # 10(Old proctitle)
   ProcessMatch "gnocchi-statsd" "python.+gnocchi-statsd"                                # 10,11
   ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11
@@ -248,6 +250,27 @@ PreCacheChain "PreCache"
   ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11
   ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11
 </Plugin>
+
+{%if rabbitmq_controller_collectd_plugin %}
+{%if inventory_hostname == groups['controller'][0] %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_rabbitmq_monitoring"
+  <Module collectd_rabbitmq_monitoring>
+    interval {{rabbitmq_controller_collectd_interval}}
+    host "{{inventory_hostname}}.internalapi.localdomain"
+    port 15672
+    username {{controller0_rabbitmq_username.stdout}}
+    password {{controller0_rabbitmq_password.stdout}}
+    message_count "metering.sample" "event.sample"
+  </Module>
+</Plugin>
+{% else %}
+# Rabbitmq plugin installed and enabled on {{groups['controller'][0]}}
+{% endif %}
+{% endif %}
 
 <Plugin swap>
   ReportBytes true

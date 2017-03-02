@@ -32,6 +32,11 @@ LoadPlugin memory
 LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
+{%if rabbitmq_undercloud_collectd_plugin %}
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+{% endif %}
 LoadPlugin swap
 LoadPlugin tail
 LoadPlugin turbostat
@@ -218,6 +223,23 @@ PreCacheChain "PreCache"
   ProcessMatch "zaqar-server" "python.+zaqar-server"                                    # 10,11
 </Plugin>
 
+{%if rabbitmq_undercloud_collectd_plugin %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_rabbitmq_monitoring"
+  <Module collectd_rabbitmq_monitoring>
+    interval {{rabbitmq_undercloud_collectd_interval}}
+    host "{{undercloud_ctlplane_ip_address.stdout}}"
+    port 15672
+    username {{undercloud_rabbitmq_username.stdout}}
+    password {{undercloud_rabbitmq_password.stdout}}
+    message_count "metering.sample" "event.sample"
+  </Module>
+</Plugin>
+
+{% endif %}
 <Plugin swap>
   ReportBytes true
   ValuesPercentage true
