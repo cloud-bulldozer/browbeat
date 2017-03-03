@@ -25,6 +25,7 @@
   remote_user: "{{ local_remote_user }}"
   become: true
   roles:
+    - common
     - undercloud
 
 - hosts: undercloud

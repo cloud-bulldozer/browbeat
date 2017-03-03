@@ -2,6 +2,26 @@
 #
 # Tasks to set undercloud facts
 #
+
+
+  - name: Check that the undercloud.conf exists
+    become: true
+    stat: path=/home/stack/undercloud.conf
+    register: undercloud_conf
+
+  - name: Undercloud.conf
+    become: true
+    shell: python /tmp/openstack-config-parser.py undercloud /home/stack/undercloud.conf /tmp/out.yml
+    when: undercloud_conf.stat.exists
+
+  - name: Fetch output
+    fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+    when: undercloud_conf.stat.exists
+
+  - name: Load configuration variables
+    include_vars: /tmp/out.yml
+    when: undercloud_conf.stat.exists
+
   - name: Get max_connections on the database
     shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
     register: max_conn
