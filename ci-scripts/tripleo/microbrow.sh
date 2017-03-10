@@ -47,7 +47,7 @@ if [ ! -z ${current_build+x} ]
   #Ocata pipeling moving to new folder structure
   if [[ $RELEASE == *ocata* ]]
    then
-    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/rdo_trunk/current-tripleo/$hash/undercloud.qcow2"
+    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/rdo_trunk/$hash/undercloud.qcow2"
   else
     cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
   fi
