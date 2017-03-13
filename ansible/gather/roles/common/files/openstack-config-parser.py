@@ -8,6 +8,7 @@ def parse_config(serviceName, fileName):
     # stored.
     values = {}
     with open(fileName) as config:
+        section = None
         for line in config:
             pair = line.replace('#', '')
             pair = pair.replace('\n', '')
@@ -20,9 +21,10 @@ def parse_config(serviceName, fileName):
             # excludes any line without a key/val pair
             valid_line = not line.startswith(
                 "# ") and '[' not in line and line != '\n' and line != '#\n' and "password" not in line.lower()
-            if '#' not in line and valid_line:
-                values["openstack_" + serviceName + "_" + pair[0]] = pair[1]
-
+            if line.startswith('['):
+                section = line.replace('[','').replace(']','').replace('\n','')
+            if '#' not in line and valid_line and not section == None:
+                values["openstack_S_" + serviceName + "_S_" + section + "_S_" + pair[0]] = pair[1]
     return values
 
 

@@ -72,18 +72,35 @@ class Metadata(object):
                 software_dict = {}
                 for soft in item:
                     if 'openstack' in soft:
-                        service = soft.split('_')
-                        key = soft.split('_', 2)[2]
-                        service_name = service[1]
+                        """
+                        Why _S_? Because Ansible doesn't allow for
+                        many seperators. The _S_ was used to mimic
+                        a seperator.
+                        """
+                        service = soft.split('_S_')
+                        if len(service) < 2 :
+                            service = soft.split('_')
+                            key = service[2]
+                            section = "DEFAULT"
+                            service_name = service[1]
+                        else :
+                            key = service[3]
+                            section = service[2]
+                            service_name = service[1]
+
                         node = item['inventory_hostname']
-                        if service_name in software_dict:
-                            if service_name in soft:
-                                software_dict[service_name][key] = item[soft]
+
+                        if service_name in software_dict :
+                            if section in software_dict[service_name] :
+                                software_dict[service_name][section][key] = item[soft]
+                            else :
+                                software_dict[service_name][section] = {}
+                                software_dict[service_name][section][key] = item[soft]
                         else:
                             software_dict[service_name] = {}
-                            if service_name in soft:
-                                software_dict[service_name]['node_name'] = node
-                                software_dict[service_name][key] = item[soft]
+                            software_dict[service_name]['node_name'] = node
+                            software_dict[service_name][section] = {}
+                            software_dict[service_name][section][key] = item[soft]
 
                 soft_all_dict.append(software_dict)
         return soft_all_dict
