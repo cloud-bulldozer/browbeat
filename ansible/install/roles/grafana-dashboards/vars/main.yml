@@ -339,8 +339,8 @@ per_process_panels:
   OpenStack-CephStorage:
     - name: "Ceph"
       processes:
-        - ceph-osd
         - ceph-mon
+        - ceph-osd
     - name: "Open vSwitch"
       processes:
         - ovs-vswitchd
@@ -399,8 +399,8 @@ per_process_panels:
         - ceilometer_wsgi
     - name: "Ceph"
       processes:
-        - ceph-osd
         - ceph-mon
+        - ceph-osd
     - name: "Cinder"
       processes:
         - cinder-api

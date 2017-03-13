@@ -1,0 +1,1993 @@
+{
+  "dashboard": {
+    "annotations": {
+      "list": []
+    },
+    "editable": true,
+    "gnetId": null,
+    "hideControls": false,
+    "id": null,
+    "links": [],
+    "rows": [
+      {
+        "collapse": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 1,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_count.processes, 'Mon Processes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_count.threads, 'Mon Threads')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_count.processes, 'OSD Processes')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_count.threads, 'OSD Threads')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Process/Thread Count",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 2,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.processes-ceph-mon.ps_cputime.syst, 0.0001), 'Ceph Mon System')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.processes-ceph-mon.ps_cputime.user, 0.0001), 'Ceph Mon User')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.processes-ceph-osd.ps_cputime.syst, 0.0001), 'Ceph OSD System')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.processes-ceph-osd.ps_cputime.user, 0.0001), 'Ceph OSD User')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "CPU Util",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 3,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_rss, 'Ceph Mon RSS')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_vm, 'Ceph Mon Virtual')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_rss, 'Ceph OSD RSS')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_vm, 'Ceph OSD Virtual')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Memory",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 4,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_pagefaults.majflt, 'Ceph Mon Majflt')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_pagefaults.minflt, 'Ceph Mon Minflt')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_pagefaults.majflt, 'Ceph OSD Majflt')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_pagefaults.minflt, 'Ceph OSD Minflt')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Page Faults",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 5,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.read, 'Ceph Mon Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.write, 'Ceph Mon Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.read, 'Ceph OSD Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.write, 'Ceph OSD Write')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "IOPs(Estimated via SYSCALLS)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "iops",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 6,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.read, 'Ceph Mon Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.write, 'Ceph Mon Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.read, 'Ceph OSD Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.write, 'Ceph OSD Write')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "IO Throughput(Estimated via SYSCALLS)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Ceph Process Metrics",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 7,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMon, 'Count')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMonQuorum, 'Quorum')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_numElections, 'Elections')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionCall, 'Call')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionLose, 'Lose')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionWin, 'Win')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Mon Count/Quorum/Elections",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 8,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Mon_numSessions, 'Open')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionAdd, 'Add')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionRm, 'RM')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionTrim, 'Trim')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Mon Sessions",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 9,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsd, 'Total OSDs')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsdUp, 'OSDs Up')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsdIn, 'OSDs In')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdEpoch, 'Epoch')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "OSDs",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 10,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsUp, 'Up')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsIn, 'In')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsFailed, 'Failed')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_mdsEpoch, 'Epoch')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "MDS",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 11,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObject, 'Total Objects')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectDegraded, 'Degraded Objects')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectMisplaced, 'Misplaced Objects')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectUnfound, 'Unfound Objects')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Objects",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 12,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPg, 'Total PGs')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgActive, 'PGs Active')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgActiveClean, 'PGs Active-Clean')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgPeering, 'PGs Peering')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Placement Groups",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 13,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPool, 'Pools')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Pools",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 1,
+            "id": 14,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Bytes Available",
+                "stack": "A"
+              },
+              {
+                "alias": "Bytes Used",
+                "stack": "A"
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytes, 'Total Bytes')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytesUsed, 'Bytes Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytesAvail, 'Bytes Available')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "OSD Bytes",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 1,
+            "id": 15,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numBytes, 'Size of all objects')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Size of All Objects",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 16,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Compact Queue Length",
+                "steppedLine": true,
+                "yaxis": 2
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Leveldb_leveldbCompactQueueLen, 'Compact Queue Length')"
+              },
+              {
+                "refId": "B",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-Leveldb_*, 'ceph_rate-Leveldb_leveldb', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "LevelDB Queue/Operations",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Queue Length",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 17,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 2,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_latency-Leveldb_*, 'ceph_latency-Leveldb_leveldb', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "LevelDB Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 18,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Queue Length",
+                "lines": true,
+                "yaxis": 2
+              },
+              {
+                "alias": "Complete Latency",
+                "pointradius": 2,
+                "points": true
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": true,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_latency-FinisherMonstore_completeLatency, 'Complete Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-FinisherMonstore_queueLen, 'Queue Length')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Finisher Monstore",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Queue Length",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 19,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-Paxos_*, 'ceph_rate-Paxos_', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Paxos Rate",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 20,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_latency-Paxos_*, 'ceph_latency-Paxos_', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Paxos Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "\u00b5s",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 21,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Bytes Max",
+                "yaxis": 2
+              },
+              {
+                "alias": "Bytes Current",
+                "yaxis": 2
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonClientBytes_max, 'Bytes Max')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonClientBytes_val, 'Bytes Current')"
+              },
+              {
+                "refId": "C",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMonClientBytes_*, 'ceph_rate-ThrottleMonClientBytes_', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Throttle Mon Client",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "Bps",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 22,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Bytes Max",
+                "yaxis": 2
+              },
+              {
+                "alias": "Bytes Current",
+                "yaxis": 2
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonDaemonBytes_max, 'Bytes Max')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonDaemonBytes_val, 'Bytes Current')"
+              },
+              {
+                "refId": "C",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMonDaemonBytes_*, 'ceph_rate-ThrottleMonDaemonBytes_', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Throttle Mon Daemon",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "Bps",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 23,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Bytes Max",
+                "yaxis": 2
+              },
+              {
+                "alias": "Bytes Current",
+                "yaxis": 2
+              }
+            ],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMsgrDispatchThrottlerMon_max, 'Bytes Max')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMsgrDispatchThrottlerMon_val, 'Bytes Current')"
+              },
+              {
+                "refId": "C",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMsgrDispatchThrottlerMon_*, 'ceph_rate-ThrottleMsgrDispatchThrottlerMon_', ''), 3)"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Throttle Msgr Dispatch Throttler Mon",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "ops",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "bytes",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "showTitle": true,
+        "title": "Ceph Mon"
+      }
+    ],
+    "schemaVersion": 14,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allFormat": "glob",
+          "allValue": null,
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud",
+          "options": [],
+          "query": "*",
+          "refresh": 1,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allFormat": "glob",
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "overcloud-cephstorage-0",
+            "value": "overcloud-cephstorage-0"
+          },
+          "datasource": "RDU Perf Graphite",
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": 1,
+          "regex": "/.*[c][oe][np][th].*/",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "utc",
+    "title": "Cloud Ceph Monitoring",
+    "version": 1
+  }
+}

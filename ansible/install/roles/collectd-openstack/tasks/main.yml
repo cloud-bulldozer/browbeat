@@ -25,6 +25,7 @@
   with_items:
     - collectd
     - collectd-apache
+    - collectd-ceph
     - collectd-mysql
     - collectd-turbostat
 
@@ -155,6 +156,15 @@
   become: true
   when:  "('undercloud' in group_names or '{{inventory_hostname}}' == groups['controller'][0])"
 # End Rabbitmq monitoring
+
+# CephStorage OSD monitoring
+# Only Monitors a single OSD on each CephStorage Node
+- name: Get 1st OSD socket
+  shell: ls /var/run/ceph/ceph-osd.*.asok | head -n 1 | egrep -o '[0-9]+'
+  register: cephstorage_osd_socket
+  become: true
+  when: "('cephstorage' in group_names and {{ceph_storage_collectd_plugin}} == true)"
+# End CephStorage OSD monitoring
 
 - name: Configure collectd.conf
   template:

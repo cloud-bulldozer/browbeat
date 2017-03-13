@@ -16,6 +16,9 @@ LoadPlugin "logfile"
 </Plugin>
 
 LoadPlugin write_graphite
+{% if ceph_storage_collectd_plugin %}
+LoadPlugin ceph
+{% endif %}
 LoadPlugin cpu
 LoadPlugin conntrack
 LoadPlugin df
@@ -75,6 +78,16 @@ PreCacheChain "PreCache"
   </Carbon>
 </Plugin>
 
+{% if ceph_storage_collectd_plugin %}
+<Plugin ceph>
+  LongRunAvgLatency false
+  ConvertSpecialMetricTypes true
+  <Daemon "osd.{{inventory_hostname}}.{{cephstorage_osd_socket.stdout}}">
+    SocketPath "/var/run/ceph/ceph-osd.{{cephstorage_osd_socket.stdout}}.asok"
+  </Daemon>
+</Plugin>
+
+{% endif %}
 <Plugin df>
   ValuesPercentage true
 </Plugin>

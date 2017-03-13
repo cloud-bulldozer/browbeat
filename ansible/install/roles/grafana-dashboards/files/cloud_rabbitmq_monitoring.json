@@ -11,7 +11,7 @@
     "links": [],
     "rows": [
       {
-        "collapse": false,
+        "collapse": true,
         "height": "200px",
         "panels": [
           {
@@ -479,8 +479,8 @@
         "titleSize": "h6"
       },
       {
-        "collapse": false,
-        "height": 250,
+        "collapse": true,
+        "height": "200px",
         "panels": [
           {
             "aliasColors": {},
@@ -596,7 +596,7 @@
             "seriesOverrides": [],
             "span": 12,
             "stack": false,
-            "steppedLine": false,
+            "steppedLine": true,
             "targets": [
               {
                 "refId": "A",
@@ -880,7 +880,7 @@
             "seriesOverrides": [],
             "span": 12,
             "stack": false,
-            "steppedLine": false,
+            "steppedLine": true,
             "targets": [
               {
                 "refId": "A",
@@ -932,7 +932,7 @@
         "titleSize": "h6"
       },
       {
-        "collapse": false,
+        "collapse": true,
         "height": "200px",
         "panels": [
           {

@@ -92,6 +92,13 @@ apache_controller_collectd_plugin: false
 apache_controller_mod_status_port: 5001
 
 ########################
+# Ceph plugin
+########################
+# Overcloud Controller
+ceph_controller_collectd_plugin: false
+ceph_storage_collectd_plugin: false
+
+########################
 # Gnocchi backlog plugin
 ########################
 # This should only be enabled on a single controller when monitoring Gnocchi for
