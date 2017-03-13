@@ -73,15 +73,6 @@
   become: true
   when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
 
-- name: Configure collectd.conf
-  template:
-    src: "{{config_type}}.collectd.conf.j2"
-    dest: /etc/collectd.conf
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-
 - name: Copy collectd_gnocchi_status.py
   copy:
     src: collectd_gnocchi_status.py
@@ -90,7 +81,67 @@
     group: root
     mode: 0755
   become: true
-  when: gnocchi_status_python_plugin
+  when: "(gnocchi_status_python_plugin == true and ('{{inventory_hostname}}' == groups['controller'][0]))"
+
+# Rabbitmq monitoring
+- name: Install pyrabbit
+  easy_install:
+    name: pyrabbit
+  become: true
+  when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
+
+- name: Enable Rabbitmq management plugin
+  command: rabbitmq-plugins enable rabbitmq_management
+  become: true
+  when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
+
+- name: (Undercloud) Get ctlplane ip address
+  shell: ip r | egrep 'br-ctlplane\s*proto kernel' | awk '{print $NF}'
+  register: undercloud_ctlplane_ip_address
+  become: true
+  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+
+- name: (Undercloud) Get Rabbitmq username
+  shell: cat undercloud-passwords.conf | grep undercloud_rabbit_username | awk -F '=' '{print $2}'
+  register: undercloud_rabbitmq_username
+  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+
+- name: (Undercloud) Get Rabbitmq password
+  shell: cat undercloud-passwords.conf | grep undercloud_rabbit_password | awk -F '=' '{print $2}'
+  register: undercloud_rabbitmq_password
+  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+
+- name: (Controller) Get Rabbitmq username
+  command: hiera nova::rabbit_userid
+  register: controller0_rabbitmq_username
+  become: true
+  when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+
+- name: (Controller) Get Rabbitmq password
+  command: hiera nova::rabbit_password
+  register: controller0_rabbitmq_password
+  become: true
+  when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+
+- name: Copy collectd_rabbitmq_monitoring.py
+  copy:
+    src: collectd_rabbitmq_monitoring.py
+    dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  when:  "('undercloud' in group_names or '{{inventory_hostname}}' == groups['controller'][0])"
+# End Rabbitmq monitoring
+
+- name: Configure collectd.conf
+  template:
+    src: "{{config_type}}.collectd.conf.j2"
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
 
 #
 # Configure selinux bits

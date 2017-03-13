@@ -14,9 +14,10 @@
     cloud_dashboards: true
     overwrite_existing: true
     static_dashboards:
-      - cloud_instance_count
-      - cloud_system_performance_comparsion
       - cloud_gnocchi_status
+      - cloud_instance_count
+      - cloud_rabbitmq_monitoring
+      - cloud_system_performance_comparsion
       - three_node_performance_food_groups
       - openstack_ironic_metrics
     cloud_specific_dashboards:

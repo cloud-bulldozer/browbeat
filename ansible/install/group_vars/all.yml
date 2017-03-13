@@ -95,6 +95,14 @@ gnocchi_status_python_plugin: false
 gnocchi_status_interval: 30
 
 ########################
+# Rabbitmq plugin
+########################
+rabbitmq_undercloud_collectd_plugin: false
+rabbitmq_undercloud_collectd_interval: 10
+rabbitmq_controller_collectd_plugin: false
+rabbitmq_controller_collectd_interval: 10
+
+########################
 # tail plugin
 ########################
 # Determines if WARN/INFO messages are also counted

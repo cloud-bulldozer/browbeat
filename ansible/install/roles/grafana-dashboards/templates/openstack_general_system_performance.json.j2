@@ -1,8 +1,9 @@
 {% set vars = {'panel_idx': 0, 'temp_count': 0} %}
+{% set apache_groups = ['undercloud', 'controller', '*'] %}
 {% set gnocchi_groups = ['controller', '*'] %}
-{% set httpd_groups = ['undercloud', 'controller', '*'] %}
 {% set ironic_groups = ['undercloud'] %}
 {% set mariadb_groups = ['undercloud', 'controller', '*'] %}
+{% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {
   "dashboard": {
     "annotations": {
@@ -2595,7 +2596,7 @@
       },
     {% endfor %}
 {# End Loop over per-process options here #}
-      {% if item.template_node_type in httpd_groups %}
+      {% if item.template_node_type in apache_groups %}
       {
         "title": "Apache",
         "height": "250px",
@@ -2871,6 +2872,94 @@
                 "textEditor": false
               }
             ],
+            "aliasColors": {},
+            "seriesOverrides": [],
+            "links": []
+          }
+        ],
+        "showTitle": true
+      },
+      {% endif %}
+      {% if item.template_node_type in gnocchi_groups %}
+      {
+        "title": "Gnocchi Backlog",
+        "height": "250px",
+        "editable": true,
+        "collapse": true,
+        "panels": [
+          {
+            "title": "Metrics/Measures Backlog",
+            "error": false,
+            "span": 12,
+            "editable": true,
+            "type": "graph",
+            "isNew": true,
+            "id": 185,
+            "targets": [
+              {
+                "target": "aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))",
+                "refId": "A",
+                "textEditor": false
+              }
+            ],
+            "datasource": null,
+            "renderer": "flot",
+            "yaxes": [
+              {
+                "label": null,
+                "show": true,
+                "logBase": 1,
+                "min": null,
+                "max": null,
+                "format": "short"
+              },
+              {
+                "label": null,
+                "show": true,
+                "logBase": 1,
+                "min": null,
+                "max": null,
+                "format": "short"
+              }
+            ],
+            "xaxis": {
+              "show": true
+            },
+            "grid": {
+              "threshold1": null,
+              "threshold2": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "lines": true,
+            "fill": 0,
+            "linewidth": 2,
+            "points": false,
+            "pointradius": 5,
+            "bars": false,
+            "stack": false,
+            "percentage": false,
+            "legend": {
+              "show": true,
+              "values": true,
+              "min": true,
+              "max": true,
+              "current": true,
+              "total": false,
+              "avg": true,
+              "alignAsTable": true,
+              "rightSide": true
+            },
+            "nullPointMode": "connected",
+            "steppedLine": false,
+            "tooltip": {
+              "value_type": "cumulative",
+              "shared": true,
+              "sort": 0,
+              "msResolution": false
+            },
+            "timeFrom": null,
+            "timeShift": null,
             "aliasColors": {},
             "seriesOverrides": [],
             "links": []
@@ -4021,92 +4110,459 @@
         "title": "MYSQL INNODB"
       },
       {% endif %}
-      {% if item.template_node_type in gnocchi_groups %}
+      {% if item.template_node_type in rabbitmq_groups %}
       {
-        "title": "Gnocchi Backlog",
-        "height": "250px",
-        "editable": true,
         "collapse": true,
+        "height": 250,
         "panels": [
           {
-            "title": "Metrics/Measures Backlog",
-            "error": false,
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 246,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
             "span": 12,
-            "editable": true,
-            "type": "graph",
-            "isNew": true,
-            "id": 185,
+            "stack": false,
+            "steppedLine": false,
             "targets": [
               {
-                "target": "aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))",
+                "refId": "A",
+                "target": "alias($Cloud.$Node.rabbitmq_monitoring.gauge-queues, 'Queues')"
+              },
+              {
                 "refId": "B",
+                "target": "alias($Cloud.$Node.rabbitmq_monitoring.gauge-connections, 'Connections')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.rabbitmq_monitoring.gauge-consumers, 'Consumers')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.rabbitmq_monitoring.gauge-channels, 'Channels')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.$Node.rabbitmq_monitoring.gauge-exchanges, 'Exchanges')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Rabbitmq Object Counts",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 247,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.rabbitmq_monitoring.gauge-queue_total-*-count, 'gauge-queue_total-', ''), '-count', ''), 3)",
                 "textEditor": false
               }
             ],
-            "datasource": null,
-            "renderer": "flot",
-            "yaxes": [
-              {
-                "label": null,
-                "show": true,
-                "logBase": 1,
-                "min": null,
-                "max": null,
-                "format": "short"
-              },
-              {
-                "label": null,
-                "show": true,
-                "logBase": 1,
-                "min": null,
-                "max": null,
-                "format": "short"
-              }
-            ],
-            "xaxis": {
-              "show": true
-            },
-            "grid": {
-              "threshold1": null,
-              "threshold2": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
-            "lines": true,
-            "fill": 0,
-            "linewidth": 2,
-            "points": false,
-            "pointradius": 5,
-            "bars": false,
-            "stack": false,
-            "percentage": false,
-            "legend": {
-              "show": true,
-              "values": true,
-              "min": true,
-              "max": true,
-              "current": true,
-              "total": false,
-              "avg": true,
-              "alignAsTable": true,
-              "rightSide": true
-            },
-            "nullPointMode": "connected",
-            "steppedLine": false,
-            "tooltip": {
-              "value_type": "cumulative",
-              "shared": true,
-              "sort": 0,
-              "msResolution": false
-            },
+            "thresholds": [],
             "timeFrom": null,
             "timeShift": null,
+            "title": "Queue Totals",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
             "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 1,
+            "id": 248,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
             "seriesOverrides": [],
-            "links": []
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.rabbitmq_monitoring.gauge-queue_total-*-rate, 'gauge-queue_total-', ''), '-rate', ''), 3)",
+                "textEditor": false
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Queue Total Rates",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 249,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.rabbitmq_monitoring.gauge-message_total-*-count, 'gauge-message_total-', ''), '-count', ''), 3)",
+                "textEditor": false
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Message Stats Count",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 250,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.$Node.rabbitmq_monitoring.gauge-message_total-*-rate, 'gauge-message_total-', ''), '-rate', ''), 3)",
+                "textEditor": false
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Message Stats Rate",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 240,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByMetric(aliasSub($Cloud.$Node.rabbitmq_monitoring.*-msg_count-*, 'gauge-msg_count-', ''))",
+                "textEditor": false
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Queue Message Counts",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
           }
         ],
-        "showTitle": true
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Rabbitmq",
+        "titleSize": "h6"
       },
       {% endif %}
       {% if item.template_node_type in ironic_groups %}
