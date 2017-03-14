@@ -23,6 +23,7 @@ class WorkloadBase(object):
     failure = 0
     total_tests = 0
     total_scenarios = 0
+    index_failures = 0
     browbeat = {}
 
     @abc.abstractmethod
@@ -52,6 +53,9 @@ class WorkloadBase(object):
 
     def update_total_fail_tests(self):
         WorkloadBase.failure += 1
+
+    def update_index_failures(self):
+        WorkloadBase.index_failures += 1
 
     def workload_logger(self, result_dir, workload):
         base = result_dir.split('/')
