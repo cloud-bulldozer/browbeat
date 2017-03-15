@@ -102,6 +102,16 @@ rabbitmq_undercloud_collectd_interval: 10
 rabbitmq_controller_collectd_plugin: false
 rabbitmq_controller_collectd_interval: 10
 
+# Queues to monitor message count on Undercloud
+undercloud_monitored_queues:
+  - "metering.sample"
+  - "event.sample"
+
+# Queues to monitor message count on Controllers
+controller_monitored_queues:
+  - "metering.sample"
+  - "event.sample"
+
 ########################
 # tail plugin
 ########################

@@ -264,7 +264,8 @@ PreCacheChain "PreCache"
     port 15672
     username {{controller0_rabbitmq_username.stdout}}
     password {{controller0_rabbitmq_password.stdout}}
-    message_count "metering.sample" "event.sample"
+    message_count {% for a_queue in controller_monitored_queues %}"{{a_queue}}" {% endfor %}
+
   </Module>
 </Plugin>
 {% else %}
