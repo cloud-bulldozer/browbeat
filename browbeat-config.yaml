@@ -272,6 +272,8 @@ rally:
           external_network: "public"
           protocols: "tcp"
           num_pairs: 1
+          message_sizes: "64,1024,16384"
+          instances: "1,8,16,32,64"
           test_types: "stream"
           samples: 1
           send_results: True

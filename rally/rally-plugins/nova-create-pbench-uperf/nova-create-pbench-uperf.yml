@@ -24,6 +24,8 @@ BrowbeatPlugin.nova_create_pbench_uperf:
       test_types: '{{test_types}}'
       protocols: '{{protocols}}'
       samples: '{{samples}}'
+      message_sizes: '{{message_sizes}}'
+      instances: '{{instances}}'
       test_name: '{{test_name}}'
       send_results: {{send_results}}
       cloudname: '{{cloudname}}'
