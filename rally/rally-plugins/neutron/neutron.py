@@ -16,6 +16,8 @@ from rally.common.i18n import _
 from rally.common import logging
 from rally.plugins.openstack.context.network import networks
 from rally.task import context
+from rally import consts
+import time
 
 
 LOG = logging.getLogger(__name__)
@@ -27,10 +29,40 @@ class BrowbeatPersistNetwork(networks.Network):
     at the conclusion to allow resources to persist.
     """
 
+    CONFIG_SCHEMA = {
+        "type": "object",
+        "$schema": consts.JSON_SCHEMA,
+        "properties": {
+            "start_cidr": {
+                "type": "string"
+            },
+            "networks_per_tenant": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "subnets_per_network": {
+                "type": "integer",
+                "minimum": 1
+            },
+            "network_create_args": {
+                "type": "object",
+                "additionalProperties": True
+            },
+            "dns_nameservers": {
+                "type": "array",
+                "items": {"type": "string"},
+                "uniqueItems": True
+            }
+        },
+        "additionalProperties": True
+    }
+
     @logging.log_task_wrapper(LOG.info, _("Enter context: `browbeat_persist_network`"))
     def setup(self):
         super(BrowbeatPersistNetwork, self).setup()
 
     @logging.log_task_wrapper(LOG.info, _("Exit context: `browbeat_persist_network`"))
     def cleanup(self):
-        pass
+        if self.config.get('cleanup_delay'):
+            LOG.debug('Cleanup Delaying: {}'.format(self.config.get('cleanup_delay')))
+            time.sleep(self.config.get('cleanup_delay'))

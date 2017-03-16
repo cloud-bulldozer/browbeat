@@ -22,7 +22,7 @@ from rally.task import validation
 @validation.required_services(consts.Service.NOVA)
 @validation.required_openstack(users=True)
 @scenario.configure(context={},
-                    name="BrowbeatPlugin.nova_boot_persist")
+                    name="BrowbeatNova.nova_boot_persist")
 class NovaBootPersist(nova_utils.NovaScenario):
 
     def run(self, image, flavor, **kwargs):
@@ -36,7 +36,7 @@ class NovaBootPersist(nova_utils.NovaScenario):
 @validation.required_services(consts.Service.NOVA)
 @validation.required_openstack(users=True)
 @scenario.configure(context={},
-                    name="BrowbeatPlugin.nova_boot_persist_with_network")
+                    name="BrowbeatNova.nova_boot_persist_with_network")
 class NovaBootPersistWithNetwork(nova_utils.NovaScenario):
 
     def run(self, image, flavor, **kwargs):

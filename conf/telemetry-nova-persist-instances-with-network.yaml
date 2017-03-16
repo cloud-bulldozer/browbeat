@@ -1,8 +1,8 @@
 # Stress test designed for telemetry services (ceilometer, gnocchi) by
 # booting persisting xtiny cirros instances. It boots 100 each iteration
 # with a concurrency of 20 instances. A total of 1000 instances are
-# booted.  These instances are attached to a network which creates
-# additional telemetry load  View how system resources degrade over each
+# booted. These instances are attached to a network which creates
+# additional telemetry load. View how system resources degrade over each
 # new set of instances booted.
 browbeat:
   results : results/

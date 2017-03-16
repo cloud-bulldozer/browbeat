@@ -4,8 +4,9 @@
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 {% set network_start_cidr = network_start_cidr or '10.1.0.0/23' %}
+{% set sla_max_seconds = cleanup_delay or 0 %}
 ---
-BrowbeatPlugin.nova_boot_persist_with_network:
+BrowbeatNova.nova_boot_persist_with_network:
   -
     args:
       flavor:
@@ -21,6 +22,7 @@ BrowbeatPlugin.nova_boot_persist_with_network:
         networks_per_tenant: 1
         subnets_per_network: 1
         start_cidr: {{network_start_cidr}}
+        cleanup_delay: {{cleanup_delay}}
       users:
         tenants: 1
         users_per_tenant: 8

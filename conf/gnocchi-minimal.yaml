@@ -1,0 +1,146 @@
+# Complete set of Gnocchi Stress tests run minimal number of times.
+# Good sanity test to see if OSP will be able to handle the longer stress tests.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: openstack
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  regather: true
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+ansible:
+  ssh_config: ansible/ssh-config
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  metadata: ansible/gather/site.yml
+connmon:
+  enabled: false
+  sudo: true
+grafana:
+  enabled: true
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 0
+  sleep_after: 0
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - gnocchi: rally/rally-plugins/gnocchi
+  benchmarks:
+    - name: Gnocchi
+      enabled: true
+      concurrency:
+        - 5
+      times: 10
+      scenarios:
+        - name: gnocchi-archive-policy-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-archive-policy-list.yml
+        - name: gnocchi-create-archive-policy
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-archive-policy.yml
+        - name: gnocchi-create-delete-archive-policy
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-archive-policy.yml
+
+        - name: gnocchi-archive-policy-rule-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-archive-policy-rule-list.yml
+        - name: gnocchi-create-archive-policy-rule
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-archive-policy-rule.yml
+        - name: gnocchi-create-delete-archive-policy-rule
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-archive-policy-rule.yml
+
+        - name: gnocchi-capabilities-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-capabilities-list.yml
+
+        # Aggregation has several potential scenarios due to parameterization
+        - name: gnocchi-metric-aggregation-single-page
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-aggregation.yml
+        - name: gnocchi-metric-aggregation-all
+          enabled: true
+          all_metrics: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-aggregation.yml
+        - name: gnocchi-metric-aggregation-agg-mean-refresh
+          enabled: true
+          all_metrics: true
+          aggregation: mean
+          refresh: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-aggregation.yml
+        # Get Measures has several potential scenarios due to parameterization
+        - name: gnocchi-metric-get-measures-single-page
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
+        - name: gnocchi-metric-get-measures-all
+          enabled: true
+          all_metrics: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
+        - name: gnocchi-metric-get-measures-agg-mean-refresh
+          enabled: true
+          all_metrics: true
+          aggregation: mean
+          refresh: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
+        # List/Create/Create&Delete Metrics
+        - name: gnocchi-metric-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-metric-list.yml
+        - name: gnocchi-create-metric
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-metric.yml
+        - name: gnocchi-create-delete-metric
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
+
+        - name: gnocchi-resource-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-resource-list.yml
+        - name: gnocchi-create-resource
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-resource.yml
+        - name: gnocchi-create-delete-resource
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
+
+        - name: gnocchi-resource-type-list
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-resource-type-list.yml
+        - name: gnocchi-create-resource-type
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-resource-type.yml
+        - name: gnocchi-create-delete-resource-type
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource-type.yml
+
+        - name: gnocchi-status-get
+          enabled: true
+          file: rally/rally-plugins/gnocchi/gnocchi-status-get.yml
+        - name: gnocchi-status-get-detailed
+          enabled: true
+          detailed: True
+          file: rally/rally-plugins/gnocchi/gnocchi-status-get.yml
