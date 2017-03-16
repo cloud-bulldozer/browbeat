@@ -21,6 +21,9 @@ LoadPlugin apache
 {% endif %}
 LoadPlugin cpu
 LoadPlugin conntrack
+{% if keystone_overcloud_collectd_plugin %}
+LoadPlugin dbi
+{% endif %}
 LoadPlugin df
 LoadPlugin disk
 LoadPlugin exec
@@ -83,14 +86,41 @@ PreCacheChain "PreCache"
     EscapeCharacter "_"
   </Carbon>
 </Plugin>
-
 {% if apache_controller_collectd_plugin %}
+
 <Plugin apache>
   <Instance "status">
     URL "http://127.0.0.1:{{apache_controller_mod_status_port}}/mod_status?auto"
   </Instance>
 </Plugin>
 {% endif %}
+{% if keystone_overcloud_collectd_plugin %}
+{%if inventory_hostname == groups['controller'][0] %}
+
+<Plugin dbi>
+  <Query token_count>
+    Statement "select count(*) as count from token"
+    <Result>
+      Type gauge
+      InstancePrefix "token"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Database "keystone">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "dbname" "keystone"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password.stdout}}"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query token_count
+  </Database>
+</Plugin>
+{% else %}
+# Token Count plugin installed and enabled on {{groups['controller'][0]}}
+{% endif %}
+{% endif %}
+
 <Plugin df>
   ValuesPercentage true
 </Plugin>

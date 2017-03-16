@@ -21,6 +21,9 @@ LoadPlugin apache
 {% endif %}
 LoadPlugin cpu
 LoadPlugin conntrack
+{% if keystone_undercloud_collectd_plugin %}
+LoadPlugin dbi
+{% endif %}
 LoadPlugin df
 LoadPlugin disk
 LoadPlugin exec
@@ -83,14 +86,35 @@ PreCacheChain "PreCache"
     EscapeCharacter "_"
   </Carbon>
 </Plugin>
-
 {% if apache_undercloud_collectd_plugin %}
+
 <Plugin apache>
   <Instance "status">
     URL "http://127.0.0.1:{{apache_undercloud_mod_status_port}}/mod_status?auto"
   </Instance>
 </Plugin>
 {% endif %}
+{% if keystone_undercloud_collectd_plugin %}
+
+<Plugin dbi>
+  <Query token_count>
+    Statement "select count(*) as count from token"
+    <Result>
+      Type gauge
+      InstancePrefix "token"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Database "keystone">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "dbname" "keystone"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query token_count
+  </Database>
+</Plugin>
+{% endif %}
+
 <Plugin df>
   ValuesPercentage true
 </Plugin>

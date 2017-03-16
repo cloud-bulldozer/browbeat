@@ -3,6 +3,18 @@
 # Install/run collectd for Browbeat
 #
 
+- name: Remove Non-EPEL collectd install
+  yum:
+    name: libcollectdclient
+    state: absent
+  become: true
+  when: collectd_from_epel
+
+- name: Clean Non-EPEL collectd configuration
+  shell: "rm -rf /etc/collectd.d/*.conf"
+  become: true
+  when: collectd_from_epel
+
 #
 # (akrzos) yum module works at this point due to the fact the EPEL repo now exists.  EPEL rpm is
 # installed at this point in time.
@@ -15,6 +27,16 @@
     - collectd-apache
     - collectd-mysql
     - collectd-turbostat
+
+- name: (Keystone Token Count) Install libdbi mysql driver
+  yum:
+    name: "{{item}}"
+    state: present
+  become: true
+  when: "(('controller' in group_names and {{keystone_overcloud_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{keystone_undercloud_collectd_plugin}} == true))"
+  with_items:
+    - libdbi-dbd-mysql
+    - collectd-dbi
 
 # Get mysql's root password
 - name: (Controllers Only) Get mysql root password
