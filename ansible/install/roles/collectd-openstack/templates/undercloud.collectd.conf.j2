@@ -235,7 +235,8 @@ PreCacheChain "PreCache"
     port 15672
     username {{undercloud_rabbitmq_username.stdout}}
     password {{undercloud_rabbitmq_password.stdout}}
-    message_count "metering.sample" "event.sample"
+    message_count {% for a_queue in undercloud_monitored_queues %}"{{a_queue}}" {% endfor %}
+
   </Module>
 </Plugin>
 

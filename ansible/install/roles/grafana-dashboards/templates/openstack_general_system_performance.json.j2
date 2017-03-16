@@ -2894,7 +2894,8 @@
             "editable": true,
             "type": "graph",
             "isNew": true,
-            "id": 185,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "targets": [
               {
                 "target": "aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))",
@@ -4120,7 +4121,8 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 246,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -4206,7 +4208,8 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 247,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -4277,7 +4280,8 @@
             "bars": false,
             "datasource": null,
             "fill": 1,
-            "id": 248,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -4348,7 +4352,8 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 249,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -4419,7 +4424,8 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 250,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -4490,7 +4496,8 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 240,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
             "legend": {
               "alignAsTable": true,
               "avg": false,
