@@ -16,6 +16,7 @@
     - browbeat/common
     - browbeat/browbeat
     - browbeat/browbeat-network
+    - browbeat/template-configs
 
 - name: Run Browbeat
   hosts: undercloud

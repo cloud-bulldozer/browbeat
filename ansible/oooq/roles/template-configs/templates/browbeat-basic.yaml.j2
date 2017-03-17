@@ -51,7 +51,7 @@ perfkit:
     os_type: rhel
     openstack_image_username: centos
     openstack_floating_ip_pool: browbeat_public
-    openstack_network: browbeat_private
+    openstack_network: nova_test_net_name.stdout
   benchmarks:
     - name: fio-centos-m1-small
       enabled: false
@@ -128,7 +128,7 @@ rally:
           file: rally/nova/nova-boot-snapshot-cc.yml
           image_name: cirros
           flavor_name: m1.tiny
-          net_id: browbeat-private
+          net_id: {{ nova_test_net_name.stdout }}
     - name: plugins
       enabled: true
       concurrency:
