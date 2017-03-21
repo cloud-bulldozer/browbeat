@@ -54,7 +54,7 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "B",
+                "refId": "A",
                 "target": "alias(sumSeries($Cloud.overcloud-*compute-*.processes-qemu-kvm.ps_count.processes), 'Sum qemu-kvm processes')",
                 "textEditor": false
               }

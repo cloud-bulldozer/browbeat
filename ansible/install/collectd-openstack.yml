@@ -38,6 +38,7 @@
   roles:
     - { role: common, when: collectd_controller }
     - { role: epel, when: collectd_controller }
+    - { role: repo, when: keystone_overcloud_collectd_plugin }
     - { role: collectd-openstack, when: collectd_controller }
   tasks:
     - name: Collectd off if not collectd_controller

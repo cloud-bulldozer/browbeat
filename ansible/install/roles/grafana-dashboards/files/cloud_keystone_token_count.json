@@ -55,13 +55,13 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))",
+                "target": "alias($Cloud.$Node.dbi-keystone.gauge-token, 'Tokens')",
                 "textEditor": false
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "$Node Metrics/Measures Backlog",
+            "title": "$Node Keystone Token Count",
             "tooltip": {
               "msResolution": false,
               "shared": true,
@@ -93,7 +93,7 @@
           }
         ],
         "showTitle": true,
-        "title": "Gnocchi Backlog"
+        "title": "Token Count"
       }
     ],
     "schemaVersion": 12,
@@ -123,8 +123,8 @@
         {
           "current": {
             "tags": [],
-            "text": "overcloud-controller-0",
-            "value": "overcloud-controller-0"
+            "text": "undercloud",
+            "value": "undercloud"
           },
           "datasource": null,
           "hide": 0,
@@ -133,12 +133,12 @@
           "name": "Node",
           "options": [
             {
-              "selected": true,
+              "selected": false,
               "text": "overcloud-controller-0",
               "value": "overcloud-controller-0"
             },
             {
-              "selected": false,
+              "selected": true,
               "text": "undercloud",
               "value": "undercloud"
             }
@@ -181,7 +181,7 @@
       ]
     },
     "timezone": "utc",
-    "title": "Cloud Gnocchi Status",
+    "title": "Cloud Keystone Token Count",
     "version": 2
   }
 }

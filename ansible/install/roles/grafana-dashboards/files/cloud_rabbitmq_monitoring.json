@@ -49,11 +49,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_count.processes, 'rabbitmq Processes')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_count.threads, 'rabbitmq Threads')"
               }
             ],
@@ -125,11 +125,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias(scale($Cloud.$Node.processes-rabbitmq.ps_cputime.syst, 0.0001), 'rabbitmq System')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias(scale($Cloud.$Node.processes-rabbitmq.ps_cputime.user, 0.0001), 'rabbitmq User')"
               }
             ],
@@ -201,11 +201,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_rss, 'rabbitmq RSS')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_vm, 'rabbitmq Virtual')"
               }
             ],
@@ -277,11 +277,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_pagefaults.majflt, 'rabbitmq Majflt')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_pagefaults.minflt, 'rabbitmq Minflt')"
               }
             ],
@@ -353,11 +353,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_ops.read, 'rabbitmq Read')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_ops.write, 'rabbitmq Write')"
               }
             ],
@@ -429,11 +429,11 @@
             "steppedLine": false,
             "targets": [
               {
-                "refId": "M",
+                "refId": "A",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_octets.read, 'rabbitmq Read')"
               },
               {
-                "refId": "N",
+                "refId": "B",
                 "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_octets.write, 'rabbitmq Write')"
               }
             ],

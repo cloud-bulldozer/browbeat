@@ -16,6 +16,7 @@
     static_dashboards:
       - cloud_gnocchi_status
       - cloud_instance_count
+      - cloud_keystone_token_count
       - cloud_rabbitmq_monitoring
       - cloud_system_performance_comparsion
       - three_node_performance_food_groups
