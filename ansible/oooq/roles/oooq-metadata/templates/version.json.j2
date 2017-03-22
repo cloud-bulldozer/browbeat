@@ -1,9 +1,9 @@
 {# Determine the OSP Series name via a dictionary on $version #}
-{% set series = {"kilo": "7", "liberty": "8", "mitaka": "9", "newton": "10", "ocata": "11", "pike": "12", "master":"11"}[release] | default("Unknown Version") -%}
-{% set version = {"kilo": "7-tripleo", "liberty": "8-tripleo", "mitaka": "9-tripleo", "newton": "10-tripleo", "ocata": "11-tripleo", "pike": "12-tripleo", "master":"11-tripleo"}[release] | default("Unknown Version") -%}
+{% set series = {"kilo": "7", "liberty": "8", "mitaka": "9", "newton": "10", "ocata": "11", "pike": "12", "queens": "13", "master": "master"}[release] | default("Unknown Version") -%}
+{% set version = {"kilo": "7-tripleo", "liberty": "8-tripleo", "mitaka": "9-tripleo", "newton": "10-tripleo", "ocata": "11-tripleo", "pike": "12-tripleo", "queens": "13-tripleo", "master": "master-tripleo"}[release] | default("Unknown Version") -%}
 {% if osp_release is defined %}
-    {% set series = {"rhos-7":"7", "rhos-8":"8", "rhos-9":"9", "rhos-10":"10", "master":"master"}[osp_release] | default("Unknown Version") -%}
-    {% set version = {"rhos-7":"7-director", "rhos-8":"8-director", "rhos-9":"9-director", "rhos-10":"10-director", "master":"11-director"}[osp_release] | default("Unknown Version") -%}
+    {% set series = {"rhos-7": "7", "rhos-8": "8", "rhos-9": "9", "rhos-10": "10", "rhos-11": "11", "rhos-12": "12", "rhos-13": "13", "master": "master"}[osp_release] | default("Unknown Version") -%}
+    {% set version = {"rhos-7": "7-director", "rhos-8": "8-director", "rhos-9": "9-director", "rhos-10":"10-director", "rhos-11": "11-director", "rhos-12": "12-director", "rhos-13": "13-director", "master": "master-director"}[osp_release] | default("Unknown Version") -%}
 {% endif %}
 {
     "osp_series": "{{series}}",
