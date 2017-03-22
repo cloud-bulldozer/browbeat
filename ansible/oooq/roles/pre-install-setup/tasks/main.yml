@@ -22,11 +22,6 @@
 - name: Load CI vars
   include_vars: "{{ lookup('env','HW_ENV_DIR') }}/all.yml"
 
-- name: Template Browbeat configuration
-  template:
-    "src={{ browbeat_config_file }} \
-     dest={{ ansible_env.HOME }}/browbeat/browbeat-config.yaml"
-
 - name: Install Pip
   retries: 10
   delay: 60

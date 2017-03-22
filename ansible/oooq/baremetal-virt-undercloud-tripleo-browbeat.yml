@@ -19,6 +19,7 @@
     - browbeat/common
     - browbeat/browbeat
     - browbeat/browbeat-network
+    - browbeat/template-configs
     - browbeat/statsd-ironic
 
 - name: Disable sshd dns
