@@ -13,7 +13,7 @@ collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
 
-# Collect plugins configuration:
+# Opt-In Collectd plugins configuration:
 ########################
 # Apache plugin
 ########################
@@ -25,6 +25,14 @@ apache_controller_collectd_plugin: false
 apache_controller_mod_status_port: 5001
 
 ########################
+# Apache request time
+########################
+# Setups up Apache to log request time and collectd to grab request time from
+# httpd log files.  This provides request times from Apache for Keystone,
+# Gnocchi, and Nova Placement APIs hosted under httpd.
+apache_controller_collectd_request_time: false
+
+########################
 # Ceph plugin
 ########################
 # Overcloud Controller
@@ -32,18 +40,17 @@ ceph_controller_collectd_plugin: false
 ceph_storage_collectd_plugin: false
 
 ########################
-# Gnocchi backlog plugin
+# Gnocchi Status plugin
 ########################
-# This should only be enabled on a single controller when monitoring Gnocchi for
-# performance/scale. This plugin does create a token each interval and adds load
-# to Gnocchi-api each time it polls for measurements and thus your cloud will pay
-# a monitoring "tax" by enabling this plugin.
-gnocchi_status_python_plugin: false
-gnocchi_status_interval: 30
+gnocchi_status_undercloud_collectd_plugin: false
+gnocchi_status_undercloud_collectd_interval: 10
+gnocchi_status_controller_collectd_plugin: false
+gnocchi_status_controller_collectd_interval: 10
 
 ########################
-# Keystone token count via dbi plugin
+# Keystone token count
 ########################
+# If you have UUID tokens, we can count those via the collectd dbi plugin
 keystone_undercloud_collectd_plugin: false
 keystone_overcloud_collectd_plugin: false
 
@@ -59,11 +66,23 @@ rabbitmq_controller_collectd_interval: 10
 undercloud_monitored_queues:
   - "metering.sample"
   - "event.sample"
+  - "notifications.sample"
+  - "notifications.audit"
+  - "notifications.info"
+  - "notifications.warn"
+  - "notifications.error"
+  - "notifications.critical"
 
 # Queues to monitor message count on Controllers
 controller_monitored_queues:
   - "metering.sample"
   - "event.sample"
+  - "notifications.sample"
+  - "notifications.audit"
+  - "notifications.info"
+  - "notifications.warn"
+  - "notifications.error"
+  - "notifications.critical"
 
 ########################
 # tail plugin

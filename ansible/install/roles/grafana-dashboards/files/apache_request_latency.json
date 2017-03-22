@@ -1,0 +1,990 @@
+{
+  "dashboard": {
+    "annotations": {
+      "list": []
+    },
+    "editable": true,
+    "gnetId": null,
+    "hideControls": false,
+    "id": null,
+    "links": [],
+    "rows": [
+      {
+        "collapse": false,
+        "height": 200,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 1,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-max, 0.000001), 'Patch Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-99, 0.000001), 'Patch 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-avg, 0.000001), 'Patch Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-min, 0.000001), 'Patch Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-patch, 10)), 'Patch Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Gnocchi API Patch Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 2,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-max, 0.000001), 'Post Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-99, 0.000001), 'Post 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-avg, 0.000001), 'Post Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-min, 0.000001), 'Post Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-post, 10)), 'Post Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Gnocchi API Post Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 3,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-max, 0.000001), 'Get Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-99, 0.000001), 'Get 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-avg, 0.000001), 'Get Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-min, 0.000001), 'Get Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-get, 10)), 'Get Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Gnocchi API Get Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Gnocchi API Latency",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 200,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 4,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-max, 0.000001), 'Get Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-99, 0.000001), 'Get 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-avg, 0.000001), 'Get Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-min, 0.000001), 'Get Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-keystone-admin-api.counter-get), 10), 'Get Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Keystone Admin API Get Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 5,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-max, 0.000001), 'Post Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-99, 0.000001), 'Post 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-avg, 0.000001), 'Post Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-min, 0.000001), 'Post Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-keystone-admin-api.counter-post), 10), 'Post Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Keystone Admin API Post Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 6,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span":12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-max, 0.000001), 'Get Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-99, 0.000001), 'Get 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-avg, 0.000001), 'Get Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-min, 0.000001), 'Get Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-keystone-main-api.counter-get), 10), 'Get Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Keystone Main API Get Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 7,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-max, 0.000001), 'Post Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-99, 0.000001), 'Post 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-avg, 0.000001), 'Post Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-min, 0.000001), 'Post Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-keystone-main-api.counter-post), 10), 'Post Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Keystone Main API Post Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Keystone API Request Latency",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 200,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 8,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-max, 0.000001), 'Put Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-99, 0.000001), 'Put 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-avg, 0.000001), 'Put Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-min, 0.000001), 'Put Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-nova-placement-api.counter-put), 10), 'Put Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Nova Placement API Put Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "fill": 0,
+            "id": 9,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "sortDesc": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 1,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/.*Count.*/",
+                "lines": true,
+                "linewidth": 2,
+                "points": false,
+                "yaxis": 2
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-max, 0.000001), 'Get Max Latency')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-99, 0.000001), 'Get 99th Latency')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-avg, 0.000001), 'Get Avg Latency')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-min, 0.000001), 'Get Min Latency')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(scale(sumSeries($Cloud.$Node.tail-nova-placement-api.counter-get), 10), 'Get Count')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Nova Placement API Get Latency",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": "Latency",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": "Count",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Nova Placement API Request Latency",
+        "titleSize": "h6"
+      }
+    ],
+    "schemaVersion": 14,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allFormat": "glob",
+          "allValue": null,
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud",
+          "options": [],
+          "query": "*",
+          "refresh": 1,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allFormat": "glob",
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "overcloud-controller-0",
+            "value": "overcloud-controller-0"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Node",
+          "options": [],
+          "query": "$Cloud.*",
+          "refresh": 1,
+          "regex": "/.*controller.*/",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "utc",
+    "title": "Apache Request Latency",
+    "version": 1
+  }
+}

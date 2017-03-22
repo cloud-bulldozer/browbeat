@@ -1936,7 +1936,7 @@
             "text": "overcloud-cephstorage-0",
             "value": "overcloud-cephstorage-0"
           },
-          "datasource": "RDU Perf Graphite",
+          "datasource": null,
           "hide": 0,
           "includeAll": false,
           "label": null,

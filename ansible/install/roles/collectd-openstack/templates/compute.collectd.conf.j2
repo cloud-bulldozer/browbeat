@@ -102,6 +102,7 @@ PreCacheChain "PreCache"
 
   # Nova (OpenStack Installed)
   ProcessMatch "nova-compute" "python.+nova-compute"                                    # 10,11
+  ProcessMatch "privsep-helper" "python.+/bin/privsep-helper"                           # 11
 
   # OVS (OpenStack Installed)
   ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
@@ -110,8 +111,11 @@ PreCacheChain "PreCache"
   ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
   ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
 
-  # QEMU (OpenStack Installed)
+  # QEMU / libvirt (OpenStack Installed)
   ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 10,11
+  ProcessMatch "libvirtd" "/usr/sbin/libvirtd"                                          # 10,11
+  ProcessMatch "virtlockd" "/usr/sbin/virtlockd"                                        # 10,11
+  ProcessMatch "virtlogd" "/usr/sbin/virtlogd"                                          # 10,11
 </Plugin>
 
 <Plugin swap>
@@ -121,8 +125,9 @@ PreCacheChain "PreCache"
 
 # Tail plugin configuration
 <Plugin "tail">
-  <File "/var/log/nova/nova-compute.log">
-    Instance "nova-compute"
+
+  <File "/var/log/ceilometer/compute.log">
+    Instance "ceilometer-compute"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -147,31 +152,6 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
-  <File "/var/log/neutron/openvswitch-agent.log">
-    Instance "neutron-openvswitch-agent"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
   <File "/var/log/neutron/l3-agent.log">
     Instance "neutron-l3-agent"
     <Match>
@@ -222,9 +202,8 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
-
-  <File "/var/log/ceilometer/compute.log">
-    Instance "ceilometer-compute"
+  <File "/var/log/neutron/openvswitch-agent.log">
+    Instance "neutron-openvswitch-agent"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -248,6 +227,33 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+
+  <File "/var/log/nova/nova-compute.log">
+    Instance "nova-compute"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+
 </Plugin>
 
 # Include other collectd configuration files

@@ -77,6 +77,13 @@ per_process_panels:
         - docker-registry
         - dockerd-current
         - docker-containerd-current
+    - name: "Everything Else"
+      processes:
+        - httpd
+        - memcached
+        - mongod
+        - mysqld
+        - rabbitmq
     - name: "Glance"
       processes:
         - glance-api
@@ -90,15 +97,6 @@ per_process_panels:
         - gnocchi-metricd-janitor
         - gnocchi-statsd
         - gnocchi_wsgi
-    - name: "Everything Else"
-      processes:
-        - haproxy
-        - httpd
-        - memcached
-        - mongod
-        - mysqld
-        - rabbitmq
-        - redis-server
     - name: "Heat"
       processes:
         - heat-api
@@ -136,7 +134,6 @@ per_process_panels:
         - nova-compute
         - nova-conductor
         - nova-scheduler
-        - nova_api_wsgi
         - placement_wsgi
     - name: "Open vSwitch"
       processes:
@@ -253,12 +250,10 @@ per_process_panels:
     - name: "Nova"
       processes:
         - nova-api
-        - nova-cert
         - nova-conductor
         - nova-consoleauth
         - nova-novncproxy
         - nova-scheduler
-        - nova_api_wsgi
         - placement_wsgi
     - name: "Open vSwitch"
       processes:
@@ -268,10 +263,9 @@ per_process_panels:
         - ovn-northd
         - ovn-controller
         - ovn-controller-vtep
-    - name: "Sahara"
+    - name: "Panko"
       processes:
-        - sahara-api
-        - sahara-engine
+        - panko_wsgi
     - name: "Swift"
       processes:
         - swift-account-auditor
@@ -339,7 +333,6 @@ per_process_panels:
   OpenStack-CephStorage:
     - name: "Ceph"
       processes:
-        - ceph-mon
         - ceph-osd
     - name: "Open vSwitch"
       processes:
@@ -365,6 +358,7 @@ per_process_panels:
     - name: "Nova"
       processes:
         - nova-compute
+        - privsep-helper
     - name: "Open vSwitch"
       processes:
         - ovs-vswitchd
@@ -372,9 +366,12 @@ per_process_panels:
         - ovsdb-server
         - ovn-controller
         - ovn-controller-vtep
-    - name: "QEMU-KVM"
+    - name: "QEMU-KVM / Libvirt"
       processes:
         - qemu-kvm
+        - libvirtd
+        - virtlockd
+        - virtlogd
     - name: "Collectd"
       processes:
         - collectd
@@ -484,8 +481,8 @@ per_process_panels:
         - nova-consoleauth
         - nova-novncproxy
         - nova-scheduler
-        - nova_api_wsgi
         - placement_wsgi
+        - privsep-helper
     - name: "Open vSwitch"
       processes:
         - ovs-vswitchd
@@ -497,13 +494,12 @@ per_process_panels:
     - name: "Panko"
       processes:
         - panko_wsgi
-    - name: "QEMU-KVM"
+    - name: "QEMU-KVM / Libvirt"
       processes:
         - qemu-kvm
-    - name: "Sahara"
-      processes:
-        - sahara-api
-        - sahara-engine
+        - libvirtd
+        - virtlockd
+        - virtlogd
     - name: "Swift"
       processes:
         - swift-account-auditor

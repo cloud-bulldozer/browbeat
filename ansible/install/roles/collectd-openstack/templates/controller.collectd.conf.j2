@@ -42,7 +42,7 @@ LoadPlugin memory
 LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
-{%if gnocchi_status_python_plugin or rabbitmq_controller_collectd_plugin %}
+{%if gnocchi_status_controller_collectd_plugin or rabbitmq_controller_collectd_plugin %}
 <LoadPlugin python>
   Globals true
 </LoadPlugin>
@@ -150,7 +150,7 @@ PreCacheChain "PreCache"
   IgnoreSelected false
 </Plugin>
 
-{%if gnocchi_status_python_plugin %}
+{%if gnocchi_status_controller_collectd_plugin %}
 {%if inventory_hostname == groups['controller'][0] %}
 <Plugin python>
   ModulePath "/usr/local/bin/"
@@ -158,7 +158,7 @@ PreCacheChain "PreCache"
   Interactive false
   Import "collectd_gnocchi_status"
   <Module collectd_gnocchi_status>
-    interval {{gnocchi_status_interval}}
+    interval {{gnocchi_status_controller_collectd_interval}}
   </Module>
 </Plugin>
 
@@ -218,6 +218,18 @@ PreCacheChain "PreCache"
   ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"                               # 10,11
   ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"                             # 10,11
 
+  # Everything Else (OpenStack Installed)
+  # (Processes displayed under "Everything Else" on Grafana Dashboards)
+  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 10,11
+  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # 10,11
+  Process "httpd"                                                                       # 10,11
+  Process "memcached"                                                                   # 10,11
+  Process "mongod"                                                                      # 10,11
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11
+  Process "redis-server"                                                                # 10,11
+  ProcessMatch "karaf" "java.+karaf"                                                    # ODL Specific
+
   # Glance (OpenStack Installed)
   ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11
   ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11
@@ -231,18 +243,6 @@ PreCacheChain "PreCache"
   ProcessMatch "gnocchi-metricd" "gnocchi-metricd "                                     # 10(Old proctitle)
   ProcessMatch "gnocchi-statsd" "python.+gnocchi-statsd"                                # 10,11
   ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11
-
-  # Everything Else (OpenStack Installed)
-  # (Processes displayed under "Everything Else" on Grafana Dashboards)
-  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # -9,-10
-  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # 10,11
-  Process "httpd"                                                                       # 10,11
-  Process "memcached"                                                                   # 10,11
-  Process "mongod"                                                                      # 10,11
-  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11
-  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11
-  Process "redis-server"                                                                # 10,11
-  ProcessMatch "karaf" "java.+karaf"                                                    # ODL Specific
 
   # Heat (OpenStack Installed)
   ProcessMatch "heat-api" "python.+heat-api --config-file"                              # 10,11
@@ -259,18 +259,16 @@ PreCacheChain "PreCache"
   ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11
   ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # 10,11
   ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # 10,11
-  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # -10,-11
+  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # 10,11
   ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11
   ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11
 
   # Nova (OpenStack Installed)
   ProcessMatch "nova-api" "python.+nova-api"                                            # 10,11
-  ProcessMatch "nova-cert" "python.+nova-cert"                                          # -10,-11
   ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11
   ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # 10,11
   ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # 10,11
   ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11
-  ProcessMatch "nova_api_wsgi" "nova_api_wsgi.*-DFOREGROUND"                            # 11
   ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11
 
   # OVS (OpenStack Installed)
@@ -281,9 +279,8 @@ PreCacheChain "PreCache"
   ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
   ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
 
-  # Sahara (OpenStack Installed)
-  ProcessMatch "sahara-api" "python.+sahara-api"                                        # -10,-11
-  ProcessMatch "sahara-engine" "python.+sahara-engine"                                  # -10,-11
+  # Panko (OpenStack Installed)
+  ProcessMatch "panko_wsgi" "panko_wsgi.*-DFOREGROUND"                                  # 11
 
   # Swift (OpenStack Installed)
   ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,11
@@ -332,57 +329,367 @@ PreCacheChain "PreCache"
 # Tail plugin configuration
 <Plugin "tail">
 
-  <File "/var/log/mysqld.log">
-    Instance "mysqld"
+# Tail httpd request time
+{%if apache_controller_collectd_request_time %}
+  <File "/var/log/httpd/gnocchi_wsgi_access.log">
+    Instance "gnocchi-api"
+
+    # Gnocchi API Post
     <Match>
-      Regex "[ERROR]"
+      Regex "RT:([0-9]+).*POST"
       DSType "CounterInc"
       Type "counter"
-      Instance "error"
+      Instance "post"
     </Match>
-{%if regex_warn %}
     <Match>
-      Regex "[Warning]"
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "post-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "post-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "post-min"
+    </Match>
+
+    # Gnocchi API Patch
+    <Match>
+      Regex "RT:([0-9]+).*PATCH"
       DSType "CounterInc"
       Type "counter"
-      Instance "warn"
+      Instance "patch"
     </Match>
-{% endif %}
-{%if regex_info %}
     <Match>
-      Regex "[Note]"
+      Regex "RT:([0-9]+).*PATCH"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "patch-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PATCH"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "patch"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PATCH"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "patch-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PATCH"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "patch-min"
+    </Match>
+
+    # Gnocchi API Get
+    <Match>
+      Regex "RT:([0-9]+).*GET"
       DSType "CounterInc"
       Type "counter"
-      Instance "info"
+      Instance "get"
     </Match>
-{% endif %}
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "get-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "get-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "get-min"
+    </Match>
   </File>
 
-  <File "/var/log/rabbitmq/rabbit\@{{ansible_hostname}}.log">
-    Instance "rabbitmq"
+  <File "/var/log/httpd/keystone_wsgi_admin_access.log">
+    Instance "keystone-admin-api"
+
+    # Keystone Admin Post
     <Match>
-      Regex "ERROR REPORT"
+      Regex "RT:([0-9]+).*POST"
       DSType "CounterInc"
       Type "counter"
-      Instance "error"
+      Instance "post"
     </Match>
-{%if regex_warn %}
     <Match>
-      Regex "WARNING REPORT"
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "post-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "post-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "post-min"
+    </Match>
+
+    # Keystone Admin Get
+    <Match>
+      Regex "RT:([0-9]+).*GET"
       DSType "CounterInc"
       Type "counter"
-      Instance "warn"
+      Instance "get"
     </Match>
-{% endif %}
-{%if regex_info %}
     <Match>
-      Regex "INFO REPORT"
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "get-max"
     </Match>
-{% endif %}
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "get-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "get-min"
+    </Match>
   </File>
+
+  <File "/var/log/httpd/keystone_wsgi_main_access.log">
+    Instance "keystone-main-api"
+
+    # Keystone Main Post
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "post-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "post-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "post-min"
+    </Match>
+
+    # Keystone Main Get
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "get-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "get-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "get-min"
+    </Match>
+  </File>
+
+  <File "/var/log/httpd/placement_wsgi_access.log">
+    Instance "nova-placement-api"
+
+    # Nova Placement Post
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "post-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "post-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*POST"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "post-min"
+    </Match>
+
+    # Nova Placement Put
+    <Match>
+      Regex "RT:([0-9]+).*PUT"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PUT"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "put-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PUT"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PUT"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "put-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*PUT"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "put-min"
+    </Match>
+
+    # Nova Placement Get
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMax"
+      Type "latency"
+      Instance "get-max"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeAverage"
+      Type "latency"
+      Instance "get-avg"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
+      DSType "GaugeMin"
+      Type "latency"
+      Instance "get-min"
+    </Match>
+  </File>
+
+{% endif %}
+# End Tail httpd request time
 
   <File "/var/log/aodh/evaluator.log">
     Instance "aodh-evaluator"
@@ -461,6 +768,356 @@ PreCacheChain "PreCache"
   </File>
   <File "/var/log/httpd/aodh_wsgi_error.log">
     Instance "aodh-wsgi-api"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+  </File>
+
+  <File "/var/log/ceilometer/agent-notification.log">
+    Instance "ceilometer-agent-notification"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/ceilometer/central.log">
+    Instance "ceilometer-central"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/ceilometer/collector.log">
+    Instance "ceilometer-collector"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/httpd/ceilometer_wsgi_error.log">
+    Instance "ceilometer-wsgi-api"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+  </File>
+
+  <File "/var/log/ceph/ceph.log">
+    Instance "ceph"
+    <Match>
+      Regex "\\[ERR\\]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex "\\[WRN\\]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex "\\[INF\\]"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+
+  # (Newton) api.log
+  <File "/var/log/cinder/api.log">
+    Instance "cinder-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  # (Ocata) cinder-api.log
+  <File "/var/log/cinder/cinder-api.log">
+    Instance "cinder-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/cinder/scheduler.log">
+    Instance "cinder-scheduler"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/cinder/volume.log">
+    Instance "cinder-volume"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+
+  <File "/var/log/glance/api.log">
+    Instance "glance-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/glance/registry.log">
+    Instance "glance-registry"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+
+  <File "/var/log/gnocchi/app.log">
+    Instance "gnocchi-app"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/gnocchi/metricd.log">
+    Instance "gnocchi-metricd"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/gnocchi/statsd.log">
+    Instance "gnocchi-statsd"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/httpd/gnocchi_wsgi_error.log">
+    Instance "gnocchi-wsgi-api"
     <Match>
       Regex ":error"
       DSType "CounterInc"
@@ -614,17 +1271,18 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
-  <File "/var/log/nova/nova-api.log">
-    Instance "nova-api"
+  # Slightly different than Undercloud
+  <File "/var/log/mysqld.log">
+    Instance "mysqld"
     <Match>
-      Regex " ERROR "
+      Regex "\\[ERROR\\]"
       DSType "CounterInc"
       Type "counter"
       Instance "error"
     </Match>
 {%if regex_warn %}
     <Match>
-      Regex " WARNING "
+      Regex "\\[Warning\\]"
       DSType "CounterInc"
       Type "counter"
       Instance "warn"
@@ -632,107 +1290,7 @@ PreCacheChain "PreCache"
 {% endif %}
 {%if regex_info %}
     <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/nova/nova-conductor.log">
-    Instance "nova-conductor"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/nova/nova-consoleauth.log">
-    Instance "nova-consoleauth"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/nova/nova-novncproxy.log">
-    Instance "nova-novncproxy"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/nova/nova-scheduler.log">
-    Instance "nova-scheduler"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
+      Regex "\\[Note\\]"
       DSType "CounterInc"
       Type "counter"
       Instance "info"
@@ -866,8 +1424,8 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
-  <File "/var/log/cinder/api.log">
-    Instance "cinder-api"
+  <File "/var/log/nova/nova-api.log">
+    Instance "nova-api"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -891,8 +1449,8 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
-  <File "/var/log/cinder/scheduler.log">
-    Instance "cinder-scheduler"
+  <File "/var/log/nova/nova-conductor.log">
+    Instance "nova-conductor"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -916,8 +1474,8 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
-  <File "/var/log/cinder/volume.log">
-    Instance "cinder-volume"
+  <File "/var/log/nova/nova-consoleauth.log">
+    Instance "nova-consoleauth"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -940,10 +1498,94 @@ PreCacheChain "PreCache"
       Instance "info"
     </Match>
 {% endif %}
+  </File>
+  <File "/var/log/nova/nova-novncproxy.log">
+    Instance "nova-novncproxy"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/nova/nova-placement-api.log">
+    Instance "nova-placement-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/nova/nova-scheduler.log">
+    Instance "nova-scheduler"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/httpd/placement_wsgi_error.log">
+    Instance "nova-placement-wsgi-api"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
   </File>
 
-  <File "/var/log/glance/api.log">
-    Instance "glance-api"
+  <File "/var/log/panko/app.log">
+    Instance "panko"
     <Match>
       Regex " ERROR "
       DSType "CounterInc"
@@ -967,17 +1609,27 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
-  <File "/var/log/glance/registry.log">
-    Instance "glance-registry"
+  <File "/var/log/httpd/panko_wsgi_error.log">
+    Instance "panko-wsgi-api"
     <Match>
-      Regex " ERROR "
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+  </File>
+
+  <File "/var/log/rabbitmq/rabbit\@{{ansible_hostname}}.log">
+    Instance "rabbitmq"
+    <Match>
+      Regex "ERROR REPORT"
       DSType "CounterInc"
       Type "counter"
       Instance "error"
     </Match>
 {%if regex_warn %}
     <Match>
-      Regex " WARNING "
+      Regex "WARNING REPORT"
       DSType "CounterInc"
       Type "counter"
       Instance "warn"
@@ -985,7 +1637,7 @@ PreCacheChain "PreCache"
 {% endif %}
 {%if regex_info %}
     <Match>
-      Regex " INFO "
+      Regex "INFO REPORT"
       DSType "CounterInc"
       Type "counter"
       Instance "info"
@@ -1054,176 +1706,6 @@ PreCacheChain "PreCache"
       Instance "object-server-info"
     </Match>
 {% endif %}
-  </File>
-
-  <File "/var/log/ceilometer/agent-notification.log">
-    Instance "ceilometer-agent-notification"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/ceilometer/central.log">
-    Instance "ceilometer-central"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/ceilometer/collector.log">
-    Instance "ceilometer-collector"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/httpd/ceilometer_wsgi_error.log">
-    Instance "ceilometer-wsgi-api"
-    <Match>
-      Regex ":error"
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-  </File>
-
-  <File "/var/log/gnocchi/app.log">
-    Instance "gnocchi-app"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/gnocchi/metricd.log">
-    Instance "gnocchi-metricd"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/gnocchi/statsd.log">
-    Instance "gnocchi-statsd"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  <File "/var/log/httpd/gnocchi_wsgi_error.log">
-    Instance "gnocchi-wsgi-api"
-    <Match>
-      Regex ":error"
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
   </File>
 
 </Plugin>

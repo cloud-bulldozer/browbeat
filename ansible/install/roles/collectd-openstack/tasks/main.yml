@@ -40,27 +40,79 @@
     - collectd-dbi
 
 # Get mysql's root password
-- name: (Controllers Only) Get mysql root password
-  command: hiera mysql::server::root_password
+# Works with: Newton, Ocata
+- name: (Controller) Get mysql root password
+  command: hiera -c /etc/puppet/hiera.yaml mysql::server::root_password
   become: true
   register: mysql_root_password
   when: "'controller' in group_names"
 
-- name: Get overcloudrc
+- name: (Undercloud) Get password
+  become: true
+  shell: "hiera admin_password | awk '{$0=\"Environment=OS_PASSWORD=\"$0;print }'"
+  register: undercloud_password
+  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+
+- name: (Undercloud) Get stackrc
   remote_user: "{{local_remote_user}}"
-  shell: "cat /home/stack/overcloudrc | grep 'OS' | awk '{gsub(/export /,\"Environment=\");print }'"
+  shell: "cat /home/stack/stackrc | egrep '^OS_[AUT]|^OS_PRO' | awk '{$0=\"Environment=\"$0;print }'"
+  register: stackrc_file
+  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+
+- name: (Undercloud) Add environment variables to collectd.service systemd file
+  become: true
+  lineinfile:
+    dest: /usr/lib/systemd/system/collectd.service
+    insertafter: '\[Service\]'
+    line: "{{item}}"
+  with_items: "{{stackrc_file.stdout_lines | default(omit)}}"
+  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+
+- name: (Undercloud) Add environment variables to collectd.service systemd file
+  become: true
+  lineinfile:
+    dest: /usr/lib/systemd/system/collectd.service
+    insertafter: '\[Service\]'
+    line: "{{item}}"
+  with_items: "{{undercloud_password.stdout_lines | default(omit)}}"
+  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+
+- name: (Controller, delegated to UC) Get overcloudrc
+  remote_user: "{{local_remote_user}}"
+  shell: "cat /home/stack/overcloudrc | grep 'export OS' | awk '{gsub(/export /,\"Environment=\");print }'"
   delegate_to: "{{groups['undercloud'][0]}}"
   register: overcloudrc_file
-  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+  when: "(gnocchi_status_controller_collectd_plugin == true) and (inventory_hostname == groups['controller'][0])"
 
-- name: Add environment variables to collectd.service systemd file
+- name: (Controller) Add environment variables to collectd.service systemd file
   become: true
   lineinfile:
     dest: /usr/lib/systemd/system/collectd.service
     insertafter: '\[Service\]'
     line: "{{item}}"
   with_items: "{{overcloudrc_file.stdout_lines | default(omit)}}"
-  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+  when: "(gnocchi_status_controller_collectd_plugin == true) and (inventory_hostname == groups['controller'][0])"
+
+# Apache Request Response Timing
+- name: Deploy Apache httpd.conf
+  become: true
+  copy:
+    src: httpd.conf
+    dest: /etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true)"
+
+- name: Restart Apache
+  become: true
+  service:
+    name: httpd
+    state: restarted
+    enabled: true
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true)"
+# End Apache Request Response Timing
 
 # Apache Monitoring
 - name: Deploy Apache mod_status conf
@@ -72,12 +124,12 @@
   become: true
   when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
 
-- name: (Undercloud Only) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
+- name: (Undercloud) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
   shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
   become: true
   when: "('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true)"
 
-- name: (Controller Only) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
+- name: (Controller) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
   shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
   become: true
   when: "('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
@@ -94,7 +146,7 @@
 - name: Reload systemd units
   command: systemctl daemon-reload
   become: true
-  when: "(gnocchi_status_python_plugin == true) and (inventory_hostname == groups['controller'][0])"
+  when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
 
 - name: Copy collectd_gnocchi_status.py
   copy:
@@ -104,7 +156,7 @@
     group: root
     mode: 0755
   become: true
-  when: "(gnocchi_status_python_plugin == true and ('{{inventory_hostname}}' == groups['controller'][0]))"
+  when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
 
 # Rabbitmq monitoring
 - name: Install pyrabbit
@@ -134,14 +186,16 @@
   register: undercloud_rabbitmq_password
   when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
 
+# Works with: Newton, Ocata
 - name: (Controller) Get Rabbitmq username
-  command: hiera nova::rabbit_userid
+  command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
   register: controller0_rabbitmq_username
   become: true
   when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
 
+# Works with: Newton, Ocata
 - name: (Controller) Get Rabbitmq password
-  command: hiera nova::rabbit_password
+  command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
   register: controller0_rabbitmq_password
   become: true
   when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
