@@ -51,6 +51,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/search/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
     - "{{ browbeat_path }}/visualization/Shaker/search/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/search/*"
   ignore_errors: true
 
 - name: Remove Visuals
@@ -65,6 +66,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/visualization/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
     - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/visualization/*"
   ignore_errors: true
 
 - name: Remove Dashboards
@@ -79,6 +81,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/dashboard/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
     - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/dashboard/*"
   ignore_errors: true
 
 - name: Upload Searches
@@ -93,6 +96,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/search/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
     - "{{ browbeat_path }}/visualization/Shaker/search/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/search/*"
   ignore_errors: true
 
 - name: Upload Visuals
@@ -107,6 +111,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/visualization/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
     - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/visualization/*"
   ignore_errors: true
 
 - name: Upload Dashboards
@@ -121,6 +126,7 @@
     - "{{ browbeat_path }}/visualization/Neutron/dashboard/*"
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
     - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Performance-Dashboard/dashboard/*"
   ignore_errors: true
 
 - name: Cleanup Keystone Visualizations
