@@ -22,7 +22,9 @@ LoadPlugin apache
 LoadPlugin cpu
 LoadPlugin conntrack
 {% if keystone_overcloud_collectd_plugin %}
+{%if inventory_hostname == groups['controller'][0] %}
 LoadPlugin dbi
+{% endif %}
 {% endif %}
 LoadPlugin df
 LoadPlugin disk
