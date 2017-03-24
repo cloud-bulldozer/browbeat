@@ -224,6 +224,7 @@ PreCacheChain "PreCache"
   ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11
   ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11
   Process "redis-server"                                                                # 10,11
+  ProcessMatch "karaf" "java.+karaf"                                                    # ODL Specific
 
   # Heat (OpenStack Installed)
   ProcessMatch "heat-api" "python.+heat-api --config-file"                              # 10,11

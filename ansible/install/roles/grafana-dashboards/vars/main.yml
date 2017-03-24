@@ -215,6 +215,7 @@ per_process_panels:
         - mysqld
         - rabbitmq
         - redis-server
+        - karaf
     - name: "Glance"
       processes:
         - glance-api
@@ -427,6 +428,7 @@ per_process_panels:
         - mysqld
         - rabbitmq
         - redis-server
+        - karaf
     - name: "Glance"
       processes:
         - glance-api
