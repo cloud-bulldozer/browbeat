@@ -14,6 +14,7 @@
   become: true
 
 - name: Import Filebeat GPG Key
+  become: true
   rpm_key: key=http://packages.elastic.co/GPG-KEY-elasticsearch
     state=present
   when: (logging_backend != 'fluentd')
@@ -38,6 +39,7 @@
 
 - name: Check ELK server SSL client certificate
   stat: path=/etc/pki/tls/certs/filebeat-forwarder.crt
+  become: true
   ignore_errors: true
   register: elk_client_ssl_cert_exists
   when: (logging_backend != 'fluentd')
@@ -68,6 +70,7 @@
   when: (logging_backend == 'fluentd')
 
 - name: Setup rsyslogd for fluentd
+  become: true
   lineinfile: dest=/etc/rsyslog.conf \
           line="*.* @{{ elk_server }}:{{ fluentd_syslog_port }}"
   when: (logging_backend == 'fluentd')
@@ -85,6 +88,7 @@
   when: (logging_backend == 'fluentd')
 
 - name: Restarting rsyslog for fluentd
+  become: true
   command: systemctl restart rsyslog.service
   ignore_errors: true
   when: rsyslog_updated != 0
