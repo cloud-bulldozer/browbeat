@@ -19,6 +19,11 @@ LoadPlugin write_graphite
 {% if apache_controller_collectd_plugin %}
 LoadPlugin apache
 {% endif %}
+{% if ceph_controller_collectd_plugin %}
+{% if inventory_hostname == groups['controller'][0] %}
+LoadPlugin ceph
+{% endif %}
+{% endif %}
 LoadPlugin cpu
 LoadPlugin conntrack
 {% if keystone_overcloud_collectd_plugin %}
@@ -95,6 +100,19 @@ PreCacheChain "PreCache"
     URL "http://127.0.0.1:{{apache_controller_mod_status_port}}/mod_status?auto"
   </Instance>
 </Plugin>
+{% endif %}
+{% if ceph_controller_collectd_plugin %}
+{% if inventory_hostname == groups['controller'][0] %}
+
+<Plugin ceph>
+  LongRunAvgLatency false
+  ConvertSpecialMetricTypes true
+  <Daemon "mon.{{inventory_hostname}}">
+    SocketPath "/var/run/ceph/ceph-mon.{{inventory_hostname}}.asok"
+  </Daemon>
+</Plugin>
+
+{% endif %}
 {% endif %}
 {% if keystone_overcloud_collectd_plugin %}
 {%if inventory_hostname == groups['controller'][0] %}

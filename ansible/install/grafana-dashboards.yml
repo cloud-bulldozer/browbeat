@@ -14,6 +14,7 @@
     cloud_dashboards: true
     overwrite_existing: true
     static_dashboards:
+      - cloud_ceph_monitoring
       - cloud_gnocchi_status
       - cloud_instance_count
       - cloud_keystone_token_count
