@@ -11,14 +11,16 @@
           name: {{flavor_name}}
         image:
           name: {{image_name}}
-        nics:
-          - net-id: {{net_id}}
+        auto_assign_nic: true
         detailed: true
       runner:
         concurrency: {{concurrency}}
         times: {{times}}
         type: "constant"
       context:
+        network:
+          start_cidr: "10.0.0.0/16"
+          networks_per_tenant: 1
         users:
           tenants: 1
           users_per_tenant: 1
