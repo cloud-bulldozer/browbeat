@@ -1,8 +1,4 @@
 ---
-- name: Get Network ID
-  shell: "source {{ ansible_env.HOME }}/overcloudrc; neutron net-list | grep {{ browbeat_pri_net_name }} | cut -f 2 -d'|'"
-  register: nova_test_net_name
-
 - name: Template Browbeat configuration
   template:
     "src={{ browbeat_config_file }} \
