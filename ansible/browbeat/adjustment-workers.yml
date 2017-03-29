@@ -34,5 +34,5 @@
   roles:
     - { role: keystone-workers, when: service == "keystone" }
     - { role: nova-workers, when: service == "nova" }
-    - { role: neutron-workers, when: service == "neutron" } 
+    - { role: neutron-workers, when: service == "neutron" }
     - { role: cinder-workers, when: service == "cinder" }
