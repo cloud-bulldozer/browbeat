@@ -9,7 +9,7 @@
       args:
         network_create_args: ""
         subnet_create_args: ""
-        subnet_cidr_start: "1.1.0.0/30"
+        subnet_cidr_start: "10.0.0.0/16"
         subnets_per_network: {{subnets_per_network}}
         router_create_args: {{ router_create_args }}
       runner:
