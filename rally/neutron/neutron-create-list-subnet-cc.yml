@@ -6,8 +6,8 @@
   NeutronNetworks.create_and_list_subnets:
     -
       args:
-        network_create_args: ""
-        subnet_create_args: ""
+        network_create_args: {}
+        subnet_create_args: {}
         subnet_cidr_start: "1.1.0.0/30"
         subnets_per_network: {{subnets_per_network}}
       runner:
