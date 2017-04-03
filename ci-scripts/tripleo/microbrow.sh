@@ -48,15 +48,15 @@ if [ ! -z ${current_build+x} ]
   if [[ $RELEASE == *ocata* ]]
    then
     cached_image="$INTERNAL_IMAGE_SERVER/centos-org-image-cache/$RELEASE/rdo_trunk/$hash/undercloud.qcow2"
+    export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
+  elif [[ $RELEASE == *rhos-* ]]
+   then
+    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/$current_build/undercloud.qcow2"
+    export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars rhos_puddle=$current_build"
   else
     cached_image="$INTERNAL_IMAGE_SERVER/centos-org-image-cache/$RELEASE/delorean/$hash/undercloud.qcow2"
+    export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
   fi
-
-  if [[ $RELEASE == *rhos-* ]]
-   then
-    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/$hash/undercloud.qcow2"
-  fi
-  export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
 elif [[ $RELEASE == *rhos-* ]]
