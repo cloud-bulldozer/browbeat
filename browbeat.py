@@ -111,11 +111,22 @@ def main():
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir,time_stamp + '.' + 'report')))
         lib.WorkloadBase.WorkloadBase.print_summary()
+
+        browbeat_rc = 0
         if lib.WorkloadBase.WorkloadBase.failure > 0:
-           _logger.info("Browbeat Finished with Failures, UUID: {}".format(browbeat_uuid))
-           sys.exit(1)
+            browbeat_rc = 1
+        if lib.WorkloadBase.WorkloadBase.index_failures > 0:
+            browbeat_rc = 2
+
+        if browbeat_rc == 1:
+           _logger.info("Browbeat finished with test failures, UUID: {}".format(browbeat_uuid))
+           sys.exit(browbeat_rc)
+        elif browbeat_rc == 2:
+           _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
+                        .format(browbeat_uuid))
+           sys.exit(browbeat_rc)
         else:
-           _logger.info("Browbeat Finished Successfully, UUID: {}".format(browbeat_uuid))
+           _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat_uuid))
            sys.exit(0)
 
 if __name__ == '__main__':

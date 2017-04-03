@@ -104,6 +104,7 @@ class PerfKit(WorkloadBase.WorkloadBase):
                     if not self.elastic.index_result(result, test_name, result_dir,
                                                      str(result_count), 'result'):
                         index_success = False
+                        self.update_index_failures()
         else:
             complete_result_json = {'browbeat_scenario': benchmark_config}
             complete_result_json['perfkit_errors'] = self.get_error_details(result_dir)

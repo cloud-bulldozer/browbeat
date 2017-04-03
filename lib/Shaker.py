@@ -126,6 +126,7 @@ class Shaker(WorkloadBase.WorkloadBase):
             result = self.elastic.combine_metadata(shaker_stats)
             index_status = self.elastic.index_result(result, test_name, result_dir, _type='error')
             if index_status is False:
+                self.update_index_failures()
                 return False
             else:
                 return True

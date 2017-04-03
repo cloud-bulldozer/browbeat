@@ -351,6 +351,8 @@ class Rally(WorkloadBase.WorkloadBase):
                                             # Start indexing
                                             index_status = self.json_result(
                                                 task_id, scenario_name, run, test_name, result_dir)
+                                            if not index_status:
+                                                self.update_index_failures()
                                             self.get_time_dict(to_time, from_time,
                                                                benchmark[
                                                                    'name'], new_test_name,
