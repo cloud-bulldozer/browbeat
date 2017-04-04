@@ -4,7 +4,7 @@ set -eu
 
 pushd $WORKSPACE
  pushd $WORKSPACE/tripleo-quickstart-extras
-  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/46/437946/1 && git checkout FETCH_HEAD
+  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/46/437946/4 && git checkout FETCH_HEAD
   set +eu
    source $WORKSPACE/bin/activate
    pip uninstall -y tripleo-quickstart-extras
@@ -47,11 +47,15 @@ if [ ! -z ${current_build+x} ]
   #Ocata pipeling moving to new folder structure
   if [[ $RELEASE == *ocata* ]]
    then
-    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/rdo_trunk/$hash/undercloud.qcow2"
+    cached_image="$INTERNAL_IMAGE_SERVER/centos-org-image-cache/$RELEASE/rdo_trunk/$hash/undercloud.qcow2"
   else
-    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/delorean/$hash/undercloud.qcow2"
+    cached_image="$INTERNAL_IMAGE_SERVER/centos-org-image-cache/$RELEASE/delorean/$hash/undercloud.qcow2"
   fi
 
+  if [[ $RELEASE == *rhos-* ]]
+   then
+    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/$hash/undercloud.qcow2"
+  fi
   export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
