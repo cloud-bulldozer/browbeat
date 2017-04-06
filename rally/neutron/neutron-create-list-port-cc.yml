@@ -6,7 +6,7 @@
   NeutronNetworks.create_and_list_ports:
     -
       args:
-        network_create_args: ""
+        network_create_args: {}
         ports_per_network: {{ports_per_network}}
       runner:
         concurrency: {{concurrency}}
