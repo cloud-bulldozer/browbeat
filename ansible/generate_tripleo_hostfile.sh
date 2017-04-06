@@ -20,7 +20,7 @@ fi
 # Check if there are any clouds built.
 clouds=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack list | grep -i -E 'overcloud'")
 if [ ${#clouds} -gt 0 ]; then
-  nodes=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; nova list | grep -i -E 'active|running'")
+  nodes=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack server list | grep -i -E 'active|running'")
   if [ ${#nodes} -lt 1 ]; then
     echo "ERROR: nova list failed to execute properly, please check the openstack-nova-api on the undercloud."
     exit 1
@@ -159,7 +159,7 @@ IFS=$'\n'
 for line in $nodes; do
  uuid=$(echo $line | awk '{print $2}')
  host=$(echo $line | awk '{print $4}')
- IP=$(echo $line | awk '{print $12}' | cut -d "=" -f2)
+ IP=$(echo $line | awk '{print $8}' | cut -d "=" -f2)
  if grep -q $uuid <<< {$controller_uuids}; then
   controller_hn+=("$host")
 elif grep -q $uuid <<< {$blockstorage_uuids}; then
