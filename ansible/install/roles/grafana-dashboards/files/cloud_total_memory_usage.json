@@ -1,0 +1,487 @@
+{
+  "dashboard": {
+    "annotations": {
+      "list": []
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "hideControls": false,
+    "id": null,
+    "links": [],
+    "refresh": "1m",
+    "rows": [
+      {
+        "collapse": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 1,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.undercloud.memory.memory-slab_unrecl, 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.undercloud.memory.memory-used, 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.undercloud.memory.memory-buffered, 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.undercloud.memory.memory-slab_recl, 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias($Cloud.undercloud.memory.memory-cached, 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias($Cloud.undercloud.memory.memory-free, 'Free')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "undercloud Memory Usage",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "undercloud Memory Usage",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 2,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-slab_unrecl), 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-used), 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-buffered), 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-slab_recl), 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-cached), 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-free), 'Free')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Total Controller Memory Usage",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Controller Total Memory Usage",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 5,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-slab_unrecl), 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-used), 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-buffered), 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-slab_recl), 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-cached), 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-free), 'Free')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Total CephStorage Memory Usage",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "CephStorage Total Memory Usage",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 9,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_unrecl), 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-used), 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-buffered), 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_recl), 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-cached), 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-free), 'Free')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Total Compute Memory Usage",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Compute Total Memory Usage",
+        "titleSize": "h6"
+      }
+    ],
+    "schemaVersion": 12,
+    "sharedCrosshair": false,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allFormat": "glob",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "multiFormat": "glob",
+          "name": "Cloud",
+          "options": [],
+          "query": "*",
+          "refresh": 1,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {
+      "now": true,
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "utc",
+    "title": "Cloud Total Memory Usage",
+    "version": 7
+  }
+}

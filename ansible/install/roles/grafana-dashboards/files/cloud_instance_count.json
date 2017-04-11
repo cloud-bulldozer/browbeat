@@ -5,13 +5,13 @@
     },
     "editable": true,
     "gnetId": null,
+    "graphTooltip": 0,
     "hideControls": false,
     "id": null,
     "links": [],
     "rows": [
       {
         "collapse": false,
-        "editable": true,
         "height": "250px",
         "panels": [
           {
@@ -21,14 +21,8 @@
             "editable": true,
             "error": false,
             "fill": 0,
-            "grid": {
-              "threshold1": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2": null,
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
+            "grid": {},
             "id": 1,
-            "isNew": true,
             "legend": {
               "alignAsTable": true,
               "avg": true,
@@ -59,9 +53,10 @@
                 "textEditor": false
               }
             ],
+            "thresholds": [],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Instances Hosted on Computes for $Cloud",
+            "title": "Total Instances Hosted on Computes for $Cloud",
             "tooltip": {
               "msResolution": false,
               "shared": true,
@@ -70,7 +65,85 @@
             },
             "type": "graph",
             "xaxis": {
-              "show": true
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 2,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode($Cloud.overcloud-*compute-*.processes-qemu-kvm.ps_count.processes, 1)",
+                "textEditor": false
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Instances Hosted on Each Compute for $Cloud",
+            "tooltip": {
+              "msResolution": false,
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
             },
             "yaxes": [
               {
@@ -92,8 +165,12 @@
             ]
           }
         ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
         "showTitle": true,
-        "title": "Instance Count"
+        "title": "Instance Count",
+        "titleSize": "h6"
       }
     ],
     "schemaVersion": 12,
