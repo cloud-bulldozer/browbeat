@@ -1,8 +1,9 @@
 ---
 
-- name: Make sure rsync is installed
-  yum: name=rsync state=present
+- name: Make sure dependencies ar installed
+  package: name={{item}} state=present
   become: true
+  with_items: "{{ browbeat_dependencies }}"
 
 - name: Copy browbeat to the undercloud
   synchronize: "src={{ local_working_dir }}/browbeat dest={{ ansible_env.HOME }}/ use_ssh_args=yes"
@@ -21,15 +22,3 @@
 
 - name: Load CI vars
   include_vars: "{{ lookup('env','HW_ENV_DIR') }}/all.yml"
-
-- name: Install Pip
-  retries: 10
-  delay: 60
-  until: pip.rc == 0
-  register: pip
-  shell: curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"; sudo python get-pip.py
-  become: true
-
-- name: Install Ansible
-  pip: name=ansible state=present
-  become: true
