@@ -1,0 +1,2 @@
+# epel7 rpm for collectd packages
+epel7_rpm: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm

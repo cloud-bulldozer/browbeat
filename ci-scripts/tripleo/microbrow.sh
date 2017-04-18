@@ -26,15 +26,15 @@ export PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
 export VARS="elastic_enabled_template=true \
 --extra-vars grafana_enabled_template=false \
 --extra-vars elastic_host_template=$ELASTIC_HOST \
---extra-vars graphite_host_template=$GRAPH_HOST \
+--extra-vars graphite_host=$GRAPH_HOST \
 --extra-vars statsd_host=$GRAPH_HOST \
 --extra-vars statsd_enabled=True \
---extra-vars grafana_host_template=$GRAPH_HOST \
---extra-vars grafana_username_template=$GRAFANA_USER \
---extra-vars grafana_password_template=$GRAFANA_PASS \
+--extra-vars grafana_host=$GRAPH_HOST \
+--extra-vars grafana_username=$GRAFANA_USER \
+--extra-vars grafana_password=$GRAFANA_PASS \
 --extra-vars browbeat_cloud_name=$CLOUD_NAME \
 --extra-vars browbeat_config_file=$BENCHMARK \
---extra-vars graphite_prefix_template=$CLOUD_NAME"
+--extra-vars graphite_prefix=$CLOUD_NAME"
 
 #For Pipeline builds we need to get the pipeline image
 #we check that the pipeline image var is set and then

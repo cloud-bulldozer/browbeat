@@ -6,7 +6,15 @@
   roles:
     - browbeat/pre-install-setup
     - browbeat/oooq-metadata
-    - browbeat/collectd-undercloud
+
+- name: Setup Undercloud CollectD
+  hosts: undercloud
+  vars:
+    config_type: "{{group_names[0]}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack
 
 - include: baremetal-quickstart-extras.yml
 
@@ -29,10 +37,21 @@
   roles:
     - browbeat/no-sshd-dns
 
+- name: Setup Overcloud CollectD
+  hosts: overcloud
+  vars:
+    config_type: "{{group_names[0]}}"
+    graphite_host: "{{graphite_host_template}}"
+    graphite_password: "{{graphite_password_template}}"
+    graphite_prefix: "{{graphite_prefix_template}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack
+
 - name: Run Browbeat
   hosts: undercloud
   roles:
-    - browbeat/collectd
     - browbeat/bug-check
     - browbeat/grafana-dashboard-setup
     - browbeat/browbeat-run
