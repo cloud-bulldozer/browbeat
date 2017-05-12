@@ -70,9 +70,8 @@ rally:
     - name: authenticate
       enabled: true
       concurrency:
-        - 8
-        - 16
-      times: 10
+        - 2
+      times: 1
       scenarios:
         - name: authentic-keystone
           enabled: true
@@ -83,9 +82,8 @@ rally:
     - name: cinder
       enabled: true
       concurrency:
-        - 1
         - 2
-      times: 4
+      times: 1
       scenarios:
         - name: create-attach-volume-centos
           enabled: true
@@ -95,8 +93,8 @@ rally:
     - name: keystonebasic
       enabled: false
       concurrency:
-        - 8
-      times: 10
+        - 2
+      times: 1
       scenarios:
         - name: create-and-list-tenants
           enabled: true
@@ -108,8 +106,7 @@ rally:
       enabled: true
       concurrency:
         - 2
-        - 4
-      times: 10
+      times: 1
       scenarios:
         - name: create-list-network
           enabled: true
@@ -119,9 +116,8 @@ rally:
     - name: nova
       enabled: true
       concurrency:
-        - 1
         - 2
-      times: 16
+      times: 1
       scenarios:
         - name: boot-snapshot-delete
           enabled: true
@@ -131,9 +127,8 @@ rally:
     - name: plugins
       enabled: true
       concurrency:
-        - 8
-        - 16
-      times: 16
+        - 2
+      times: 1
       scenarios:
         - name: netcreate-boot
           enabled: true
