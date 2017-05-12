@@ -6,7 +6,7 @@
       dest: /etc/ssh/sshd_config
       line: "UseDNS no"
       state: present
-      insertbefore: '^Match'
+      insertbefore: BOF
   when: "{{disable_ssh_dns}}"
   become: true
   become_user: root
