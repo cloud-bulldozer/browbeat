@@ -1,2 +1,3 @@
 dlrn_hash: "Not a pipeline build"
 rhos_puddle: "Not a pipeline build"
+logs_link: "https://thirdparty-logs.rdoproject.org/{{ lookup('env','JOB_NAME') }}-{{ lookup('env','BUILD_NUMBER') }}/"
