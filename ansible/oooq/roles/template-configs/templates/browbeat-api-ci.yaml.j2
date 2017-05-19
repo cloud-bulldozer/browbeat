@@ -122,18 +122,17 @@ rally:
       enabled: true
       concurrency:
         - 8
-        - 12
       times: 64
       scenarios:
+        - name: netcreate-1-boot
+          enabled: true
+          image_name: cirros
+          flavor_name: m1.tiny
+          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          num_networks: 1
         - name: netcreate-5-boot
           enabled: true
           image_name: cirros
           flavor_name: m1.tiny
           file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
           num_networks: 5
-        - name: netcreate-10-boot
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
-          num_networks: 10
