@@ -10,8 +10,9 @@ Hostname "{{inventory_hostname}}"
 # Loaded Plugins:
 LoadPlugin "logfile"
 <Plugin "logfile">
-  LogLevel "info"
   File "/var/log/collectd.log"
+  LogLevel "info"
+  PrintSeverity true
   Timestamp true
 </Plugin>
 
@@ -28,6 +29,11 @@ LoadPlugin match_regex
 LoadPlugin memory
 LoadPlugin numa
 LoadPlugin processes
+{%if iostat_blockstorage_collectd_plugin %}
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+{% endif %}
 LoadPlugin swap
 LoadPlugin tail
 LoadPlugin turbostat
@@ -76,14 +82,62 @@ PreCacheChain "PreCache"
 </Plugin>
 
 <Plugin df>
+  FSType anon_inodefs
+  FSType bdev
+  FSType cgroup
+  FSType cpuset
+  FSType debugfs
+  FSType devpts
+  FSType devtmpfs
+  FSType ecryptfs
+  FSType fuse
+  FSType fusectl
+  FSType hugetlbfs
+  FSType mqueue
+  FSType nfs
+  FSType nfs4
+  FSType nfsd
+  FSType pipefs
+  FSType proc
+  FSType pstore
+  FSType ramfs
+  #FSType rootfs
+  FSType rpc_pipefs
+  FSType securityfs
+  FSType sockfs
+  FSType sysfs
+  FSType tmpfs
+  FSType vboxsf
+  IgnoreSelected true
   ValuesPercentage true
+  ReportInodes true
 </Plugin>
 
+{%if disk_blockstorage_collectd_plugin %}
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  Disk "/^nvm/"
   IgnoreSelected false
 </Plugin>
 
+{% endif %}
+{%if iostat_blockstorage_collectd_plugin %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_iostat_python"
+
+  <Module collectd_iostat_python>
+    Path "/usr/bin/iostat"
+    Interval {{iostat_blockstorage_collectd_interval}}
+    IostatInterval 2
+    Count 2
+    Verbose false
+    NiceNames false
+    PluginName collectd_iostat_python
+  </Module>
+</Plugin>
+
+{% endif %}
 # (akrzos) Including the version of OpenStack that the process was verified as running after
 # OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -9)

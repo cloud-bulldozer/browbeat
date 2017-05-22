@@ -22,6 +22,7 @@
       - cloud_rabbitmq_monitoring
       - cloud_system_performance_comparsion
       - cloud_total_memory_usage
+      - iostat
       - three_node_performance_food_groups
       - openstack_ironic_metrics
     cloud_specific_dashboards:

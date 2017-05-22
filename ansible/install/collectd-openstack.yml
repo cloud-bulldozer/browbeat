@@ -22,6 +22,7 @@
   roles:
     - { role: common, when: collectd_undercloud }
     - { role: epel, when: collectd_undercloud }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_undercloud }
   tasks:
     - name: Collectd off if not collectd_undercloud
@@ -38,7 +39,7 @@
   roles:
     - { role: common, when: collectd_controller }
     - { role: epel, when: collectd_controller }
-    - { role: repo, when: keystone_overcloud_collectd_plugin }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_controller }
   tasks:
     - name: Collectd off if not collectd_controller
@@ -55,6 +56,7 @@
   roles:
     - { role: common, when: collectd_blockstorage }
     - { role: epel, when: collectd_blockstorage }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_blockstorage }
   tasks:
     - name: Collectd off if not collectd_blockstorage
@@ -71,6 +73,7 @@
   roles:
     - { role: common, when: collectd_objectstorage }
     - { role: epel, when: collectd_objectstorage }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_objectstorage }
   tasks:
     - name: Collectd off if not collectd_objectstorage
@@ -87,6 +90,7 @@
   roles:
     - { role: common, when: collectd_cephstorage }
     - { role: epel, when: collectd_cephstorage }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_cephstorage }
   tasks:
     - name: Collectd off if not collectd_cephstorage
@@ -103,6 +107,7 @@
   roles:
     - { role: common, when: collectd_compute }
     - { role: epel, when: collectd_compute }
+    - { role: repo }
     - { role: collectd-openstack, when: collectd_compute }
   tasks:
     - name: Collectd off if not collectd_compute

@@ -48,6 +48,30 @@ gnocchi_status_controller_collectd_plugin: false
 gnocchi_status_controller_collectd_interval: 10
 
 ########################
+# Disk/IOStat plugin
+########################
+# Disk plugin metrics are opt-out, IOStat metrics are opt-in
+disk_undercloud_collectd_plugin: true
+disk_controller_collectd_plugin: true
+disk_cephstorage_collectd_plugin: true
+disk_compute_collectd_plugin: true
+disk_blockstorage_collectd_plugin: true
+disk_objectstorage_collectd_plugin: true
+# Enable these for more comprehensive IOStat metrics
+iostat_undercloud_collectd_plugin: false
+iostat_undercloud_collectd_interval: 10
+iostat_controller_collectd_plugin: false
+iostat_controller_collectd_interval: 10
+iostat_cephstorage_collectd_plugin: false
+iostat_cephstorage_collectd_interval: 10
+iostat_compute_collectd_plugin: false
+iostat_compute_collectd_interval: 10
+iostat_blockstorage_collectd_plugin: false
+iostat_blockstorage_collectd_interval: 10
+iostat_objectstorage_collectd_plugin: false
+iostat_objectstorage_collectd_interval: 10
+
+########################
 # Keystone token count
 ########################
 # If you have UUID tokens, we can count those via the collectd dbi plugin

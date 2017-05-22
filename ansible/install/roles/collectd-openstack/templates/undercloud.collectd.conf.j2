@@ -10,8 +10,9 @@ Hostname "{{inventory_hostname}}"
 # Loaded Plugins:
 LoadPlugin "logfile"
 <Plugin "logfile">
-  LogLevel "info"
   File "/var/log/collectd.log"
+  LogLevel "info"
+  PrintSeverity true
   Timestamp true
 </Plugin>
 
@@ -35,7 +36,7 @@ LoadPlugin memory
 LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
-{%if gnocchi_status_undercloud_collectd_plugin or rabbitmq_undercloud_collectd_plugin %}
+{%if gnocchi_status_undercloud_collectd_plugin or iostat_undercloud_collectd_plugin or rabbitmq_undercloud_collectd_plugin %}
 <LoadPlugin python>
   Globals true
 </LoadPlugin>
@@ -70,6 +71,15 @@ PreCacheChain "PreCache"
     </Match>
     Target "stop"
   </Rule>
+  {%if iostat_undercloud_collectd_plugin %}
+  <Rule "ignore_docker_iostat">
+    <Match "regex">
+      Plugin "^collectd_iostat_python$"
+      PluginInstance "^docker.*$"
+    </Match>
+    Target "stop"
+  </Rule>
+  {% endif %}
   Target "return"
 </Chain>
 
@@ -116,14 +126,62 @@ PreCacheChain "PreCache"
 {% endif %}
 
 <Plugin df>
+  FSType anon_inodefs
+  FSType bdev
+  FSType cgroup
+  FSType cpuset
+  FSType debugfs
+  FSType devpts
+  FSType devtmpfs
+  FSType ecryptfs
+  FSType fuse
+  FSType fusectl
+  FSType hugetlbfs
+  FSType mqueue
+  FSType nfs
+  FSType nfs4
+  FSType nfsd
+  FSType pipefs
+  FSType proc
+  FSType pstore
+  FSType ramfs
+  #FSType rootfs
+  FSType rpc_pipefs
+  FSType securityfs
+  FSType sockfs
+  FSType sysfs
+  FSType tmpfs
+  FSType vboxsf
+  IgnoreSelected true
   ValuesPercentage true
+  ReportInodes true
 </Plugin>
 
+{%if disk_undercloud_collectd_plugin %}
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  Disk "/^nvm/"
   IgnoreSelected false
 </Plugin>
 
+{% endif %}
+{%if iostat_undercloud_collectd_plugin %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_iostat_python"
+
+  <Module collectd_iostat_python>
+    Path "/usr/bin/iostat"
+    Interval {{iostat_undercloud_collectd_interval}}
+    IostatInterval 2
+    Count 2
+    Verbose false
+    NiceNames false
+    PluginName collectd_iostat_python
+  </Module>
+</Plugin>
+
+{% endif %}
 {%if gnocchi_status_undercloud_collectd_plugin %}
 <Plugin python>
   ModulePath "/usr/local/bin/"

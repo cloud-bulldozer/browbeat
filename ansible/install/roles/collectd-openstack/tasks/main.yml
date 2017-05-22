@@ -29,6 +29,14 @@
     - collectd-mysql
     - collectd-turbostat
 
+# Iostat plugin requires sysstat since shelling iostat for stats, Also it is
+# handy to have sysstat.
+- name: (Iostat python plugin) Install sysstat
+  yum:
+    name: sysstat
+    state: present
+  become: true
+
 - name: (Keystone Token Count) Install libdbi mysql driver
   yum:
     name: "{{item}}"
@@ -148,15 +156,21 @@
   become: true
   when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
 
-- name: Copy collectd_gnocchi_status.py
+- name: Copy python plugins
   copy:
-    src: collectd_gnocchi_status.py
-    dest: /usr/local/bin/collectd_gnocchi_status.py
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
     owner: root
     group: root
     mode: 0755
   become: true
-  when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
+  with_items:
+    - src: collectd_gnocchi_status.py
+      dest: /usr/local/bin/collectd_gnocchi_status.py
+    - src: collectd_rabbitmq_monitoring.py
+      dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
+    - src: collectd_iostat_python.py
+      dest: /usr/local/bin/collectd_iostat_python.py
 
 # Rabbitmq monitoring
 - name: Install pyrabbit
@@ -199,16 +213,6 @@
   register: controller0_rabbitmq_password
   become: true
   when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
-
-- name: Copy collectd_rabbitmq_monitoring.py
-  copy:
-    src: collectd_rabbitmq_monitoring.py
-    dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
-    owner: root
-    group: root
-    mode: 0755
-  become: true
-  when:  "('undercloud' in group_names or '{{inventory_hostname}}' == groups['controller'][0])"
 # End Rabbitmq monitoring
 
 # CephStorage OSD monitoring
