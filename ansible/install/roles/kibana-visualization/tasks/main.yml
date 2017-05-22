@@ -52,6 +52,8 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
     - "{{ browbeat_path }}/visualization/Shaker/search/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/search/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/search/*"
+
   ignore_errors: true
 
 - name: Remove Visuals
@@ -67,6 +69,8 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
     - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/visualization/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/visualization/*"
+
   ignore_errors: true
 
 - name: Remove Dashboards
@@ -82,6 +86,8 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
     - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/dashboard/*"
+
   ignore_errors: true
 
 - name: Upload Searches
@@ -97,6 +103,7 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/search/*"
     - "{{ browbeat_path }}/visualization/Shaker/search/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/search/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/search/*"
   ignore_errors: true
 
 - name: Upload Visuals
@@ -112,6 +119,8 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/visualization/*"
     - "{{ browbeat_path }}/visualization/Shaker/visualization/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/visualization/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/visualization/*"
+
   ignore_errors: true
 
 - name: Upload Dashboards
@@ -127,6 +136,7 @@
     - "{{ browbeat_path }}/visualization/OpenStack-Workers/dashboard/*"
     - "{{ browbeat_path }}/visualization/Shaker/dashboard/*"
     - "{{ browbeat_path }}/visualization/Performance-Dashboard/dashboard/*"
+    - "{{ browbeat_path }}/visualization/Network-Performance/dashboard/*"
   ignore_errors: true
 
 - name: Cleanup Keystone Visualizations

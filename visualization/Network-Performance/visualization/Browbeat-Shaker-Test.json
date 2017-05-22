@@ -1,0 +1,10 @@
+{
+      "title": "Browbeat-Shaker-Test",
+      "visState": "{\"title\":\"Browbeat-Shaker-Executor\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"record.test\",\"size\":50,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"[browbeat-shaker-]YYYY.MM.DD\",\"query\":{\"query_string\":{\"query\":\"shaker\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+  }
