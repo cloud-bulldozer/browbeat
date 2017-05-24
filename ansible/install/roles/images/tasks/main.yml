@@ -1,0 +1,42 @@
+---
+#
+# Obtain/Upload images to OpenStack Cloud
+#
+
+- name: Fetch image
+  get_url:
+    url: "{{ images[item].url }}"
+    dest: "{{ home_dir }}/{{ images[item].name }}.{{ images[item].type }}"
+  with_items: "{{ images }}"
+
+- name: Determine if image exists
+  shell: . {{ browbeat_venv }}/bin/activate; . {{ overcloudrc }}; openstack image list | grep '{{ images[item].name }}'
+  register: image_exists
+  ignore_errors: true
+  changed_when: false
+  with_items: "{{ images }}"
+
+- name: Remove image from dictionary of images if image exists
+  set_fact:
+    images: "{{ images|dict_remove(item[0]) }}"
+  when: "'{{ item[0] }}' in '{{ item[1].stdout }}'"
+  with_nested:
+    - "{{ images }}"
+    - "{{ image_exists.results }}"
+
+- name: Convert images to raw
+  command: qemu-img convert -f {{images[item].type}} -O raw {{ home_dir }}/{{ images[item].name }}.{{ images[item].type }} {{ home_dir }}/{{ images[item].name }}.raw
+  when: "images[item].convert_to_raw == true"
+  with_items: "{{ images }}"
+
+- name: Upload image into cloud (Newton and Ocata versions)
+  shell: . {{ browbeat_venv }}/bin/activate; . {{ overcloudrc }}; openstack image create --public --disk-format={{ images[item].type }} --container-format=bare {{ images[item].name }} < {{ home_dir }}/{{ images[item].name }}.{{ images[item].type }}
+  ignore_errors: true
+  when: "images[item].convert_to_raw == false"
+  with_items: "{{ images }}"
+
+- name: Upload raw image into cloud (Newton and Ocata versions)
+  shell: . {{ browbeat_venv }}/bin/activate; . {{ overcloudrc }}; openstack image create --public --disk-format=raw --container-format=bare {{ images[item].name }} < {{ home_dir }}/{{ images[item].name }}.{{ images[item].type }}
+  ignore_errors: true
+  when: "images[item].convert_to_raw == true"
+  with_items: "{{ images }}"

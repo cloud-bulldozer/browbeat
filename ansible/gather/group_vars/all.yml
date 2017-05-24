@@ -1,0 +1,11 @@
+---
+
+# Adjust Browbeat user if you are deploying Browbeat on a different machine than the Undercloud
+browbeat_user: stack
+# Login user for the local/jump machine (Typically Undercloud)
+local_remote_user: stack
+# Login user for the Overcloud hosts
+host_remote_user: heat-admin
+
+home_dir: "/home/{{browbeat_user}}"
+browbeat_path: "{{home_dir}}/browbeat"

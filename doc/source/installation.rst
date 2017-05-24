@@ -2,136 +2,376 @@
 Installation
 ============
 
-Installing Browbeat and running the Overcloud checks can be performed
-either from your local machine or from the undercloud. The local machine
-install/check assumes you have ansible installed already.
+Browbeat is currently installed via an ansible playbook.  In a Tripleo
+environment it can be installed directly on the Undercloud or a separate
+machine.  The installation can be run from either your local machine or
+directly on the machine you want Browbeat installed on.
 
-Before running Browbeat
------------------------
+Install Browbeat on Undercloud
+------------------------------
 
--  Execute the ansible/generate_tripleo_hostfile.sh script (builds ssh-config file)
--  Configure browbeat-config.yaml to match your tests
--  (Optional) Set your Openstack version metadata in metadata/version.json
+This is usually the easiest installation due to many requirements are satified
+on the Undercloud. In some cases it may not be desired to install Browbeat on
+the Undercloud (Ex. Limited Resource requirements or Non-Tripleo installed
+cloud)
 
-Currently Keystone Dashboards only depend on osp_series but may be extended to show
-build date in the future, thus build is also provided but not required.  You can
-add whatever other version related metadata you would like to metadata/version.json.
-Typically, whatever automation you have to produce builds should provide this file.
+Requirements
+~~~~~~~~~~~~
 
-What is necessary
------------------
+Hardware
 
--  Ansible
+* Undercloud Machine (Baremetal or Virtual Machine)
 
-   Why? We started with using bash to make changes to the Overcloud,
-   creating complex sed/awks that we get for free with Ansible (for the
-   most part). Other monitoring and stress test tools are installed by
-   the respective playbooks when run.
+Networking
 
-Install Browbeat from your local machine
-----------------------------------------
+* Access to Public API endpoints
+* Access to Keystone Admin Endpoint
 
-From your local machine
-~~~~~~~~~~~~~~~~~~~~~~~
+.. note::  For tripleo, public API endpoints are located on the External
+  Network by default. The Keystone Admin Endpoint is deployed on the ctlplane
+  network by default.  These networking requirements should be validated before
+  attempting an installation.
 
-::
-
-    $ ssh-copy-id stack@<undercloud-ip>
-    $ git clone https://github.com/openstack/browbeat.git
-    $ cd browbeat/ansible
-    $ ./generate_tripleo_hostfile.sh <undercloud-ip>
-    $ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
-    $ ansible-playbook -i hosts install/browbeat.yml
-    $ vi install/group_vars/all.yml # Edit Browbeat network settings
-    $ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
-    $ ansible-playbook -i hosts install/shaker_build.yml
-
-
-.. note:: ``browbeat-network.yml`` might not work for you depending on your 
-   underlay/overlay network setup. In such cases, user needs to create 
-   appropriate networks for instances to allow them to reach the
-   internet. Some useful documentation can be found at:
-   https://access.redhat.com/documentation/en/red-hat-openstack-platform/10/\
-   single/networking-guide/
-
-(Optional) Install collectd
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+On the Undercloud
+~~~~~~~~~~~~~~~~~
 
 ::
 
-    $ ansible-playbook -i hosts install/collectd-openstack.yml
-
-(Optional) Install collectd->graphite dashboards
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    $ ansible-playbook -i hosts install/grafana-dashboards.yml
-
-(Optional) Install connmon
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    $ ansible-playbook -i hosts install/connmon.yml
-
-
-Install Browbeat directly on undercloud
----------------------------------------
-
-From your undercloud
-~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    $ ssh undercloud-root
-    [root@ospd ~]# su - stack
-    [stack@ospd ~]$ git clone https://github.com/openstack/browbeat.git
-    [stack@ospd ~]$ cd browbeat/ansible
-    [stack@ospd ansible]$ ./generate_tripleo_hostfile.sh localhost
-    [stack@ospd ansible]$ sudo easy_install pip
-    [stack@ospd ansible]$ sudo pip install ansible
-    [stack@ospd ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml
-    [stack@ospd ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shakerimage)
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/shaker_build.yml
+  $ ssh undercloud-root
+  [root@undercloud ~]# su - stack
+  [stack@undercloud ~]$ git clone https://github.com/openstack/browbeat.git
+  [stack@undercloud ~]$ cd browbeat/ansible
+  [stack@undercloud ansible]$ ./generate_tripleo_hostfile.sh -t localhost
+  [stack@undercloud ansible]$ sudo easy_install pip
+  [stack@undercloud ansible]$ sudo pip install ansible
+  [stack@undercloud ansible]$ vi hosts # Uncomment undercloud in first group
+  [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
+  [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat.yml
+  [stack@undercloud ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
+  [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shakerimage)
+  [stack@undercloud ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 
 .. note:: ``browbeat-network.yml`` might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
    appropriate networks for instances to allow them to reach the
    internet. Some useful documentation can be found at:
-   https://access.redhat.com/documentation/en/red-hat-openstack-platform/10/\
-   single/networking-guide/
+   https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
 
 
-(Optional) Install collectd
+(Optional) Install Collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
 
-(Optional) Install collectd->graphite dashboards
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/dashboards-openstack.yml
-
-(Optional) Install connmon
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Optional) Install Browbeat Grafana dashboards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    [stack@ospd ansible]$ ansible-playbook -i hosts install/connmon.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/dashboards-openstack.yml
 
 Run Overcloud checks
 ~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    [stack@ospd ansible]$ ansible-playbook -i hosts check/site.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts check/site.yml
 
 Your Overcloud check output is located in results/bug_report.log
 
+Install Browbeat from your local machine
+----------------------------------------
+
+This installs Browbeat onto your Undercloud but the playbook is run from your
+local machine rather than directly on the Undercloud machine.
+
+From your local machine
+~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  $ ssh-copy-id stack@<undercloud-ip>
+  $ git clone https://github.com/openstack/browbeat.git
+  $ cd browbeat/ansible
+  $ ./generate_tripleo_hostfile.sh -t <undercloud-ip>
+  $ vi hosts # Uncomment undercloud in first group
+  $ vi install/group_vars/all.yml # Review and edit configuration items
+  $ ansible-playbook -i hosts install/browbeat.yml
+  $ vi install/group_vars/all.yml # Edit Browbeat network settings
+  $ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
+  $ ansible-playbook -i hosts install/shaker_build.yml
+
+
+.. note:: ``browbeat-network.yml`` might not work for you depending on your
+   underlay/overlay network setup. In such cases, user needs to create
+   appropriate networks for instances to allow them to reach the
+   internet. Some useful documentation can be found at:
+   https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
+
+(Optional) Install collectd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  $ ansible-playbook -i hosts install/collectd-openstack.yml
+
+(Optional) Install Browbeat Grafana dashboards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  $ ansible-playbook -i hosts install/grafana-dashboards.yml
+
+Install/Setup Browbeat Machine
+------------------------------
+
+This setup is used when running Browbeat on a separate machine than the
+Undercloud. Using this method, you can create multiple users on the machine
+and each user can be pointed at a different cloud or the same cloud.
+
+Requirements
+~~~~~~~~~~~~
+
+Hardware
+
+* Baremetal or Virtual Machine
+
+Networking
+
+* Access to Public API endpoints
+* Access to Keystone Admin Endpoint
+
+RPM
+
+* epel-release
+* ansible
+* git
+
+OpenStack
+
+* overcloudrc file placed in browbeat user home directory
+
+.. note::  For tripleo, public API endpoints are located on the External
+  Network by default. The Keystone Admin Endpoint is deployed on the ctlplane
+  network by default.  These networking requirements should be validated before
+  attempting an installation.
+
+Preparing the Machine (CentOS 7)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+1. Install Machine either from Image, ISO, or PXE
+2. Check for Required Network Connectivity
+
+Determine Overcloud Keystone endpoints
+
+::
+
+  [stack@undercloud-1 ~]$ . overcloudrc
+  [stack@undercloud-1 ~]$ openstack catalog show identity
+  +-----------+----------------------------------------+
+  | Field     | Value                                  |
+  +-----------+----------------------------------------+
+  | endpoints | regionOne                              |
+  |           |   publicURL: http://172.21.0.10:5000   |
+  |           |   internalURL: http://172.16.0.16:5000 |
+  |           |   adminURL: http://192.168.24.61:35357 |
+  |           |                                        |
+  | name      | keystone                               |
+  | type      | identity                               |
+  +-----------+----------------------------------------+
+
+Check network connectivity
+
+::
+
+  $ ssh root@browbeatvm
+  [root@browbeatvm ~]$ # Ping Keystone Admin API IP Address
+  [root@browbeatvm ~]# ping -c 2 192.168.24.61
+  PING 192.168.24.61 (192.168.24.61) 56(84) bytes of data.
+  64 bytes from 192.168.24.61: icmp_seq=1 ttl=64 time=1.60 ms
+  64 bytes from 192.168.24.61: icmp_seq=2 ttl=64 time=0.312 ms
+
+  --- 192.168.24.61 ping statistics ---
+  2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+  rtt min/avg/max/mdev = 0.312/0.957/1.603/0.646 ms
+  [root@browbeatvm ~]$ # Ping Keystone Public API IP Address
+  [root@browbeatvm ~]# ping -c 2 172.21.0.10
+  PING 172.21.0.10 (172.21.0.10) 56(84) bytes of data.
+  64 bytes from 172.21.0.10: icmp_seq=1 ttl=64 time=0.947 ms
+  64 bytes from 172.21.0.10: icmp_seq=2 ttl=64 time=0.304 ms
+
+  --- 172.21.0.10 ping statistics ---
+  2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+  rtt min/avg/max/mdev = 0.304/0.625/0.947/0.322 ms
+
+3. Create user for Browbeat and generate SSH key
+
+::
+
+  [root@browbeatvm ~]# useradd browbeat1
+  [root@browbeatvm ~]# passwd browbeat1
+  Changing password for user browbeat1.
+  New password:
+  Retype new password:
+  passwd: all authentication tokens updated successfully.
+  [root@browbeatvm ~]# echo "browbeat1 ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/browbeat1; chmod 0440 /etc/sudoers.d/browbeat1
+  browbeat1 ALL=(root) NOPASSWD:ALL
+  [root@browbeatvm ~]# su - browbeat1
+  [browbeat1@browbeatvm ~]$ ssh-keygen
+  Generating public/private rsa key pair.
+  Enter file in which to save the key (/home/browbeat1/.ssh/id_rsa):
+  Enter passphrase (empty for no passphrase):
+  Enter same passphrase again:
+  Your identification has been saved in /home/browbeat1/.ssh/id_rsa.
+  Your public key has been saved in /home/browbeat1/.ssh/id_rsa.pub.
+  The key fingerprint is:
+  c2:b2:f0:cd:ef:d2:2b:a8:9a:5a:bb:ca:ce:c1:8c:3b browbeat1@browbeatvm
+  The key's randomart image is:
+  +--[ RSA 2048]----+
+  |                 |
+  |                 |
+  |                 |
+  |     .           |
+  |  . . o S        |
+  |+  o = .         |
+  |.+. o.o.         |
+  |E+... o..        |
+  |OB+o   ++.       |
+  +-----------------+
+
+
+4. Enable passwordless SSH into localhost and Undercloud then copy overcloudrc over to Browbeat VM
+
+::
+
+  [browbeat1@browbeatvm ansible]$ ssh-copy-id browbeat1@localhost
+  /bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+  /bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+  browbeat1@localhost's password:
+
+  Number of key(s) added: 1
+
+  Now try logging into the machine, with:   "ssh 'browbeat1@localhost'"
+  and check to make sure that only the key(s) you wanted were added.
+
+  [browbeat1@browbeatvm ~]$ ssh-copy-id stack@undercloud-1
+  The authenticity of host 'undercloud-1 (undercloud-1)' can't be established.
+  ECDSA key fingerprint is fa:3a:02:e8:8e:92:4d:a7:9c:90:68:6a:c2:eb:fe:e1.
+  Are you sure you want to continue connecting (yes/no)? yes
+  /bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+  /bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+  stack@undercloud-1's password:
+
+  Number of key(s) added: 1
+
+  Now try logging into the machine, with:   "ssh 'stack@undercloud-1'"
+  and check to make sure that only the key(s) you wanted were added.
+
+  [browbeat1@browbeatvm ~]$ scp stack@undercloud-1:/home/stack/overcloudrc .
+  overcloudrc                               100%  553     0.5KB/s   00:00
+
+5. Install RPM requirements
+
+::
+
+  [browbeat1@browbeatvm ~]$ sudo yum install -y epel-release
+  [browbeat1@browbeatvm ~]$ sudo yum install -y ansible git
+
+6. Clone Browbeat
+
+::
+
+  [browbeatuser1@browbeat-vm ~]$ git clone https://github.com/openstack/browbeat.git
+  Cloning into 'browbeat'...
+  remote: Counting objects: 7425, done.
+  remote: Compressing objects: 100% (15/15), done.
+  remote: Total 7425 (delta 14), reused 12 (delta 12), pack-reused 7398
+  Receiving objects: 100% (7425/7425), 5.23 MiB | 0 bytes/s, done.
+  Resolving deltas: 100% (4280/4280), done.
+
+7. Generate hosts, ssh-config, and retrieve heat-admin-id_rsa. Then uncomment
+   "localhost" under Browbeat Hosts Group
+
+::
+
+  [browbeat1@browbeatvm ~]$ cd browbeat/ansible/
+  [browbeat1@browbeatvm ansible]$ ./generate_tripleo_hostfile.sh -t undercloud-1 --localhost
+  ...
+  [browbeat1@browbeatvm ansible]$ ls ssh-config hosts heat-admin-id_rsa
+  heat-admin-id_rsa  hosts  ssh-config
+
+Note use of "--localhost" to indicate the desire to install browbeat on the
+localhost rather than the undercloud.
+
+8. Edit installation variables
+
+::
+
+  [browbeat1@browbeatvm ansible]$ vi install/group_vars/all.yml
+
+In this case, adjust browbeat_user, iptables_file and dns_server.  Each
+environment is different and thus your configuration options will vary.
+
+9. Run Browbeat install playbook
+
+::
+
+  [browbeat1@browbeatvm ansible]$ ansible-playbook -i hosts install/browbeat.yml
+
+10. Setup browbeat-config.yaml and test run Rally against cloud
+
+::
+
+  [browbeat1@browbeatvm ansible]$ cd ..
+  [browbeat1@browbeatvm browbeat]$ vi browbeat-config.yaml
+  [browbeat1@browbeatvm browbeat]$ . ../browbeat-venv/bin/activate
+  (browbeat-venv) [browbeat1@browbeatvm browbeat]$ python browbeat.py rally
+
+Make sure to modify the venv settings for Rally to match the directory in which
+Rally was installed in. You will have to do so for other workload providers as
+well.
+
+11. Setup network for Shaker+PerfKitBenchmarker and build Shaker image
+
+::
+
+  [browbeatuser1@browbeat-vm ~]$ vi install/group_vars/all.yml # Edit Browbeat network settings
+  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
+  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/shaker_build.yml
+
+.. note:: ``browbeat-network.yml`` might not work for you depending on your
+   underlay/overlay network setup. In such cases, user needs to create
+   appropriate networks for instances to allow them to reach the
+   internet. Some useful documentation can be found at:
+   https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
+
+(Optional) Install collectd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/collectd-openstack.yml
+
+(Optional) Install Browbeat Grafana dashboards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/grafana-dashboards.yml
+
+
+Considerations for additional Browbeat Installs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If it is desired to run Browbeat against multiple clouds from the same machine.
+It is recommended to create a second user (Ex. browbeat2) and repeat above
+instructions.  In order to expose the second user's Browbeat results via httpd,
+change the port (Variable browbeat_results_port) and thus each user's results
+will be available via http on different ports.
+
+.. note::  Keep in mind that running multiple sets of control plane workloads
+  from multiple Browbeat users at the same time will introduce variation into
+  resulting performance data if the machine on which Browbeat is installed is
+  resource constrained.

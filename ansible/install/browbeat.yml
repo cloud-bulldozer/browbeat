@@ -9,11 +9,18 @@
     - no-sshd-dns
     - shaker-check
 
-- hosts: undercloud
-  remote_user: "{{ local_remote_user }}"
+- hosts: browbeat
+  remote_user: "{{ browbeat_user }}"
   roles:
     - common
     - browbeat
+    - { role: browbeat-results, when: browbeat_results_in_httpd}
+    - firewall
+    - perfkitbenchmarker
+    - rally
+    - shaker
+    - flavors
+    - images
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"

@@ -8,24 +8,33 @@
   when: not supported_distro
 
 - name: Install python development tools
-  yum: name=python-devel state=present
+  yum:
+    name: python-devel
+    state: present
   become: true
 
 - name: Install dependencies for CentOS
-  yum: name={{ item }} state=present
+  yum:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
-    - libffi-devel
-    - openssl-devel
     - gcc
     - gcc-c++
+    - libffi-devel
+    - libsemanage-python
+    - openssl-devel
+    - policycoreutils-python
 
 - name: Install pip
-  easy_install: name=pip
+  easy_install:
+    name: pip
   become: true
 
 - name: Update virtualenv and setuptools
-  pip: name={{item}} state=latest
+  pip:
+    name: "{{item}}"
+    state: latest
   become: true
   with_items:
     - virtualenv
@@ -34,299 +43,47 @@
 - name: Create browbeat virtualenv
   command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
 
-- name: Create perfkit virtualenv
-  command: virtualenv {{ perfkit_venv }} creates={{ perfkit_venv }}
-
-- name: Create rally virtualenv
-  command: virtualenv {{ rally_venv }} creates={{ rally_venv }}
-
-- name: Create shaker virtualenv
-  command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
-
-- name: Rally Add browbeat to Python path
-  shell: echo 'export PYTHONPATH=$PYTHONPATH:{{ browbeat_path }}/lib' >> {{ rally_venv }}/bin/activate
-
 - name: Setup browbeat-venv CA certificate path
   lineinfile:
     dest: "{{ browbeat_venv }}/bin/activate"
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
-- name: Setup perfkit-venv CA certificate path
-  lineinfile:
-    dest: "{{ perfkit_venv }}/bin/activate"
-    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
-  when: overcloud_ca_path is defined
-
-- name: Setup rally-venv CA certificate path
-  lineinfile:
-    dest: "{{ rally_venv }}/bin/activate"
-    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
-  when: overcloud_ca_path is defined
-
-- name: Setup shaker-venv CA certificate path
-  lineinfile:
-    dest: "{{ shaker_venv }}/bin/activate"
-    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
-  when: overcloud_ca_path is defined
-
 - name: Determine if browbeat directory exists already
-  stat: path={{ browbeat_path }}
+  stat:
+    path: "{{ browbeat_path }}"
   register: browbeat_exists
 
 - debug: msg="Browbeat directory exists already."
   when: browbeat_exists.stat.isdir is defined and browbeat_exists.stat.isdir
 
 - name: Clone browbeat on undercloud
-  git: repo=https://github.com/openstack/browbeat.git dest={{ browbeat_path }} version=master
+  git:
+    repo: https://github.com/openstack/browbeat.git
+    dest: "{{ browbeat_path }}"
+    version: master
   when: browbeat_exists.stat.isdir is undefined
 
-- name: Generate hosts and ssh-config on undercloud
-  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh localhost
-  when: tripleo
+- name: Determine if generate_tripleo_hostfile has been run
+  stat:
+    path: "{{ browbeat_path }}/ansible/hosts"
+  register: hosts_file_exists
+
+- debug: msg="Hosts file is already generated."
+  when: hosts_file_exists.stat.exists and hosts_file_exists.stat.isreg
+
+- name: Generate hosts and ssh-config on Browbeat Machine
+  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost
+  when: "(tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false))"
 
 - name: Move files to correct location
   command: mv {{ home_dir }}/{{item}} {{ browbeat_path }}/ansible/{{item}}
   with_items:
     - hosts
     - heat-admin-id_rsa
+  when: "(tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false))"
 
 - name: Install requirements.txt into browbeat-venv
-  pip: requirements={{ browbeat_path }}/requirements.txt virtualenv={{ browbeat_venv }}
-
-# PerfKitBenchmarker Install
-- name: Determine if PerfKitBenchmarker is already cloned
-  stat: path={{ perfkit_venv }}/PerfKitBenchmarker
-  register: perfkit_exists
-
-- debug: msg="PerfKitBenchmarker already exists on the host"
-  when: perfkit_exists.stat.isdir is defined and perfkit_exists.stat.isdir
-
-- name: Clone PerfKitBenchmarker on undercloud
-  git:
-    repo: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker.git
-    dest: "{{perfkit_venv}}/PerfKitBenchmarker"
-    version: "{{perfkit_version}}"
-  when: perfkit_exists.stat.isdir is undefined
-
-- name: Install PerfKitBenchmarker requirements into perfkit-venv
   pip:
-     requirements: "{{perfkit_venv}}/PerfKitBenchmarker/requirements.txt"
-     virtualenv: "{{perfkit_venv}}"
-
-- name: Install PerfKitBenchmarker Openstack requirements into perfkit-venv
-  pip:
-     requirements: "{{ perfkit_venv }}/PerfKitBenchmarker/perfkitbenchmarker/providers/openstack/requirements.txt"
-     virtualenv: "{{perfkit_venv}}"
-
-# (akrzos) - Using 2.6 seems most stable, Using latest or >2.6 as per PerfKitBenchmarker
-# openstack/requirements.txt results in an openstack cli error.
-- name: Downgrade python-openstackclient inside perfkit-venv
-  pip:
-    name: python-openstackclient
-    version: 2.6.0
-    virtualenv: "{{perfkit_venv}}"
-# End PerfKitBenchmarker Install
-
-- name: Install rally into rally-venv
-  pip: name=rally version={{ rally_version }} virtualenv={{ rally_venv }}
-
-- name: Install elasticsearch into rally-venv
-  pip: name=elasticsearch virtualenv={{ rally_venv }}
-
-- name: Setup rally database
-  shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate
-
-- name: Setup rally deployment
-  shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
-
-- name: Install shaker
-  pip: name=pyshaker version={{ shaker_version }} virtualenv={{ shaker_venv }}
-
-#
-# Serve results out of httpd if browbeat_results_in_httpd is set to true
-#
-
-- name: Setup browbeat.conf in /etc/httpd/conf.d
-  template:
-    src: 00-browbeat.conf.j2
-    dest: /etc/httpd/conf.d/00-browbeat.conf
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-  when: browbeat_results_in_httpd
-  notify:
-    - restart httpd
-
-- name: Set seboolean(httpd_read_user_content)
-  seboolean: name=httpd_read_user_content state=yes persistent=yes
-  become: true
-  when: browbeat_results_in_httpd
-
-- name: Allow httpd to serve content in "{{ home_dir }}"
-  file: path="{{ home_dir }}" state=directory mode=0755
-  when: browbeat_results_in_httpd
-
-# (akrzos) Port 9000 is already in use by zaqar-server with Newton and thus the fact that likely the
-# user will choose a port that is not enabled by selinux to allow httpd to listen, we need to modify
-# the ports enabled by selinux for httpd.  If the port is already defined you will run into this
-# issue if you use the "seport" ansible module:
-# https://github.com/ansible/ansible-modules-extras/pull/2694
-# This is not in upstream Ansible releases as of 2.1.1.0
-- name: Allow httpd to listen to port ({{browbeat_results_port}})
-  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{browbeat_results_port}}"
-  become: true
-  when: browbeat_results_in_httpd
-
-### Begin Shaker port and browbeat_results_port firewall tasks###
-# Firewalld
-- name: Determine if firewalld is in use
-  shell: systemctl is-enabled firewalld.service | egrep -qv 'masked|disabled'
-  ignore_errors: true
-  register: firewalld_in_use
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if firewall is in use
-    - skip_ansible_lint
-
-- name: Determine if firewalld is active
-  shell: systemctl is-active firewalld.service | egrep -vq 'inactive|unknown'
-  ignore_errors: true
-  register: firewalld_is_active
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if firewall is active
-    - skip_ansible_lint
-
-- name: (shaker) Determine if TCP/{{shaker_port}} is already active
-  shell: firewall-cmd --list-ports | egrep -q "^{{shaker_port}}/tcp"
-  ignore_errors: true
-  register: firewalld_shaker_port_exists
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if port is already active
-    - skip_ansible_lint
-
-- name: (browbeat_results) Determine if TCP/{{browbeat_results_port}} is already active
-  shell: firewall-cmd --list-ports | egrep -q "^{{browbeat_results_port}}/tcp"
-  when: browbeat_results_in_httpd
-  ignore_errors: true
-  register: firewalld_browbeat_results_port_exists
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if port is already active
-    - skip_ansible_lint
-
-# add firewall rule via firewall-cmd
-- name: (shaker) Add firewall rule for TCP/{{shaker_port}} (firewalld)
-  command: "{{ item }}"
-  with_items:
-    - firewall-cmd --zone=public --add-port={{shaker_port}}/tcp --permanent
-    - firewall-cmd --reload
-  ignore_errors: true
-  become: true
-  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_shaker_port_exists.rc != 0
-
-- name: (browbeat_results) Add firewall rule for TCP/{{browbeat_results_port}} (firewalld)
-  command: "{{ item }}"
-  with_items:
-    - firewall-cmd --zone=public --add-port={{browbeat_results_port}}/tcp --permanent
-    - firewall-cmd --reload
-  ignore_errors: true
-  become: true
-  when: browbeat_results_in_httpd and firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_browbeat_results_port_exists.rc != 0
-
-# iptables-services
-- name: (shaker) check firewall rules for TCP/{{shaker_port}} (iptables-services)
-  shell: grep "dport {{shaker_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
-  ignore_errors: true
-  become: true
-  register: iptables_shaker_port_exists
-  failed_when: iptables_shaker_port_exists == 127
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if port is already active
-    - skip_ansible_lint
-
-- name: (browbeat_results) Check firewall rules for TCP/{{browbeat_results_port}} (iptables-services)
-  shell: grep "dport {{browbeat_results_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
-  when: browbeat_results_in_httpd
-  ignore_errors: true
-  become: true
-  register: iptables_browbeat_results_port_exists
-  failed_when: iptables_browbeat_results_port_exists == 127
-  no_log: true
-  tags:
-    # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
-    # Need to check if port is already active
-    - skip_ansible_lint
-
-- name: (shaker) Add firewall rule for TCP/{{shaker_port}} (iptables-services)
-  lineinfile:
-    dest: /etc/sysconfig/iptables
-    line: '-A INPUT -p tcp -m tcp --dport {{shaker_port}} -j ACCEPT'
-    insertbefore: '^-A INPUT -i lo'
-    backup: yes
-  become: true
-  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_shaker_port_exists.stdout|int == 0
-  register: iptables_needs_restart
-
-- name: (browbeat_results) Add firewall rule for TCP/{{browbeat_results_port}} (iptables-services)
-  lineinfile:
-    dest: /etc/sysconfig/iptables
-    line: '-A INPUT -p tcp -m tcp --dport {{browbeat_results_port}} -j ACCEPT'
-    insertbefore: '^-A INPUT -i lo'
-    backup: yes
-  become: true
-  when: browbeat_results_in_httpd and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_browbeat_results_port_exists.stdout|int == 0
-  register: iptables_needs_restart
-
-- name: Restart iptables-services (iptables-services)
-  command: systemctl restart iptables.service
-  ignore_errors: true
-  become: true
-  when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
-### end firewall ###
-
-#
-# Obtain and upload images for use with browbeat
-#
-
-- name: Fetch image
-  get_url: url={{ images[item].url }} dest={{ home_dir }}/{{ item }}
-  with_items: "{{ images }}"
-
-- name: Determine if image exists
-  shell: . {{ overcloudrc }}; openstack image list | grep '{{ item }}'
-  register: image_exists
-  ignore_errors: true
-  changed_when: false
-  with_items: "{{ images }}"
-
-- name: Remove image from dictionary of images if image exists
-  set_fact: images="{{ images|dict_remove(item[0]) }}"
-  when: "'{{ item[0] }}' in '{{ item[1].stdout }}'"
-  with_nested:
-    - "{{ images }}"
-    - "{{ image_exists.results }}"
-
-- name: Upload image into cloud (Newton and Ocata versions)
-  shell: . {{ overcloudrc }}; openstack image create --public --disk-format=qcow2 --container-format=bare {{ item }} < {{ home_dir }}/{{ item }}
-  ignore_errors: true
-  with_items: "{{ images }}"
-
-#
-# Add additional flavor to overcloud
-#
-
-# Ignore errors here incase the flavors already exist.
-- name: Add flavors to overcloud
-  shell: . {{ overcloudrc }}; nova flavor-create {{item.name}} auto {{item.memory}} {{item.disk}} {{item.cpu}}
-  with_items: "{{browbeat_flavors}}"
-  ignore_errors: true
+    requirements: "{{ browbeat_path }}/requirements.txt"
+    virtualenv: "{{ browbeat_venv }}"

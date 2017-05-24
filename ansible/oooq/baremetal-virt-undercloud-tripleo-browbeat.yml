@@ -26,6 +26,13 @@
   roles:
     - browbeat/common
     - browbeat/browbeat
+    - browbeat/browbeat-results
+    - browbeat/firewall
+    - browbeat/perfkitbenchmarker
+    - browbeat/rally
+    - browbeat/shaker
+    - browbeat/flavors
+    - browbeat/images
     - browbeat/browbeat-network
     - browbeat/template-configs
     - browbeat/statsd-ironic

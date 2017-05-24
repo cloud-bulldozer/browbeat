@@ -1,52 +1,75 @@
 ---
 
+########################################
+# Browbeat Install Configuration
+########################################
+
+# Adjust Browbeat user if you are deploying Browbeat on a different machine than the Undercloud
+browbeat_user: stack
+# Login user for the local/jump machine (Typically Undercloud)
+local_remote_user: stack
+# Login user for the Overcloud hosts
+host_remote_user: heat-admin
+
 # OpenStack Installer
+# Tripleo is the only installer supported currently
 tripleo: true
 
-browbeat_path: /home/stack/browbeat
-home_dir: /home/stack
+home_dir: "/home/{{browbeat_user}}"
+browbeat_path: "{{home_dir}}/browbeat"
+
+# The Overcloud RC file
+overcloudrc: "{{home_dir}}/overcloudrc"
+
+# The Overcloud CA cert file
+# overcloud_ca_path: /etc/pki/ca-trust/source/anchors/overcloud.crt.pem
+
+# The default Browbeat venv
+browbeat_venv: "{{home_dir}}/browbeat-venv"
+
+# The default Rally venv
+rally_venv: "{{home_dir}}/rally-venv"
+
+# Rally version to install
+rally_version: 0.8.1
+
+# The default Shaker venv
+shaker_venv: "{{home_dir}}/shaker-venv"
+
+# Shaker version to Install
+shaker_version: 0.0.17
+
+# PerfKitBenchmarker Settings
+perfkit_venv: "{{home_dir}}/perfkit-venv"
+perfkit_version: v1.7.0
+
 # Configuration items to adjust browbeat results served through httpd
 browbeat_results_port: 9001
 browbeat_results_in_httpd: true
 supported_distro: ((ansible_distribution == "CentOS" && ansible_distribution_major_version >= "7") or
                    (ansible_distribution == "RedHat" && ansible_distribution_major_version >= "7"))
 
-# Login user for the remote hosts
-host_remote_user: heat-admin
-# Login user for the local/jump machine
-local_remote_user: stack
+# iptables file - RHEL (/etc/sysconfig/iptables) CentOS (/etc/sysconfig/iptables-config)
+iptables_file: /etc/sysconfig/iptables
 
-# The Overcloud RC file
-overcloudrc: /home/stack/overcloudrc
-
-# The Overcloud CA cert file
-# overcloud_ca_path: /etc/pki/ca-trust/source/anchors/overcloud.crt.pem
-
-# The default Browbeat venv
-browbeat_venv: /home/stack/browbeat-venv
-
-# The default Rally venv
-rally_venv: /home/stack/rally-venv
-
-# Rally version to install
-rally_version: 0.8.1
-
-# The default Shaker venv
-shaker_venv: /home/stack/shaker-venv
-
-# Shaker version to Install
-shaker_version: 0.0.17
-
-# PerfKitBenchmarker Settings
-perfkit_venv: /home/stack/perfkit-venv
-perfkit_version: v1.7.0
+########################################
+# Other Install Configuration Items
+########################################
 
 # Guest images for the Overcloud
+# Note hash key name must match intended name for image upload to
+# work consistently (Ex. images['cirros'].name == 'cirros')
 images:
   centos7:
+    name: centos7
     url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+    type: qcow2
+    convert_to_raw: true
   cirros:
-    url: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+    name: cirros
+    url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
+    type: qcow2
+    convert_to_raw: true
 
 # DNS Server to add
 dns_server: 8.8.8.8

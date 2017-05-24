@@ -28,7 +28,7 @@
     - common
     - undercloud
 
-- hosts: undercloud
-  remote_user: "{{ local_remote_user }}"
+- hosts: browbeat
+  remote_user: "{{ browbeat_user }}"
   roles:
     - dump-facts

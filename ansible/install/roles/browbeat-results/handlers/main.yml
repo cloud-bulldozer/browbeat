@@ -1,0 +1,17 @@
+---
+#
+# Browbeat Results handlers
+#
+
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+  become: true
+
+- name: restart httpd
+  service:
+    name: httpd
+    state: restarted
+  become: true

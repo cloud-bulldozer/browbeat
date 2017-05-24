@@ -174,7 +174,7 @@ per-cloud and clone Browbeat into that specific directory:
     [browbeat@laptop cloud01]$ git clone git@github.com:openstack/browbeat.git
     ...
     [browbeat@laptop cloud01]$ cd browbeat/ansible
-    [browbeat@laptop ansible]$ ./generate_tripleo_hostfile.sh <cloud01-ip-address>
+    [browbeat@laptop ansible]$ ./generate_tripleo_hostfile.sh -t <cloud01-ip-address>
     [browbeat@laptop ansible]$ ansible-playbook -i hosts (Your playbook you wish to run...)
     [browbeat@laptop ansible]$ ssh -F ssh-config overcloud-controller-0  # Takes you to first controller
 

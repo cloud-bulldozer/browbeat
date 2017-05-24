@@ -1,10 +1,33 @@
 #!/bin/bash
-if [ ! $# -ge 1 ]; then
-  echo "Usage: ./generate_tripleo_hostfiles.sh <tripleo_ip_address>"
-  echo "Generates ssh config file to use with an TripleO undercloud host as a jumpbox and creates ansible inventory file."
-  exit
+function usage
+{
+    echo "Usage: generate_tripleo_hostfile.sh [-t <tripleo_ip_address> [-l | --localhost]] | [-h | --help]"
+    echo "Generates ssh config file to use with an TripleO undercloud host as a jumpbox and creates ansible inventory file."
+}
+
+uncomment_localhost=false
+tripleo_ip_address=
+while [ "$1" != "" ]; do
+  case $1 in
+    -l | --localhost )      uncomment_localhost=true
+                            ;;
+    -t | --tripleo_ip_address )
+                            shift
+                            tripleo_ip_address=$1
+                            ;;
+    -h | --help )           usage
+                            exit
+                            ;;
+    * )                     usage
+                            exit 1
+  esac
+  shift
+done
+if [ -z "$tripleo_ip_address" ]; then
+  usage
+  exit 1
 fi
-tripleo_ip_address=$1
+
 ansible_inventory_file='hosts'
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ssh_config_file=${DIR}'/ssh-config'
@@ -187,7 +210,17 @@ echo "---------------------------"
 echo "Creating ansible inventory file:"
 echo "---------------------------"
 echo ""
-echo "[undercloud]" | tee ${ansible_inventory_file}
+echo "[browbeat]" | tee ${ansible_inventory_file}
+echo "# Pick host depending on desired install" | tee -a ${ansible_inventory_file}
+if [ "${uncomment_localhost}" = true ]; then
+  echo "localhost" | tee -a ${ansible_inventory_file}
+  echo "#undercloud" | tee -a ${ansible_inventory_file}
+else
+  echo "#localhost" | tee -a ${ansible_inventory_file}
+  echo "undercloud" | tee -a ${ansible_inventory_file}
+fi
+echo ""  | tee -a ${ansible_inventory_file}
+echo "[undercloud]" | tee -a ${ansible_inventory_file}
 echo "undercloud" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
  echo "" | tee -a ${ansible_inventory_file}

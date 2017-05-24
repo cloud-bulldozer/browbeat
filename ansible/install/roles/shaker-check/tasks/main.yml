@@ -4,7 +4,7 @@
 #
 
 - name: Check for heat
-  service: name={{ item }} state=running
+  service: name={{ item }} state=started
   become: true
   with_items:
    - openstack-heat-api
