@@ -75,6 +75,7 @@ class Elastic(object):
         retry = 2
         result['browbeat_uuid'] = str(browbeat_uuid)
         result['cloud_name'] = self.config['browbeat']['cloud_name']
+        result['browbeat_config'] = self.config
         for i in range(retry):
             try:
                 self.es.index(index=self.index,
