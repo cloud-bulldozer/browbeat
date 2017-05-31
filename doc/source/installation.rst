@@ -44,7 +44,6 @@ On the Undercloud
   [stack@undercloud ansible]$ ./generate_tripleo_hostfile.sh -t localhost
   [stack@undercloud ansible]$ sudo easy_install pip
   [stack@undercloud ansible]$ sudo pip install ansible
-  [stack@undercloud ansible]$ vi hosts # Uncomment undercloud in first group
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
   [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat.yml
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
@@ -96,7 +95,6 @@ From your local machine
   $ git clone https://github.com/openstack/browbeat.git
   $ cd browbeat/ansible
   $ ./generate_tripleo_hostfile.sh -t <undercloud-ip>
-  $ vi hosts # Uncomment undercloud in first group
   $ vi install/group_vars/all.yml # Review and edit configuration items
   $ ansible-playbook -i hosts install/browbeat.yml
   $ vi install/group_vars/all.yml # Edit Browbeat network settings
