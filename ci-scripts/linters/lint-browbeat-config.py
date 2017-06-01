@@ -16,7 +16,7 @@ import sys
 from pykwalify import core as pykwalify_core
 from pykwalify import errors as pykwalify_errors
 stream = open(sys.argv[1], 'r')
-schema = yaml.load(stream)
+schema = yaml.safe_load(stream)
 check = pykwalify_core.Core(sys.argv[2], schema_data=schema)
 try:
     check.validate(raise_exception=True)

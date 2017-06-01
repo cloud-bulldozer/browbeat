@@ -244,7 +244,7 @@ class Shaker(WorkloadBase.WorkloadBase):
 
     def set_scenario(self, scenario, fname, default_time):
         stream = open(fname, 'r')
-        data = yaml.load(stream)
+        data = yaml.safe_load(stream)
         stream.close()
         default_density = 1
         default_compute = 1
