@@ -41,7 +41,6 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
             flavor,
             zones,
             user,
-            password,
             test_types,
             protocols,
             samples,
@@ -49,6 +48,9 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
             test_name,
             send_results=True,
             num_pairs=1,
+            password="",
+            message_sizes=None,
+            instances=None,
             elastic_host=None,
             elastic_port=None,
             cloudname=None,
@@ -126,16 +128,17 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
         self._wait_for_ssh(jump_ssh)
 
         # Write id_rsa to get to guests.
+        self._run_command_over_ssh(jump_ssh, {'remote_path': "rm -rf ~/.ssh"})
         self._run_command_over_ssh(jump_ssh, {'remote_path': "mkdir ~/.ssh"})
         jump_ssh.run(
             "cat > ~/.ssh/id_rsa",
             stdin=self.context["user"]["keypair"]["private"])
-        self._run_command_over_ssh(jump_ssh,
-                                   {'remote_path': "chmod 0600 ~/.ssh/id_rsa"})
+
+        jump_ssh.execute("chmod 0600 ~/.ssh/id_rsa")
 
         # Check status of guest
         ready = False
-        retry = 5
+        retry = 10
         while (not ready):
             for sip in servers + clients:
                 cmd = "ssh -o StrictHostKeyChecking=no {}@{} /bin/true".format(
@@ -146,20 +149,22 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                         "Error : Issue reaching {} the guests through the Jump host".format(sip))
                     return 1
                 if s1_exitcode is 0:
+                    LOG.info("Server: {} ready".format(sip))
                     ready = True
                 else:
+                    LOG.info("Error reaching server: {} error {}".format(sip,s1_stderr))
                     retry = retry - 1
-                    time.sleep(5)
+                    time.sleep(10)
 
         # Register pbench across FIP
         for sip in servers + clients:
             cmd = "{}/util-scripts/pbench-register-tool-set --remote={}".format(
                 pbench_path, sip)
-            self._run_command_over_ssh(jump_ssh, {'remote_path': cmd})
+            jump_ssh.execute(cmd)
 
         # Quick single test
         # debug = "--message-sizes=1024 --instances=1"
-        debug = None
+        debug = ""
 
         # Start uperf against private address
         uperf = "{}/bench-scripts/pbench-uperf --clients={} --servers={} --samples={} {}".format(
@@ -169,35 +174,43 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
             protocols,
             test_name)
 
+        if message_sizes is not None :
+            uperf += " --message-sizes={}".format(
+            message_sizes)
+
+        if instances is not None:
+            uperf += " --instances={}".format(
+            instances)
+
         # Execute pbench-uperf
         # execute returns, exitcode,stdout,stderr
         LOG.info("Starting Rally - PBench UPerf")
-        exitcode, stdout_uperf, stderr = self._run_command_over_ssh(
-            jump_ssh, {"remote_path": uperf})
+        uperf_exitcode, stdout_uperf, stderr = jump_ssh.execute(uperf)
 
         # Prepare results
         cmd = "cat {}/uperf_{}*/result.csv".format(pbench_results, test_name)
-        exitcode, stdout, stderr = self._run_command_over_ssh(
-            jump_ssh, {'remote_path': cmd})
+        exitcode, stdout, stderr = jump_ssh.execute(cmd)
 
-        if send_results and exitcode is not 1:
-            cmd = "cat {}/uperf_{}*/result.json".format(
-                pbench_results, test_name)
-            exitcode, stdout_json, stderr = self._run_command_over_ssh(
-                jump_ssh, {'remote_path': cmd})
+        if send_results :
+            if uperf_exitcode is not 1:
+                cmd = "cat {}/uperf_{}*/result.json".format(
+                    pbench_results, test_name)
+                LOG.info("Running command : {}".format(cmd))
+                exitcode, stdout_json, stderr = jump_ssh.execute(cmd)
+                LOG.info("Result: {}".format(stderr))
 
-            es_ts = datetime.datetime.utcnow()
-            config = {
-                'elasticsearch': {
-                    'host': elastic_host, 'port': elastic_port}, 'browbeat': {
-                    'cloud_name': cloudname, 'timestamp': es_ts}}
-            elastic = Elastic(config, 'pbench')
-            json_result = StringIO.StringIO(stdout_json)
-            json_data = json.load(json_result)
-            for iteration in json_data:
-                elastic.index_result(iteration)
-        else:
-            LOG.error("Error with PBench Results")
+                es_ts = datetime.datetime.utcnow()
+                config = {
+                    'elasticsearch': {
+                        'host': elastic_host, 'port': elastic_port}, 'browbeat': {
+                        'cloud_name': cloudname, 'timestamp': es_ts}}
+                elastic = Elastic(config, 'pbench')
+                json_result = StringIO.StringIO(stdout_json)
+                json_data = json.load(json_result)
+                for iteration in json_data:
+                    elastic.index_result(iteration,test_name,'results/')
+            else:
+                LOG.error("Error with PBench Results")
 
         # Parse results
         result = StringIO.StringIO('\n'.join(stdout.split('\n')[1:]))
@@ -216,5 +229,5 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                           "label": "Gbps",
                           "data": report})
 
-            cmd = "{}/util-scripts/pbench-move-results".format(pbench_path)
-            self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})
+        cmd = "{}/util-scripts/pbench-move-results".format(pbench_path)
+        self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})
