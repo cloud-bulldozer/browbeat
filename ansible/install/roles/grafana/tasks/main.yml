@@ -138,13 +138,20 @@
 #
 # Add graphite server as a default datasource
 #
+# (akrzos) I reverted this back to the "old" way after testing Ansible 2.3.0.0
+# which still could not POST with basic auth through uri vs curl command.
+- name: Create data_source.json
+  template:
+    src: data_source.json.j2
+    dest: "{{role_path}}/files/data_source.json"
+  connection: local
+
 - name: Create Data Source on grafana server
-  uri:
-    method: POST
-    header: 'Content-Type: application/json'
-    body: "{{ lookup('template', 'data_source.json.j2') |to_json }}"
-    body_format: json
-    url: http://{{grafana_host}}:{{grafana_port}}/api/datasources
-    username: "{{ grafana_username }}"
-    password: "{{ grafana_password }}"
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/data_source.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/datasources"
+  connection: local
+  tags:
+    - skip_ansible_lint
+
+- name: Remove leftover json file
+  file: path={{role_path}}/files/data_source.json state=absent
   connection: local
