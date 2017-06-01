@@ -1,10 +1,10 @@
 ---
 #
-# Playbook to install graphite-web
+# Playbook to install Carbon and Graphite
 #
 
 - hosts: graphite
   remote_user: root
   roles:
-    - { role: epel }
-    - { role: graphite }
+    - epel
+    - graphite

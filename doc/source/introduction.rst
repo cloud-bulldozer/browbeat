@@ -1,6 +1,6 @@
-=====================
-Browbeat Introduction
-=====================
+============
+Introduction
+============
 
 This started as a project to help determine the number of database
 connections a given OpenStack deployment uses via stress tests. It has

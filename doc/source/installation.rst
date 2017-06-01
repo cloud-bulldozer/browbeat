@@ -373,3 +373,133 @@ will be available via http on different ports.
   from multiple Browbeat users at the same time will introduce variation into
   resulting performance data if the machine on which Browbeat is installed is
   resource constrained.
+
+==================================
+Additional Components Installation
+==================================
+
+Install Monitoring Host (Carbon/Graphite/Grafana)
+-------------------------------------------------
+
+A monitoring host exposes System and Application performance metrics to the
+Browbeat user via Grafana.  It helps expose what may be causing your bottleneck
+when you encounter a performance issue.
+
+Prerequisites
+~~~~~~~~~~~~~
+
+Hardware
+
+* Baremetal or Virtual Machine
+* SSD storage
+
+Operating System
+
+* RHEL 7
+* CentOS 7
+
+Repos
+
+* Red Hat Enterprise Linux 7Server - x86_64 - Server
+* Red Hat Enterprise Linux 7Server - x86_64 - Server Optional
+
+RPM
+
+* epel-release
+* ansible
+* git
+
+Installation
+~~~~~~~~~~~~
+
+1. Deploy machine (RHEL7 is used in this example)
+2. Install RPMS
+
+::
+
+  [root@dhcp23-93 ~]# yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  ...
+  [root@dhcp23-93 ~]# yum install -y ansible git
+
+3. Clone Browbeat
+
+::
+
+  [root@dhcp23-93 ~]# git clone https://github.com/openstack/browbeat.git
+  Cloning into 'browbeat'...
+  remote: Counting objects: 7533, done.
+  remote: Compressing objects: 100% (38/38), done.
+  remote: Total 7533 (delta 30), reused 36 (delta 23), pack-reused 7469
+  Receiving objects: 100% (7533/7533), 5.26 MiB | 5.79 MiB/s, done.
+  Resolving deltas: 100% (4330/4330), done.
+
+4. Add a hosts file into ansible directory
+
+::
+
+  [root@dhcp23-93 ~]# cd browbeat/ansible/
+  [root@dhcp23-93 ansible]# vi hosts
+
+Content of hosts file should be following
+
+::
+
+  [graphite]
+  localhost
+
+  [grafana]
+  localhost
+
+5. Setup SSH config, SSH key and exchange for Ansible
+
+::
+
+  [root@dhcp23-93 ansible]# touch ssh-config
+  [root@dhcp23-93 ansible]# ssh-keygen
+  Generating public/private rsa key pair.
+  ...
+  [root@dhcp23-93 ansible]# ssh-copy-id root@localhost
+  ...
+
+6. Edit install variables
+
+::
+
+  [root@dhcp23-93 ansible]# vi install/group_vars/all.yml
+
+Depending on the environment you may need to edit more than just the following
+variables - graphite_host and grafana_host
+
+
+7. Install Carbon and Graphite via Ansible playbook
+
+::
+
+  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/graphite.yml
+  ...
+
+8. Install Grafana via Ansible playbook
+
+::
+
+  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/grafana.yml
+  ...
+
+9. Install Grafana dashboards via Ansible playbook
+
+::
+
+  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/grafana-dashboards.yml -e 'cloud_dashboards=false'
+  ...
+
+Now navigate to http://monitoring-host-address:3000 to verify Grafana is
+installed, the Graphite data source exists and custom dashboards are uploaded.
+
+You can now point other clouds at this host in order to view System and
+Application performance metrics.  Depending on the number of clouds and
+machines pointed at your monitoring server, you may need to add more disk IO
+capacity, disk storage or carbon-cache+carbon-relay processes depending
+entirely on the number of metrics and your environments capacity.  There is a
+Graphite dashboard included and it is recommended to install collectd on your
+monitoring host such that you can see if you hit resource issues with your
+monitoring host.

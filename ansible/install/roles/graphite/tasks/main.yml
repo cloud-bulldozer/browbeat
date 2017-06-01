@@ -4,7 +4,9 @@
 #
 
 - name: Install graphite rpms
-  yum: name={{ item }} state=present
+  yum:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - graphite-web
@@ -18,11 +20,11 @@
 
 - name: Copy setup-graphite-db.exp
   copy:
-    src=setup-graphite-db.exp
-    dest=/root/setup-graphite-db.exp
-    owner=root
-    group=root
-    mode=0755
+    src: setup-graphite-db.exp
+    dest: /root/setup-graphite-db.exp
+    owner: root
+    group: root
+    mode: 0755
   become: true
 
 - name: Create initial graphite db
@@ -30,18 +32,18 @@
   become: true
   when: graphite_db_installed.rc != 0
   notify:
-     - restart apache
+    - restart apache
 
 - name: Setup httpd graphite-web config
   template:
-    src=graphite-web.conf.j2
-    dest=/etc/httpd/conf.d/graphite-web.conf
-    owner=root
-    group=root
-    mode=0644
+    src: graphite-web.conf.j2
+    dest: /etc/httpd/conf.d/graphite-web.conf
+    owner: root
+    group: root
+    mode: 0644
   become: true
   notify:
-     - restart apache
+    - restart apache
 
 ### begin firewall ###
 # we need TCP/80 open
@@ -68,6 +70,12 @@
   register: firewalld_graphite_port_exists
   no_log: true
 
+- name: (carbon) Determine if TCP/{{carbon_cache_port}} is already active
+  shell: firewall-cmd --list-ports | egrep -q "^{{carbon_cache_port}}/tcp"
+  ignore_errors: true
+  register: firewalld_carbon_cache_port_exists
+  no_log: true
+
 # add firewall rule via firewall-cmd
 - name: (graphite-web) Add firewall rule for TCP/{{graphite_port}} (firewalld)
   command: "{{ item }}"
@@ -78,12 +86,29 @@
   become: true
   when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_graphite_port_exists.rc != 0
 
+# add firewall rule via firewall-cmd
+- name: (carbon) Add firewall rule for TCP/{{carbon_cache_port}} (firewalld)
+  command: "{{ item }}"
+  with_items:
+    - firewall-cmd --zone=public --add-port={{carbon_cache_port}}/tcp --permanent
+    - firewall-cmd --reload
+  ignore_errors: true
+  become: true
+  when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_carbon_cache_port_exists.rc != 0
+
 # iptables-services
 - name: (graphite-web) check firewall rules for TCP/{{graphite_port}} (iptables-services)
   shell: grep "dport {{graphite_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
   ignore_errors: true
   register: iptables_graphite_port_exists
   failed_when: iptables_graphite_port_exists == 127
+  no_log: true
+
+- name: (carbon) check firewall rules for TCP/{{carbon_cache_port}} (iptables-services)
+  shell: grep "dport {{carbon_cache_port}} \-j ACCEPT" /etc/sysconfig/iptables | wc -l
+  ignore_errors: true
+  register: iptables_carbon_cache_port_exists
+  failed_when: iptables_carbon_cache_port_exists == 127
   no_log: true
 
 - name: (graphite-web) Add firewall rule for TCP/{{graphite_port}} (iptables-services)
@@ -96,6 +121,16 @@
   when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_graphite_port_exists.stdout|int == 0
   register: iptables_needs_restart
 
+- name: (carbon) Add firewall rule for TCP/{{carbon_cache_port}} (iptables-services)
+  lineinfile:
+    dest: /etc/sysconfig/iptables
+    line: '-A INPUT -p tcp -m tcp --dport {{carbon_cache_port}} -j ACCEPT'
+    regexp: '^INPUT -i lo -j ACCEPT'
+    insertbefore: '-A INPUT -i lo -j ACCEPT'
+    backup: yes
+  when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_carbon_cache_port_exists.stdout|int == 0
+  register: iptables_needs_restart
+
 - name: (graphite-web) Restart iptables-services for TCP/{{graphite_port}} (iptables-services)
   shell: systemctl restart iptables.service
   ignore_errors: true
@@ -103,57 +138,51 @@
 
 ### end firewall ###
 
-# Start graphite-web service
 - name: Setup httpd service
-  service: name=httpd state=started enabled=true
+  service:
+    name: httpd
+    state: started
+    enabled: true
   become: true
 
-# remove silly welcome from apache (if it exists)
 - name: Remove httpd welcome config
   become: true
-  file: path=/etc/httpd/conf.d/welcome.conf state=absent
+  file:
+    path: /etc/httpd/conf.d/welcome.conf
+    state: absent
   notify:
-     - restart apache
-
-#
-# setup the python-carbon service
-#
+    - restart apache
 
 - name: Setup carbon-cache service
-  service: name=carbon-cache state=started enabled=true
+  service:
+    name: carbon-cache
+    state: started
+    enabled: true
   become: true
 
-- name: copy carbon storage schema config
+- name: Copy Carbon storage scheme and aggregation config files
   copy:
-    src=storage-schemas.conf
-    dest=/etc/carbon/storage-schemas.conf
-    owner=root
-    group=root
-    mode=0644
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  with_items:
+    - src: storage-schemas.conf
+      dest: /etc/carbon/storage-schemas.conf
+    - src: storage-aggregation.conf
+      dest: /etc/carbon/storage-aggregation.conf
+  notify:
+    - restart carbon-cache
+
+- name: Configure carbon.conf
+  template:
+    src: carbon.conf.j2
+    dest: /etc/carbon/carbon.conf
+    owner: root
+    group: root
+    mode: 0644
   become: true
   notify:
-     - restart carbon-cache
-
-- name: copy carbon storage aggregation config
-  copy:
-    src=storage-aggregation.conf
-    dest=/etc/carbon/storage-aggregation.conf
-    owner=root
-    group=root
-    mode=0644
-  become: true
-  notify:
-     - restart carbon-cache
-
-- name: copy carbon config
-  copy:
-    src=carbon.conf
-    dest=/etc/carbon/carbon.conf
-    owner=root
-    group=root
-    mode=0644
-  become: true
-  notify:
-     - restart carbon-cache
-
-
+    - restart carbon-cache

@@ -220,12 +220,13 @@ graphite_web_docker_image: kambiz/graphite-web:0.9.15
 grafana_docker_image: grafana/grafana:2.6.0
 
 ########################################
-# Graphite Configuration
+# Carbon/Graphite Configuration
 ########################################
 # Graphite Server ip address (Collectd -> Graphite server)
 # you must fill out graphite_host prior to playbook execution
 graphite_host:
 graphite_port: 80
+carbon_cache_port: 2003
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
 graphite_prefix: openstack
 # Graphite username and password for login on the dashboard

@@ -1,6 +1,18 @@
+---
+#
+# Carbon and Graphite Handlers
+#
+
 - name: restart apache
-  service: name=httpd state=restarted enabled=true
+  service:
+    name: httpd
+    state: restarted
+    enabled: true
   become: true
+
 - name: restart carbon-cache
-  service: name=carbon-cache state=restarted enabled=true
+  service:
+    name: carbon-cache
+    state: restarted
+    enabled: true
   become: true

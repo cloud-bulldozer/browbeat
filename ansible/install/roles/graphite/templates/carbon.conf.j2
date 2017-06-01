@@ -8,7 +8,7 @@
 #                          Defaults to ../
 #   GRAPHITE_CONF_DIR    - Configuration directory (where this file lives).
 #                          Defaults to $GRAPHITE_ROOT/conf/
-#   GRAPHITE_STORAGE_DIR - Storage directory for whipser/rrd/log/pid files.
+#   GRAPHITE_STORAGE_DIR - Storage directory for whisper/rrd/log/pid files.
 #                          Defaults to $GRAPHITE_ROOT/storage/
 #
 # To change other directory paths, add settings to this file. The following
@@ -37,15 +37,14 @@ CONF_DIR       = /etc/carbon/
 LOG_DIR        = /var/log/carbon/
 PID_DIR        = /var/run/
 
-# Enable daily log rotation. If disabled, a kill -HUP can be used after a manual rotate
-
+# Enable daily log rotation. If disabled, carbon will automatically re-open
+# the file if it's rotated out of place (e.g. by logrotate daemon)
 ENABLE_LOGROTATION = True
 
 # Specify the user to drop privileges to
 # If this is blank carbon runs as the user that invokes it
 # This user must have write access to the local data directory
 USER = carbon
-
 #
 # NOTE: The above settings must be set under [relay] and [aggregator]
 #       to take effect for those daemons as well
@@ -69,16 +68,24 @@ MAX_UPDATES_PER_SECOND = 500
 # MAX_UPDATES_PER_SECOND_ON_SHUTDOWN = 1000
 
 # Softly limits the number of whisper files that get created each minute.
-# Setting this value low (like at 50) is a good way to ensure your graphite
+# Setting this value low (e.g. 50) is a good way to ensure that your carbon
 # system will not be adversely impacted when a bunch of new metrics are
-# sent to it. The trade off is that it will take much longer for those metrics'
-# database files to all get created and thus longer until the data becomes usable.
-# Setting this value high (like "inf" for infinity) will cause graphite to create
-# the files quickly but at the risk of slowing I/O down considerably for a while.
+# sent to it. The trade off is that any metrics received in excess of this
+# value will be silently dropped, and the whisper file will not be created
+# until such point as a subsequent metric is received and fits within the
+# defined rate limit. Setting this value high (like "inf" for infinity) will
+# cause carbon to create the files quickly but at the risk of increased I/O.
 MAX_CREATES_PER_MINUTE = 2000
 
+# Set the interface and port for the line (plain text) listener.  Setting the
+# interface to 0.0.0.0 listens on all interfaces.  Port can be set to 0 to
+# disable this listener if it is not required.
 LINE_RECEIVER_INTERFACE = 0.0.0.0
-LINE_RECEIVER_PORT = 2003
+LINE_RECEIVER_PORT = {{carbon_cache_port}}
+
+# Set the TCP backlog for the listen socket created by the line receiver. You
+# shouldn't change this unless you know what you're doing.
+# LINE_RECEIVER_BACKLOG = 1024
 
 # Set this to True to enable the UDP listener. By default this is off
 # because it is very common to run multiple carbon daemons and managing
@@ -87,8 +94,15 @@ ENABLE_UDP_LISTENER = False
 UDP_RECEIVER_INTERFACE = 0.0.0.0
 UDP_RECEIVER_PORT = 2003
 
+# Set the interface and port for the pickle listener.  Setting the interface to
+# 0.0.0.0 listens on all interfaces.  Port can be set to 0 to disable this
+# listener if it is not required.
 PICKLE_RECEIVER_INTERFACE = 0.0.0.0
 PICKLE_RECEIVER_PORT = 2004
+
+# Set the TCP backlog for the listen socket created by the pickle receiver. You
+# shouldn't change this unless you know what you're doing.
+# PICKLE_RECEIVER_BACKLOG = 1024
 
 # Set to false to disable logging of successful connections
 LOG_LISTENER_CONNECTIONS = True
@@ -100,6 +114,10 @@ USE_INSECURE_UNPICKLER = False
 
 CACHE_QUERY_INTERFACE = 0.0.0.0
 CACHE_QUERY_PORT = 7002
+
+# Set the TCP backlog for the listen socket created by the cache query
+# listener. You shouldn't change this unless you know what you're doing.
+# CACHE_QUERY_BACKLOG = 1024
 
 # Set this to False to drop datapoints received after the cache
 # reaches MAX_CACHE_SIZE. If this is True (the default) then sockets
@@ -224,7 +242,6 @@ WHISPER_FALLOCATE_CREATE = True
 
 
 [relay]
-USER = carbon
 LINE_RECEIVER_INTERFACE = 0.0.0.0
 LINE_RECEIVER_PORT = 2013
 PICKLE_RECEIVER_INTERFACE = 0.0.0.0
@@ -253,6 +270,14 @@ RELAY_METHOD = rules
 # datapoint to more than one machine.
 REPLICATION_FACTOR = 1
 
+# For REPLICATION_FACTOR >=2, set DIVERSE_REPLICAS to True to guarantee replicas
+# across distributed hosts. With this setting disabled, it's possible that replicas
+# may be sent to different caches on the same host. This has been the default
+# behavior since introduction of 'consistent-hashing' relay method.
+# Note that enabling this on an existing pre-0.9.14 cluster will require rebalancing
+# your metrics across the cluster nodes using a tool like Carbonate.
+#DIVERSE_REPLICAS = False
+
 # This is a list of carbon daemons we will send any relayed or
 # generated metrics to. The default provided would send to a single
 # carbon-cache instance on the default port. However if you
@@ -273,13 +298,22 @@ DESTINATIONS = 127.0.0.1:2004
 
 # This defines the maximum "message size" between carbon daemons.
 # You shouldn't need to tune this unless you really know what you're doing.
-MAX_DATAPOINTS_PER_MESSAGE = 2000
-MAX_QUEUE_SIZE = 400000
+MAX_DATAPOINTS_PER_MESSAGE = 500
+MAX_QUEUE_SIZE = 10000
+
+# This is the percentage that the queue must be empty before it will accept
+# more messages.  For a larger site, if the queue is very large it makes sense
+# to tune this to allow for incoming stats.  So if you have an average
+# flow of 100k stats/minute, and a MAX_QUEUE_SIZE of 3,000,000, it makes sense
+# to allow stats to start flowing when you've cleared the queue to 95% since
+# you should have space to accommodate the next minute's worth of stats
+# even before the relay incrementally clears more of the queue
+QUEUE_LOW_WATERMARK_PCT = 0.8
 
 # Set this to False to drop datapoints when any send queue (sending datapoints
 # to a downstream carbon daemon) hits MAX_QUEUE_SIZE. If this is True (the
 # default) then sockets over which metrics are received will temporarily stop accepting
-# data until the send queues fall below 80% MAX_QUEUE_SIZE.
+# data until the send queues fall below QUEUE_LOW_WATERMARK_PCT * MAX_QUEUE_SIZE.
 USE_FLOW_CONTROL = True
 
 # Set this to True to enable whitelisting and blacklisting of metrics in
@@ -295,7 +329,6 @@ USE_FLOW_CONTROL = True
 
 
 [aggregator]
-USER = carbon
 LINE_RECEIVER_INTERFACE = 0.0.0.0
 LINE_RECEIVER_PORT = 2023
 
@@ -307,8 +340,14 @@ LOG_LISTENER_CONNECTIONS = True
 
 # If set true, metric received will be forwarded to DESTINATIONS in addition to
 # the output of the aggregation rules. If set false the carbon-aggregator will
-# only ever send the output of aggregation.
-FORWARD_ALL = True
+# only ever send the output of aggregation. Default value is set to false and will not forward
+FORWARD_ALL = False
+
+# Filenames of the configuration files to use for this instance of aggregator.
+# Filenames are relative to CONF_DIR.
+#
+# AGGREGATION_RULES = aggregation-rules.conf
+# REWRITE_RULES = rewrite-rules.conf
 
 # This is a list of carbon daemons we will send any relayed or
 # generated metrics to. The default provided would send to a single
