@@ -1,0 +1,83 @@
+# Complete set of Workload Benchmarks
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: openstack
+elasticsearch:
+  enabled: false
+  regather: false
+  host: 1.1.1.1
+  port: 9200
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+ansible:
+  ssh_config: ansible/ssh-config
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  metadata: ansible/gather/site.yml
+connmon:
+  enabled: false
+  sudo: true
+grafana:
+  enabled: true
+  grafana_ip: 1.1.1.1
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+rally:
+  enabled: true
+  sleep_before: 5
+  sleep_after: 5
+  venv: /home/stack/rally-venv/bin/activate
+  plugins:
+    - workloads: rally/rally-plugins/workloads
+  benchmarks:
+    - name: workloads
+      enabled: true
+      concurrency:
+        - 1
+      times: 1
+      scenarios:
+        - name: linpack
+          enabled: true
+          image_name: browbeat-linpack
+          external_network:
+          net_id:
+          flavor_name: m1.small
+          file: rally/rally-plugins/workloads/linpack.yml
+        - name: uperf
+          enabled: true
+          user: root
+          password: None
+          image_name: browbeat-uperf
+          external_network:
+          net_id:
+          flavor_name: m1.small
+          test_name: test-uperf
+          protocols: 'tcp'
+          send_results: true
+          num_pairs: 1
+          instances: 1
+          samples: 1
+          test_types: 'stream'
+          message_sizes: '64'
+          cloudname: test-cloud
+          elastic_host:
+          elastic_port: 9200
+          file: rally/rally-plugins/workloads/pbench-uperf.yml
+

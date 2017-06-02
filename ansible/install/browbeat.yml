@@ -21,6 +21,7 @@
     - shaker
     - flavors
     - images
+    - { role: workloads, when: install_browbeat_workloads}
   environment: "{{proxy_env}}"
 
 - hosts: compute

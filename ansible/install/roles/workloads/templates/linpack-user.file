@@ -1,0 +1,24 @@
+#!/bin/bash
+sudo echo "nameserver {{ dns_server }}" > /etc/resolv.conf
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+sudo curl -O http://registrationcenter-download.intel.com/akdlm/irc_nas/9752/l_mklb_p_2017.3.018.tgz
+sudo tar -xvzf l_mklb_p_2017.3.018.tgz
+sudo mkdir /opt/linpack
+sudo cp l_mklb_p_2017.3.018/benchmarks_2017/linux/mkl/benchmarks/linpack/* /opt/linpack
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+
+# Allow for root access
+sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
+cat /etc/cloud/cloud.cfg | grep disable_root
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+
+echo "Browbeat workload installed"

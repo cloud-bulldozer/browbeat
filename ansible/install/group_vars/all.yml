@@ -56,6 +56,32 @@ supported_distro: ((ansible_distribution == "CentOS" && ansible_distribution_maj
 iptables_file: /etc/sysconfig/iptables
 
 ########################################
+# Browbeat Workloads
+########################################
+
+# Install Browbeat workloads
+install_browbeat_workloads: false
+
+# Network ID which has external access
+browbeat_network:
+
+# For Pbench Repos - Provide the internal RPM URL
+pbench_internal_url:
+
+# Browbeat Rally workloads
+browbeat_workloads:
+  linpack:
+    name: browbeat-linpack
+    src: linpack-user.file
+    dest: "{{ browbeat_path }}/linpack-user.file"
+    image: centos7
+  uperf:
+    name: browbeat-uperf
+    src: pbench-uperf-user.file
+    dest: "{{ browbeat_path }}/pbench-uperf-user.file"
+    image: centos7
+
+########################################
 # Other Install Configuration Items
 ########################################
 
