@@ -175,12 +175,10 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
             test_name)
 
         if message_sizes is not None :
-            uperf += " --message-sizes={}".format(
-            message_sizes)
+            uperf += " --message-sizes={}".format(message_sizes)
 
         if instances is not None:
-            uperf += " --instances={}".format(
-            instances)
+            uperf += " --instances={}".format(instances)
 
         # Execute pbench-uperf
         # execute returns, exitcode,stdout,stderr
