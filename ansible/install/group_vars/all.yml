@@ -95,6 +95,8 @@ connmon_host: 192.0.2.1
 collectd_from_epel: true
 # Interval in seconds
 collectd_interval: 10
+# Typically: carbon-cache port=2003 or Graphite with carbon-relay=2013
+collectd_write_graphite_port: 2003
 # Run collectd on specific openstack nodes:
 collectd_undercloud: true
 collectd_controller: true

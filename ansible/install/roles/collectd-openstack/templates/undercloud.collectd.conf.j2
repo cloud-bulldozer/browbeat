@@ -87,7 +87,7 @@ PreCacheChain "PreCache"
 <Plugin write_graphite>
   <Carbon>
     Host "{{graphite_host}}"
-    Port "2003"
+    Port "{{collectd_write_graphite_port}}"
     Prefix "{{graphite_prefix}}."
     Protocol "tcp"
     LogSendErrors true

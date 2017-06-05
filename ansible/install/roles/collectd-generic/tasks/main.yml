@@ -1,29 +1,30 @@
 ---
 #
-# Install/run collectd for browbeat (Generic)
+# Install/run Collectd for Browbeat (Generic)
 #
 
-#
-# (akrzos) yum module works at this point due to the fact the EPEL repo now exists.  EPEL rpm is
-# installed at this point in time.
-#
 - name: Install collectd rpms
-  yum: name={{ item }} state=present
+  yum:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items: "{{collectd_packages[config_type]}}"
 
-- name: Configure collectd.conf
-  template:
-    src={{config_type}}.collectd.conf.j2
-    dest=/etc/collectd.conf
-    owner=root
-    group=root
-    mode="0644"
+- name: Install package that provides semanage
+  yum:
+    name: policycoreutils-python
+    state: present
   become: true
 
-#
-# Configure selinux bits
-#
+- name: Configure collectd.conf
+  template:
+    src: "{{config_type}}.collectd.conf.j2"
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
 - name: Check for collectd permissive
   shell: semodule -l | grep -q permissive_collectd_t
   become: true
@@ -31,41 +32,15 @@
   ignore_errors: true
   changed_when: false
 
-# This command is not always found?
 - name: Set permissive for collectd
   command: semanage permissive -a collectd_t
   become: true
   when: collectd_permissive.rc != 0
   ignore_errors: true
 
-#
-# Additional policy bits may be needed for exec
-#
-- name: Collectd policy customization
-  copy:
-    src=custom-collectd.pp
-    dest=/root/custom-collectd.pp
-    owner=root
-    group=root
-    mode="0644"
-  become: true
-
-- name: Check for collectd custom
-  command: semodule -l | grep -q custom-collectd
-  become: true
-  register: collectd_custom
-  ignore_errors: true
-  changed_when: false
-
-- name: Set custom policy for collectd
-  command: semodule -i /root/custom-collectd.pp
-  become: true
-  when: collectd_custom.rc != 0
-
-#
-# Start collectd service
-#
 - name: Setup collectd service
-  service: name=collectd state=restarted enabled=true
+  service:
+    name: collectd
+    state: restarted
+    enabled: true
   become: true
-

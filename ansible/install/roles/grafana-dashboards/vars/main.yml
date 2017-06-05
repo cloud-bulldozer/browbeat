@@ -553,11 +553,15 @@ per_process_panels:
     - name: "Summerized"
       processes:
         - carbon-cache
+        - carbon-relay
+        - carbon-aggregator
         - grafana-server
         - httpd
     - name: "Carbon"
       processes:
         - carbon-cache
+        - carbon-relay
+        - carbon-aggregator
     - name: "Grafana"
       processes:
         - grafana-server

@@ -1243,7 +1243,16 @@
               "percent",
               "ms"
             ]
-          },
+          }
+        ],
+        "showTitle": true,
+        "title": "Disk"
+      },
+      {
+        "collapse": true,
+        "editable": true,
+        "height": "200px",
+        "panels": [
           {
             "aliasColors": {},
             "bars": false,
@@ -1263,7 +1272,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
             "id": {{vars.panel_idx}},
             "isNew": true,
             "legend": {
@@ -1297,8 +1306,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.$Node.df-*.percent_bytes-used, 'df-', ''), 2)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub($Cloud.$Node.df-*.percent_bytes-used, 'df-', ''), 2)"
               }
             ],
             "timeFrom": null,
@@ -1315,10 +1323,81 @@
               "percent",
               "short"
             ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": 100,
+              "leftMin": 0,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+        {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": true,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "Write",
+                "transform": "negative-Y"
+              }
+            ],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "aliasByNode(aliasSub($Cloud.$Node.df-*.percent_inodes-used, 'df-', ''), 2)"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - $Node -  Inodes % Used",
+            "tooltip": {
+              "shared": true,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "percent",
+              "short"
+            ]
           }
         ],
         "showTitle": true,
-        "title": "Disk"
+        "title": "DF"
       },
       {
         "collapse": true,
@@ -2504,7 +2583,7 @@
     {% endfor %}
 {# End Loop over per-process options here #}
       {
-        "title": "Carbon Metrics",
+        "title": "Carbon Cache Metrics",
         "height": "250px",
         "editable": true,
         "collapse": true,
@@ -2568,15 +2647,15 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(carbon.agents.*.metricsReceived, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.metricsReceived, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               },
               {
                 "refId": "B",
-                "target": "aliasByNode(carbon.agents.*.committedPoints, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.committedPoints, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               },
               {
                 "refId": "C",
-                "target": "aliasByNode(carbon.agents.*.updateOperations, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.updateOperations, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -2643,7 +2722,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(carbon.agents.*.avgUpdateTime, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.avgUpdateTime, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -2710,7 +2789,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(carbon.agents.*.creates, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.creates, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -2777,7 +2856,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(carbon.agents.*.cache.*, 4)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.cache.*, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -2844,11 +2923,11 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(carbon.agents.*.blacklistMatches, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.blacklistMatches, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               },
               {
                 "refId": "B",
-                "target": "aliasByNode(carbon.agents.*.whitelistRejects, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.whitelistRejects, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -2915,7 +2994,7 @@
             "targets": [
               {
                 "refId": "C",
-                "target": "aliasByNode(carbon.agents.*.errors, 3)"
+                "target": "aliasByNode(aliasSub(carbon.agents.*.errors, '[a-zA-Z0-9_]+-', ''), 2, 3)"
               }
             ],
             "aliasColors": {},
@@ -3011,8 +3090,8 @@
         {
           "allFormat": "glob",
           "current": {
-            "text": "None",
-            "value": "None"
+            "text": "graphite",
+            "value": "graphite"
           },
           "datasource": null,
           "includeAll": false,

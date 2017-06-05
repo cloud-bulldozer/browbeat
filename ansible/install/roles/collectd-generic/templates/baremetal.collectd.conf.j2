@@ -42,7 +42,7 @@ LoadPlugin uptime
 <Plugin write_graphite>
   <Carbon>
     Host "{{graphite_host}}"
-    Port "2003"
+    Port "{{collectd_write_graphite_port}}"
     Prefix "{{graphite_prefix}}."
     Protocol "tcp"
     LogSendErrors true
@@ -53,11 +53,40 @@ LoadPlugin uptime
 </Plugin>
 
 <Plugin df>
+  FSType anon_inodefs
+  FSType bdev
+  FSType cgroup
+  FSType cpuset
+  FSType debugfs
+  FSType devpts
+  FSType devtmpfs
+  FSType ecryptfs
+  FSType fuse
+  FSType fusectl
+  FSType hugetlbfs
+  FSType mqueue
+  FSType nfs
+  FSType nfs4
+  FSType nfsd
+  FSType pipefs
+  FSType proc
+  FSType pstore
+  FSType ramfs
+  #FSType rootfs
+  FSType rpc_pipefs
+  FSType securityfs
+  FSType sockfs
+  FSType sysfs
+  FSType tmpfs
+  FSType vboxsf
+  IgnoreSelected true
   ValuesPercentage true
+  ReportInodes true
 </Plugin>
 
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  Disk "/^nvm/"
   IgnoreSelected false
 </Plugin>
 

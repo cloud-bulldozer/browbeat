@@ -492,6 +492,13 @@ variables - graphite_host and grafana_host
   [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/grafana-dashboards.yml -e 'cloud_dashboards=false'
   ...
 
+10. (Optional) Monitor the Monitor Host
+
+::
+
+  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/collectd-generic.yml --tags graphite
+  ...
+
 Now navigate to http://monitoring-host-address:3000 to verify Grafana is
 installed, the Graphite data source exists and custom dashboards are uploaded.
 

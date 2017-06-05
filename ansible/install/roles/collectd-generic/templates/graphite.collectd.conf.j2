@@ -4,9 +4,6 @@
 # Interval default is 10s
 Interval {{collectd_interval}}
 
-# Hostname for this machine, if not defined, use gethostname(2) system call
-Hostname "{{inventory_hostname}}"
-
 # Loaded Plugins:
 LoadPlugin "logfile"
 <Plugin "logfile">
@@ -41,9 +38,9 @@ LoadPlugin uptime
 # Graphite Host Configuration
 <Plugin write_graphite>
   <Carbon>
-    Host "{{graphite_host}}"
-    Port "2003"
-    Prefix "{{graphite_prefix}}."
+    Host "localhost"
+    Port "{{collectd_write_graphite_port}}"
+    Prefix "graphite."
     Protocol "tcp"
     LogSendErrors true
     StoreRates true
@@ -53,20 +50,51 @@ LoadPlugin uptime
 </Plugin>
 
 <Plugin df>
+  FSType anon_inodefs
+  FSType bdev
+  FSType cgroup
+  FSType cpuset
+  FSType debugfs
+  FSType devpts
+  FSType devtmpfs
+  FSType ecryptfs
+  FSType fuse
+  FSType fusectl
+  FSType hugetlbfs
+  FSType mqueue
+  FSType nfs
+  FSType nfs4
+  FSType nfsd
+  FSType pipefs
+  FSType proc
+  FSType pstore
+  FSType ramfs
+  #FSType rootfs
+  FSType rpc_pipefs
+  FSType securityfs
+  FSType sockfs
+  FSType sysfs
+  FSType tmpfs
+  FSType vboxsf
+  IgnoreSelected true
   ValuesPercentage true
+  ReportInodes true
 </Plugin>
 
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
+  Disk "/^nvm/"
   IgnoreSelected false
 </Plugin>
 
 <Plugin processes>
   ProcessMatch "carbon-cache" "python.+carbon-cache"
+  ProcessMatch "carbon-relay" "python.+carbon-relay"
+  ProcessMatch "carbon-aggregator" "python.+carbon-aggregator"
   Process "grafana-server"
   Process "httpd"
   # Collect on collectd process
-  ProcessMatch "collectd" "/usr/sbin/collectd.+-C.+/etc/collectd.conf"
+  Process "collectd"
 </Plugin>
 
 <Plugin swap>
