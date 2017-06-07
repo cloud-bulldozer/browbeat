@@ -41,3 +41,12 @@
 
 - name: Setup rally deployment
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
+
+- name: Check Rally deployment
+  shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment check
+  register: rally_deployment_check
+
+- name: Fail if Rally deployment cannot be verfied
+  fail:
+    msg: "Failed to verify that your deployment is ready to benchmark"
+  when: rally_deployment_check.rc != 0
