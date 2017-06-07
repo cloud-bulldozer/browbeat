@@ -36,7 +36,7 @@
   with_items: "{{ images }}"
 
 - name: Upload raw image into cloud (Newton and Ocata versions)
-  shell: . {{ browbeat_venv }}/bin/activate; . {{ overcloudrc }}; openstack image create --public --disk-format=raw --container-format=bare {{ images[item].name }} < {{ home_dir }}/{{ images[item].name }}.{{ images[item].type }}
+  shell: . {{ browbeat_venv }}/bin/activate; . {{ overcloudrc }}; openstack image create --public --disk-format=raw --container-format=bare {{ images[item].name }} < {{ home_dir }}/{{ images[item].name }}.raw
   ignore_errors: true
   when: "images[item].convert_to_raw == true"
   with_items: "{{ images }}"
