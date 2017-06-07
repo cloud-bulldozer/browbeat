@@ -15,6 +15,7 @@ Contents:
    installation
    usage
    plugins
+   ci
    contributing
 
 Indices and tables

@@ -1,21 +1,13 @@
-Table of Contents
-=================
+=====================
+Browbeat as a CI tool
+=====================
 
--  `CI Structure <#ci-structure>`__
--  `Script Documentation <#script-documentation>`__
-
-   -  `Browbeat as a Quickstart Extra <#browbeat-as-a-quickstart-extra>`__
-      -  `Invoking Locally <#invoking-locally>`__
-
-CI Structure
-============
-
-If you would like to make your own CI job add your CI script to this directory
-and invoke it as minimally as possible on the Jenkins end, this will help us
-keep script changes in the repository and better test them before merging.
-
-Script Documentation
-====================
+If you would like to make your own CI job add your bootstrapping script to
+`ci-scripts/<openstack installer>` and Ansible/Python components into normal
+locations in the repository. Try and provide as many defaults as possible so
+that job definitions on the Jenkins end can remain small and easily defined.
+this will help us keep script changes in the repository and better test them
+before merging.
 
 Browbeat as a Quickstart Extra
 ------------------------------
@@ -101,5 +93,5 @@ enabled performance metrics will be gathered from all cloud nodes and stored
 into the configured graphite instance to be processed by the Grafana dashboards
 created using the given username and password.
 
-These dashboards will be automatically overwritten each run to reflect the
-number of nodes in your cloud and other changes that may occur between runs.
+If enabled these dashboards will be automatically overwritten each run to reflect
+the number of nodes in your cloud and other changes that may occur between runs.
