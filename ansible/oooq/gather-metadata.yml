@@ -1,0 +1,36 @@
+---
+- hosts: compute
+  remote_user: "heat_admin"
+  become: true
+  roles:
+    - browbeat-metadata/common
+    - browbeat-metadata/compute
+
+- hosts: controller
+  remote_user: "heat_admin"
+  become: true
+  roles:
+    - browbeat-metadata/common
+    - browbeat-metadata/nova
+    - browbeat-metadata/neutron
+    - browbeat-metadata/keystone
+    - browbeat-metadata/ceilometer
+    - browbeat-metadata/gnocchi
+    - browbeat-metadata/cinder
+    - browbeat-metadata/heat
+    - browbeat-metadata/mysql
+    - browbeat-metadata/rabbitmq
+    - browbeat-metadata/glance
+
+- hosts: undercloud
+  remote_user: "stack"
+  become: true
+  roles:
+    - browbeat-metadata/common
+    - browbeat-metadata/undercloud
+
+- name: Dump metadata to files
+  hosts: undercloud
+  roles:
+    - browbeat-metadata/dump-facts
+    - browbeat/oooq-metadata

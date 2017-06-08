@@ -2,34 +2,18 @@
 
 - include: quickstart-extras.yml
 
-- name: Configure Browbeat
-  hosts: undercloud
-  roles:
-    - browbeat/pre-install-setup
-    - browbeat/oooq-metadata
+- include: configure-browbeat.yml
 
-- name: Install Browbeat
-  hosts: undercloud
-  vars:
-    results_in_httpd: false
-  roles:
-    - browbeat/common
-    - browbeat/browbeat
-    - browbeat/browbeat-results
-    - browbeat/firewall
-    - browbeat/perfkitbenchmarker
-    - browbeat/rally
-    - browbeat/shaker
-    - browbeat/yoda
-    - browbeat/flavors
-    - browbeat/images
-    - browbeat/browbeat-network
-    - browbeat/template-configs
+- include: undercloud-collectd.yml
+
+- include: overcloud-collectd.yml
+
+- include: install-browbeat.yml
+
+- include: gather-metadata.yml
 
 - name: Run Browbeat
   hosts: undercloud
   roles:
-    - browbeat/collectd
-    - browbeat/bug-check
     - browbeat/browbeat-run
     - browbeat/browbeat-classify

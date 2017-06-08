@@ -1,0 +1,9 @@
+---
+- name: Setup Undercloud CollectD
+  hosts: undercloud
+  vars:
+    config_type: "{{group_names[0]}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack

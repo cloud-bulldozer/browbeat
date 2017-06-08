@@ -1,0 +1,12 @@
+---
+- name: Setup Overcloud CollectD
+  hosts: overcloud
+  vars:
+    config_type: "{{group_names[0]}}"
+    graphite_host: "{{graphite_host_template}}"
+    graphite_password: "{{graphite_password_template}}"
+    graphite_prefix: "{{graphite_prefix_template}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack

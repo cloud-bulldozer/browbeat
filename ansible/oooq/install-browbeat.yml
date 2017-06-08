@@ -1,0 +1,18 @@
+---
+- name: Install Browbeat
+  hosts: undercloud
+  vars:
+    results_in_httpd: false
+    statsd_host: "{{ graphite_host }}"
+  roles:
+    - browbeat/common
+    - browbeat/browbeat
+    - browbeat/firewall
+    - browbeat/perfkitbenchmarker
+    - browbeat/rally
+    - browbeat/shaker
+    - browbeat/flavors
+    - browbeat/images
+    - browbeat/browbeat-network
+    - browbeat/template-configs
+    - browbeat/statsd-ironic

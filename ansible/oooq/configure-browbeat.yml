@@ -1,0 +1,5 @@
+---
+- name: Configure Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/pre-install-setup

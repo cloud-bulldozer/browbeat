@@ -1,0 +1,7 @@
+---
+- name: Disable sshd dns
+  hosts: overcloud
+  vars:
+    disable_ssh_dns: true
+  roles:
+    - browbeat/no-sshd-dns

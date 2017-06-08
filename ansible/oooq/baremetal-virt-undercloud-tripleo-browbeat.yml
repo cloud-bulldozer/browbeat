@@ -1,60 +1,19 @@
 ---
 - include: baremetal-prep-virthost.yml
 
-- name: Configure Browbeat
-  hosts: undercloud
-  roles:
-    - browbeat/pre-install-setup
+- include: configure-browbeat.yml
 
-- name: Setup Undercloud CollectD
-  hosts: undercloud
-  vars:
-    config_type: "{{group_names[0]}}"
-  roles:
-    - browbeat/common
-    - browbeat/epel
-    - browbeat/collectd-openstack
+- include: undercloud-collectd.yml
 
 - include: baremetal-quickstart-extras.yml
 
-- name: Install Browbeat
-  hosts: undercloud
-  vars:
-    results_in_httpd: false
-    statsd_host: "{{ graphite_host }}"
-  roles:
-    - browbeat/common
-    - browbeat/browbeat
-    - browbeat/firewall
-    - browbeat/perfkitbenchmarker
-    - browbeat/rally
-    - browbeat/shaker
-    - browbeat/yoda
-    - browbeat/flavors
-    - browbeat/images
-    - browbeat/browbeat-network
-    - browbeat/template-configs
-    - browbeat/statsd-ironic
-    - browbeat/oooq-metadata
+- include: install-browbeat.yml
 
-- name: Disable sshd dns
-  hosts: overcloud
-  vars:
-    disable_ssh_dns: true
-  roles:
-    - browbeat/no-sshd-dns
+- include: disable-ssh-dns.yml
 
-- name: Setup Overcloud CollectD
-  hosts: overcloud
-  vars:
-    config_type: "{{group_names[0]}}"
-    graphite_host: "{{graphite_host_template}}"
-    graphite_password: "{{graphite_password_template}}"
-    graphite_prefix: "{{graphite_prefix_template}}"
-  roles:
-    - browbeat/common
-    - browbeat/epel
-    - browbeat/collectd-openstack
+- include: overcloud-collectd.yml
+
+- include: gather-metadata.yml
 
 - name: Run Browbeat
   hosts: undercloud

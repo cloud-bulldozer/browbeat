@@ -26,40 +26,50 @@
     shell: mysql -e "show variables like 'max_connections';" | grep max_connections | awk '{print $2}'
     register: max_conn
     ignore_errors: true
+    when: undercloud_conf.stat.exists
 
   - name: Set max database connections
     set_fact:
       openstack_mysql_max_connections: "{{ max_conn.stdout }}"
+    when: undercloud_conf.stat.exists
 
   - name : Get file descriptors for the mysql process
     shell: cat /proc/$(pgrep mysqld_safe)/limits | grep "open files" | awk '{print $4}'
     register: mysql_desc
+    when: undercloud_conf.stat.exists
 
   - name: Set file descriptors fact for mysql
     set_fact:
       openstack_mysql_file_descriptors: "{{ mysql_desc.stdout }}"
+    when: undercloud_conf.stat.exists
 
   - name : Get rabbitmq file descriptors
     shell: rabbitmqctl status | grep total_limit |  awk -F',' '{print $2}' | sed 's/.$//'
     register: rabbitmq_desc
     ignore_errors: true
+    when: undercloud_conf.stat.exists
 
   - name: Set rabbitmq file descriptors
     set_fact:
       openstack_rabbitmq_file_descriptors: "{{ rabbitmq_desc.stdout  }}"
+    when: undercloud_conf.stat.exists
 
   - name: Get Controller Nodes number
     shell: source ~/stackrc; nova list | grep controller | grep ACTIVE | wc -l
     register: controller_count
+    when: undercloud_conf.stat.exists
 
   - name : Set Controler number fact
     set_fact:
       osp_controllers_number: "{{ controller_count.stdout }}"
+    when: undercloud_conf.stat.exists
 
   - name: Get Compute Nodes number
     shell: source ~/stackrc; nova list | grep compute | grep ACTIVE | wc -l
     register: compute_count
+    when: undercloud_conf.stat.exists
 
   - name : Set Commpute number fact
     set_fact:
       osp_computes_number: "{{ compute_count.stdout }}"
+    when: undercloud_conf.stat.exists
