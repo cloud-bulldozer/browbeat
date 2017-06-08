@@ -213,7 +213,8 @@ class PerfKit(WorkloadBase.WorkloadBase):
                         self.update_tests()
                         self.update_total_tests()
                         result_dir = self.tools.create_results_dir(
-                            self.config['browbeat']['results'], time_stamp, benchmark['name'], run)
+                            self.config['browbeat']['results'], time_stamp, benchmark['name'],
+                            str(run))
                         test_name = "{}-{}-{}".format(time_stamp, benchmark['name'], run)
                         workload = self.__class__.__name__
                         self.workload_logger(result_dir, workload)

@@ -37,10 +37,14 @@
      requirements: "{{ perfkit_venv }}/PerfKitBenchmarker/perfkitbenchmarker/providers/openstack/requirements.txt"
      virtualenv: "{{perfkit_venv}}"
 
-# (akrzos) - Using 2.6 seems most stable, Using latest or >2.6 as per PerfKitBenchmarker
-# openstack/requirements.txt results in an openstack cli error.
-- name: Downgrade python-openstackclient inside perfkit-venv
+# (akrzos) - These requirements are what works for OpenStack Ocata
+- name: Fix requirements for (OSP11 Ocata) inside perfkit-venv
   pip:
-    name: python-openstackclient
-    version: 2.6.0
+    name: "{{item.name}}"
+    version: "{{item.version}}"
     virtualenv: "{{perfkit_venv}}"
+  with_items:
+    - name: python-openstackclient
+      version: 3.8.1
+    - name: python-novaclient
+      version: 7.1.0

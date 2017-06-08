@@ -57,6 +57,7 @@ perfkit:
     openstack_floating_ip_pool: browbeat_public
     openstack_network: browbeat_private
     timing_measurements: runtimes
+    ignore_package_requirements: true
   benchmarks:
     - name: aerospike-centos-m1-small
       enabled: false

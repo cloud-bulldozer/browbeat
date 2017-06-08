@@ -41,7 +41,7 @@ shaker_version: 0.0.17
 
 # PerfKitBenchmarker Settings
 perfkit_venv: "{{home_dir}}/perfkit-venv"
-perfkit_version: v1.7.0
+perfkit_version: v1.12.0
 
 # Configuration items to adjust browbeat results served through httpd
 browbeat_results_port: 9001
