@@ -68,7 +68,7 @@ class Metadata(object):
         soft_all_dict = []
         for item in sys_data['system_data']:
             nodes = ['controller', 'undercloud', 'compute']
-            if any(node in item['inventory_hostname'] for node in nodes):
+            if any(node in item['group_names'] for node in nodes):
                 software_dict = {}
                 for soft in item:
                     if 'openstack' in soft:
