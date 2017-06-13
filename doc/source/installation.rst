@@ -374,6 +374,18 @@ will be available via http on different ports.
   resulting performance data if the machine on which Browbeat is installed is
   resource constrained.
 
+Using Keystone Public Endpoint
+------------------------------
+
+If your Browbeat installation can not reach the Keystone Admin API endpoint due
+to the networking, you can use Keystone V3 options.  In your overcloudrc or rc
+file you can add the following environment variables.
+
+::
+
+  export OS_IDENTITY_API_VERSION=3
+  export OS_INTERFACE=public
+
 ==================================
 Additional Components Installation
 ==================================
