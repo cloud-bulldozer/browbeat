@@ -10,13 +10,12 @@
 # The fedoraproject CDN has problems somtimes, this will keep trying
 #  for up to 10 minutes before failing.
 - name: Import EPEL GPG Key
-  rpm_key: key=https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-    state=present
+  shell: rpm --import {{ epel7_rpmkey }}
   become: true
   register: import_result
-  until: import_result|success
+  until: "import_result.rc==0"
   retries: 10
-  delay: 60
+  delay: 10
 
 # Same as above but with the Centos CDN
 - name: Check for EPEL repo
@@ -25,5 +24,5 @@
   register: install_result
   until: install_result|success
   retries: 10
-  delay: 60
+  delay: 10
   notify: remove_epel
