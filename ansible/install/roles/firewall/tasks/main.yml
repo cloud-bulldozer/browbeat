@@ -95,6 +95,7 @@
     line: '-A INPUT -p tcp -m tcp --dport {{shaker_port}} -j ACCEPT'
     insertbefore: '^-A INPUT -i lo'
     backup: yes
+    create: yes
   become: true
   when: firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0 and iptables_shaker_port_exists.stdout|int == 0
   register: iptables_needs_restart

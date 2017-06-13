@@ -8,3 +8,4 @@
   roles:
     - epel
     - graphite
+  environment: "{{proxy_env}}"

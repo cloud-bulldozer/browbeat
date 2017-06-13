@@ -24,3 +24,4 @@
 
   roles:
     - kibana-visualization
+  environment: "{{proxy_env}}"

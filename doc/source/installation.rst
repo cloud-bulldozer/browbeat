@@ -270,6 +270,10 @@ Check network connectivity
   [browbeat1@browbeatvm ~]$ scp stack@undercloud-1:/home/stack/overcloudrc .
   overcloudrc                               100%  553     0.5KB/s   00:00
 
+.. note::  In SSL environments, you must copy the certificate over and
+  check that the "OS_CA_CERT" variable is set correctly to the copied
+  certificate location
+
 5. Install RPM requirements
 
 ::
@@ -289,8 +293,7 @@ Check network connectivity
   Receiving objects: 100% (7425/7425), 5.23 MiB | 0 bytes/s, done.
   Resolving deltas: 100% (4280/4280), done.
 
-7. Generate hosts, ssh-config, and retrieve heat-admin-id_rsa. Then uncomment
-   "localhost" under Browbeat Hosts Group
+7. Generate hosts, ssh-config, and retrieve heat-admin-id_rsa.
 
 ::
 
@@ -311,6 +314,10 @@ localhost rather than the undercloud.
 
 In this case, adjust browbeat_user, iptables_file and dns_server.  Each
 environment is different and thus your configuration options will vary.
+
+.. note::  If you require a proxy to get outside your network, you must
+  configure http_proxy, https_proxy, no_proxy variables in the proxy_env
+  dictionary in install/group_vars/all.yml
 
 9. Run Browbeat install playbook
 
@@ -446,7 +453,7 @@ Installation
 
 ::
 
-  [root@dhcp23-93 ~]# yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  [root@dhcp23-93 ~]# yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   ...
   [root@dhcp23-93 ~]# yum install -y ansible git
 
@@ -499,6 +506,9 @@ Content of hosts file should be following
 Depending on the environment you may need to edit more than just the following
 variables - graphite_host and grafana_host
 
+.. note::  If you require a proxy to get outside your network, you must
+  configure http_proxy, https_proxy, no_proxy variables in the proxy_env
+  dictionary in install/group_vars/all.yml
 
 7. Install Carbon and Graphite via Ansible playbook
 
@@ -578,7 +588,7 @@ Installation
 
 ::
 
-  [root@dhcp23-93 ~]# yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  [root@dhcp23-93 ~]# yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   ...
   [root@dhcp23-93 ~]# yum install -y ansible git
 
@@ -632,6 +642,9 @@ variables - es_ip
 If you are deploying using a machine that is not an OSP undercloud, be sure to edit
 the home_dir/browbeat_path to match its actual path.
 
+.. note::  If you require a proxy to get outside your network, you must
+  configure http_proxy, https_proxy, no_proxy variables in the proxy_env
+  dictionary in install/group_vars/all.yml
 
 7. Install ELK via Ansible playbook
 

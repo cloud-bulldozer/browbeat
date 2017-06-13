@@ -21,6 +21,7 @@
     - shaker
     - flavors
     - images
+  environment: "{{proxy_env}}"
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"

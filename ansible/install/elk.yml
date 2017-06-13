@@ -13,8 +13,10 @@
     - { role: nginx }
     - { role: curator, when: install_curator_tool }
     - { role: kibana }
+  environment: "{{proxy_env}}"
 
 - hosts: localhost
-  remote_user: "{{ local_remote_user }}"
+  connection: local
   roles:
     - { role: es-template }
+  environment: "{{proxy_env}}"

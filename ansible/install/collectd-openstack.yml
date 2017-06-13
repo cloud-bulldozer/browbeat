@@ -31,6 +31,7 @@
       when: not collectd_undercloud
       ignore_errors: true
   tags: undercloud
+  environment: "{{proxy_env}}"
 
 - hosts: controller
   remote_user: "{{ host_remote_user }}"
@@ -48,6 +49,7 @@
       when: not collectd_controller
       ignore_errors: true
   tags: controller
+  environment: "{{proxy_env}}"
 
 - hosts: blockstorage
   remote_user: "{{ host_remote_user }}"
@@ -65,6 +67,7 @@
       when: not collectd_blockstorage
       ignore_errors: true
   tags: blockstorage
+  environment: "{{proxy_env}}"
 
 - hosts: objectstorage
   remote_user: "{{ host_remote_user }}"
@@ -82,6 +85,7 @@
       when: not collectd_objectstorage
       ignore_errors: true
   tags: objectstorage
+  environment: "{{proxy_env}}"
 
 - hosts: cephstorage
   remote_user: "{{ host_remote_user }}"
@@ -99,6 +103,7 @@
       when: not collectd_cephstorage
       ignore_errors: true
   tags: cephstorage
+  environment: "{{proxy_env}}"
 
 - hosts: compute
   remote_user: "{{ host_remote_user }}"
@@ -116,3 +121,4 @@
       when: not collectd_compute
       ignore_errors: true
   tags: compute
+  environment: "{{proxy_env}}"

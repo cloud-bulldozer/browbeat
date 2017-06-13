@@ -18,6 +18,7 @@
     - epel
     - collectd-generic
   tags: baremetal
+  environment: "{{proxy_env}}"
 
 - hosts: guest
   remote_user: root
@@ -27,6 +28,7 @@
     - epel
     - collectd-generic
   tags: guest
+  environment: "{{proxy_env}}"
 
 - hosts: graphite
   remote_user: root
@@ -36,3 +38,4 @@
     - epel
     - collectd-generic
   tags: graphite
+  environment: "{{proxy_env}}"

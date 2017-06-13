@@ -6,8 +6,10 @@
   remote_user: "{{ local_remote_user }}"
   roles:
      - { role: filebeat }
+  environment: "{{proxy_env}}"
 
 - hosts: controller,compute,cephstorage
   remote_user: "{{ host_remote_user }}"
   roles:
     - { role: filebeat }
+  environment: "{{proxy_env}}"

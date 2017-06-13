@@ -74,6 +74,14 @@ images:
 # DNS Server to add
 dns_server: 8.8.8.8
 
+# Proxy Settings
+proxy_env: {}
+# Example use:
+# proxy_env:
+#   http_proxy: http://proxy.example.com:80
+#   https_proxy: http://proxy.example.com:80
+#   no_proxy: localhost, example.sat6.com, graphite-server.com, elk-server.com
+
 # Disables dns lookup by overcloud sshd process
 disable_ssh_dns: false
 
@@ -82,9 +90,10 @@ epel7_rpm: https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noa
 epel7_rpmkey: https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
 
 # Extra Repos to add during collectd install
-repos:
-  rhel-7-server-beta:
-    baseurl: http://walkabout.foobar.com/released/RHEL-7/7.3-Beta/Server/x86_64/os/
+repos: {}
+# repos:
+#   rhel-7-server-beta:
+#     baseurl: http://walkabout.foobar.com/released/RHEL-7/7.3-Beta/Server/x86_64/os/
 
 # Host where connmond will be running
 connmon_host: 192.0.2.1

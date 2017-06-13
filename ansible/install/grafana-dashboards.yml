@@ -63,3 +63,4 @@
         process_list_name: Graphite
   roles:
     - grafana-dashboards
+  environment: "{{proxy_env}}"

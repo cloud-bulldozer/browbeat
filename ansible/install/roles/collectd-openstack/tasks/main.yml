@@ -31,11 +31,14 @@
 
 # Iostat plugin requires sysstat since shelling iostat for stats, Also it is
 # handy to have sysstat.
+# (akrzos) Ignore errors on install since we attempt to install without
+# checking any vars if we really want/require sysstat
 - name: (Iostat python plugin) Install sysstat
   yum:
     name: sysstat
     state: present
   become: true
+  ignore_errors: true
 
 - name: (Keystone Token Count) Install libdbi mysql driver
   yum:
