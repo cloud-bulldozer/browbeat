@@ -386,6 +386,23 @@ file you can add the following environment variables.
   export OS_IDENTITY_API_VERSION=3
   export OS_INTERFACE=public
 
+Uploading Images to the overcloud
+---------------------------------
+
+Browbeat by default uploads CentOS and CirrOS images to the cloud for use in
+Rally and other workloads. It is recommended to upload RAW images if using ceph
+and hence the convert_to_raw  variable must be set to true as shown below in
+ansible/install/group_vars/all.yml. The default is false.
+
+::
+
+  images:
+    centos7:
+      name: centos7
+      url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+      type: qcow2
+      convert_to_raw: true
+
 ==================================
 Additional Components Installation
 ==================================
