@@ -183,7 +183,7 @@
   when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
 
 - name: Enable Rabbitmq management plugin
-  command: rabbitmq-plugins enable rabbitmq_management
+  command: /sbin/rabbitmq-plugins enable rabbitmq_management
   become: true
   when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
 
@@ -240,14 +240,14 @@
 # Configure selinux bits
 #
 - name: Check for collectd permissive
-  shell: semodule -l | grep -q permissive_collectd_t
+  shell: /sbin/semodule -l | grep -q permissive_collectd_t
   become: true
   register: collectd_permissive
   ignore_errors: true
   changed_when: false
 
 - name: Set permissive for collectd
-  command: semanage permissive -a collectd_t
+  command: /sbin/semanage permissive -a collectd_t
   become: true
   when: collectd_permissive.rc != 0
 
@@ -264,14 +264,14 @@
   become: true
 
 - name: Check for collectd custom
-  shell: semodule -l | grep -q custom-collectd
+  shell: /sbin/semodule -l | grep -q custom-collectd
   become: true
   register: collectd_custom
   ignore_errors: true
   changed_when: false
 
 - name: Set custom policy for collectd
-  command: semodule -i /root/custom-collectd.pp
+  command: /sbin/semodule -i /root/custom-collectd.pp
   become: true
   when: collectd_custom.rc != 0
 
