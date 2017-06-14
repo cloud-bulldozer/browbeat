@@ -9,7 +9,7 @@
     "hideControls": false,
     "id": null,
     "links": [],
-    "refresh": "1m",
+    "refresh": false,
     "rows": [
       {
         "collapse": true,
@@ -38,7 +38,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -141,7 +141,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -244,7 +244,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -347,7 +347,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -444,7 +444,7 @@
           "name": "Cloud",
           "options": [],
           "query": "*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         }

@@ -656,7 +656,7 @@
           "name": "Cloud",
           "options": [],
           "query": "*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         }

@@ -11,7 +11,7 @@ per_process_metrics:
         query: ".ps_count.processes"
       - name: "Threads"
         query: ".ps_count.threads"
-    nullPointMode: "connected"
+    nullPointMode: "null"
   - name: "Process CPU"
     y1units: "percent"
     metrics:
@@ -19,7 +19,7 @@ per_process_metrics:
         query: ".ps_cputime.syst"
       - name: "User"
         query: ".ps_cputime.user"
-    nullPointMode: "connected"
+    nullPointMode: "null"
   - name: "Process Memory"
     y1units: "bits"
     metrics:
@@ -35,7 +35,7 @@ per_process_metrics:
         query: ".ps_pagefaults.majflt"
       - name: "Minflt"
         query: ".ps_pagefaults.minflt"
-    nullPointMode: "connected"
+    nullPointMode: "null"
   - name: "Process IOPs(Estimated via SYSCALLS)"
     y1units: "iops"
     metrics:

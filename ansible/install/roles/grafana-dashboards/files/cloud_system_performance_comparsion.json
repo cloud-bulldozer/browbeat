@@ -49,7 +49,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -183,7 +183,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -326,7 +326,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -444,7 +444,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -641,7 +641,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -727,7 +727,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -813,7 +813,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -891,7 +891,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -977,7 +977,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1072,7 +1072,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1199,7 +1199,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1276,7 +1276,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1353,7 +1353,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1430,7 +1430,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1507,7 +1507,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1584,7 +1584,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -1650,7 +1650,7 @@
           "name": "Cloud1",
           "options": [],
           "query": "*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1667,7 +1667,7 @@
           "name": "Cloud2",
           "options": [],
           "query": "*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1685,7 +1685,7 @@
           "options": [],
           "query": "$Cloud1.*",
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1702,7 +1702,7 @@
           "name": "Node2",
           "options": [],
           "query": "$Cloud2.*",
-          "refresh": true,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         },
@@ -1720,7 +1720,7 @@
           "name": "Node1_Disk",
           "options": [],
           "query": "$Cloud1.$Node1.disk-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1737,7 +1737,7 @@
           "name": "Node2_Disk",
           "options": [],
           "query": "$Cloud2.$Node2.disk-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1754,7 +1754,7 @@
           "name": "Node1_Interface",
           "options": [],
           "query": "$Cloud1.$Node1.interface-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1771,7 +1771,7 @@
           "name": "Node2_Interface",
           "options": [],
           "query": "$Cloud2.$Node2.interface-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1788,7 +1788,7 @@
           "name": "Node1_Process",
           "options": [],
           "query": "$Cloud1.$Node1.processes-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1805,7 +1805,7 @@
           "name": "Node2_Process",
           "options": [],
           "query": "$Cloud2.$Node2.processes-*",
-          "refresh": true,
+          "refresh": 2,
           "type": "query"
         },
         {
@@ -1924,7 +1924,7 @@
             }
           ],
           "query": "0m,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
-          "refresh": false,
+          "refresh": 2,
           "type": "custom"
         },
         {
@@ -2043,7 +2043,7 @@
             }
           ],
           "query": "0m,1m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
-          "refresh": false,
+          "refresh": 2,
           "type": "custom"
         }
       ]

@@ -37,7 +37,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -49,7 +49,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(sumSeries($Cloud.overcloud-*compute-*.processes-qemu-kvm.ps_count.processes), 'Sum qemu-kvm processes')",
+                "target": "alias(sumSeries($Cloud.*.processes-qemu-kvm.ps_count.processes), 'Sum qemu-kvm processes')",
                 "textEditor": false
               }
             ],
@@ -112,7 +112,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -124,7 +124,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.overcloud-*compute-*.processes-qemu-kvm.ps_count.processes, 1)",
+                "target": "aliasByNode($Cloud.*.processes-qemu-kvm.ps_count.processes, 1)",
                 "textEditor": false
               }
             ],
@@ -193,7 +193,7 @@
           "name": "Cloud",
           "options": [],
           "query": "*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         }

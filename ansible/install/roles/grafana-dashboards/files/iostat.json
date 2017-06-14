@@ -8,17 +8,7 @@
     "graphTooltip": 0,
     "hideControls": false,
     "id": null,
-    "links": [
-      {
-        "asDropdown": true,
-        "icon": "external link",
-        "tags": [
-          "OSP"
-        ],
-        "title": "Openstack General Dashboards",
-        "type": "dashboards"
-      }
-    ],
+    "links": [],
     "rows": [
       {
         "collapse": false,
@@ -994,7 +984,7 @@
           "name": "Cloud",
           "options": [],
           "query": "*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "sort": 0,
           "tagValuesQuery": "",
@@ -1056,7 +1046,7 @@
             }
           ],
           "query": "undercloud,controller,blockstorage,objectstorage,cephstorage,compute,*",
-          "refresh": 0,
+          "refresh": 2,
           "type": "custom"
         },
         {
@@ -1076,7 +1066,7 @@
           "name": "Node",
           "options": [],
           "query": "$Cloud.*$NodeType*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "",
           "sort": 0,
           "tagValuesQuery": "",

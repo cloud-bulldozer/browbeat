@@ -43,7 +43,7 @@
             "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "connected",
+            "nullPointMode": "null",
             "percentage": false,
             "pointradius": 5,
             "points": false,
@@ -116,7 +116,7 @@
           "name": "Cloud",
           "options": [],
           "query": "*",
-          "refresh": 1,
+          "refresh": 2,
           "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         },
@@ -144,8 +144,7 @@
             }
           ],
           "query": "$Cloud.*",
-          "refresh": 0,
-          "regex": "/.*[cu][on][dn].*/",
+          "refresh": 2,
           "type": "query"
         }
       ]
