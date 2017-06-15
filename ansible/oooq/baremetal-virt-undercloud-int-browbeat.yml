@@ -1,0 +1,24 @@
+---
+# Browbeat integration test
+
+- include: baremetal-prep-virthost.yml
+
+- include: configure-browbeat.yml
+
+- include: undercloud-collectd.yml
+
+- include: baremetal-quickstart-extras.yml
+
+- include: install-browbeat.yml
+
+- include: disable-ssh-dns.yml
+
+- include: overcloud-collectd.yml
+
+- include: gather-metadata.yml
+
+- name: Run Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/browbeat-run
+    - browbeat/browbeat-classify

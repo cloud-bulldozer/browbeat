@@ -1,0 +1,147 @@
+# Tests to be compleated for the install-and-check.sh script minimal and short workloads are performed
+#  to confirm functionality.
+browbeat:
+  results : results/
+  rerun: 1
+  cloud_name: {{ browbeat_cloud_name }}
+elasticsearch:
+  enabled: {{ elastic_enabled }}
+  host: {{ elastic_host }}
+  port: 9200
+  regather: false
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+ansible:
+  ssh_config: ansible/ssh-config
+  hosts: ansible/hosts
+  adjust:
+    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
+    neutron_l3: ansible/browbeat/adjustment-l3.yml
+    nova_db: ansible/browbeat/adjustment-db.yml
+    workers: ansible/browbeat/adjustment-workers.yml
+  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
+  metadata: ansible/gather/site.yml
+connmon:
+  enabled: {{ connmon_enabled }}
+  sudo: true
+grafana:
+  enabled: {{ grafana_enabled }}
+  grafana_ip: {{ grafana_host }}
+  grafana_port: 3000
+  dashboards:
+    - openstack-general-system-performance
+  snapshot:
+    enabled: false
+    snapshot_compute: false
+yoda:
+  enabled: true
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+  venv: "/home/stack/yoda-venv/bin/activate"
+  benchmarks:
+    - name: introspect-{{ overcloud_size }}-batch-5
+      type: introspection
+      enabled: true
+      method: individual
+      times: 10
+      timeout: 1800
+      batch_size: 5
+    - name: introspect-{{ overcloud_size }}-bulk
+      type: introspection
+      enabled: true
+      method: bulk
+      times: 10
+      timeout: 1800
+    - name: No-HA-Max-Compute-{{ overcloud_size }}-full-deploy
+      type: overcloud
+      ntp_server: pool.ntp.org
+      timeout: 600
+      templates:
+        - ""
+      enabled: true
+      step: 5
+      keep_stack: false
+      times: 2
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: {{ overcloud_size | int - 1 }}
+        - node: "control"
+          start_scale: 1
+          end_scale: 1
+    - name: No-HA-Max-Compute-{{ overcloud_size }}-stack-update
+      type: overcloud
+      ntp_server: pool.ntp.org
+      timeout: 600
+      templates:
+        - ""
+      instackenv: "/home/stack/instackenv.json"
+      enabled: true
+      step: 5
+      keep_stack: true
+      times: 2
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: {{ overcloud_size | int - 1 }}
+        - node: "control"
+          start_scale: 1
+          end_scale: 1
+    - name: HA-Max-Compute-{{ overcloud_size }}-full-deploy
+      type: overcloud
+      ntp_server: pool.ntp.org
+      timeout: 600
+      templates:
+        - ""
+      enabled: true
+      step: 5
+      keep_stack: false
+      times: 1
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: {{ overcloud_size | int - 3 }}
+        - node: "control"
+          start_scale: 3
+          end_scale: 3
+    - name: HA-Max-Compute-{{ overcloud_size }}-stack-update
+      type: overcloud
+      ntp_server: pool.ntp.org
+      timeout: 600
+      templates:
+        - ""
+      enabled: true
+      step: 5
+      keep_stack: true
+      times: 1
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: {{ overcloud_size | int - 3 }}
+        - node: "control"
+          start_scale: 3
+          end_scale: 3
+    - name: HA-Max-Compute-{{ overcloud_size }}-stack-update
+      type: overcloud
+      ntp_server: pool.ntp.org
+      timeout: 600
+      templates:
+        - ""
+      enabled: true
+      step: 5
+      keep_stack: true
+      times: 1
+      cloud:
+        - node: "compute"
+          start_scale: 1
+          end_scale: {{ overcloud_size | int - 3 }}
+        - node: "control"
+          start_scale: 3
+          end_scale: 3

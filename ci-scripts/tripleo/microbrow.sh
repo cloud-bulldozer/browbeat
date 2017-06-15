@@ -10,7 +10,6 @@ export OPT_DEBUG_ANSIBLE=0
 export HW_ENV_DIR=$WORKSPACE/tripleo-environments/hardware_environments/$HW_ENV
 export NETWORK_ISOLATION=no_vlan
 export REQS=quickstart-extras-requirements.txt
-export PLAYBOOK=baremetal-virt-undercloud-tripleo-browbeat.yml
 export VARS="elastic_enabled=true \
 --extra-vars grafana_enabled=true \
 --extra-vars elastic_host=$ELASTIC_HOST \

@@ -227,8 +227,13 @@ class Yoda(WorkloadBase.WorkloadBase):
         while len(nodes):
             node = nodes.pop()
             # rate limit
-            time.sleep(1)
-            node_obj = conn.bare_metal.get_node(node)
+            time.sleep(10)
+            try:
+                node_obj = conn.bare_metal.get_node(node)
+            except exceptions.SDKException:
+                self.logger.error("Ironic endpoint is down, retrying in 10 seconds")
+                time.sleep(10)
+                continue
             if node_obj is None:
                self.logger.error("Can't find node " + node +
                                  " Which existed at the start of introspection \
@@ -311,15 +316,21 @@ class Yoda(WorkloadBase.WorkloadBase):
         wait_time = 0
         # 30 minute timeout
         timeout = (60 * 30)
-        while conn.orchestration.find_stack("overcloud") is not None:
-            # Deletes can fail, so we just try again
-            if wait_time % 2000 == 0:
-                conn.orchestration.delete_stack("overcloud")
-            time.sleep(5)
-            wait_time += 5
-            if wait_time > timeout:
-                self.logger.error("Overcloud stack delete failed")
+        try:
+            while conn.orchestration.find_stack("overcloud") is not None:
+                # Deletes can fail, so we just try again
+                if wait_time % 2000 == 0:
+                    conn.orchestration.delete_stack("overcloud")
+                time.sleep(10)
+                wait_time += 10
+                if wait_time > timeout:
+                    self.logger.error("Overcloud stack delete failed")
                 exit(1)
+        except exceptions.SDKException:
+            # Recursion is probably the wrong way to handle this
+            self.logger.error("Heat failure during overcloud delete, retrying")
+            time.sleep(10)
+            self.delete_stack(conn)
 
     def setup_nodes_dict(self, benchmark):
         nodes = {}
@@ -561,9 +572,17 @@ class Yoda(WorkloadBase.WorkloadBase):
                                             benchmark)
 
             results['total_time'] = (datetime.datetime.utcnow() - start_time).total_seconds()
+            try:
+                stack_status = conn.orchestration.find_stack("overcloud")
+            except exceptions.SDKException:
+                self.logger.error("Heat endpoint failed to respond, waiting 10 seconds")
+                time.sleep(10)
+                continue
+            if stack_status is None:
+                continue
+            results['result'] = str(stack_status.status)
+            results['result_reason'] = str(stack_status.status_reason)
 
-            results['result'] = str(conn.orchestration.find_stack("overcloud").status)
-            results['result_reason'] = str(conn.orchestration.find_stack("overcloud").status_reason)
             results['total_nodes'] = len(list(map(lambda node: node.id, conn.bare_metal.nodes())))
             if "COMPLETE" in results['result']:
                 self.update_pass_tests()
@@ -589,8 +608,8 @@ class Yoda(WorkloadBase.WorkloadBase):
         self.logger.debug("Time Stamp (Prefix): {}".format(dir_ts))
 
         stackrc = self.config.get('yoda')['stackrc']
-        venv = self.config.get('yoda')['venv']
-        env_setup = "source {}; source {};".format(stackrc,venv)
+        # venv = self.config.get('yoda')['venv']
+        env_setup = "source {};".format(stackrc)
 
         auth_vars = self.tools.load_stackrc(stackrc)
         if 'OS_AUTH_URL' not in auth_vars:
@@ -619,7 +638,6 @@ class Yoda(WorkloadBase.WorkloadBase):
                         benchmark['instackenv'] = instackenv
                     for rerun in range(self.config['browbeat']['rerun']):
                         for run in range(times):
-                            self.update_tests()
                             if benchmark['type'] == "overcloud":
                                 self.overcloud_workload(benchmark,
                                                         run,

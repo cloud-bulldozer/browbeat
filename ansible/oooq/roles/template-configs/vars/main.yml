@@ -5,5 +5,5 @@ grafana_enabled: false
 grafana_host: "1.2.3.4.5"
 browbeat_config_file: "browbeat-basic.yaml.j2"
 browbeat_cloud_name: "browbeat_ci"
-overcloud_size: "{{ groups['overcloud'] | length }}"
+overcloud_size: "{{num_nodes.stdout|int}}"
 ntp_server: "pool.ntp.org"

@@ -1,0 +1,88 @@
+---
+- include: baremetal-prep-virthost.yml
+
+- name: Validate IPMI and instackenv.json
+  hosts: undercloud
+  gather_facts: yes
+  roles:
+    - validate-ipmi
+
+- name:  Deploy the undercloud
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - undercloud-deploy
+
+- name:  copy over config files
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - overcloud-prep-config
+
+- name:  Perpare the baremetal overcloud
+  hosts: undercloud
+  gather_facts: yes
+  roles:
+    - baremetal-prep-overcloud
+
+- name:  Prepare overcloud containers
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: overcloud-prep-containers, when: containerized_overcloud|bool }
+
+- name:  Prepare the overcloud images for deployment
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - overcloud-prep-images
+
+- name:  Prepare overcloud flavors
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - overcloud-prep-flavors
+
+- name:  Prepare the undercloud networks for the overcloud deployment
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - overcloud-prep-network
+
+- name: Prepare the SSL Configuration for the overcloud deployment
+  hosts: undercloud
+  gather_facts: no
+  roles:
+    - { role: overcloud-ssl, when: ssl_overcloud|bool }
+
+- name: Configure Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/pre-install-setup
+    - browbeat/oooq-metadata
+
+- name: Setup Undercloud CollectD
+  hosts: undercloud
+  vars:
+    config_type: "{{group_names[0]}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack
+
+- name: Install Browbeat
+  hosts: undercloud
+  vars:
+    results_in_httpd: false
+    statsd_host: "{{ graphite_host }}"
+  roles:
+    - browbeat/common
+    - browbeat/browbeat
+    - browbeat/yoda
+    - browbeat/template-configs
+    - browbeat/statsd-ironic
+
+- name: Run Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/browbeat-run

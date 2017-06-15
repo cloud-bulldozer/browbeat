@@ -10,6 +10,7 @@
   shell: docker ps | wc -l
   register: docker_ps
   delegate_to: overcloud-controller-0
+  when: "'overcloud' in group_names"
   ignore_errors: True
 
 - name: Set var for container deployment
@@ -23,6 +24,10 @@
     containers: False
   when: docker_ps.stdout|int < 2
   ignore_errors: True
+
+- name: Count nodes in Instackenv.json
+  shell: "grep pm_addr {{instackenv}} | wc -l"
+  register: num_nodes
 
 - name: Make sure the results directory exists
   file: "path={{ ansible_env.HOME }}/browbeat/metadata state=directory"
