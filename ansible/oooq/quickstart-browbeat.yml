@@ -32,3 +32,4 @@
     - browbeat/collectd
     - browbeat/bug-check
     - browbeat/browbeat-run
+    - browbeat/browbeat-classify
