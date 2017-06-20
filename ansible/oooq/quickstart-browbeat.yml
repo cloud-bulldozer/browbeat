@@ -31,5 +31,4 @@
   roles:
     - browbeat/collectd
     - browbeat/bug-check
-    - browbeat/grafana-dashboard-setup
     - browbeat/browbeat-run

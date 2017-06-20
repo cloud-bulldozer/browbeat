@@ -3,8 +3,8 @@ browbeat:
   rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
 elasticsearch:
-  enabled: {{ elastic_enabled_template }}
-  host: {{ elastic_host_template }}
+  enabled: {{ elastic_enabled }}
+  host: {{ elastic_host }}
   port: 9200
   regather: true
   metadata_files:
@@ -27,11 +27,11 @@ ansible:
   grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
   metadata: ansible/gather/site.yml
 connmon:
-  enabled: {{ connmon_enabled_template }}
+  enabled: {{ connmon_enabled }}
   sudo: true
 grafana:
-  enabled: {{ grafana_enabled_template }}
-  grafana_ip: {{ grafana_host_template }}
+  enabled: {{ grafana_enabled }}
+  grafana_ip: {{ grafana_host }}
   grafana_port: 3000
   dashboards:
     - openstack-general-system-performance

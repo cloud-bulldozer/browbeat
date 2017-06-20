@@ -1,8 +1,8 @@
-elastic_enabled_template: false
-elastic_host_template: "1.2.3.4.5"
-connmon_enabled_template: false
-grafana_enabled_template: false
-grafana_host_template: "1.2.3.4.5"
+elastic_enabled: false
+elastic_host: "1.2.3.4.5"
+connmon_enabled: false
+grafana_enabled: false
+grafana_host: "1.2.3.4.5"
 browbeat_config_file: "browbeat-basic.yaml.j2"
 browbeat_cloud_name: "browbeat_ci"
 overcloud_size: "{{ groups['overcloud'] | length }}"

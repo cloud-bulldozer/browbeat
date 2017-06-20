@@ -60,5 +60,4 @@
 - name: Run Browbeat
   hosts: undercloud
   roles:
-    - browbeat/grafana-dashboard-setup
     - browbeat/browbeat-run
