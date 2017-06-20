@@ -30,6 +30,7 @@ except ImportError:
     ostag = None
 from collections import deque
 
+
 class Yoda(WorkloadBase.WorkloadBase):
 
     def __init__(self, config):

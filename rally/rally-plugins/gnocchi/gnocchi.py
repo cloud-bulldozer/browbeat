@@ -268,6 +268,7 @@ class BrowbeatGnocchi(scenario.OpenStackScenario):
     def _status_get(self, gnocchi_client, detailed=False):
         return gnocchi_client.status.get(detailed)
 
+
 @context.configure(name="browbeat_gnocchi_metric_list", order=350)
 class BrowbeatGnocchiMetricList(context.Context):
     """Grabs list of metric ids from Gnocchi for use with getting aggregates/measures."""
