@@ -43,11 +43,9 @@ LoadPlugin memory
 LoadPlugin mysql
 LoadPlugin numa
 LoadPlugin processes
-{%if gnocchi_status_controller_collectd_plugin or iostat_controller_collectd_plugin or rabbitmq_controller_collectd_plugin %}
 <LoadPlugin python>
   Globals true
 </LoadPlugin>
-{% endif %}
 LoadPlugin swap
 LoadPlugin tail
 LoadPlugin turbostat
@@ -113,6 +111,31 @@ PreCacheChain "PreCache"
   </Daemon>
 </Plugin>
 
+{% endif %}
+{% endif %}
+{% if ceph_controller_collectd_radosbench_plugin or ceph_controller_collectd_mon_plugin or ceph_controller_collectd_osd_plugin or ceph_controller_collectd_pg_plugin or ceph_controller_collectd_pool_plugin %}
+{% if inventory_hostname == groups['controller'][0] %}
+
+<Plugin python>
+  LogTraces true
+  Interactive false
+  ModulePath "/usr/local/bin/"
+  Import "collectd_ceph_storage"
+  <Module collectd_ceph_storage>
+    CephCluster "ceph"
+
+    CephRadosBench {{ceph_controller_collectd_radosbench_plugin}}
+    CephRadosBenchInterval {{ceph_controller_collectd_radosbench_interval}}
+    CephMONStats {{ceph_controller_collectd_mon_plugin}}
+    CephMONStatsInterval {{ceph_controller_collectd_mon_interval}}
+    CephOSDStats {{ceph_controller_collectd_osd_plugin}}
+    CephOSDStatsInterval {{ceph_controller_collectd_osd_interval}}
+    CephPGStats {{ceph_controller_collectd_pg_plugin}}
+    CephPGStatsInterval {{ceph_controller_collectd_pg_interval}}
+    CephPoolStats {{ceph_controller_collectd_pool_plugin}}
+    CephPoolStatsInterval {{ceph_controller_collectd_pool_interval}}
+  </Module>
+</Plugin>
 {% endif %}
 {% endif %}
 {% if keystone_overcloud_collectd_plugin %}

@@ -141,6 +141,18 @@ apache_controller_collectd_request_time: false
 # Ceph plugin
 ########################
 # Overcloud Controller
+# Python plugin is prefered (At the Current Moment)
+ceph_controller_collectd_radosbench_plugin: false
+ceph_controller_collectd_radosbench_interval: 30
+ceph_controller_collectd_mon_plugin: false
+ceph_controller_collectd_mon_interval: 10
+ceph_controller_collectd_osd_plugin: false
+ceph_controller_collectd_osd_interval: 10
+ceph_controller_collectd_pg_plugin: false
+ceph_controller_collectd_pg_interval: 10
+ceph_controller_collectd_pool_plugin: false
+ceph_controller_collectd_pool_interval: 10
+# Collectd provided Ceph plugins
 ceph_controller_collectd_plugin: false
 ceph_storage_collectd_plugin: false
 
