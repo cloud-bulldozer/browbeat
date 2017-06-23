@@ -1,18 +1,6 @@
 #!/bin/bash
 set -eu
 
-
-pushd $WORKSPACE
- pushd $WORKSPACE/tripleo-quickstart-extras
-  git fetch git://git.openstack.org/openstack/tripleo-quickstart-extras refs/changes/46/437946/4 && git checkout FETCH_HEAD
-  set +eu
-   source $WORKSPACE/bin/activate
-   pip uninstall -y tripleo-quickstart-extras
-   pip uninstall -y tripleo-internal-environments
-  set -eu
- popd
-popd
-
 pushd $WORKSPACE/tripleo-quickstart
  sed -i.bak '/extras/d' $WORKSPACE/tripleo-quickstart/quickstart-extras-requirements.txt
  echo "file://$WORKSPACE/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras" >> $WORKSPACE/tripleo-quickstart/quickstart-extras-requirements.txt
