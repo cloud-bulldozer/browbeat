@@ -8,8 +8,6 @@
     name: httpd
     state: present
   become: true
-  notify:
-    - start httpd
 
 - name: Remove welcome.conf if it exists
   file:
@@ -62,3 +60,10 @@
   shell: "/usr/sbin/semanage port -a -t http_port_t -p tcp {{browbeat_results_port}}"
   become: true
   when: "(ansible_selinux['status'] == 'enabled') and (seport_modified.rc != 0)"
+
+- name: Start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+  become: true
