@@ -1,24 +1,18 @@
 ---
 
-- name: Echo variable to browbeatrun_log.log
-  shell: "echo {{browbeatrun_log}} > /tmp/browbeatrun_log.log"
-
 - name: Copy bash file
   copy:
     src: uuid_extract.sh
     dest: /tmp
 
 - name: Parse uuid from variable
-  shell: sh /tmp/uuid_extract.sh
+  shell: "sh /tmp/uuid_extract.sh {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"
   register: browbeat_uuid
 
 - name: Clone and Install Browbeat-ML dependencies
   pip:
     name: "git+https://github.com/aakarshg/Browbeat-ML#egg=bml"
     virtualenv: "{{ ansible_env.HOME }}/browbeat-venv"
-
-- name: Print uuid
-  debug: msg="{{browbeat_uuid.stdout}}"
 
 - name: Run Browbeat-ML on uuid
   shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --summary-uuid {{browbeat_uuid.stdout}}"
