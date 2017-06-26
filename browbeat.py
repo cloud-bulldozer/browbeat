@@ -11,23 +11,24 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from lib.Elastic import browbeat_uuid
+import argparse
+import datetime
+import lib.Elastic
 import lib.PerfKit
 import lib.Rally
 import lib.Shaker
 import lib.Yoda
 import lib.WorkloadBase
 import lib.Tools
-import argparse
 import logging
+import os
 import sys
 import time
-import datetime
-import os
 
 _workload_opts = ['perfkit', 'rally', 'shaker', 'yoda']
 _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
+
 
 def main():
     tools = lib.Tools.Tools()
@@ -41,14 +42,21 @@ def main():
         help='Provide Browbeat YAML configuration file. Default is ./{}'.format(_config_file))
     parser.add_argument('workloads', nargs='*', help='Browbeat workload(s). Takes a space separated'
                         ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
-    parser.add_argument('--debug', action='store_true', help='Enable Debug messages')
-    parser.add_argument('-p','--postprocess',
-                        dest="path",help="Path to process, ie results/20170101/")
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable Debug messages')
+    parser.add_argument('-p', '--postprocess',
+                        dest="path", help="Path to process, ie results/20170101/")
+    parser.add_argument('-c', '--compare',
+                        help="Compare metadata", dest="compare",
+                        choices=['software-metadata'])
+    parser.add_argument('-u', '--uuid',
+                        help="UUIDs to pass", dest="uuids", nargs=2)
     _cli_args = parser.parse_args()
 
     _logger = logging.getLogger('browbeat')
     _logger.setLevel(logging.DEBUG)
-    _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)7s - %(message)s')
+    _formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)7s - %(message)s')
     _formatter.converter = time.gmtime
     _dbg_file = logging.FileHandler(debug_log_file)
     _dbg_file.setLevel(logging.DEBUG)
@@ -67,24 +75,35 @@ def main():
     # Load Browbeat yaml config file:
     _config = tools._load_config(_cli_args.setup)
 
+    if _cli_args.compare == "software-metadata":
+        es = lib.Elastic.Elastic(_config, "BrowbeatCLI")
+        es.compare_metadata("_all", 'controller', _cli_args.uuids)
+        exit(0)
+
+    if _cli_args.compare:
+        parser.print_help()
+        exit(1)
+
     # Default to all workloads
     if _cli_args.workloads == []:
         _cli_args.workloads.append('all')
-    if _cli_args.path :
+    if _cli_args.path:
         return tools.post_process(_cli_args)
 
     if len(_cli_args.workloads) == 1 and 'all' in _cli_args.workloads:
         _cli_args.workloads = _workload_opts
-    invalid_wkld = [wkld for wkld in _cli_args.workloads if wkld not in _workload_opts]
+    invalid_wkld = [
+        wkld for wkld in _cli_args.workloads if wkld not in _workload_opts]
     if invalid_wkld:
         _logger.error("Invalid workload(s) specified: {}".format(invalid_wkld))
         if 'all' in _cli_args.workloads:
-            _logger.error("If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
+            _logger.error(
+                "If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
         exit(1)
     else:
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         _logger.info("Browbeat test suite kicked off")
-        _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
+        _logger.info("Browbeat UUID: {}".format(lib.Elastic.browbeat_uuid))
         if _config['elasticsearch']['enabled']:
             _logger.info("Checking for Metadata")
             metadata_exists = tools.check_metadata()
@@ -93,11 +112,12 @@ def main():
                               " metadata files do not exist")
                 _logger.info("Gathering Metadata")
                 tools.gather_metadata()
-            elif _config['elasticsearch']['regather'] :
+            elif _config['elasticsearch']['regather']:
                 _logger.info("Regathering Metadata")
                 tools.gather_metadata()
 
-        _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
+        _logger.info("Running workload(s): {}".format(
+            ','.join(_cli_args.workloads)))
         for wkld_provider in _cli_args.workloads:
             if wkld_provider in _config:
                 if _config[wkld_provider]['enabled']:
@@ -106,11 +126,12 @@ def main():
                     _logger.warning("{} is not enabled in {}".format(wkld_provider,
                                                                      _cli_args.setup))
             else:
-                _logger.error("{} is missing in {}".format(wkld_provider, _cli_args.setup))
+                _logger.error("{} is missing in {}".format(
+                    wkld_provider, _cli_args.setup))
         result_dir = _config['browbeat']['results']
         lib.WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
         _logger.info("Saved browbeat result summary to {}".format(
-            os.path.join(result_dir,time_stamp + '.' + 'report')))
+            os.path.join(result_dir, time_stamp + '.' + 'report')))
         lib.WorkloadBase.WorkloadBase.print_summary()
 
         browbeat_rc = 0
@@ -120,15 +141,17 @@ def main():
             browbeat_rc = 2
 
         if browbeat_rc == 1:
-           _logger.info("Browbeat finished with test failures, UUID: {}".format(browbeat_uuid))
-           sys.exit(browbeat_rc)
+            _logger.info("Browbeat finished with test failures, UUID: {}".format(
+                lib.Elastic.browbeat_uuid))
+            sys.exit(browbeat_rc)
         elif browbeat_rc == 2:
-           _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
-                        .format(browbeat_uuid))
-           sys.exit(browbeat_rc)
+            _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
+                         .format(lib.Elastic.browbeat_uuid))
+            sys.exit(browbeat_rc)
         else:
-           _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat_uuid))
-           sys.exit(0)
+            _logger.info("Browbeat finished successfully, UUID: {}".format(
+                lib.Elastic.browbeat_uuid))
+            sys.exit(0)
 
 if __name__ == '__main__':
     sys.exit(main())

@@ -38,7 +38,7 @@ Run performance stress tests through Browbeat
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
 
 Running PerfKitBenchmarker
-==========================
+---------------------------
 
 Work is on-going to utilize PerfKitBenchmarker as a workload provider to
 Browbeat. Many benchmarks work out of the box with Browbeat. You must
@@ -69,7 +69,8 @@ browbeat-config.yaml:
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py  perfkit -s browbeat-config.yaml
 
 Running Shaker
-==============
+---------------
+
 Running Shaker requires the shaker image to be built, which in turn requires
 instances to be able to access the internet. The playbooks for this installation
 have been described in the installation documentation but for the sake of
@@ -215,7 +216,7 @@ I would suggest bulk introspection for testing documented TripleO workflows and
 individual introspection to test the performance of introspection itself.
 
 Interpreting Browbeat Results
-=============================
+------------------------------
 
 By default results for each test will be placed in a timestamped folder `results/` inside your Browbeat folder.
 Each run folder will contain output files from the various workloads and benchmarks that ran during that Browbeat
@@ -232,7 +233,7 @@ and Kibana to view them more easily.
 
 
 Working with Multiple Clouds
-============================
+-----------------------------
 
 If you are running playbooks from your local machine you can run against more
 than one cloud at the same time.  To do this, you should create a directory
@@ -249,3 +250,32 @@ per-cloud and clone Browbeat into that specific directory:
     [browbeat@laptop ansible]$ ssh -F ssh-config overcloud-controller-0  # Takes you to first controller
 
 Repeat the above steps for as many clouds as you have to run playbooks against your clouds.
+
+Compare software-metadata from two different runs
+--------------------------------------------------
+
+Browbeat's metadata is great to help build visuals in Kibana by querying on specific metadata fields, but sometimes
+we need to see what the difference between two builds might be. Kibana doesn't have a good way to show this, so we
+added an option to Browbeat CLI to query ElasticSearch.
+
+To use :
+
+::
+
+    $ python browbeat.py --compare software-metadata --uuid "browbeat-uuid-1" "browbeat-uuid-2"
+
+Real world use-case, we had two builds in our CI that used the exact same DLRN hash, however the later build had a
+10x performance hit for two Neutron operations, router-create and add-interface-to-router. Given we had exactly the
+same DLRN hash, the only difference could be how things were configured. Using this new code, we could quickly identify
+the difference -- TripleO enabled l3_ha.
+
+::
+
+    [rocketship:browbeat] jtaleric:browbeat$ python browbeat.py --compare software-metadata --uuid "3fc2f149-7091-4e16-855a-60738849af17" "6738eed7-c8dd-4747-abde-47c996975a57"
+    2017-05-25 02:34:47,230 - browbeat.Tools -    INFO - Validating the configuration file passed by the user
+    2017-05-25 02:34:47,311 - browbeat.Tools -    INFO - Validation successful
+    2017-05-25 02:34:47,311 - browbeat.Elastic -    INFO - Querying Elastic : index [_all] : role [controller] : uuid [3fc2f149-7091-4e16-855a-60738849af17]
+    2017-05-25 02:34:55,684 - browbeat.Elastic -    INFO - Querying Elastic : index [_all] : role [controller] : uuid [6738eed7-c8dd-4747-abde-47c996975a57]
+    2017-05-25 02:35:01,165 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-2] Service [neutron] l3_ha [False]
+    2017-05-25 02:35:01,168 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-1] Service [neutron] l3_ha [False]
+    2017-05-25 02:35:01,172 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-0] Service [neutron] l3_ha [False]
