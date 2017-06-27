@@ -93,7 +93,7 @@ class Tools(object):
             self.logger.error(
                 "Configuration file {} passed is missing".format(path))
             exit(1)
-        config = yaml.load(stream)
+        config = yaml.safe_load(stream)
         stream.close()
         self.config = config
         if validate:
@@ -104,7 +104,7 @@ class Tools(object):
         self.logger.info(
             "Validating the configuration file passed by the user")
         stream = open("lib/validate.yaml", 'r')
-        schema = yaml.load(stream)
+        schema = yaml.safe_load(stream)
         check = pykwalify_core.Core(
             source_data=self.config, schema_data=schema)
         try:
