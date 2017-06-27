@@ -20,7 +20,9 @@
 # installed at this point in time.
 #
 - name: Install collectd rpms
-  yum: name={{ item }} state=present
+  yum:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - collectd
@@ -159,7 +161,19 @@
   become: true
   when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
 
-- name: Copy python plugins
+- name: (All Nodes) Copy python plugins
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  with_items:
+    - src: collectd_iostat_python.py
+      dest: /usr/local/bin/collectd_iostat_python.py
+
+- name: (Undercloud/Controller-0) Copy python plugins
   copy:
     src: "{{item.src}}"
     dest: "{{item.dest}}"
@@ -172,8 +186,9 @@
       dest: /usr/local/bin/collectd_gnocchi_status.py
     - src: collectd_rabbitmq_monitoring.py
       dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
-    - src: collectd_iostat_python.py
-      dest: /usr/local/bin/collectd_iostat_python.py
+    - src: collectd_ceph_storage.py
+      dest: /usr/local/bin/collectd_ceph_storage.py
+  when: "('controller' in group_names and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names)"
 
 # Rabbitmq monitoring
 - name: Install pyrabbit
