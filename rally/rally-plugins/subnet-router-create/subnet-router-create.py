@@ -15,6 +15,7 @@ from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import types
 from rally.task import validation
 
+
 class BrowbeatPlugin(neutron_utils.NeutronScenario,
                      scenario.Scenario):
 

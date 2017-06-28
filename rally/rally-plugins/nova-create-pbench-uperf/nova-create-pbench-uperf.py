@@ -26,6 +26,7 @@ from Elastic import Elastic
 
 LOG = logging.getLogger(__name__)
 
+
 class BrowbeatPlugin(neutron_utils.NeutronScenario,
                      vm_utils.VMScenario,
                      scenario.Scenario):

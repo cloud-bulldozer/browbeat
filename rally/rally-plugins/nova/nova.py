@@ -16,6 +16,7 @@ from rally.plugins.openstack.scenarios.nova import utils as nova_utils
 from rally.task import types
 from rally.task import validation
 
+
 @types.convert(image={"type": "glance_image"},
                flavor={"type": "nova_flavor"})
 @validation.image_valid_on_flavor("flavor", "image")
