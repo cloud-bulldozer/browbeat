@@ -6,6 +6,13 @@
   register: build
   ignore_errors: true
 
+- name: Determine if deployment is containerized
+  stat:
+    path: /usr/lib/systemd/system/docker.service
+  register: docker_service_file
+  delegate_to: overcloud-controller-0
+  become: True
+
 - name: Make sure the results directory exists
   file: "path={{ ansible_env.HOME }}/browbeat/metadata state=directory"
 

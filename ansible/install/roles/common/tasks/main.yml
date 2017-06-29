@@ -6,6 +6,7 @@
   command: ping google.com -c 1 -q
   register: ping
   ignore_errors: true
+  become: true
   tags:
     # Skip ANSIBLE0012 Commands should not change things if nothing needs doing
     # Need to check external activity every time
