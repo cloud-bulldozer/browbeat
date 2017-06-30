@@ -3,6 +3,7 @@
   remote_user: "{{ host_remote_user }}"
   become: true
   roles:
+    - common
     - compute
 
 - hosts: controller
