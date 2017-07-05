@@ -97,7 +97,7 @@ class Elastic(object):
 
     def flush_cache(self):
         if len(self.cache) == 0:
-           return True
+            return True
         retry = 2
         for i in range(retry):
             try:
@@ -106,8 +106,8 @@ class Elastic(object):
                 counter = 0
                 num_items = len(self.cache)
                 for item in to_upload:
-                   self.logger.debug("{} of {} Elastic objects uploaded".format(num_items,
-                                                                                counter))
+                    self.logger.debug("{} of {} Elastic objects uploaded".format(num_items,
+                                                                                 counter))
                 output = "Pushed {} items to Elasticsearch to index {}".format(num_items,
                                                                                self.index)
                 output += " and browbeat UUID {}".format(str(browbeat_uuid))
@@ -121,7 +121,7 @@ class Elastic(object):
                     " in 10 seconds")
                 self.logger.error("Exception: {}".format(Err))
                 time.sleep(10)
-                if i == (retry-1):
+                if i == (retry - 1):
                     self.logger.error("Pushing Data to Elasticsearch failed in spite of retry,"
                                       " dumping JSON for {} cached items".format(len(self.cache)))
                     for item in self.cache:
@@ -159,6 +159,16 @@ class Elastic(object):
             self.logger.error("UUID {} wasn't found".format(browbeat_uuid))
             return False
 
+    def get_version_metadata(self, index, browbeat_uuid):
+        version = {}
+        results = self.query_uuid(index, browbeat_uuid)
+        if results:
+            for result in results:
+                version = result['_source']['version']
+            return version
+        else:
+            self.logger.error("UUID {} wasn't found".format(browbeat_uuid))
+
     """
     Currently this function will only compare two uuids. I (rook) am not convinced it is worth
     the effort to engineer anything > 2.
@@ -170,11 +180,21 @@ class Elastic(object):
             self.logger.info(
                 "Querying Elastic : index [{}] : role [{}] : browbeat_uuid [{}] ".format(
                     index, role, browbeat_uuid))
-            software_metadata = self.get_software_metadata(index, role, browbeat_uuid)
+            software_metadata = self.get_software_metadata(
+                index, role, browbeat_uuid)
             if software_metadata:
                 meta.append(software_metadata)
             else:
                 return False
+
+            version_metadata = self.get_version_metadata(index, browbeat_uuid)
+            if version_metadata:
+                self.logger.info(
+                    "\nUUID: {}\nVersion: {}\nBuild: {}".format(
+                        browbeat_uuid,
+                        version_metadata['osp_series'],
+                        version_metadata['build']))
+
         ignore = [
             "connection",
             "admin_url",
@@ -224,9 +244,10 @@ class Elastic(object):
                 for options in meta[0][host][service].keys():
                     if options not in meta[1][host][service]:
                         self.logger.error(
-                            "Missing Option : "
+                            "UUID {} "
+                            "- Missing Option : "
                             "Host [{}] Service [{}] {}".format(
-                                host, service, options))
+                                uuids[1], host, service, options))
                         continue
                     if isinstance(meta[0][host][service][options], dict):
                         for key in meta[0][host][service][options].keys():
@@ -239,17 +260,21 @@ class Elastic(object):
                                     if value != new_value:
                                         self.logger.info(
                                             "Difference found : "
-                                            "Host [{}] Service [{}] Section {} {} [{}]".format(
+                                            "Host [{}] Service [{}] Section {} {} [{}]\n"
+                                            "New Value: {}\nOld Value: {}".format(
                                                 host,
                                                 service,
                                                 options,
                                                 key,
-                                                meta[0][host][service][options][key]))
+                                                meta[0][host][service][
+                                                    options][key],
+                                                value,
+                                                new_value))
                                 else:
-                                    self.logger.info(
-                                        "Missing Value : "
+                                    self.logger.error(
+                                        "UUID {} - Missing Value : "
                                         "Host [{}] Service [{}] {} [{}]".format(
-                                            host, service, options, key))
+                                            uuids[1], host, service, options, key))
 
     def query_uuid(self, index, browbeat_uuid):
         body = {'query': {"match": {"browbeat_uuid": {
