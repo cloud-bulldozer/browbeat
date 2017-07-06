@@ -5,10 +5,13 @@
     {% set series = {"rhos-7": "7", "rhos-8": "8", "rhos-9": "9", "rhos-10": "10", "rhos-11": "11", "rhos-12": "12", "rhos-13": "13", "master": "master"}[osp_release] | default("Unknown Version") -%}
     {% set version = {"rhos-7": "7-director", "rhos-8": "8-director", "rhos-9": "9-director", "rhos-10":"10-director", "rhos-11": "11-director", "rhos-12": "12-director", "rhos-13": "13-director", "master": "master-director"}[osp_release] | default("Unknown Version") -%}
 {% endif %}
+{% if containers is not defined %}
+{% set containers = False %}
+{% endif %}
 {
     "osp_series": "{{series}}",
     "osp_version": "{{version}}",
-    "containerized:": "{{docker_service_file.stat.exists}}",
+    "containerized:": "{{containers}}",
     "dlrn_hash": "{{dlrn_hash}}",
     "logs_link": "{{logs_link}}",
     "rhos_puddle": "{{rhos_puddle}}",

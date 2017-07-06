@@ -6,12 +6,23 @@
   register: build
   ignore_errors: true
 
-- name: Determine if deployment is containerized
-  stat:
-    path: /usr/lib/systemd/system/docker.service
-  register: docker_service_file
+- name: Determine if docker is running
+  shell: docker ps | wc -l
+  register: docker_ps
   delegate_to: overcloud-controller-0
-  become: True
+  ignore_errors: True
+
+- name: Set var for container deployment
+  set_fact:
+    containers: True
+  when: docker_ps.stdout|int > 1
+  ignore_errors: True
+
+- name: Set fact for non-container deployment
+  set_fact:
+    containers: False
+  when: docker_ps.stdout|int < 2
+  ignore_errors: True
 
 - name: Make sure the results directory exists
   file: "path={{ ansible_env.HOME }}/browbeat/metadata state=directory"
