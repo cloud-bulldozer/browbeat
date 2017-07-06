@@ -61,7 +61,7 @@ def main():
     _dbg_file = logging.FileHandler(debug_log_file)
     _dbg_file.setLevel(logging.DEBUG)
     _dbg_file.setFormatter(_formatter)
-    _ch = logging.StreamHandler()
+    _ch = logging.StreamHandler(stream=sys.stdout)
     if _cli_args.debug:
         _ch.setLevel(logging.DEBUG)
     else:
