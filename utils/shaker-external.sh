@@ -2,9 +2,9 @@
 # Run as root to setup a shaker-server to run external network tests with
 yum install -y epel-release
 yum install -y wget iperf iperf3 gcc gcc-c++ python-devel screen zeromq zeromq-devel
-wget ftp://ftp.netperf.org/netperf/netperf-2.7.0.tar.gz
+wget https://github.com/HewlettPackard/netperf/archive/netperf-2.7.0.tar.gz
 tar xvzf netperf-2.7.0.tar.gz
-pushd netperf-2.7.0
+pushd netperf-netperf-2.7.0
 ./configure --enable-demo=yes
 make
 make install
