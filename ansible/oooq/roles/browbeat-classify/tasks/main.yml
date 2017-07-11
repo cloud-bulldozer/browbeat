@@ -6,7 +6,7 @@
     dest: /tmp
 
 - name: Parse uuid from variable
-  shell: "sh /tmp/uuid_extract.sh {{ ansible_env.HOME }}/browbeat/results/browbeat_run.log"
+  shell: "sh /tmp/uuid_extract.sh {{ ansible_env.HOME }}/browbeat/log/debug.log"
   register: browbeat_uuid
 
 - name: Clone and Install Browbeat-ML dependencies
