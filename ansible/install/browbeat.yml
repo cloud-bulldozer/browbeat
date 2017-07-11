@@ -3,12 +3,6 @@
 # Playbook to install Browbeat (Rally + Shaker + PerfKitBenchmarker) on undercloud
 #
 
-- hosts: controller
-  remote_user: "{{ host_remote_user }}"
-  roles:
-    - no-sshd-dns
-    - shaker-check
-
 - hosts: browbeat
   remote_user: "{{ browbeat_user }}"
   roles:
@@ -23,7 +17,7 @@
     - images
   environment: "{{proxy_env}}"
 
-- hosts: compute
+- hosts: controller, compute
   remote_user: "{{ host_remote_user }}"
   roles:
     - no-sshd-dns

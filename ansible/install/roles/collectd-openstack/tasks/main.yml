@@ -145,7 +145,7 @@
 - name: (Controller) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
   shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
   become: true
-  when: "('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
+  when: "(ansible_selinux['status'] == 'enabled') and ('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
 
 - name: Restart Apache
   service:
@@ -260,11 +260,12 @@
   register: collectd_permissive
   ignore_errors: true
   changed_when: false
+  when: "ansible_selinux['status'] == 'enabled'"
 
 - name: Set permissive for collectd
   command: /sbin/semanage permissive -a collectd_t
   become: true
-  when: collectd_permissive.rc != 0
+  when: "ansible_selinux['status'] == 'enabled' and collectd_permissive.rc != 0"
 
 #
 # Additional policy bits may be needed for exec
@@ -277,6 +278,7 @@
     group: root
     mode: 0644
   become: true
+  when: "ansible_selinux['status'] == 'enabled'"
 
 - name: Check for collectd custom
   shell: /sbin/semodule -l | grep -q custom-collectd
@@ -284,11 +286,12 @@
   register: collectd_custom
   ignore_errors: true
   changed_when: false
+  when: "ansible_selinux['status'] == 'enabled'"
 
 - name: Set custom policy for collectd
   command: /sbin/semodule -i /root/custom-collectd.pp
   become: true
-  when: collectd_custom.rc != 0
+  when: "ansible_selinux['status'] == 'enabled' and collectd_custom.rc != 0"
 
 #
 # Start collectd service
