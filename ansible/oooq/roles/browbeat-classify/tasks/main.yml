@@ -15,7 +15,7 @@
     virtualenv: "{{ ansible_env.HOME }}/browbeat-venv"
 
 - name: Run Browbeat-ML on uuid
-  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --summary-uuid {{browbeat_uuid.stdout}}"
+  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --summary-uuid {{browbeat_uuid.stdout}} --u True "
   register: browbeatml_summary
 
 - debug: msg="{{ browbeatml_summary.stdout_lines }}"
