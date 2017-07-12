@@ -115,7 +115,7 @@ rally:
       scenarios:
         - name: create-and-delete-image
           enabled: true
-          image_location: /home/stack/cirros
+          image_location: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz
           flavor_name: m1.tiny
           file: rally/glance/create-and-delete-image-cc.yml
     - name: plugins
