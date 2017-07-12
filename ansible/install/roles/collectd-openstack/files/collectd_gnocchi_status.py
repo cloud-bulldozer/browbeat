@@ -29,37 +29,43 @@ def configure(configobj):
     collectd.info('gnocchi_status: Interval: {}'.format(INTERVAL))
     collectd.register_read(read, INTERVAL)
 
+
 def read(data=None):
     starttime = time.time()
 
     gnocchi = client.Client(session=keystone_session)
-    status = gnocchi.status.get()
+    try:
+        status = gnocchi.status.get()
+        metric = collectd.Values()
+        metric.plugin = 'gnocchi_status'
+        metric.interval = INTERVAL
+        metric.type = 'gauge'
+        metric.type_instance = 'measures'
+        metric.values = [status['storage']['summary']['measures']]
+        metric.dispatch()
 
-    metric = collectd.Values()
-    metric.plugin = 'gnocchi_status'
-    metric.interval = INTERVAL
-    metric.type = 'gauge'
-    metric.type_instance = 'measures'
-    metric.values = [status['storage']['summary']['measures']]
-    metric.dispatch()
-
-    metric = collectd.Values()
-    metric.plugin = 'gnocchi_status'
-    metric.interval = INTERVAL
-    metric.type = 'gauge'
-    metric.type_instance = 'metrics'
-    metric.values = [status['storage']['summary']['metrics']]
-    metric.dispatch()
+        metric = collectd.Values()
+        metric.plugin = 'gnocchi_status'
+        metric.interval = INTERVAL
+        metric.type = 'gauge'
+        metric.type_instance = 'metrics'
+        metric.values = [status['storage']['summary']['metrics']]
+        metric.dispatch()
+    except Exception as err:
+        collectd.error(
+            'gnocchi_status: Exception getting status: {}'
+            .format(err))
 
     timediff = time.time() - starttime
     if timediff > INTERVAL:
-        collectd.warning('gnocchi_status: Took: {} > {}'.format(round(timediff, 2),
-            INTERVAL))
+        collectd.warning(
+            'gnocchi_status: Took: {} > {}'
+            .format(round(timediff, 2), INTERVAL))
+
 
 def create_keystone_session():
-    auth = v2.Password(username=os_username,
-        password=os_password,
-        tenant_name=os_tenant,
+    auth = v2.Password(
+        username=os_username, password=os_password, tenant_name=os_tenant,
         auth_url=os_auth_url)
     return session.Session(auth=auth)
 
@@ -67,10 +73,11 @@ os_username = os.environ.get('OS_USERNAME')
 os_password = os.environ.get('OS_PASSWORD')
 os_tenant = os.environ.get('OS_TENANT_NAME')
 if os_tenant is None:
-  os_tenant = os.environ.get('OS_PROJECT_NAME')
+    os_tenant = os.environ.get('OS_PROJECT_NAME')
 os_auth_url = os.environ.get('OS_AUTH_URL')
 
-collectd.info('gnocchi_status: Connecting with user={}, password={}, tenant/project={}, '
+collectd.info(
+    'gnocchi_status: Connecting with user={}, password={}, tenant={}, '
     'auth_url={}'.format(os_username, os_password, os_tenant, os_auth_url))
 
 keystone_session = create_keystone_session()
