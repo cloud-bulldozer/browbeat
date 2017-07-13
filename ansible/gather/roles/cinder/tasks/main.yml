@@ -9,7 +9,7 @@
 
 - name: Parse Cinder config
   become: true
-  shell: python /tmp/openstack-config-parser.py cinder /etc/cinder/cinder.conf /tmp/out.yml
+  shell: python /tmp/openstack-config-parser.py cinder /tmp/out.yml
   when: cinder_config.stat.exists
 
 - name: Fetch output

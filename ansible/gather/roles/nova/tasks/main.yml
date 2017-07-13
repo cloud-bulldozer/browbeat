@@ -10,7 +10,7 @@
 
 - name: Parse Nova config
   become: true
-  shell: python /tmp/openstack-config-parser.py nova /etc/nova/nova.conf /tmp/out.yml
+  shell: python /tmp/openstack-config-parser.py nova /tmp/out.yml
   when: nova_config.stat.exists
 
 - name: Fetch output

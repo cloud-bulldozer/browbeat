@@ -10,7 +10,7 @@
 
 - name: Parse Heat config
   become: true
-  shell: python /tmp/openstack-config-parser.py heat /etc/heat/heat.conf /tmp/out.yml
+  shell: python /tmp/openstack-config-parser.py heat /tmp/out.yml
   when: heat_config.stat.exists
 
 - name: Fetch output

@@ -10,7 +10,7 @@
 
 - name: Parse Neutron config
   become: true
-  shell: python /tmp/openstack-config-parser.py neutron /etc/neutron/neutron.conf /tmp/out.yml
+  shell: python /tmp/openstack-config-parser.py neutron /tmp/out.yml
   when: neutron_config.stat.exists
 
 - name: Fetch output
@@ -21,12 +21,3 @@
   include_vars: /tmp/out.yml
   when: neutron_config.stat.exists
 
-- name: Parse Neutron plugin.ini
-  become: true
-  shell: python /tmp/openstack-config-parser.py neutron-plugin /etc/neutron/plugin.ini /tmp/out.yml
-
-- name: Fetch output
-  fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
-
-- name: Load configuration variables
-  include_vars: /tmp/out.yml

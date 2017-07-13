@@ -9,7 +9,7 @@
 
 - name: Parse Ceilometer config
   become: true
-  shell: python /tmp/openstack-config-parser.py ceilometer /etc/ceilometer/ceilometer.conf /tmp/out.yml
+  shell: python /tmp/openstack-config-parser.py ceilometer /tmp/out.yml
   when: ceilometer_config.stat.exists
 
 - name: Fetch output

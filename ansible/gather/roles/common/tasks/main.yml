@@ -1,3 +1,18 @@
 ---
 - name: Copy config parser script to remote
   copy: src=openstack-config-parser.py dest=/tmp/openstack-config-parser.py
+
+- name: Determine if docker is running
+  shell: docker ps | wc -l
+  register: docker_ps
+
+- name: Set var for container deployment
+  set_fact:
+    containers: True
+    config_path: /var/lib/config-data/
+  when: docker_ps.stdout|int > 1
+
+- name: Set fact for non-container deployment
+  set_fact:
+    config_path: /etc
+  when: docker_ps.stdout|int < 2
