@@ -1,0 +1,98 @@
+---
+#
+# Playbook to adjust Nova Scheduler settings to avoid over-scheduling hosts
+# with greater memory in uneven memory environments.
+#
+# Examples:
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350'
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350 ram_weight_multiplier=0'
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350 ram_weight_multiplier=0 enabled_filters="NumInstancesFilter,RetryFilter,RamFilter,ComputeFilter"'
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350 ram_weight_multiplier=0 enabled_filters="NumInstancesFilter,RetryFilter,RamFilter,ComputeFilter" host_subset_size=4'
+#
+# In order for new settings to take affect, you need to restart the Nova services
+# by adding variable restart_nova=true into the extra vars.
+#
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350 ram_weight_multiplier=0 enabled_filters="NumInstancesFilter,RetryFilter,RamFilter,ComputeFilter" host_subset_size=4 restart_nova=true'
+#
+# * Note not setting a variable does not change that configuration item then. Setting no variables
+#   and running the playbook sets all configuration items to defaults (Ocata)
+#
+# ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml
+#
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    restart_nova: false
+    # Create initial blank configuration list
+    nova_configuration: []
+    # Defaults
+    default_max_instances_per_host: 50
+    default_ram_weight_multiplier: 1.0
+    default_enabled_filters: "RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter"
+    default_host_subset_size: 1
+    # Each configuration item needs to be a list so it can be merged
+    max_instances_per_host_item: []
+    ram_weight_multiplier_item: []
+    enabled_filters_item: []
+    host_subset_size_item: []
+
+  pre_tasks:
+    - name: Set default max_instances_per_host, ram_weight_multiplier, enabled_filters, and host_subset_size
+      set_fact:
+        nova_configuration:
+          - section: filter_scheduler
+            option: max_instances_per_host
+            value: "{{default_max_instances_per_host}}"
+          - section: filter_scheduler
+            option: ram_weight_multiplier
+            value: "{{default_ram_weight_multiplier}}"
+          - section: filter_scheduler
+            option: enabled_filters
+            value: "{{default_enabled_filters}}"
+          - section: filter_scheduler
+            option: host_subset_size
+            value: "{{default_host_subset_size}}"
+      when: max_instances_per_host is undefined and ram_weight_multiplier is undefined and enabled_filters is undefined and host_subset_size is undefined
+
+    - name: Set max_instances_per_host configuration for Nova
+      set_fact:
+        max_instances_per_host_item:
+          - section: filter_scheduler
+            option: max_instances_per_host
+            value: "{{max_instances_per_host}}"
+      when: max_instances_per_host is defined
+
+    - name: Set ram_weight_multiplier configuration for Nova
+      set_fact:
+        ram_weight_multiplier_item:
+          - section: filter_scheduler
+            option: ram_weight_multiplier
+            value: "{{ram_weight_multiplier}}"
+      when: ram_weight_multiplier is defined
+
+    - name: Set enabled_filters configuration for Nova
+      set_fact:
+        enabled_filters_item:
+          - section: filter_scheduler
+            option: enabled_filters
+            value: "{{enabled_filters}}"
+      when: enabled_filters is defined
+
+    - name: Set host_subset_size configuration for Nova
+      set_fact:
+        host_subset_size_item:
+          - section: filter_scheduler
+            option: host_subset_size
+            value: "{{host_subset_size}}"
+      when: host_subset_size is defined
+
+    - name: Merge configuration items
+      set_fact:
+        nova_configuration: "{{nova_configuration + max_instances_per_host_item + ram_weight_multiplier_item + enabled_filters_item + host_subset_size_item }}"
+
+  roles:
+    - nova-config

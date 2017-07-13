@@ -1,0 +1,150 @@
+---
+#
+# Playbook to disable Telemetry Services
+#
+
+- hosts: controller, compute
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Ocata) Set Telemetry Controller Services
+      set_fact:
+        controller_services:
+        - openstack-aodh-evaluator.service
+        - openstack-aodh-listener.service
+        - openstack-aodh-notifier.service
+        - openstack-ceilometer-notification
+        - openstack-ceilometer-collector
+        - openstack-gnocchi-metricd.service
+        - openstack-gnocchi-statsd.service
+        - openstack-ceilometer-central.service
+      when: "'Ocata' in osp_version['content'] | b64decode"
+
+    - name: (Ocata) Set Compute Polling Daemon
+      set_fact:
+        compute_services:
+          - "openstack-ceilometer-compute.service"
+      when: "'Ocata' in osp_version['content'] | b64decode"
+
+    - name: (Pike) Set Telemetry Controller Services
+      set_fact:
+        controller_services:
+        - openstack-aodh-evaluator.service
+        - openstack-aodh-listener.service
+        - openstack-aodh-notifier.service
+        - openstack-ceilometer-notification
+        - openstack-gnocchi-metricd.service
+        - openstack-gnocchi-statsd.service
+        - openstack-ceilometer-polling.service
+      when: "'Pike' in osp_version['content'] | b64decode"
+
+    - name: (Pike) Set Compute Polling Daemon
+      set_fact:
+        compute_services:
+          - "openstack-ceilometer-polling.service"
+      when: "'Pike' in osp_version['content'] | b64decode"
+
+    - name: Copy HTTPD wsgi service config files in order to temporarily disable them
+      become: true
+      copy:
+        remote_src: true
+        src: "{{item.src}}"
+        dest: "{{item.dest}}"
+      with_items:
+        - src: /etc/httpd/conf.d/10-aodh_wsgi.conf
+          dest: /root/10-aodh_wsgi.conf
+        - src: /etc/httpd/conf.d/10-ceilometer_wsgi.conf
+          dest: /root/10-ceilometer_wsgi.conf
+        - src: /etc/httpd/conf.d/10-gnocchi_wsgi.conf
+          dest: /root/10-gnocchi_wsgi.conf
+        - src: /etc/httpd/conf.d/10-panko_wsgi.conf
+          dest: /root/10-panko_wsgi.conf
+      when: "'controller' in group_names"
+
+    - name: Delete HTTPD wsgi service config files in order to temporarily disable them
+      become: true
+      file:
+        path: "{{item}}"
+        state: absent
+      with_items:
+        - "/etc/httpd/conf.d/10-aodh_wsgi.conf"
+        - "/etc/httpd/conf.d/10-ceilometer_wsgi.conf"
+        - "/etc/httpd/conf.d/10-gnocchi_wsgi.conf"
+        - "/etc/httpd/conf.d/10-panko_wsgi.conf"
+      when: "'controller' in group_names"
+
+    - name: Stopping Telemetry Controller Services
+      become: true
+      command: "systemctl stop {{item}}"
+      with_items: "{{controller_services}}"
+      when: "'controller' in group_names"
+
+    - name: Stopping Telemetry Compute Services
+      become: true
+      command: "systemctl stop {{item}}"
+      with_items: "{{compute_services}}"
+      when: "'compute' in group_names"
+
+    - name: Setting Nova Notification Driver to noop
+      become: true
+      ini_file:
+        dest: "{{item.dest}}"
+        mode: 0640
+        group: "{{item.group}}"
+        section: oslo_messaging_notifications
+        option: driver
+        value: noop
+        backup: yes
+      with_items:
+        - dest: /etc/nova/nova.conf
+          group: nova
+
+    - name: Setting Notification Driver to noop
+      become: true
+      ini_file:
+        dest: "{{item.dest}}"
+        mode: 0640
+        group: "{{item.group}}"
+        section: oslo_messaging_notifications
+        option: driver
+        value: noop
+        backup: yes
+      with_items:
+        - dest: /etc/cinder/cinder.conf
+          group: cinder
+        - dest: /etc/glance/glance-api.conf
+          group: glance
+        - dest: /etc/heat/heat.conf
+          group: heat
+        - dest: /etc/keystone/keystone.conf
+          group: keystone
+        - dest: /etc/neutron/neutron.conf
+          group: neutron
+      when: "'controller' in group_names"
+
+    - name: Restart Controller Services to disable notifications
+      become: true
+      command: "systemctl restart {{item}}"
+      with_items:
+        - openstack-cinder-scheduler.service
+        - openstack-glance-api.service
+        - openstack-heat-engine.service
+        - neutron-server.service
+        - openstack-nova-api.service
+        - openstack-nova-conductor.service
+        - openstack-nova-scheduler.service
+        - httpd
+      when: "'controller' in group_names"
+
+    - name: Restart Nova Compute Service to disable notifications
+      become: true
+      command: "systemctl restart openstack-nova-compute.service"
+      when: "'compute' in group_names"

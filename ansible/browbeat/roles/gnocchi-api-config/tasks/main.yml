@@ -1,0 +1,23 @@
+---
+#
+# Tasks to reconfigure Gnocchi API wsgi service
+#
+
+- name: Get internal API address
+  become: true
+  shell: "grep {{inventory_hostname}}.internalapi.localdomain /etc/hosts | awk '{print $1}'"
+  register: internal_api_ip
+
+- name: Push new 10-gnocchi_wsgi.conf
+  become: true
+  template:
+    src: gnocchi_wsgi.conf.j2
+    dest: /etc/httpd/conf.d/10-gnocchi_wsgi.conf
+    mode: 0640
+    owner: root
+    group: root
+    backup: true
+
+- name: Restart Gnocchi API (httpd)
+  become: true
+  command: systemctl restart httpd

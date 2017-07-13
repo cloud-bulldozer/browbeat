@@ -1,0 +1,24 @@
+---
+#
+# Playbook to adjust Apache prefork settings
+#
+# Example:
+#
+# ansible-playbook -i hosts browbeat/adjustment-httpd.yml -e 'httpd_startservers=8 httpd_minspareservers=5 httpd_maxspareservers=20 httpd_serverlimit=256 httpd_maxclients=256 httpd_maxrequestsperchild=4000'
+#
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    # Defaults per Pike (OSP11)
+    httpd_startservers: 8
+    httpd_minspareservers: 5
+    httpd_maxspareservers: 20
+    httpd_serverlimit: 256
+    httpd_maxclients: 256
+    httpd_maxrequestsperchild: 4000
+  roles:
+    - apache-config

@@ -1,0 +1,20 @@
+---
+#
+# Playbook to adjust Gnocchi API wsgi settings
+#
+# Examples:
+# ansible-playbook -i hosts browbeat/adjustment-gnocchi-wsgi.yml -e "gnocchi_api_processes=24"
+# ansible-playbook -i hosts browbeat/adjustment-gnocchi-wsgi.yml -e "gnocchi_api_processes=24 gnocchi_api_threads=6"
+#
+#
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    gnocchi_api_processes: 12
+    gnocchi_api_threads: 1
+  roles:
+    - gnocchi-api-config

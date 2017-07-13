@@ -1,0 +1,28 @@
+---
+#
+# Playbook to install and enable atd
+#
+# This allows you to syncohize a script/command across multiple machines.
+# Example: Synconhized restarting of ceilometer polling across computes
+# and controllers.
+#
+
+- hosts: overcloud
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  roles:
+    - repo
+  tasks:
+    - name: Install at
+      yum:
+        name: at
+      become: true
+
+    - name: Start atd
+      service:
+        name: atd
+        enabled: true
+        state: restarted
+      become: true

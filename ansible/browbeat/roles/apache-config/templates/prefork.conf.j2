@@ -1,0 +1,17 @@
+# Deployed by Browbeat
+<IfModule mpm_prefork_module>
+  StartServers        {{httpd_startservers}}
+  MinSpareServers     {{httpd_minspareservers}}
+  MaxSpareServers     {{httpd_maxspareservers}}
+  ServerLimit         {{httpd_serverlimit}}
+  MaxClients          {{httpd_maxclients}}
+  MaxRequestsPerChild {{httpd_maxrequestsperchild}}
+</IfModule>
+
+# Defaults:
+#     httpd_startservers: 8
+#     httpd_minspareservers: 5
+#     httpd_maxspareservers: 20
+#     httpd_serverlimit: 256
+#     httpd_maxclients: 256
+#     httpd_maxrequestsperchild: 4000

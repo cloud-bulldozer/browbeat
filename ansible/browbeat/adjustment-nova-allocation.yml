@@ -1,11 +1,16 @@
 ---
 #
-# Playbook to change Nova allocation ratios
+# Playbook to adjust Nova allocation ratios
 #
 # Examples:
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24"
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0"
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0 disk_allocation_ratio=10.0"
+#
+# In order for new settings to take affect, you need to restart the Nova services
+# by adding variable restart_nova=true into the extra vars.
+#
+# ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0 disk_allocation_ratio=10.0 restart_nova=true"
 #
 # * Note not setting a variable does not change that configuration item then. Setting no variables
 #   and running the playbook sets all configuration items to defaults (cpu/ram/disk - 16/1/1)
@@ -14,9 +19,12 @@
 #
 
 - hosts: controller
-  remote_user: heat-admin
+  remote_user: "{{ host_remote_user }}"
   gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
   vars:
+    restart_nova: false
     # Create initial blank configuration list
     nova_configuration: []
     # Defaults

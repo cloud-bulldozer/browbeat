@@ -1,0 +1,31 @@
+---
+#
+# Playbook to bump the number of max "defaults" (vs global) connections through haproxy
+#
+# Examples:
+#
+# ansible-playbook -i hosts browbeat/adjustment-haproxy.yml -e 'old_maxconn=4096 new_maxconn=8192'
+#
+#
+
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    old_maxconn: 4096
+    new_maxconn: 8192
+  tasks:
+    - name: Adjusting haproxy maxconn
+      become: true
+      replace:
+        dest: /etc/haproxy/haproxy.cfg
+        regexp:  "  maxconn  {{old_maxconn}}"
+        replace: "  maxconn  {{new_maxconn}}"
+        backup: true
+
+    - name: Reload haproxy
+      become: true
+      command: systemctl reload haproxy

@@ -1,0 +1,18 @@
+---
+#
+# Tasks to deploy new prefork.conf settings for httpd
+#
+
+- name: Push new prefork.conf
+  become: true
+  template:
+    src: prefork.conf.j2
+    dest: /etc/httpd/conf.modules.d/prefork.conf
+    mode: 0644
+    owner: root
+    group: root
+    backup: true
+
+- name: Restart httpd
+  become: true
+  command: systemctl restart httpd
