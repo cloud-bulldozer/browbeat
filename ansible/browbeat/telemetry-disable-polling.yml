@@ -1,0 +1,44 @@
+---
+#
+# Playbook to quickly disable polling across all overcloud nodes.
+#
+# Cuts off the flow of measures into the backlog.
+#
+
+- hosts: controller, compute
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Ocata) Set Controller Polling Daemon
+      set_fact:
+        polling_daemon: "openstack-ceilometer-central.service"
+      when: "('Ocata' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+
+    - name: (Ocata) Set Compute Polling Daemon
+      set_fact:
+        polling_daemon: "openstack-ceilometer-compute.service"
+      when: "('Ocata' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+
+    - name: (Pike) Set Controller Polling Daemon
+      set_fact:
+        polling_daemon: "openstack-ceilometer-polling.service"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+
+    - name: (Pike) Set Compute Polling Daemon
+      set_fact:
+        polling_daemon: "openstack-ceilometer-polling.service"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+
+    - name: Stopping Ceilometer Polling Daemon
+      become: true
+      command: "systemctl stop {{item}}"
+      with_items:
+        - "{{polling_daemon}}"

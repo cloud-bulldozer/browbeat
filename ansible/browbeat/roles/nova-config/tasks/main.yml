@@ -8,14 +8,24 @@
   ini_file:
     dest: /etc/nova/nova.conf
     mode: 0640
+    group: nova
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
     backup: yes
   with_items:
     - "{{nova_configuration}}"
-  notify:
-    - unmanage nova services
-    - restart nova services
-    - manage nova services
-    - cleanup nova services
+
+- name: Restart Nova Services
+  become: true
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - openstack-nova-scheduler
+    - openstack-nova-api
+    - openstack-nova-conductor
+    - openstack-nova-novncproxy
+    - openstack-nova-consoleauth
+    - httpd
+  when: restart_nova

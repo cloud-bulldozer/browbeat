@@ -1,0 +1,26 @@
+# Browbeat Deployed Gnocchi API wsgi config
+
+<VirtualHost {{internal_api_ip.stdout}}:8041>
+  ServerName {{inventory_hostname}}.internalapi.localdomain
+
+  ## Vhost docroot
+  DocumentRoot "/var/www/cgi-bin/gnocchi"
+
+  ## Directories, there should at least be a declaration for /var/www/cgi-bin/gnocchi
+
+  <Directory "/var/www/cgi-bin/gnocchi">
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Require all granted
+  </Directory>
+
+  ## Logging
+  ErrorLog "/var/log/httpd/gnocchi_wsgi_error.log"
+  ServerSignature Off
+  CustomLog "/var/log/httpd/gnocchi_wsgi_access.log" combined
+  SetEnvIf X-Forwarded-Proto https HTTPS=1
+  WSGIApplicationGroup %{GLOBAL}
+  WSGIDaemonProcess gnocchi display-name=gnocchi_wsgi group=gnocchi processes={{gnocchi_api_processes}} threads={{gnocchi_api_threads}} user=gnocchi
+  WSGIProcessGroup gnocchi
+  WSGIScriptAlias / "/var/www/cgi-bin/gnocchi/app"
+</VirtualHost>

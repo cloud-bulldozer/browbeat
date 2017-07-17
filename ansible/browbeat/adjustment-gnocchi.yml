@@ -1,0 +1,43 @@
+---
+#
+# Playbook to adjust Gnocchi config options
+#
+# Example:
+#
+# ansible-playbook -i hosts browbeat/adjustment-gnocchi.yml -e 'metricd_workers=12 metric_processing_delay=60 processing_replicas=3'
+#
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    metricd_workers: 12
+    metric_processing_delay: 60
+    processing_replicas: 3
+  tasks:
+    - name: Configure Gnocchi Options
+      become: true
+      ini_file:
+        dest: /etc/gnocchi/gnocchi.conf
+        mode: 0640
+        group: gnocchi
+        section: "{{item.section}}"
+        option: "{{item.option}}"
+        value: "{{item.value}}"
+        backup: yes
+      with_items:
+        - section: metricd
+          option: workers
+          value: "{{metricd_workers}}"
+        - section: metricd
+          option: metric_processing_delay
+          value: "{{metric_processing_delay}}"
+        - section: metricd
+          option: processing_replicas
+          value: "{{processing_replicas}}"
+
+    - name: Restart openstack-gnocchi-metricd
+      become: true
+      command: systemctl restart openstack-gnocchi-metricd

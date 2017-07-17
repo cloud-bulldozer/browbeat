@@ -1,0 +1,20 @@
+---
+#
+# Tasks to kick a task off at a specific time using at daemon
+#
+
+- name: Create job file
+  become: true
+  shell: "echo '#!/bin/bash\n {{the_task}} '>/root/browbeat-sync.sh"
+
+- name: Set execute on file
+  become: true
+  file:
+    path: /root/browbeat-sync.sh
+    owner: root
+    group: root
+    mode: 0744
+
+- name: Create at job
+  become: true
+  command: "at -f /root/browbeat-sync.sh {{task_time}}"

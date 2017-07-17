@@ -1,0 +1,47 @@
+---
+#
+# Playbook to prevent virtlogd from running out of files when scaling instances
+# on a compute node.
+#
+# With OS defaults, virtlogd will prevent more than 252 instances per compute
+# due to a maximum number of files it can open.
+#
+# Example:
+#
+# ansible-playbook -i hosts browbeat/scale-virtlogd.yml -e 'max_open_files=10000'
+#
+
+- hosts: compute
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    max_open_files: 10000
+  tasks:
+    # Virtlogd
+    - name: Replace max open files setting for virtlogd
+      become: true
+      replace:
+        dest: "/usr/lib/systemd/system/virtlogd.service"
+        regexp:  "LimitNOFILE=[0-9]+"
+        replace: "LimitNOFILE={{max_open_files}}"
+        backup: true
+      ignore_errors: true
+      register: replace_output
+
+    - name: Override max open files for virtlogd
+      become: true
+      lineinfile:
+        dest: "/usr/lib/systemd/system/virtlogd.service"
+        line: "LimitNOFILE={{max_open_files}}"
+        insertafter: "OOMScoreAdjust=-900"
+      when: replace_output.changed != true
+
+    - name: Issue daemon-reload
+      become: true
+      command: systemctl daemon-reload
+
+    - name: Restart virtlogd
+      become: true
+      command: systemctl restart virtlogd

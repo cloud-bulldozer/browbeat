@@ -1,0 +1,26 @@
+---
+#
+# Deploy the Ceilometer polling.yaml file
+#
+
+- name: Deploy polling.yaml file
+  become: true
+  template:
+    src: polling.yaml.j2
+    dest: /etc/ceilometer/polling.yaml
+    owner: root
+    group: ceilometer
+    mode: 0640
+    backup: true
+  when: "{{reduced_metrics}} == false"
+
+- name: Deploy the reduced metrics polling.yaml file
+  become: true
+  template:
+    src: reduced_polling.yaml.j2
+    dest: /etc/ceilometer/polling.yaml
+    owner: root
+    group: ceilometer
+    mode: 0640
+    backup: true
+  when: reduced_metrics

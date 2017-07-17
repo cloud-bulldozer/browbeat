@@ -1,0 +1,27 @@
+---
+#
+# Configure ceilometer.conf tasks
+#
+
+- name: Configure ceilometer.conf
+  become: true
+  ini_file:
+    dest: /etc/ceilometer/ceilometer.conf
+    mode: 0640
+    group: ceilometer
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - "{{ceilometer_configuration}}"
+
+- name: Restart Ceilometer Agent Notification
+  become: true
+  command: systemctl restart openstack-ceilometer-notification
+  when: restart_notification
+
+- name: Restart Ceilometer Collector
+  become: true
+  command: systemctl restart openstack-ceilometer-collector
+  when: restart_collector

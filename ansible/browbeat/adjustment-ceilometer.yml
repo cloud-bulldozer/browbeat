@@ -1,22 +1,67 @@
 ---
 #
-# Playbook to apply changes to ceilometer.
+# Playbook to adjust Ceilometer configuration items and restart either the
+# notification agent or the collector.
 #
-# Examples (backend):
-# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=database"
-# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_backend=gnocchi"
+# Examples:
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 executor_thread_pool_size=64"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 restart_notification=true"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 restart_collector=true"
 #
-# Examples (interval):
-# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_interval=60"
-# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "ceilometer_interval=600"
+# * Note not setting a variable does not change that configuration item then. Setting no variables
+#   and running the playbook sets all configuration items to defaults (Ocata)
+#
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml
 #
 
 - hosts: controller
-  remote_user: heat-admin
-  roles:
-    - { role: ceilometer-backend, when: ceilometer_backend is defined }
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    restart_notification: false
+    restart_collector: false
+    # Create initial blank configuration list
+    ceilometer_configuration: []
+    # Defaults
+    default_rabbit_qos_prefetch_count: 0
+    default_executor_thread_pool_size: 64
+    # Each configuration item needs to be a list so it can be merged
+    rabbit_qos_prefetch_count_item: []
+    executor_thread_pool_size_item: []
+  pre_tasks:
+    - name: Set default rabbit_qos_prefetch_count and executor_thread_pool_size
+      set_fact:
+        ceilometer_configuration:
+          - section: oslo_messaging_rabbit
+            option: rabbit_qos_prefetch_count
+            value: "{{default_rabbit_qos_prefetch_count}}"
+          - section: DEFAULT
+            option: executor_thread_pool_size
+            value: "{{default_executor_thread_pool_size}}"
+      when: rabbit_qos_prefetch_count is undefined and executor_thread_pool_size is undefined
 
-- hosts: controller,compute
-  remote_user: heat-admin
+    - name: Set rabbit_qos_prefetch_count configuration for Ceilometer
+      set_fact:
+        rabbit_qos_prefetch_count_item:
+          - section: oslo_messaging_rabbit
+            option: rabbit_qos_prefetch_count
+            value: "{{rabbit_qos_prefetch_count}}"
+      when: rabbit_qos_prefetch_count is defined
+
+    - name: Set executor_thread_pool_size configuration for Ceilometer
+      set_fact:
+        executor_thread_pool_size_item:
+          - section: DEFAULT
+            option: executor_thread_pool_size
+            value: "{{executor_thread_pool_size}}"
+      when: executor_thread_pool_size is defined
+
+    - name: Merge configuration items
+      set_fact:
+        ceilometer_configuration: "{{ceilometer_configuration + rabbit_qos_prefetch_count_item + executor_thread_pool_size_item }}"
+
   roles:
-    - { role: ceilometer-interval, when: ceilometer_interval is defined }
+    - ceilometer-config
