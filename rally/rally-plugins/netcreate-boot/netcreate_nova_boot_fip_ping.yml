@@ -1,19 +1,21 @@
+{% set image_name = image_name or 'cirros' %}
+{% set flavor_name = flavor_name or 'm1.xtiny' %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
-{% set num_networks = num_networks or 1 %}
-{% set enable_dhcp = enable_dhcp or true %}
 ---
-BrowbeatPlugin.create_network_nova_boot:
-  -
+BrowbeatPlugin.create_network_nova_boot_ping:
+-
     args:
+      floating: True
       flavor:
         name: '{{flavor_name}}'
       image:
         name: '{{image_name}}'
+      ext_net_id: '{{ext_net_id}}'
       network_create_args: {}
-      subnet_create_args: {'enable_dhcp': '{{enable_dhcp}}'}
-      num_networks: {{num_networks}}
+      router_create_args: {}
+      subnet_create_args: {}
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
@@ -21,7 +23,7 @@ BrowbeatPlugin.create_network_nova_boot:
     context:
       users:
         tenants: 1
-        users_per_tenant: 8
+        users_per_tenant: 1
       quotas:
         neutron:
           network: -1

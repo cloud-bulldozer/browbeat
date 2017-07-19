@@ -31,7 +31,7 @@ browbeat_venv: "{{browbeat_path}}/.browbeat-venv"
 rally_venv: "{{browbeat_path}}/.rally-venv"
 
 # Rally version to install
-rally_version: 0.8.1
+rally_version: 0.9.1
 
 # The default Shaker venv
 shaker_venv: "{{browbeat_path}}/.shaker-venv"

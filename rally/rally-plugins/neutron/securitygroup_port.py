@@ -10,18 +10,20 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.task import scenario
 from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
+from rally.task import scenario
 from rally.task import validation
+from rally import consts
 
 
-class BrowbeatPlugin(neutron_utils.NeutronScenario,
-                     scenario.Scenario):
+@validation.required_services(consts.Service.NEUTRON)
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["neutron"]},
+                    name="BrowbeatPlugin.securitygroup_port")
+class BrowbeatPlugin(neutron_utils.NeutronScenario):
 
-    @validation.required_openstack(users=True)
-    @scenario.configure(context={"cleanup": ["neutron"]})
-    def neutron_securitygroup_port(self, network_create_args=None,
-                                   security_group_create_args={}, port_create_args={}, **kwargs):
+    def run(self, network_create_args=None, security_group_create_args={}, port_create_args={},
+            **kwargs):
         net = self._create_network(network_create_args or {})
         sec_grp = self._create_security_group(**security_group_create_args)
         sec_grp_list = []

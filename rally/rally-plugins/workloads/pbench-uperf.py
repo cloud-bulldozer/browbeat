@@ -10,35 +10,38 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.task import scenario
+import csv
+import datetime
+import json
+import logging
+import StringIO
+import time
+
+import browbeat.elastic
+
 from rally.plugins.openstack.scenarios.vm import utils as vm_utils
 from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
+from rally.common import sshutils
+from rally.task import scenario
 from rally.task import types
 from rally.task import validation
-from rally.common import sshutils
-import browbeat.elastic
-import time
-import StringIO
-import csv
-import json
-import datetime
-import logging
+from rally import consts
+
 
 LOG = logging.getLogger(__name__)
 
 
-class BrowbeatPlugin(neutron_utils.NeutronScenario,
-                     vm_utils.VMScenario,
-                     scenario.Scenario):
+@types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
+@validation.required_services(consts.Service.NEUTRON, consts.Service.NOVA)
+@validation.image_valid_on_flavor("flavor", "image")
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["cinder", "neutron", "nova"], "keypair": {},
+                             "allow_ssh": None},
+                    name="BrowbeatPlugin.pbench_uperf")
+class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
+                          vm_utils.VMScenario):
 
-    def build_jump_host(
-            self,
-            external,
-            image,
-            flavor,
-            user,
-            password=None,
-            **kwargs):
+    def build_jump_host(self, external, image, flavor, user, password=None, **kwargs):
         keyname = self.context["user"]["keypair"]["name"]
         jump_host, jump_host_ip = self._boot_server_with_fip(image,
                                                              flavor,
@@ -159,32 +162,10 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
 
         return _clients, _servers
 
-    @types.convert(image={"type": "glance_image"},
-                   flavor={"type": "nova_flavor"})
-    @validation.required_openstack(users=True)
-    @scenario.configure(context={"cleanup": ["nova", "neutron", "cinder"],
-                                 "keypair": {}, "allow_ssh": {}})
-    def pbench_uperf(
-            self,
-            image,
-            flavor,
-            user,
-            test_types,
-            protocols,
-            samples,
-            test_name,
-            external=None,
-            send_results=True,
-            num_pairs=1,
-            password="",
-            network_id=None,
-            zones=None,
-            message_sizes=None,
-            instances=None,
-            elastic_host=None,
-            elastic_port=None,
-            cloudname=None,
-            **kwargs):
+    def run(self, image, flavor, user, test_types, protocols, samples, test_name, external=None,
+            send_results=True, num_pairs=1, password="", network_id=None, zones=None,
+            message_sizes=None, instances=None, elastic_host=None, elastic_port=None,
+            cloudname=None, **kwargs):
 
         pbench_path = "/opt/pbench-agent"
         pbench_results = "/var/lib/pbench-agent"

@@ -1,6 +1,6 @@
 # Ceilometer Stress tests run minimal number of times.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:
@@ -36,9 +36,7 @@ rally:
   enabled: true
   sleep_before: 5
   sleep_after: 5
-  plugins:
-    - validate-ceilometer: rally/rally-plugins/validate-ceilometer
-    - nova-ceilometer: rally/rally-plugins/nova-ceilometer
+  plugins: []
   benchmarks:
     - name: CeilometerAlarms
       enabled: true

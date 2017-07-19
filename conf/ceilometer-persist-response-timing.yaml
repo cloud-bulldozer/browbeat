@@ -3,7 +3,7 @@
 # each iteration it measures response time of several Ceilometer APIs.
 # Currently it maxs at 200 instances
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:

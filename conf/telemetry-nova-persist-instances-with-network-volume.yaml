@@ -3,7 +3,7 @@
 # with a concurrency of 20 instances. A total of 1000 instances are
 # booted. The instances have a nic and volume.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:

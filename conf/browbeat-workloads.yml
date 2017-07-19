@@ -1,6 +1,6 @@
 # Complete set of Workload Benchmarks
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:
@@ -45,30 +45,32 @@ rally:
         - 1
       times: 1
       scenarios:
-        - name: linpack
+        - name: browbeat-linpack
           enabled: true
           image_name: browbeat-linpack
+          flavor_name: m1.small
           external_network:
           net_id:
-          flavor_name: m1.small
           file: rally/rally-plugins/workloads/linpack.yml
-        - name: uperf
+
+        - name: browbeat-pbench-uperf
           enabled: true
           user: root
-          password: None
           image_name: browbeat-uperf
+          flavor_name: m1.small
+          # hypervisor_server: "nova:overcloud-compute-1.localdomain"
+          # hypervisor_client: "nova:overcloud-compute-0.localdomain"
           external_network:
           net_id:
-          flavor_name: m1.small
-          test_name: test-uperf
-          protocols: 'tcp'
-          send_results: true
-          num_pairs: 1
+          protocols: tcp,udp
           instances: 1
+          num_pairs: 1
           samples: 1
-          test_types: 'stream'
-          message_sizes: '64'
-          cloudname: test-cloud
+          test_types: stream,rr
+          message_sizes: 64,1024,16384
+          test_name: browbeat-pbench-uperf
+          send_results: true
+          cloudname:
           elastic_host:
           elastic_port: 9200
           file: rally/rally-plugins/workloads/pbench-uperf.yml

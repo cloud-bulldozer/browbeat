@@ -1,13 +1,13 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:
   enabled: true
+  regather: true
   host: 1.1.1.1
   port: 9200
-  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -87,57 +87,43 @@ rally:
   sleep_before: 5
   sleep_after: 5
   plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
     - netcreate-boot: rally/rally-plugins/netcreate-boot
-    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
-    - subnet-router-create: rally/rally-plugins/subnet-router-create
-    - glance-create-boot-delete: rally/rally-plugins/glance-create-boot-delete
-    - nova-create-pbench-uperf: rally/rally-plugins/nova-create-pbench-uperf
-    - neutron-securitygroup-port: rally/rally-plugins/neutron-securitygroup-port
+    - workloads: rally/rally-plugins/workloads
   benchmarks:
     - name: authenticate
       enabled: true
       concurrency:
-        - 64
-      times: 500
+        - 8
+      times: 100
       scenarios:
         - name: authentic-keystone
           enabled: true
           file: rally/authenticate/keystone-cc.yml
-          sla_max_avg_duration: 6
-          sla_max_seconds: 30
-          sla_max_failure: 0
         - name: authentic-neutron
-          enabled: false
+          enabled: true
           file: rally/authenticate/validate_neutron-cc.yml
-          sla_max_avg_duration: 18
-          sla_max_seconds: 30
-          sla_max_failure: 0
         - name: authentic-nova
-          enabled: false
+          enabled: true
           file: rally/authenticate/validate_nova-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
+
     - name: cinder
       enabled: true
       concurrency:
         - 2
-      times: 6
+      times: 10
       scenarios:
-        - name: create-attach-volume-centos
-          enabled: false
-          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
         - name: create-attach-volume-cirros
           enabled: true
           image_name: cirros
-          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
           flavor_name: m1.tiny
+          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+
     - name: keystonebasic
       enabled: true
       concurrency:
-        - 10
+        - 8
       times: 100
       scenarios:
         - name: create-and-list-tenants
@@ -146,36 +132,33 @@ rally:
         - name: create-and-list-users
           enabled: true
           file: rally/keystonebasic/create_and_list_users-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
+
     - name: neutron
       enabled: true
       concurrency:
-        - 8
-      times: 100
+        - 2
+      times: 10
       scenarios:
         - name: create-list-network
           enabled: true
           file: rally/neutron/neutron-create-list-network-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
         - name: create-list-port
           enabled: true
           file: rally/neutron/neutron-create-list-port-cc.yml
         - name: create-list-router
-          enabled: false
+          enabled: true
           file: rally/neutron/neutron-create-list-router-cc.yml
         - name: create-list-security-group
-          enabled: false
+          enabled: true
           file: rally/neutron/neutron-create-list-security-group-cc.yml
         - name: create-list-subnet
-          enabled: false
+          enabled: true
           file: rally/neutron/neutron-create-list-subnet-cc.yml
+
     - name: nova
       enabled: true
       concurrency:
-        - 8
+        - 2
       times: 10
       scenarios:
         - name: boot-snapshot-delete-cirros
@@ -183,43 +166,41 @@ rally:
           file: rally/nova/nova-boot-snapshot-cc.yml
           image_name: cirros
           flavor_name: m1.xtiny
-          net_id:
         - name: boot-list-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-list-cc.yml
           flavor_name: m1.xtiny
-          net_id:
         - name: boot-show-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-show-cc.yml
           flavor_name: m1.xtiny
-          net_id:
         - name: boot-bounce-delete-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-boot-bounce-delete-cc.yml
           flavor_name: m1.xtiny
-          net_id:
         - name: boot-lock-unlock-cirros
           enabled: true
           image_name: cirros
           file: rally/nova/nova-lock-unlock-cc.yml
           flavor_name: m1.xtiny
-          net_id:
+
     - name: glance
       enabled: true
       concurrency:
-        - 8
+        - 2
       times: 10
       scenarios:
         - name: create-and-delete-image
           enabled: true
-          image_location: /home/stack/cirros
-          flavor_name: m1.small
+          image_location: /home/stack/cirros.qcow2
+          container_format: bare
+          disk_format: qcow2
           file: rally/glance/create-and-delete-image-cc.yml
-    - name: plugins
+
+    - name: simple-plugins
       enabled: true
       concurrency:
         - 8
@@ -230,43 +211,58 @@ rally:
           enable_dhcp: true
           image_name: cirros
           flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
+          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
         - name: netcreate-boot-ping
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
-          net_id: 790354c7-f286-4fd1-a4a1-ec9749c61fbf
-          file: rally/rally-plugins/netcreate-boot-ping/netcreate_nova-boot-fip-ping.yml
-        - name: subnet-router-create
+          ext_net_id:
+          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
+        - name: router-subnet-create-delete
           enabled: true
-          num_networks:  10
-          file: rally/rally-plugins/subnet-router-create/subnet-router-create.yml
+          num_networks:  5
+          file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
         - name: glance-create-boot-delete
           enabled: true
-          image_location: /home/stack/cirros
-          flavor_name: m1.tiny
-          file: rally/rally-plugins/glance-create-boot-delete/glance_create_boot_delete.yml
+          image_location: /home/stack/cirros.qcow2
+          flavor_name: m1.xtiny
+          file: rally/rally-plugins/glance/glance_create_boot_delete.yml
         - name: neutron-securitygroup-port
-          enabled: false
-          file: rally/rally-plugins/neutron-securitygroup-port/neutron-securitygroup-port.yml
-        - name: nova-create-pbench-uperf
           enabled: true
-          hypervisor_server: "nova:overcloud-compute-1.localdomain"
-          hypervisor_client: "nova:overcloud-compute-0.localdomain"
-          image_name: pbench-image
+          file: rally/rally-plugins/neutron/securitygroup_port.yml
+
+    - name: plugin-workloads
+      enabled: true
+      concurrency:
+        - 1
+      times: 1
+      scenarios:
+        - name: linpack
+          enabled: true
+          image_name: browbeat-linpack
           flavor_name: m1.small
-          cloudname: "my-cloudname"
-          elastic_host: "my-elastic-host.org"
-          elastic_port: 9200
-          user: "root"
-          password: "password"
-          external_network: "public"
-          protocols: "tcp"
+          external_network:
+          net_id:
+          file: rally/rally-plugins/workloads/linpack.yml
+
+        - name: browbeat-pbench-uperf
+          enabled: true
+          user: root
+          image_name: browbeat-uperf
+          flavor_name: m1.small
+          # hypervisor_server: "nova:overcloud-compute-1.localdomain"
+          # hypervisor_client: "nova:overcloud-compute-0.localdomain"
+          external_network:
+          net_id:
+          protocols: tcp,udp
+          instances: 1
           num_pairs: 1
-          message_sizes: "64,1024,16384"
-          instances: "1,8,16,32,64"
-          test_types: "stream"
           samples: 1
-          send_results: True
-          test_name: "browbeat-rally"
-          file: rally/rally-plugins/nova-create-pbench-uperf/nova-create-pbench-uperf.yml
+          test_types: stream,rr
+          message_sizes: 64,1024,16384
+          test_name: "browbeat-pbench-uperf"
+          send_results: true
+          cloudname:
+          elastic_host:
+          elastic_port: 9200
+          file: rally/rally-plugins/workloads/pbench-uperf.yml

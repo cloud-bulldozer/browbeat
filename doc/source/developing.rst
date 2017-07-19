@@ -342,7 +342,7 @@ setup Browbeat with Rally against your local quickstart cloud.
   Also creating executable in /home/akrzos/browbeat/.rally-venv/bin/python
   Installing setuptools, pip, wheel...done.
   [akrzos@bithead browbeat]$ . .rally-venv/bin/activate
-  (.rally-venv) [akrzos@bithead browbeat]$ pip install rally ansible==2.3.2.0
+  (.rally-venv) [akrzos@bithead browbeat]$ pip install rally==0.9.1 ansible==2.3.2.0 elasticsearch
   ...(Truncated)
   (.rally-venv) [akrzos@bithead browbeat]$ rally-manage db recreate
   (.rally-venv) [akrzos@bithead browbeat]$ scp -F ~/.quickstart/ssh.config.ansible stack@undercloud:overcloudrc .

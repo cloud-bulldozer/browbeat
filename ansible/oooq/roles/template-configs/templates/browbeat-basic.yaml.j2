@@ -1,7 +1,7 @@
 # Tests to be completed for the install-and-check.sh script minimal and short workloads are performed
 #  to confirm functionality.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: {{ browbeat_cloud_name }}
 elasticsearch:
@@ -40,59 +40,47 @@ rally:
   venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
-    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
-    - subnet-router-create: rally/rally-plugins/subnet-router-create
   benchmarks:
     - name: authenticate
       enabled: true
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
         - name: authentic-keystone
           enabled: true
           file: rally/authenticate/keystone-cc.yml
-          sla_max_avg_duration: 6
-          sla_max_seconds: 30
-          sla_max_failure: 0
     - name: cinder
       enabled: true
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
         - name: create-attach-volume-centos
           enabled: true
           file: rally/cinder/cinder-create-and-attach-volume-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
     - name: keystonebasic
       enabled: false
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
         - name: create-and-list-tenants
           enabled: true
           file: rally/keystonebasic/create_and_list_tenants-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-          times: 50
     - name: neutron
       enabled: true
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
         - name: create-list-network
           enabled: true
           file: rally/neutron/neutron-create-list-network-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
     - name: nova
       enabled: true
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
         - name: boot-snapshot-delete
@@ -103,14 +91,13 @@ rally:
     - name: plugins
       enabled: true
       concurrency:
-        - 2
+        - 1
       times: 1
       scenarios:
-        - name: netcreate-boot
+        - name: netcreate-1-boot
           enabled: true
+          enable_dhcp: true
           image_name: cirros
           flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
+          num_networks: 1
+          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml

@@ -10,21 +10,19 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.task import scenario
 from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
-from rally.task import types
+from rally.task import scenario
 from rally.task import validation
+from rally import consts
 
 
-class BrowbeatPlugin(neutron_utils.NeutronScenario,
-                     scenario.Scenario):
+@validation.required_services(consts.Service.NEUTRON)
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["neutron"]},
+                    name="BrowbeatPlugin.router_subnet_create_delete")
+class RouterSubnetCreateDelete(neutron_utils.NeutronScenario):
 
-    @types.convert(image={"type": "glance_image"},
-                   flavor={"type": "nova_flavor"})
-    @validation.required_openstack(users=True)
-    @scenario.configure(context={"cleanup": ["neutron"]})
-    def create_router_and_net(self, num_networks=1, network_create_args=None,
-                              subnet_create_args=None, **kwargs):
+    def run(self, num_networks=1, network_create_args=None, subnet_create_args=None, **kwargs):
         router = self._create_router({})
         subnets = []
         for net in range(num_networks):

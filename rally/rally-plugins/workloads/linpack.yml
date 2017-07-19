@@ -1,10 +1,11 @@
+{% set image_name = image_name or 'browbeat-linpack' %}
+{% set flavor_name = flavor_name or 'm1.small' %}
+{% set username = username or 'centos' %}
+{% set times = times or 1 %}
+{% set concurrency = concurrency or 1 %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
-{% set times = times or 1 %}
-{% set concurrency = concurrency or 1 %}
-{% set username = username or 'centos' %}
-
 ---
 VMTasks.boot_runcommand_delete:
   -
@@ -16,15 +17,15 @@ VMTasks.boot_runcommand_delete:
       external:
         name: '{{external_network}}'
       command:
-        remote_path: "./linpack.sh"
-        local_path: "rally/rally-plugins/workloads/linpack.sh"
+        remote_path: './linpack.sh'
+        local_path: 'rally/rally-plugins/workloads/linpack.sh'
       username: '{{username}}'
       nics:
         - net-id: '{{net_id}}'
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
-      type: "constant"
+      type: 'constant'
     context:
       users:
         tenants: 1

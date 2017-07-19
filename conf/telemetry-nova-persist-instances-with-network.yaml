@@ -5,7 +5,7 @@
 # additional telemetry load. View how system resources degrade over each
 # new set of instances booted.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:

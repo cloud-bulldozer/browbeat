@@ -10,24 +10,25 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.task import scenario
 from rally.plugins.openstack.scenarios.nova import utils as nova_utils
 from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
+from rally.task import scenario
 from rally.task import types
 from rally.task import validation
+from rally import consts
 
 
-class BrowbeatPlugin(neutron_utils.NeutronScenario,
-                     nova_utils.NovaScenario,
-                     scenario.Scenario):
+@types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
+@validation.required_services(consts.Service.NEUTRON, consts.Service.NOVA)
+@validation.image_valid_on_flavor("flavor", "image")
+@validation.required_openstack(users=True)
+@scenario.configure(context={"cleanup": ["neutron", "nova"]},
+                    name="BrowbeatPlugin.create_network_nova_boot")
+class CreateNetworkNovaBoot(neutron_utils.NeutronScenario,
+                            nova_utils.NovaScenario):
 
-    @types.convert(image={"type": "glance_image"},
-                   flavor={"type": "nova_flavor"})
-    @validation.image_valid_on_flavor("flavor", "image")
-    @validation.required_openstack(users=True)
-    @scenario.configure(context={"cleanup": ["nova", "neutron"]})
-    def create_network_nova_boot(self, image, flavor, num_networks=1, network_create_args=None,
-                                 subnet_create_args=None, **kwargs):
+    def run(self, image, flavor, num_networks=1, network_create_args=None,
+            subnet_create_args=None, **kwargs):
         nets = []
         for net in range(0, num_networks):
             network = self._create_network(network_create_args or {})

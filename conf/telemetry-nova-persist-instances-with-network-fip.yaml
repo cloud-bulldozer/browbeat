@@ -4,7 +4,7 @@
 # booted. The instances have a nic and a fip.
 # You must pre-populate (external_net_name and private_net_id)
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:

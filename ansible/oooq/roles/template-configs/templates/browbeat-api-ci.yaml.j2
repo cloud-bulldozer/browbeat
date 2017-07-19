@@ -1,5 +1,5 @@
 browbeat:
-  results : results/
+  results: results/
   rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
 elasticsearch:
@@ -38,8 +38,6 @@ rally:
   venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
-    - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
-    - subnet-router-create: rally/rally-plugins/subnet-router-create
   benchmarks:
     - name: authenticate
       enabled: true
@@ -119,13 +117,15 @@ rally:
       scenarios:
         - name: netcreate-1-boot
           enabled: true
+          enable_dhcp: true
           image_name: cirros
           flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
           num_networks: 1
+          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
         - name: netcreate-5-boot
           enabled: true
+          enable_dhcp: true
           image_name: cirros
           flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_boot.yml
           num_networks: 5
+          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml

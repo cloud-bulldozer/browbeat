@@ -1,7 +1,7 @@
 # Complete set of Keystone Stress tests run minimal number of times.
 # Good sanity test to see if OSP will be able to handle the longer stress tests.
 browbeat:
-  results : results/
+  results: results/
   rerun: 1
   cloud_name: openstack
 elasticsearch:
@@ -9,7 +9,6 @@ elasticsearch:
   regather: false
   host: 1.1.1.1
   port: 9200
-  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -127,6 +126,7 @@ rally:
           sla_max_failure: 0
         - name: create-tenant-with-users
           enabled: true
+          users_per_tenant: 2
           file: rally/keystonebasic/create_tenant_with_users-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0
@@ -193,5 +193,15 @@ rally:
         - name: create-and-get-role
           enabled: true
           file: rally/keystonebasic/create_and_get_role-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-add-list-roles
+          enabled: true
+          file: rally/keystonebasic/create_add_list_roles-cc.yml
+          sla_max_seconds: 30
+          sla_max_failure: 0
+        - name: create-and-update-user
+          enabled: true
+          file: rally/keystonebasic/create_and_update_user-cc.yml
           sla_max_seconds: 30
           sla_max_failure: 0

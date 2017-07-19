@@ -10,162 +10,22 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import uuid
+
 from rally.common.i18n import _
-from rally.common import logging
 from rally.plugins.openstack import scenario
+from rally.common import logging
 from rally.task import atomic
 from rally.task import context
+from rally.task import validation
 from rally import consts
 from rally import osclients
-import uuid
 
 
 LOG = logging.getLogger(__name__)
 
 
-class BrowbeatGnocchi(scenario.OpenStackScenario):
-
-    @scenario.configure(name='BrowbeatGnocchi.archive_policy_list')
-    def archive_policy_list(self):
-        """List archive policies from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._archive_policy_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.archive_policy_rule_list')
-    def archive_policy_rule_list(self):
-        """List archive policy rules from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._archive_policy_rule_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.capabilities_list')
-    def capabilities_list(self):
-        """List capabilities from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._capabilities_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_archive_policy')
-    def create_archive_policy(self):
-        """Create archive policy from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        name = self.generate_random_name()
-        definition = [{'granularity': '0:00:01', 'timespan': '1:00:00'}]
-        aggregation_methods = ['std', 'count', '95pct', 'min', 'max', 'sum', 'median', 'mean']
-        self._create_archive_policy(gnocchi_client, name, definition, aggregation_methods)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy')
-    def create_delete_archive_policy(self):
-        """Create archive policy from Gnocchi client and then delete it."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        name = self.generate_random_name()
-        definition = [{'granularity': '0:00:01', 'timespan': '1:00:00'}]
-        aggregation_methods = ['std', 'count', '95pct', 'min', 'max', 'sum', 'median', 'mean']
-        self._create_archive_policy(gnocchi_client, name, definition, aggregation_methods)
-        self._delete_archive_policy(gnocchi_client, name)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_archive_policy_rule')
-    def create_archive_policy_rule(self):
-        """Create archive policy rule from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        name = self.generate_random_name()
-        metric_pattern = 'cpu_*'
-        archive_policy_name = 'low'
-        self._create_archive_policy_rule(gnocchi_client, name, metric_pattern, archive_policy_name)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy_rule')
-    def create_delete_archive_policy_rule(self):
-        """Create archive policy rule from Gnocchi client and then delete it."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        name = self.generate_random_name()
-        metric_pattern = 'cpu_*'
-        archive_policy_name = 'low'
-        self._create_archive_policy_rule(gnocchi_client, name, metric_pattern, archive_policy_name)
-        self._delete_archive_policy_rule(gnocchi_client, name)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_metric')
-    def create_metric(self, metric_name=None, archive_policy_name=None, unit=None,
-                      resource_id=None):
-        """Create metric from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._create_metric(gnocchi_client, metric_name, archive_policy_name, unit, resource_id)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_delete_metric')
-    def create_delete_metric(self, metric_name=None, archive_policy_name=None, unit=None,
-                             resource_id=None):
-        """Create metric from Gnocchi client and then delete it."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        metric = self._create_metric(gnocchi_client, metric_name, archive_policy_name, unit,
-                                     resource_id)
-        self._delete_metric(gnocchi_client, metric['id'])
-
-    @scenario.configure(name='BrowbeatGnocchi.create_resource')
-    def create_resource(self, resource_type):
-        """Create resource from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._create_resource(gnocchi_client, resource_type)
-
-    @scenario.configure(name='BrowbeatGnocchi.create_delete_resource')
-    def create_delete_resource(self, resource_type):
-        """Create resource from Gnocchi client and then delete it."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        resource = self._create_resource(gnocchi_client, resource_type)
-        self._delete_resource(gnocchi_client, resource['id'])
-
-    @scenario.configure(name='BrowbeatGnocchi.create_resource_type')
-    def create_resource_type(self):
-        """Create resource type from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._create_resource_type(gnocchi_client, self.generate_random_name())
-
-    @scenario.configure(name='BrowbeatGnocchi.create_delete_resource_type')
-    def create_delete_resource_type(self):
-        """Create resource type from Gnocchi client and then delete it."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        resource_type = self._create_resource_type(gnocchi_client, self.generate_random_name())
-        self._delete_resource_type(gnocchi_client, resource_type['name'])
-
-    @scenario.configure(name='BrowbeatGnocchi.metric_aggregation')
-    def metric_aggregation(self, aggregation=None, refresh=False):
-        """Get aggregation of metrics from Gnocchi client. The list of metrics to aggregate from
-        is determined through a context before the scenario starts.
-        """
-        gnocchi_client = self.admin_clients("gnocchi")
-        metric_index = self.context['iteration'] % len(self.context['metric_ids'])
-        self._metric_aggregation(gnocchi_client, [self.context['metric_ids'][metric_index]],
-                                 aggregation, refresh)
-
-    @scenario.configure(name='BrowbeatGnocchi.metric_get_measures')
-    def metric_get_measures(self, aggregation=None, refresh=False):
-        """Get measures from a metric from Gnocchi client.  The list of metrics to get measures
-        from is determined through a context before the scenario starts.
-        """
-        gnocchi_client = self.admin_clients("gnocchi")
-        metric_index = self.context['iteration'] % len(self.context['metric_ids'])
-        self._metric_get_measures(gnocchi_client, self.context['metric_ids'][metric_index],
-                                  aggregation, refresh)
-
-    @scenario.configure(name='BrowbeatGnocchi.metric_list')
-    def metric_list(self):
-        """List metrics from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._metric_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.resource_list')
-    def resource_list(self):
-        """List resources from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._resource_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.resource_type_list')
-    def resource_type_list(self):
-        """List resource types from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._resource_type_list(gnocchi_client)
-
-    @scenario.configure(name='BrowbeatGnocchi.status_get')
-    def status_get(self, detailed):
-        """Get status of Gnocchi from Gnocchi client."""
-        gnocchi_client = self.admin_clients("gnocchi")
-        self._status_get(gnocchi_client, detailed)
+class GnocchiScenario(scenario.OpenStackScenario):
 
     @atomic.action_timer("gnocchi.archive_policy_list")
     def _archive_policy_list(self, gnocchi_client):
@@ -267,6 +127,243 @@ class BrowbeatGnocchi(scenario.OpenStackScenario):
     @atomic.action_timer("gnocchi.status_get")
     def _status_get(self, gnocchi_client, detailed=False):
         return gnocchi_client.status.get(detailed)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.archive_policy_list')
+class ArchivePolicyList(GnocchiScenario):
+
+    def run(self):
+        """List archive policies from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._archive_policy_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.archive_policy_rule_list')
+class ArchivePolicyRuleList(GnocchiScenario):
+
+    def run(self):
+        """List archive policy rules from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._archive_policy_rule_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.capabilities_list')
+class CapabilitiesList(GnocchiScenario):
+
+    def run(self):
+        """List capabilities from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._capabilities_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_archive_policy')
+class CreateArchivePolicy(GnocchiScenario):
+
+    def run(self):
+        """Create archive policy from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        name = self.generate_random_name()
+        definition = [{'granularity': '0:00:01', 'timespan': '1:00:00'}]
+        aggregation_methods = ['std', 'count', '95pct', 'min', 'max', 'sum', 'median', 'mean']
+        self._create_archive_policy(gnocchi_client, name, definition, aggregation_methods)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy')
+class CreateDeleteArchivePolicy(GnocchiScenario):
+
+    def run(self):
+        """Create archive policy from Gnocchi client and then delete it."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        name = self.generate_random_name()
+        definition = [{'granularity': '0:00:01', 'timespan': '1:00:00'}]
+        aggregation_methods = ['std', 'count', '95pct', 'min', 'max', 'sum', 'median', 'mean']
+        self._create_archive_policy(gnocchi_client, name, definition, aggregation_methods)
+        self._delete_archive_policy(gnocchi_client, name)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_archive_policy_rule')
+class CreateArchivePolicyRule(GnocchiScenario):
+
+    def run(self):
+        """Create archive policy rule from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        name = self.generate_random_name()
+        metric_pattern = 'cpu_*'
+        archive_policy_name = 'low'
+        self._create_archive_policy_rule(gnocchi_client, name, metric_pattern, archive_policy_name)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy_rule')
+class CreateDeleteArchivePolicyRule(GnocchiScenario):
+
+    def run(self):
+        """Create archive policy rule from Gnocchi client and then delete it."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        name = self.generate_random_name()
+        metric_pattern = 'cpu_*'
+        archive_policy_name = 'low'
+        self._create_archive_policy_rule(gnocchi_client, name, metric_pattern, archive_policy_name)
+        self._delete_archive_policy_rule(gnocchi_client, name)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_metric')
+class CreateMetric(GnocchiScenario):
+
+    def run(self, metric_name=None, archive_policy_name=None, unit=None, resource_id=None):
+        """Create metric from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._create_metric(gnocchi_client, metric_name, archive_policy_name, unit, resource_id)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_delete_metric')
+class CreateDeleteMetric(GnocchiScenario):
+
+    def run(self, metric_name=None, archive_policy_name=None, unit=None, resource_id=None):
+        """Create metric from Gnocchi client and then delete it."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        metric = self._create_metric(gnocchi_client, metric_name, archive_policy_name, unit,
+                                     resource_id)
+        self._delete_metric(gnocchi_client, metric['id'])
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_resource')
+class CreateResource(GnocchiScenario):
+
+    def run(self, resource_type):
+        """Create resource from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._create_resource(gnocchi_client, resource_type)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_delete_resource')
+class CreateDeleteResource(GnocchiScenario):
+
+    def run(self, resource_type):
+        """Create resource from Gnocchi client and then delete it."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        resource = self._create_resource(gnocchi_client, resource_type)
+        self._delete_resource(gnocchi_client, resource['id'])
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_resource_type')
+class CreateResourceType(GnocchiScenario):
+
+    def run(self):
+        """Create resource type from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._create_resource_type(gnocchi_client, self.generate_random_name())
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.create_delete_resource_type')
+class CreateDeleteResourceType(GnocchiScenario):
+
+    def run(self):
+        """Create resource type from Gnocchi client and then delete it."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        resource_type = self._create_resource_type(gnocchi_client, self.generate_random_name())
+        self._delete_resource_type(gnocchi_client, resource_type['name'])
+
+
+@validation.required_contexts("browbeat_gnocchi_metric_list")
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.metric_aggregation')
+class MetricAggregation(GnocchiScenario):
+
+    def run(self, aggregation=None, refresh=False):
+        """Get aggregation of metrics from Gnocchi client. The list of metrics to aggregate from
+        is determined through a context before the scenario starts.
+        """
+        gnocchi_client = self.admin_clients("gnocchi")
+        metric_index = self.context['iteration'] % len(self.context['metric_ids'])
+        self._metric_aggregation(gnocchi_client, [self.context['metric_ids'][metric_index]],
+                                 aggregation, refresh)
+
+
+@validation.required_contexts("browbeat_gnocchi_metric_list")
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.metric_get_measures')
+class MetricGetMeasures(GnocchiScenario):
+
+    def run(self, aggregation=None, refresh=False):
+        """Get measures from a metric from Gnocchi client.  The list of metrics to get measures
+        from is determined through a context before the scenario starts.
+        """
+        gnocchi_client = self.admin_clients("gnocchi")
+        metric_index = self.context['iteration'] % len(self.context['metric_ids'])
+        self._metric_get_measures(gnocchi_client, self.context['metric_ids'][metric_index],
+                                  aggregation, refresh)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.metric_list')
+class MetricList(GnocchiScenario):
+
+    def run(self):
+        """List metrics from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._metric_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.resource_list')
+class ResourceList(GnocchiScenario):
+
+    def run(self):
+        """List resources from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._resource_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.resource_type_list')
+class ResourceTypeList(GnocchiScenario):
+
+    def run(self):
+        """List resource types from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._resource_type_list(gnocchi_client)
+
+
+@validation.required_services(consts.Service.GNOCCHI)
+@validation.required_openstack(admin=True)
+@scenario.configure(name='BrowbeatGnocchi.status_get')
+class StatusGet(GnocchiScenario):
+
+    def run(self, detailed):
+        """Get status of Gnocchi from Gnocchi client."""
+        gnocchi_client = self.admin_clients("gnocchi")
+        self._status_get(gnocchi_client, detailed)
 
 
 @context.configure(name="browbeat_gnocchi_metric_list", order=350)

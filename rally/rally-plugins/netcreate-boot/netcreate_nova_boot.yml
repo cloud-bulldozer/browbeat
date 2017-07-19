@@ -1,15 +1,25 @@
+{% set image_name = image_name or 'cirros' %}
+{% set flavor_name = flavor_name or 'm1.xtiny' %}
+{% set enable_dhcp = enable_dhcp or true %}
+{% set num_networks = num_networks or 1 %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-BrowbeatPlugin.neutron_securitygroup_port:
+BrowbeatPlugin.create_network_nova_boot:
   -
     args:
+      flavor:
+        name: '{{flavor_name}}'
+      image:
+        name: '{{image_name}}'
       network_create_args: {}
+      subnet_create_args: {'enable_dhcp': '{{enable_dhcp}}'}
+      num_networks: {{num_networks}}
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
-      type: "constant"
+      type: 'constant'
     context:
       users:
         tenants: 1
@@ -18,7 +28,12 @@ BrowbeatPlugin.neutron_securitygroup_port:
         neutron:
           network: -1
           port: -1
-          security_group: -1
+          router: -1
+          subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
     sla:
       max_avg_duration: {{sla_max_avg_duration}}
       max_seconds_per_iteration: {{sla_max_seconds}}

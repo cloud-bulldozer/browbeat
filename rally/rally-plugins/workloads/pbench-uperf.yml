@@ -1,7 +1,5 @@
-{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
-{% set sla_max_failure = sla_max_failure or 0 %}
-{% set sla_max_seconds = sla_max_seconds or 60 %}
-{% set times = times or 1 %}
+{% set image_name = image_name or 'browbeat-uperf' %}
+{% set flavor_name = flavor_name or 'm1.small' %}
 {% set num_pairs = num_pairs or 1 %}
 {% set instances = instances or 1 %}
 {% set password = password or 'None' %}
@@ -9,7 +7,9 @@
 {% set message_sizes = message_sizes or '64,1024,16384' %}
 {% set hypervisor_server = hypervisor_server or 'None' %}
 {% set hypervisor_client = hypervisor_client or 'None' %}
-
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
 BrowbeatPlugin.pbench_uperf:
   -
