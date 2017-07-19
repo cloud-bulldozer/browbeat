@@ -17,8 +17,6 @@ from rally.common import logging
 from rally.plugins.openstack.context.network import networks
 from rally.task import context
 from rally import consts
-import time
-
 
 LOG = logging.getLogger(__name__)
 
@@ -63,6 +61,4 @@ class BrowbeatPersistNetwork(networks.Network):
 
     @logging.log_task_wrapper(LOG.info, _("Exit context: `browbeat_persist_network`"))
     def cleanup(self):
-        if self.config.get('cleanup_delay'):
-            LOG.debug('Cleanup Delaying: {}'.format(self.config.get('cleanup_delay')))
-            time.sleep(self.config.get('cleanup_delay'))
+        pass

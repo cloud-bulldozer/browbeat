@@ -12,7 +12,6 @@ elasticsearch:
   regather: false
   host: 1.1.1.1
   port: 9200
-  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -43,10 +42,9 @@ grafana:
 rally:
   enabled: true
   sleep_before: 0
-  # Sleeps 30 minutes after each iteration to allow for system resources to degrade or
-  # display stepped degrading (If the system is hitting saturation or high utilization)
-  sleep_after: 1800
+  sleep_after: 0
   plugins:
+    - browbeat: rally/rally-plugins/browbeat
     - nova: rally/rally-plugins/nova
   benchmarks:
     # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms
@@ -60,49 +58,59 @@ rally:
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-02
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-03
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-04
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-05
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-06
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-07
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-08
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-09
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
         - name: nova-boot-100-10
           enabled: true
           image_name: cirros
           flavor_name: m1.xtiny
+          cleanup_delay: 1800
           file: rally/rally-plugins/nova/nova_boot_persist.yml
