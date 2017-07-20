@@ -20,15 +20,15 @@
       register: osp_version
       become: true
 
-    - name: (Ocata) Set Controller Task
+    - name: (Newton, Ocata) Set Controller Task
       set_fact:
         the_task: "systemctl restart openstack-ceilometer-central.service"
-      when: "('Ocata' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('controller' in group_names)"
 
-    - name: (Ocata) Set Compute Task
+    - name: (Newton, Ocata) Set Compute Task
       set_fact:
         the_task: "systemctl restart openstack-ceilometer-compute.service"
-      when: "('Ocata' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('compute' in group_names)"
 
     - name: (Pike) Set Controller Task
       set_fact:

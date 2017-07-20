@@ -9,6 +9,7 @@
 
 - hosts: overcloud
   remote_user: "{{ host_remote_user }}"
+  gather_facts: false
   vars_files:
     - ../install/group_vars/all.yml
   tasks:
