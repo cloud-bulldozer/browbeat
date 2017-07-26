@@ -78,7 +78,6 @@
   roles:
     - browbeat/common
     - browbeat/browbeat
-    - browbeat/yoda
     - browbeat/template-configs
     - browbeat/statsd-ironic
 

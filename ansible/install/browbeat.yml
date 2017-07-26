@@ -19,7 +19,6 @@
     - perfkitbenchmarker
     - rally
     - shaker
-    - yoda
     - flavors
     - images
   environment: "{{proxy_env}}"

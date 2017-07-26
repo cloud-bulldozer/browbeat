@@ -50,14 +50,14 @@ yoda:
       type: introspection
       enabled: true
       method: individual
-      times: 10
+      times: 3
       timeout: 1800
       batch_size: 5
     - name: introspect-{{ overcloud_size }}-bulk
       type: introspection
       enabled: true
       method: bulk
-      times: 10
+      times: 3
       timeout: 1800
     - name: No-HA-Max-Compute-{{ overcloud_size }}-full-deploy
       type: overcloud
@@ -68,7 +68,7 @@ yoda:
       enabled: true
       step: 5
       keep_stack: false
-      times: 2
+      times: 1
       cloud:
         - node: "compute"
           start_scale: 1
@@ -86,7 +86,7 @@ yoda:
       enabled: true
       step: 5
       keep_stack: true
-      times: 2
+      times: 1
       cloud:
         - node: "compute"
           start_scale: 1

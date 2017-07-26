@@ -164,7 +164,7 @@ class Yoda(WorkloadBase.WorkloadBase):
 
         for node in nodes:
             cmd = cmd_base.format(env_setup, node)
-            self.tools.run_async_cmd(cmd)
+            self.tools.run_async_cmd(cmd + "\"")
             time.sleep(.5)
 
     # Gathers metrics on the instack env import
@@ -174,7 +174,7 @@ class Yoda(WorkloadBase.WorkloadBase):
         cmd = "{} openstack overcloud node import {}".format(env_setup, filepath)
         start_time = datetime.datetime.utcnow()
 
-        out = self.tools.run_cmd(cmd)
+        out = self.tools.run_cmd(cmd + "\"")
 
         nodes = conn.bare_metal.nodes()
         for node in nodes:
@@ -210,7 +210,7 @@ class Yoda(WorkloadBase.WorkloadBase):
             results['nodes'][node.id]["failures"] = 0
             results['nodes'][node.id]["state_list"] = None
 
-        self.tools.run_async_cmd(cmd)
+        self.tools.run_async_cmd(cmd + "\"")
 
         out = self.watch_introspecting_nodes(nodes, timeout, conn, results)
 
@@ -381,7 +381,7 @@ class Yoda(WorkloadBase.WorkloadBase):
 
         self.logger.debug("Openstack deployment command is " + cmd)
         results["overcloud_deploy_command"] = cmd
-        deploy_process = self.tools.run_async_cmd(cmd)
+        deploy_process = self.tools.run_async_cmd(cmd + "\"")
         results['cleaning_failures'] = self.failed_cleaning_count(conn)
         results['nodes'] = {}
 
@@ -608,8 +608,7 @@ class Yoda(WorkloadBase.WorkloadBase):
         self.logger.debug("Time Stamp (Prefix): {}".format(dir_ts))
 
         stackrc = self.config.get('yoda')['stackrc']
-        # venv = self.config.get('yoda')['venv']
-        env_setup = "source {};".format(stackrc)
+        env_setup = "env -i bash -c \"source {}; ".format(stackrc)
 
         auth_vars = self.tools.load_stackrc(stackrc)
         if 'OS_AUTH_URL' not in auth_vars:
