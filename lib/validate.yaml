@@ -300,9 +300,6 @@ mapping:
       stackrc:
         type: str
         required: True
-      venv:
-        type: str
-        required: True
       benchmarks:
         type: seq
         required: True

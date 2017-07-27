@@ -4,6 +4,7 @@ browbeat:
   results : results/
   rerun: 1
   cloud_name: {{ browbeat_cloud_name }}
+  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: {{ elastic_enabled }}
   host: {{ elastic_host }}
@@ -44,7 +45,6 @@ yoda:
   enabled: true
   instackenv: "/home/stack/instackenv.json"
   stackrc: "/home/stack/stackrc"
-  venv: "/home/stack/yoda-venv/bin/activate"
   benchmarks:
     - name: introspect-{{ overcloud_size }}-batch-5
       type: introspection
@@ -59,58 +59,6 @@ yoda:
       method: bulk
       times: 3
       timeout: 1800
-    - name: No-HA-Max-Compute-{{ overcloud_size }}-full-deploy
-      type: overcloud
-      ntp_server: pool.ntp.org
-      timeout: 600
-      templates:
-        - ""
-      enabled: true
-      step: 5
-      keep_stack: false
-      times: 1
-      cloud:
-        - node: "compute"
-          start_scale: 1
-          end_scale: {{ overcloud_size | int - 1 }}
-        - node: "control"
-          start_scale: 1
-          end_scale: 1
-    - name: No-HA-Max-Compute-{{ overcloud_size }}-stack-update
-      type: overcloud
-      ntp_server: pool.ntp.org
-      timeout: 600
-      templates:
-        - ""
-      instackenv: "/home/stack/instackenv.json"
-      enabled: true
-      step: 5
-      keep_stack: true
-      times: 1
-      cloud:
-        - node: "compute"
-          start_scale: 1
-          end_scale: {{ overcloud_size | int - 1 }}
-        - node: "control"
-          start_scale: 1
-          end_scale: 1
-    - name: HA-Max-Compute-{{ overcloud_size }}-full-deploy
-      type: overcloud
-      ntp_server: pool.ntp.org
-      timeout: 600
-      templates:
-        - ""
-      enabled: true
-      step: 5
-      keep_stack: false
-      times: 1
-      cloud:
-        - node: "compute"
-          start_scale: 1
-          end_scale: {{ overcloud_size | int - 3 }}
-        - node: "control"
-          start_scale: 3
-          end_scale: 3
     - name: HA-Max-Compute-{{ overcloud_size }}-stack-update
       type: overcloud
       ntp_server: pool.ntp.org
@@ -118,29 +66,12 @@ yoda:
       templates:
         - ""
       enabled: true
-      step: 5
+      step: 1
       keep_stack: true
       times: 1
       cloud:
         - node: "compute"
-          start_scale: 1
-          end_scale: {{ overcloud_size | int - 3 }}
-        - node: "control"
-          start_scale: 3
-          end_scale: 3
-    - name: HA-Max-Compute-{{ overcloud_size }}-stack-update
-      type: overcloud
-      ntp_server: pool.ntp.org
-      timeout: 600
-      templates:
-        - ""
-      enabled: true
-      step: 5
-      keep_stack: true
-      times: 1
-      cloud:
-        - node: "compute"
-          start_scale: 1
+          start_scale: {{ overcloud_size | int - 3 }}
           end_scale: {{ overcloud_size | int - 3 }}
         - node: "control"
           start_scale: 3

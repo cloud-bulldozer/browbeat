@@ -325,7 +325,7 @@ class Yoda(WorkloadBase.WorkloadBase):
                 wait_time += 10
                 if wait_time > timeout:
                     self.logger.error("Overcloud stack delete failed")
-                exit(1)
+                    exit(1)
         except exceptions.SDKException:
             # Recursion is probably the wrong way to handle this
             self.logger.error("Heat failure during overcloud delete, retrying")
@@ -436,8 +436,11 @@ class Yoda(WorkloadBase.WorkloadBase):
                     # even if nodes are never pingable
                     rentry['ping_time'] = -1
                     condition = 'private' in node.addresses
+                    if condition:
+                      ping = self.tools.is_pingable(node.addresses['private'])
+                    else:
+                      ping = False
                     condition = condition and 'pingable_at' not in rentry
-                    ping = self.tools.is_pingable(node.addresses['private'])
                     condition = condition and ping
                     if condition:
                       ping_time = datetime.datetime.utcnow()
