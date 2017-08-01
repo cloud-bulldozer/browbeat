@@ -4,20 +4,35 @@
 
 function usage
 {
-    echo "Usage: generate_tripleo_hostfile.sh [-t <tripleo_ip_address> [-l | --localhost]] | [-h | --help]"
+    echo "Usage: generate_tripleo_hostfile.sh"
+    echo "          [-t | --tripleo_ip_address <tripleo_ip_address> [-l | --localhost]]"
+    echo "          [-o | --overcloud_stack_name <overcloud_stack_name>]"
+    echo "          [-c | --ceph_stack_name <ceph_stack_name>]"
+    echo "          [-h | --help]"
     echo "Generates ssh config file to use with an TripleO undercloud host as a jumpbox and creates ansible inventory file."
 }
 
 uncomment_localhost=false
 tripleo_ip_address=
+overcloud_name="overcloud"
+ceph_stack_name=$overcloud_name
 while [ "$1" != "" ]; do
   case $1 in
     -l | --localhost )      uncomment_localhost=true
+                            tripleo_ip_address="localhost"
                             ;;
     -t | --tripleo_ip_address )
                             shift
                             tripleo_ip_address=$1
                             ;;
+    -o | --overcloud_stack_name )
+                            shift
+                            overcloud_name=$1
+                            ;;
+    -c | --ceph_stack_name )
+                            shift
+                            ceph_stack_name=$1
+			    ;;
     -h | --help )           usage
                             exit
                             ;;
@@ -44,14 +59,14 @@ if [[ "${tripleo_ip_address}" == "localhost" ]]; then
 fi
 
 # Check if there are any clouds built.
-clouds=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack list | grep -i -E 'overcloud'")
+clouds=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack list | grep -i -E '$overcloud_name'")
 if [ ${#clouds} -gt 0 ]; then
 	  nodes=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack server list 2>/dev/null | grep -i -E 'active|running'")
   if [ ${#nodes} -lt 1 ]; then
     echo "ERROR: nova list failed to execute properly, please check the openstack-nova-api on the undercloud."
     exit 1
   fi
-  controller_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Controller > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  controller_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name Controller > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#controller_id} -lt 3 ]; then
      echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
      exit 1
@@ -62,7 +77,7 @@ if [ ${#clouds} -gt 0 ]; then
      exit 1
   fi
 
-  blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#blockstorage_id} -lt 3 ]; then
     echo "Info: No BlockStorage resources."
   else
@@ -71,7 +86,7 @@ if [ ${#clouds} -gt 0 ]; then
        echo "Info: No BlockStorage resources."
      fi
   fi
-  objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  objectstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name ObjectStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#objectstorage_id} -lt 3 ]; then
     echo "Info: No ObjectStorage resources."
   else
@@ -80,7 +95,7 @@ if [ ${#clouds} -gt 0 ]; then
        echo "Info: No ObjectStorage resources."
      fi
   fi
-  cephstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud CephStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  cephstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $ceph_stack_name CephStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#cephstorage_id} -lt 3 ]; then
     echo "Info: No CephStorage resources."
   else
@@ -89,7 +104,7 @@ if [ ${#clouds} -gt 0 ]; then
        echo "Info: No CephStorage resources."
     fi
   fi
-  compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show overcloud Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#compute_id} -lt 3 ]; then
      echo "Info: No compute resources"
   else
