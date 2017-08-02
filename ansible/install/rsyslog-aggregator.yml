@@ -1,0 +1,15 @@
+---
+#
+# Playbook to install and configure a rsyslog aggregation server
+#
+
+
+- hosts: elasticsearch
+  remote_user: root
+  vars:
+    - rsyslog_elasticsearch_server: "localhost"
+    - rsyslog_aggregator_server: "localhost"
+    - rsyslog_aggregator: true
+  roles:
+    - rsyslog-install
+    - rsyslog-templates

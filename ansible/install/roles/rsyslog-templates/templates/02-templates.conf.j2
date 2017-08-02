@@ -1,0 +1,55 @@
+#### TEMPLATES ####
+
+# this is for index names to be like: logstash-YYYY.MM.DD
+# WARNING: any rsyslog collecting host MUST be running UTC
+#          if the proper index is to be chosen to hold the
+#          log entry. If you are running EDT, e.g., then
+#          the previous day's index will be chosen even
+#          though the UTC value is the current day, because
+#          the pattern logic does not convert "timereported"
+#          to a UTC value before pulling data out of it.
+{% if not rsyslog_aggregator %}
+set $.tags = "{{ 'browbeat_uuid:{} '.format(browbeat_uuid)  if browbeat_uuid is defined else '' }}\
+              {{ 'rhos_puddle:{} '.format(rhos_puddle) if rhos_puddle is defined else '' }}\
+              {{ 'dlrn_hash:{}'.format(dlrn_hash) if dlrn_hash is defined else '' }}";
+set $.browbeat_json = "{{ '{{\\"uuid\\":\\"{}\\", '.format(browbeat_uuid)  if browbeat_uuid is defined else '{' }}\
+                       {{ '\\"rhos_puddle\\":\\"{}\\", '.format(rhos_puddle) if rhos_puddle is defined else '' }}\
+                       {{ '\\"dlrn_hash\\":\\"{}\\", '.format(dlrn_hash) if dlrn_hash is defined else '' }}\
+                       {{ '\\"cloud_name\\":\\"{}\\"}}'.format(rsyslog_cloud_name) if rsyslog_cloud_name is defined else '}' }}";
+{% endif %}
+
+
+{% if not rsyslog_forwarding or rsyslog_aggregator %}
+template(name="logstash-index-pattern" type="list") {
+    constant(value="logstash-")
+    property(name="timereported" dateFormat="rfc3339" position.from="1" position.to="4")
+    constant(value=".")
+    property(name="timereported" dateFormat="rfc3339" position.from="6" position.to="7")
+    constant(value=".")
+    property(name="timereported" dateFormat="rfc3339" position.from="9" position.to="10")
+    constant(value=".")
+    property(name="timereported" dateFormat="rfc3339" position.from="12" position.to="13")
+    }
+# this is for formatting our syslog data in JSON with @timestamp using a "hierarchical" metdata namespace
+template(name="com-redhat-rsyslog-hier"
+         type="list") {
+    constant(value="{")
+    constant(value="\"@timestamp\":\"")               property(name="timereported" dateFormat="rfc3339")
+    constant(value="\",\"@version\":\"2016.01.06-0")
+    constant(value="\",\"browbeat\":")                property(name="$.browbeat_json")
+    constant(value=",\"message\":\"")                 property(name="$.msg" format="json")
+    constant(value="\",\"hostname\":\"")              property(name="$.hostname")
+    constant(value="\",\"level\":\"")                 property(name="$.level")
+    constant(value="\",\"pid\":\"")                   property(name="$.pid")
+    constant(value="\",\"tags\":\"")                  property(name="$.tags")
+    constant(value="\",\"CEE\":")                     property(name="$!all-json")
+    constant(value=",\"systemd\":")                   property(name="$.systemd")
+    constant(value=",\"rsyslog\":")                   property(name="$.rsyslog")
+    constant(value="}\n")
+    }
+{% else %}
+# This is basically the RSYSLOG_SyslogProtocol23Format, which is RFC 5424 on
+# the wire, but with the message payload a CEE/Lumberjack JSON document.
+template(name="ViaQ_SyslogProtocol23Format" type="string"
+    string="<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %STRUCTURED-DATA% @cee:%$!%\n")
+{% endif %}

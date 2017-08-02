@@ -1,0 +1,134 @@
+---
+# configures rsyslog on the over and undercloud hosts
+
+- name: Create cache dir if configured
+  file:
+    path: "/srv/data/rsyslog/"
+    state: directory
+  become: true
+  when: disk_backed_rsyslog
+
+- name: Copy log location detector
+  copy:
+    src: openstack-log-locator.py
+    dest: /tmp/openstack-log-locator.py
+  when: not rsyslog_aggregator
+
+- name: Gather info about services
+  shell: "python /tmp/openstack-log-locator.py {{item}}"
+  with_items: "{{openstack_services}}"
+  register: log_config_lines
+  become: true
+  when: not rsyslog_aggregator
+
+- name: Delete existing conf files in case we change roles
+  file:
+    path: "/etc/rsyslog.d/{{item}}"
+    state: absent
+  become: true
+  with_items:
+    - 00-queue.conf
+    - 01-modules.conf
+    - 02-templates.conf
+    - 03-rules.conf
+    - 04-inputs.conf
+    - 05-outputs.conf
+
+- name: Template rsyslog for direct to elastic
+  template:
+    src: "{{item}}"
+    dest: "/etc/rsyslog.d/{{item[:-3]}}"
+  become: true
+  with_items:
+    - 00-queue.conf.j2
+    - 01-modules.conf.j2
+    - 02-templates.conf.j2
+    - 03-rules.conf.j2
+    - 04-inputs.conf.j2
+    - 05-outputs.conf.j2
+  when: (not rsyslog_forwarding) and (not rsyslog_aggregator)
+
+- name: Template rsyslog for forwarding
+  template:
+    src: "{{item}}"
+    dest: "/etc/rsyslog.d/{{item[:-3]}}"
+  become: true
+  with_items:
+    - 00-queue.conf.j2
+    - 01-modules.conf.j2
+    - 02-templates.conf.j2
+    - 03-rules.conf.j2
+    - 04-inputs.conf.j2
+    - 05-outputs.conf.j2
+  when: (rsyslog_forwarding) and (not rsyslog_aggregator)
+
+- name: Template rsyslog for aggregating
+  template:
+    src: "{{item}}"
+    dest: "/etc/rsyslog.d/{{item[:-3]}}"
+  become: true
+  with_items:
+    - 00-queue.conf.j2
+    - 01-modules.conf.j2
+    - 02-templates.conf.j2
+    - 03-rules.conf.j2
+    - 05-outputs.conf.j2
+  when: rsyslog_aggregator
+
+
+- name: Remove legacy config directives
+  lineinfile:
+    line: "$SystemLogSocketName /run/systemd/journal/syslog"
+    state: absent
+    dest: /etc/rsyslog.d/listen.conf
+  become: true
+
+- name: Install selinux utils
+  yum:
+    name: policycoreutils-python
+    state: present
+  become: true
+
+- name: Add tcp reception port
+  seport:
+    ports: "{{rsyslog_aggregator_port}}"
+    proto: tcp
+    setype: syslogd_port_t
+    state: present
+  become: true
+  when: rsyslog_aggregator
+
+- name: Add es port access to rsyslog service perms
+  seport:
+    ports: "{{rsyslog_elasticsearch_port}}"
+    proto: tcp
+    setype: syslogd_port_t
+    state: present
+  become: true
+  when: rsyslog_aggregator
+
+# cool feature, exits 1 on invalid configs
+- name: Validate rsyslog config
+  shell: "rsyslogd -nN 1"
+  become: true
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  become: true
+
+# If you are setting up an aggregator a failure here means the
+# aggregator is not accessible to the outside world, debug selinux
+#
+# If you are deploying a client with aggregation this failing means
+# that the es server you are pointing at does not have an aggregator
+# setup, either deploy without aggregation or use the rsyslog_aggregator
+# playbook to deploy one.
+- name: validate connection
+  wait_for:
+    host: "{{rsyslog_aggregator_server}}"
+    port: "{{rsyslog_aggregator_port}}"
+    state: started
+    timeout: 10
+  when: rsyslog_aggregator or rsyslog_forwarding

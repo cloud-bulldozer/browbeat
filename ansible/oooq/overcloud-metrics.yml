@@ -1,0 +1,11 @@
+---
+- name: Setup Overcloud Metrics
+  hosts: overcloud
+  vars:
+    - config_type: "{{group_names[0]}}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack
+    - browbeat/rsyslog-install
+    - browbeat/rsyslog-templates

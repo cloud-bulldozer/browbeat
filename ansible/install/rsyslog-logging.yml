@@ -1,0 +1,22 @@
+---
+#
+# Playbook to install and configure rsyslog on the overcloud/undercloud
+#
+
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  vars:
+    - ansible_ssh_pipelining: yes
+  roles:
+    - rsyslog-install
+    - rsyslog-templates
+
+- hosts: overcloud
+  remote_user: "{{ host_remote_user }}"
+  serial: 10
+  vars:
+    - ansible_ssh_pipelining: yes
+  roles:
+    - rsyslog-install
+    - rsyslog-templates

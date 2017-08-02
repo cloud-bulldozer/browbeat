@@ -15,4 +15,3 @@
     - browbeat/images
     - browbeat/ci-network
     - browbeat/template-configs
-    - browbeat/statsd-ironic

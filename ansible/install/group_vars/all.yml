@@ -353,6 +353,7 @@ elk_server_ssl_cert_port: 8080
 # logging_backend:
 # logging_backend: logstash
 # logging_backend: fluentd
+# logging_backend: rsyslog
 logging_backend:
 #
 ### logstash options ###
@@ -361,6 +362,20 @@ logstash_syslog_port: 5044
 fluentd_syslog_port: 42185
 fluentd_http_port: 9919
 fluentd_debug_port: 24230
+### rsyslog options ###
+# Used for the rsyslog -> elasticsearch
+# or rsyslog forwarder -> rsyslog aggregator -> elasticsearch
+# logging pattern
+rsyslog_elasticsearch_server: "{{es_ip}}"
+rsyslog_elasticsearch_port: "{{es_local_port}}"
+rsyslog_aggregator_server: "{{es_ip}}"
+rsyslog_aggregator_port: "7894"
+rsyslog_cloud_name: "{{graphite_prefix}}"
+disk_backed_rsyslog: false
+rsyslog_forwarding: true
+# If true up to 2gb of messages will be logged
+# to disk if es goes down vs a 100mb in memory
+# cache otherwise
 ## elasticsearch local port listener
 # we will enable localhost listening on TCP/9200
 # due to utilizing elasticsearch connectors, general

@@ -1,0 +1,13 @@
+---
+- name: Setup Undercloud Metrics
+  hosts: undercloud
+  vars:
+    - config_type: "{{group_names[0]}}"
+    - statsd_host: "{{ graphite_host }}"
+  roles:
+    - browbeat/common
+    - browbeat/epel
+    - browbeat/collectd-openstack
+    - browbeat/rsyslog-install
+    - browbeat/rsyslog-templates
+    - browbeat/statsd-ironic

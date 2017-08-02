@@ -1,0 +1,59 @@
+---
+# Installs rsyslog packages, used with other rsyslog roles
+
+- name: Install rsyslog and rsyslog-elasticsearch
+  yum:
+    name: "{{item}}"
+    state: present
+  become: true
+  with_items:
+    - rsyslog
+    - rsyslog-elasticsearch
+    - rsyslog-mmjsonparse
+    - rsyslog-mmutf8fix
+  register: install_rsyslog
+  ignore_errors: true
+
+# ^ this will work on rhel/centos 7.4 or later, earlier than that
+# we have rsyslog 7.x and must use a repo to get 8.x
+
+# We can't just add the repo and do an upgrade do to irresolvable
+# deps involving some rsyslog components have other package names
+- name: Remove 7.x rsyslog packages
+  yum:
+    name: "{{item}}"
+    state: absent
+  become: true
+  with_items:
+    - rsyslog
+    - rsyslog-elasticsearch
+    - rsyslog-mmjsonparse
+    - rsyslog-mmutf8fix
+  when: install_rsyslog|failed
+
+- name: Add repository
+  yum_repository:
+    name: rsyslog_v8
+    description: Up to date rsyslog
+    baseurl: http://rpms.adiscon.com/v8-stable/epel-7/x86_64/
+  become: true
+  when: install_rsyslog|failed
+
+- name: Add key
+  rpm_key:
+    state: present
+    key: http://rpms.adiscon.com/RPM-GPG-KEY-Adiscon
+  become: true
+  when: install_rsyslog|failed
+
+- name: Install rsyslog 8 from external repo
+  yum:
+    name: "{{item}}"
+    state: present
+  become: true
+  with_items:
+    - rsyslog
+    - rsyslog-elasticsearch
+    - rsyslog-mmjsonparse
+    - rsyslog-mmutf8fix
+  when: install_rsyslog|failed

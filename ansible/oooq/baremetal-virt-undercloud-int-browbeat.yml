@@ -5,15 +5,14 @@
 
 - include: configure-browbeat.yml
 
-- include: undercloud-collectd.yml
-
 - include: baremetal-quickstart-extras.yml
 
 - include: install-browbeat.yml
 
 - include: disable-ssh-dns.yml
 
-- include: overcloud-collectd.yml
+- include: undercloud-metrics.yml
+- include: overcloud-metrics.yml
 
 - include: gather-metadata.yml
 

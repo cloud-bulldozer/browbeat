@@ -1,0 +1,26 @@
+#### MODULES ####
+
+# Emit internal rsyslog counters
+module(load="impstats" format="cee" interval="60")
+
+{% if not rsyslog_aggregator %}
+module(load="imfile")
+{% endif %}
+
+# Read from systemd's journal
+module(load="imjournal" StateFile="imjournal.state" UsePidFromSystem="on" RateLimit.Burst="500000" RateLimit.Interval="1" IgnorePreviousMessages="on" PersistStateInterval="1000")
+
+{% if not rsyslog_forwarding or rsyslog_aggregator %}
+# ElasticSearch output module
+module(load="omelasticsearch")
+
+# Provides TCP syslog reception
+module(load="imptcp")
+input(type="imptcp" port="{{rsyslog_aggregator_port}}")
+{% endif %}
+
+# Parsing CEE JSON messages
+module(load="mmjsonparse")
+
+# Ensures we have UTF-8 encoded payloads
+module(load="mmutf8fix")

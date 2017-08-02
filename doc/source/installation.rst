@@ -86,6 +86,27 @@ has been installed. To skip directly to this task execute:
 
   [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
 
+(Optional) Install Rsyslogd logging with aggregation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First configure the values rsyslog values and elasticsearch parameters in
+`ansible/install/group_vars/all.yml`. If you have a large number of hosts
+deploying an aggregator using `ansible/install/rsyslog-aggregator.yml`
+is strongly suggested. If you have a small scale, change the value
+rsyslog_forwarding in `all.yml` to `false`. Once things are configured
+to your liking deploy logging on the cloud using the `rsyslog-logging.yml`
+playbook.
+
+Firewall configuration for the aggregator is left up to the user. The logging
+install playbook will check that the aggregator is up and the port is open if
+you deploy with aggregation.
+
+::
+
+  [stack@ospd ansible]$ vim install/group_vars/all.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/rsyslog-aggregator.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/rsyslog-logging.yml
+
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

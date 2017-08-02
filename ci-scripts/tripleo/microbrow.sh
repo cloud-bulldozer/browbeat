@@ -25,13 +25,17 @@ export VARS="elastic_enabled=true \
 --extra-vars elastic_host=$ELASTIC_HOST \
 --extra-vars graphite_host=$GRAPH_HOST \
 --extra-vars statsd_host=$GRAPH_HOST \
---extra-vars statsd_enabled=True \
+--extra-vars statsd_enabled=False \
 --extra-vars grafana_host=$GRAPH_HOST \
 --extra-vars grafana_username=$GRAFANA_USER \
 --extra-vars grafana_password=$GRAFANA_PASS \
 --extra-vars browbeat_cloud_name=$CLOUD_NAME \
 --extra-vars browbeat_config_file=$BENCHMARK \
---extra-vars graphite_prefix=$CLOUD_NAME"
+--extra-vars graphite_prefix=$CLOUD_NAME \
+--extra-vars rsyslog_elasticsearch_server=$ELASTIC_HOST \
+--extra-vars rsyslog_aggregator_server=$ELASTIC_HOST \
+--extra-vars rsyslog_cloud_name=$CLOUD_NAME \
+--extra-vars rsyslog_forwarding=true"
 
 #For Pipeline builds we need to get the pipeline image
 #we check that the pipeline image var is set and then

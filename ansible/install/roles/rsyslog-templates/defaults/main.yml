@@ -1,0 +1,34 @@
+openstack_services:
+   - ceilometer
+   - cinder
+   - cluster
+   - congress
+   - glance
+   - gnocchi
+   - heat
+   - horizon
+   - httpd
+   - ironic
+   - ironic-inspector
+   - keystone
+   - mariadb
+   - mongodb
+   - mysql
+   - neutron
+   - nova
+   - openvswitch
+   - ovs
+   - rabbitmq
+   - rabbitmq
+   - redis
+   - swift
+   - zaqar
+rsyslog_elasticsearch_server: ""
+rsyslog_elasticsearch_port: "9200"
+rsyslog_aggregator_server: ""
+rsyslog_aggregator_port: "7894"
+rsyslog_cloud_name: "{{graphite_prefix}}"
+disk_backed_rsyslog: false
+rsyslog_forwarding: true
+rsyslog_aggregator: false
+disk_backed_rsyslog: false

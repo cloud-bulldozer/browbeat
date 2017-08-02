@@ -1,0 +1,57 @@
+#jinja2: lstrip_blocks: True
+# This template aggregates common OpenStack logs
+# via rsyslog. With dynamic detection of containerization
+# and new log file locations. Any service in a container
+# will we pulled from /var/log/containers any service without
+# a container will pull from /var/log
+
+# Credit jkilpatr for containers templating portante for everything else
+
+#### GLOBAL DIRECTIVES ####
+
+global(
+    # Where to place auxiliary files
+    workDirectory="/var/lib/rsyslog"
+    # perf-dept: we want fully qualified domain names for common logging
+    preserveFQDN="on"
+    # Try to avoid any message truncation
+    maxMessageSize="65536")
+
+{% if disk_backed_rsyslog %}
+main_queue(
+    # Directory where the queue files on disk will be stored
+    queue.spoolDirectory="/srv/data/rsyslog"
+    # Prefix of the name the queue files on disk
+    queue.filename="main-queue"
+    # In-memory linked-list queue, but because filename is defined it is disk-assisted
+    # See http://www.rsyslog.com/doc/v8-stable/concepts/queues.html?highlight=disk%20assisted
+    queue.type="linkedlist"
+    # Only store up to 2 GB of logs on disk
+    queue.maxdiskspace="2g"
+    # Use 100 MB queue files
+    queue.maxfilesize="100m"
+    # Update disk queue every 1,000 messages
+    queue.checkpointinterval="1000"
+    # Fsync when a check point occurs
+    queue.syncqueuefiles="on"
+    # Allow up to 4 threads processing items in the queue
+    queue.workerthreads="4"
+    # Beaf up the internal message queue
+    queue.size="131072"
+    # 75% of QueueSize, start persisting to disk
+    queue.highwatermark="98304"
+    # 90% of QueueSize, start discarding messages
+    queue.discardmark="117964"
+    # If we reach the discard mark, we'll throw out notice, info, and debug messages
+    queue.discardseverity="5")
+{% else %}
+main_queue(
+    # Allow up to 4 threads processing items in the queue
+    queue.workerthreads="4"
+    # Beaf up the internal message queue
+    queue.size="131072"
+    # 90% of QueueSize
+    queue.discardmark="117964"
+    # If we reach the discard mark, we'll throw out notice, info, and debug messages
+    queue.discardseverity="5")
+{% endif %}

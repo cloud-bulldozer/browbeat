@@ -1,6 +1,7 @@
 ---
 - include: baremetal-prep-virthost.yml
 
+
 - name: Validate IPMI and instackenv.json
   hosts: undercloud
   gather_facts: yes
@@ -12,6 +13,8 @@
   gather_facts: no
   roles:
     - undercloud-deploy
+
+- include: undercloud-metrics.yml
 
 - name:  copy over config files
   hosts: undercloud
@@ -61,25 +64,14 @@
     - browbeat/pre-install-setup
     - browbeat/oooq-metadata
 
-- name: Setup Undercloud CollectD
-  hosts: undercloud
-  vars:
-    config_type: "{{group_names[0]}}"
-  roles:
-    - browbeat/common
-    - browbeat/epel
-    - browbeat/collectd-openstack
-
 - name: Install Browbeat
   hosts: undercloud
   vars:
-    results_in_httpd: false
-    statsd_host: "{{ graphite_host }}"
+    - results_in_httpd: false
   roles:
     - browbeat/common
     - browbeat/browbeat
     - browbeat/template-configs
-    - browbeat/statsd-ironic
 
 - name: Run Browbeat
   hosts: undercloud
