@@ -1,6 +1,9 @@
 ---
 - name: Copy config parser script to remote
   copy: src=openstack-config-parser.py dest=/tmp/openstack-config-parser.py
+  notify:
+     - cleanup script
+     - cleanup varsfile
 
 - name: Determine if docker is running
   shell: docker ps | wc -l

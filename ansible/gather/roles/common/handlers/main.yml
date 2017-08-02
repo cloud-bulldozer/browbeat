@@ -1,0 +1,15 @@
+---
+# Cleanup for gather common
+# Required to prevent perms issues
+
+- name: cleanup script
+  file:
+    path: /tmp/openstack-config-parser.py
+    state: absent
+  become: true
+
+- name: cleanup varsfile
+  file:
+    path: /tmp/out.yml
+    state: absent
+  become: true
