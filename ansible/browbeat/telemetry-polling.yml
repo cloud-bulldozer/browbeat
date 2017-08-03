@@ -21,5 +21,11 @@
   vars:
     polling_interval: 300
     reduced_metrics: false
+  pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
   roles:
     - ceilometer-polling

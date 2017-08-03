@@ -1,0 +1,16 @@
+---
+#
+# Clean Gnocchi resources
+#
+# Used incase of adding a new default archive-policy and thus all resources should
+# use the same new archive-policy.
+#
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Clean Gnocchi Resources
+      shell: ". {{ overcloudrc }}; gnocchi resource list -c type -c id -c revision_end  | grep None | awk '{print $2}' | xargs -I % gnocchi resource delete %"

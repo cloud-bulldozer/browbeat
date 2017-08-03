@@ -28,12 +28,19 @@
         value: "{{item.value}}"
         backup: yes
       with_items:
+        # Newton, Ocata, Pike
         - section: metricd
           option: workers
           value: "{{metricd_workers}}"
+        # Newton
+        - section: storage
+          option: metric_processing_delay
+          value: "{{metric_processing_delay}}"
+        # Ocata, Pike
         - section: metricd
           option: metric_processing_delay
           value: "{{metric_processing_delay}}"
+        # Pike
         - section: metricd
           option: processing_replicas
           value: "{{processing_replicas}}"

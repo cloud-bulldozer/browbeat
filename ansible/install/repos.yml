@@ -1,0 +1,12 @@
+---
+#
+# Add repos
+#
+# Can be used in conjunction with doing an upgrade
+#
+
+- hosts: overcloud
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  roles:
+    - { role: repo }

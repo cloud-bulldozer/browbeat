@@ -1,0 +1,28 @@
+---
+#
+# Reduce the archive-policy to a single retention period to reduce the telemetry load.
+#
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Create low-workload archive-policy
+      shell: ". {{ overcloudrc }}; gnocchi archive-policy create -d points:8640,granularity:0:05:00 -b 0 -m std -m count -m min -m max -m sum -m mean low-workload"
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  gather_facts: false
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    restart_notification: false
+    restart_collector: true
+    ceilometer_configuration:
+      - section: dispatcher_gnocchi
+        option: archive_policy
+        value: low-workload
+  roles:
+    - ceilometer-config

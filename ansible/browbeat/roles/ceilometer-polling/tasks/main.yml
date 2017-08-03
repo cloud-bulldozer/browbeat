@@ -3,7 +3,29 @@
 # Deploy the Ceilometer polling.yaml file
 #
 
-- name: Deploy polling.yaml file
+- name: (Newton) Deploy pipeline.yaml file
+  become: true
+  template:
+    src: pipeline.yaml.j2
+    dest: /etc/ceilometer/pipeline.yaml
+    owner: root
+    group: ceilometer
+    mode: 0640
+    backup: true
+  when: "{{reduced_metrics}} == false and ('Newton' in osp_version['content'] | b64decode)"
+
+- name: (Newton) Deploy the reduced metrics pipeline.yaml file
+  become: true
+  template:
+    src: reduced_pipeline.yaml.j2
+    dest: /etc/ceilometer/pipeline.yaml
+    owner: root
+    group: ceilometer
+    mode: 0640
+    backup: true
+  when: "{{reduced_metrics}} == true and ('Newton' in osp_version['content'] | b64decode)"
+
+- name: (Ocata, Pike) Deploy polling.yaml file
   become: true
   template:
     src: polling.yaml.j2
@@ -12,9 +34,9 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: "{{reduced_metrics}} == false"
+  when: "{{reduced_metrics}} == false and ('Ocata' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode)"
 
-- name: Deploy the reduced metrics polling.yaml file
+- name: (Ocata, Pike) Deploy the reduced metrics polling.yaml file
   become: true
   template:
     src: reduced_polling.yaml.j2
@@ -23,4 +45,4 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: reduced_metrics
+  when: "{{reduced_metrics}} == true and ('Ocata' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode)"
