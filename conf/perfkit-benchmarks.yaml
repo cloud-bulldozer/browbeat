@@ -8,6 +8,7 @@ browbeat:
   results : results/
   rerun: 1
   cloud_name: openstack
+  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   regather: false
@@ -48,7 +49,7 @@ perfkit:
   enabled: true
   sleep_before: 0
   sleep_after: 0
-  venv: /home/stack/perfkit-venv/bin/activate
+  venv: /home/stack/perfkit-venv
   default:
     image: centos7
     machine_type: m1.small

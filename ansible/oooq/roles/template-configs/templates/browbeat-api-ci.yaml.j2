@@ -2,6 +2,7 @@ browbeat:
   results : results/
   rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
+  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: {{ elastic_enabled }}
   host: {{ elastic_host }}
@@ -42,7 +43,7 @@ rally:
   enabled: true
   sleep_before: 5
   sleep_after: 5
-  venv: /home/stack/rally-venv/bin/activate
+  venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping

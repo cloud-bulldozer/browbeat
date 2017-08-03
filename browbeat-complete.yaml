@@ -3,6 +3,7 @@ browbeat:
   results : results/
   rerun: 3
   cloud_name: openstack
+  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   regather: false
@@ -43,7 +44,7 @@ perfkit:
   enabled: true
   sleep_before: 0
   sleep_after: 0
-  venv: /home/stack/perfkit-venv/bin/activate
+  venv: /home/stack/perfkit-venv
   default:
     image: centos7
     machine_type: m1.small
@@ -62,7 +63,7 @@ rally:
   enabled: true
   sleep_before: 5
   sleep_after: 5
-  venv: /home/stack/rally-venv/bin/activate
+  venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping

@@ -4,6 +4,7 @@ browbeat:
   results : results/
   rerun: 1
   cloud_name: openstack
+  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   host: 1.1.1.1
@@ -44,7 +45,7 @@ rally:
   enabled: true
   sleep_before: 0
   sleep_after: 0
-  venv: /home/stack/rally-venv/bin/activate
+  venv: /home/stack/rally-venv
   plugins:
     - gnocchi: rally/rally-plugins/gnocchi
   benchmarks:

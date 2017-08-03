@@ -89,7 +89,7 @@ class PerfKit(WorkloadBase.WorkloadBase):
                     as perfkit_results_json:
                 for result_count, json_result in enumerate(perfkit_results_json):
                     complete_result_json = {'browbeat_scenario': benchmark_config}
-                    complete_result_json['results'] = {'unit':{}, 'value': {}}
+                    complete_result_json['results'] = {'unit': {}, 'value': {}}
                     single_result = self.elastic.load_json(json_result.strip())
                     complete_result_json['browbeat_rerun'] = browbeat_rerun
                     complete_result_json['timestamp'] = str(es_ts).replace(" ", "T")
@@ -125,9 +125,11 @@ class PerfKit(WorkloadBase.WorkloadBase):
         # Build command to run
         if 'enabled' in benchmark_config:
             del benchmark_config['enabled']
-        cmd = ("source /home/stack/overcloudrc; source {0}; "
+        cmd = ("source {0}/bin/activate; source {1} "
                "/home/stack/perfkit-venv/PerfKitBenchmarker/pkb.py "
-               "--cloud={1} --run_uri=browbeat".format(self.config['perfkit']['venv'], cloud_type))
+               "--cloud={2} --run_uri=browbeat".format(
+                   self.config['perfkit']['venv'],
+                   self.config['browbeat']['overcloud_credentials'], cloud_type))
         for parameter, value in benchmark_config.iteritems():
             if not parameter == 'name':
                 self.logger.debug(

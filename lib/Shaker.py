@@ -357,7 +357,8 @@ class Shaker(WorkloadBase.WorkloadBase):
         self.logger.info(
             "The uuid for this shaker scenario is {}".format(shaker_uuid))
         cmd_env = (
-            "source {}/bin/activate; source /home/stack/overcloudrc").format(venv)
+            "source {0}/bin/activate; source {1}").format(venv, self.config['browbeat']
+                                                          ['overcloud_credentials'])
         if 'external' in filename and 'external_host' in self.config['shaker']:
             external_host = self.config['shaker']['external_host']
             cmd_shaker = (
