@@ -51,65 +51,69 @@ def read(data=None):
     overview = cl.get_overview()
 
     # Object counts
-    for metric_instance in \
+    for m_instance in \
             ['channels', 'connections', 'consumers', 'exchanges', 'queues']:
-        metric = collectd.Values()
-        metric.plugin = 'rabbitmq_monitoring'
-        metric.interval = INTERVAL
-        metric.type = 'gauge'
-        metric.type_instance = metric_instance
-        metric.values = [overview['object_totals'][metric_instance]]
-        metric.dispatch()
+        if m_instance in overview['object_totals']:
+            metric = collectd.Values()
+            metric.plugin = 'rabbitmq_monitoring'
+            metric.interval = INTERVAL
+            metric.type = 'gauge'
+            metric.type_instance = m_instance
+            metric.values = [overview['object_totals'][m_instance]]
+            metric.dispatch()
 
     # Aggregated Queue message stats
-    for metric_instance in \
+    for m_instance in \
             ['messages', 'messages_ready', 'messages_unacknowledged']:
-        metric = collectd.Values()
-        metric.plugin = 'rabbitmq_monitoring'
-        metric.interval = INTERVAL
-        metric.type = 'gauge'
-        metric.type_instance = 'queue_total-{}-count'.format(metric_instance)
-        metric.values = [overview['queue_totals'][metric_instance]]
-        metric.dispatch()
+        if m_instance in overview['queue_totals']:
+            metric = collectd.Values()
+            metric.plugin = 'rabbitmq_monitoring'
+            metric.interval = INTERVAL
+            metric.type = 'gauge'
+            metric.type_instance = 'queue_total-{}-count'.format(m_instance)
+            metric.values = [overview['queue_totals'][m_instance]]
+            metric.dispatch()
 
-        metric = collectd.Values()
-        metric.plugin = 'rabbitmq_monitoring'
-        metric.interval = INTERVAL
-        metric.type = 'gauge'
-        metric.type_instance = 'queue_total-{}-rate'.format(metric_instance)
-        metric.values = \
-            [
-                overview['queue_totals']['{}_details'.format(metric_instance)]
-                ['rate']
-            ]
-        metric.dispatch()
+            metric = collectd.Values()
+            metric.plugin = 'rabbitmq_monitoring'
+            metric.interval = INTERVAL
+            metric.type = 'gauge'
+            metric.type_instance = 'queue_total-{}-rate'.format(
+                m_instance)
+            metric.values = \
+                [
+                    overview['queue_totals']['{}_details'.format(m_instance)]
+                    ['rate']
+                ]
+            metric.dispatch()
 
     # Aggregated Message Stats
-    for metric_instance in \
+    for m_instance in \
             [
                 'ack', 'confirm', 'deliver', 'deliver_get', 'deliver_no_ack',
                 'get', 'get_no_ack', 'publish', 'publish_in', 'publish_out',
                 'redeliver', 'return_unroutable'
             ]:
-        metric = collectd.Values()
-        metric.plugin = 'rabbitmq_monitoring'
-        metric.interval = INTERVAL
-        metric.type = 'gauge'
-        metric.type_instance = 'message_total-{}-count'.format(metric_instance)
-        metric.values = [overview['message_stats'][metric_instance]]
-        metric.dispatch()
+        if m_instance in overview['message_stats']:
+            metric = collectd.Values()
+            metric.plugin = 'rabbitmq_monitoring'
+            metric.interval = INTERVAL
+            metric.type = 'gauge'
+            metric.type_instance = 'message_total-{}-count'.format(m_instance)
+            metric.values = [overview['message_stats'][m_instance]]
+            metric.dispatch()
 
-        metric = collectd.Values()
-        metric.plugin = 'rabbitmq_monitoring'
-        metric.interval = INTERVAL
-        metric.type = 'gauge'
-        metric.type_instance = 'message_total-{}-rate'.format(metric_instance)
-        metric.values = \
-            [
-                overview['message_stats']['{}_details'.format(metric_instance)]
-                ['rate']
-            ]
-        metric.dispatch()
+            metric = collectd.Values()
+            metric.plugin = 'rabbitmq_monitoring'
+            metric.interval = INTERVAL
+            metric.type = 'gauge'
+            metric.type_instance = 'message_total-{}-rate'.format(m_instance)
+            metric.values = \
+                [
+                    overview['message_stats']['{}_details'.format(m_instance)]
+                    ['rate']
+                ]
+            metric.dispatch()
 
     # Configurable per-queue message counts
     for queue_name in queues_to_count:
