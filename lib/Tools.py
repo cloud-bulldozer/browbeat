@@ -57,9 +57,9 @@ class Tools(object):
         output_dict['stderr'] = stderr.strip()
         output_dict['rc'] = process.returncode
         if process.returncode > 0:
-          self.logger.error("Command {} returned with error".format(cmd))
-          self.logger.error("stdout: {}".format(stdout))
-          self.logger.error("stderr: {}".format(stderr))
+            self.logger.error("Command {} returned with error".format(cmd))
+            self.logger.error("stdout: {}".format(stdout))
+            self.logger.error("stderr: {}".format(stderr))
         return output_dict
 
     # Find Command on host
@@ -74,7 +74,7 @@ class Tools(object):
         else:
             return command.strip()
 
-   # Create directory for results
+    # Create directory for results
     def create_results_dir(self, *args):
         the_directory = '/'.join(args)
         if not os.path.isdir(the_directory):
@@ -208,8 +208,9 @@ class Tools(object):
             for line in stackrc:
                 pair = line.split('=')
                 if 'export' not in line and '#' not in line and '$(' not in line:
-                   values[pair[0].strip()] = pair[1].strip()
+                    values[pair[0].strip()] = pair[1].strip()
                 elif '$(' in line and 'for key' not in line:
-                   values[pair[0].strip()] = \
-                       self.run_cmd("echo " + pair[1].strip())['stdout'].strip()
+                    values[pair[0].strip()] = \
+                        self.run_cmd(
+                        "echo " + pair[1].strip())['stdout'].strip()
         return values
