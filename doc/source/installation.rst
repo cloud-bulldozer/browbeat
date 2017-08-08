@@ -56,6 +56,30 @@ On the Undercloud
    internet. Some useful documentation can be found at:
    https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
 
+(Optional) Install Browbeat instance workloads
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Browbeat instance workloads are orchestrated Rally plugins that ship with Browbeat.
+We currently support a handful of workloads
+
+- Pbench-Uperf - Networking throughput / RR test
+- Linpack - Microbenchmark for CPU load
+
+To enable installation of the Browbeat workloads set install_browbeat_workloads: true in
+ansible/install/group_vars/all.yml.
+
+It is also required to provide the neutron network id of a private network which
+has external access. To set this, edit ansible/install/group_vars/all.yml and
+provide the network id for the browbeat_network:
+
+This work can either be done prior to installation of Browbeat, or after Browbeat
+has been installed. To skip directly to this task execute:
+
+::
+
+    $ ansible-playbook -i hosts install/browbeat.yml --start-at-task "Check browbeat_network"
+    ...
+
+
 
 (Optional) Install Collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -549,6 +573,7 @@ entirely on the number of metrics and your environments capacity.  There is a
 Graphite dashboard included and it is recommended to install collectd on your
 monitoring host such that you can see if you hit resource issues with your
 monitoring host.
+
 
 Install ELK Host (ElasticSearch/LogStash/Kibana)
 -------------------------------------------------
