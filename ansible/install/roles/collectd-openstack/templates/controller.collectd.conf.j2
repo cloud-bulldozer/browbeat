@@ -392,6 +392,27 @@ PreCacheChain "PreCache"
 # Rabbitmq plugin installed and enabled on {{groups['controller'][0]}}
 {% endif %}
 {% endif %}
+{%if swift_stat_controller_collectd_plugin %}
+{%if inventory_hostname == groups['controller'][0] %}
+
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_swift_stat"
+  <Module collectd_swift_stat>
+    Interval {{swift_stat_controller_collectd_interval}}
+    Prefix "gnocchi"
+    AuthURL "{{controller0_gnocchi_swift_authurl.stdout}}"
+    User "{{controller0_gnocchi_swift_user.stdout}}"
+    Password "{{controller0_gnocchi_swift_auth_key.stdout}}"
+    Project "service"
+  </Module>
+</Plugin>
+{% else %}
+# swift_stat plugin installed and enabled on {{groups['controller'][0]}}
+{% endif %}
+{% endif %}
 
 <Plugin swap>
   ReportBytes true
