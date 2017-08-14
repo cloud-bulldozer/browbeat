@@ -229,7 +229,7 @@
             "error": false,
             "fill": 1,
             "grid": {},
-            "id": 5,
+            "id": 3,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -332,7 +332,110 @@
             "error": false,
             "fill": 1,
             "grid": {},
-            "id": 9,
+            "id": 4,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": true,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-slab_unrecl), 'Slab Unrecl')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-used), 'Used')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-buffered), 'Buffered')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-slab_recl), 'Slab Recl')"
+              },
+              {
+                "refId": "E",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-cached), 'Cached')"
+              },
+              {
+                "refId": "F",
+                "target": "alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-free), 'Free')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Total ObjectStorage Memory Usage",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bits",
+                "logBase": 1,
+                "max": null,
+                "min": 0,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "ObjectStorage Total Memory Usage",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {},
+            "id": 5,
             "legend": {
               "alignAsTable": true,
               "avg": false,
