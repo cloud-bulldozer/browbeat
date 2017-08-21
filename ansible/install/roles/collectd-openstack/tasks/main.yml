@@ -182,12 +182,14 @@
     mode: 0755
   become: true
   with_items:
+    - src: collectd_ceph_storage.py
+      dest: /usr/local/bin/collectd_ceph_storage.py
     - src: collectd_gnocchi_status.py
       dest: /usr/local/bin/collectd_gnocchi_status.py
     - src: collectd_rabbitmq_monitoring.py
       dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
-    - src: collectd_ceph_storage.py
-      dest: /usr/local/bin/collectd_ceph_storage.py
+    - src: collectd_swift_stat.py
+      dest: /usr/local/bin/collectd_swift_stat.py
   when: "('controller' in group_names and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names)"
 
 # Rabbitmq monitoring
@@ -232,6 +234,26 @@
   become: true
   when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
 # End Rabbitmq monitoring
+
+# Gnocchi Swift Stat Service monitoring
+- name: Get Gnocchi Swift AuthURL
+  command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_authurl
+  register: controller0_gnocchi_swift_authurl
+  become: true
+  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+
+- name: Get Gnocchi Swift User
+  shell: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_user | sed 's/service://'
+  register: controller0_gnocchi_swift_user
+  become: true
+  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+
+- name: Get Gnocchi Swift Key
+  command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_key
+  register: controller0_gnocchi_swift_auth_key
+  become: true
+  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+# End Swift Stat Service monitoring
 
 # CephStorage OSD monitoring
 # Only Monitors a single OSD on each CephStorage Node

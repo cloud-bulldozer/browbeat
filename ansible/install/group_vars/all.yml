@@ -252,6 +252,13 @@ controller_monitored_queues:
   - "notifications.critical"
 
 ########################
+# Swift stat plugin
+########################
+# Provides metrics on Swift Account using Gnocchi Swift Configuration
+swift_stat_controller_collectd_plugin: false
+swift_stat_controller_collectd_interval: 10
+
+########################
 # tail plugin
 ########################
 # Determines if WARN/INFO messages are also counted
