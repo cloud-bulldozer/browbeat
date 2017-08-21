@@ -49,7 +49,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(sumSeries($Cloud.*.processes-qemu-kvm.ps_count.processes), 'Sum qemu-kvm processes')",
+                "target": "alias(sumSeries(keepLastValue($Cloud.*.processes-qemu-kvm.ps_count.processes, 100)), 'Sum qemu-kvm processes')",
                 "textEditor": false
               }
             ],
@@ -124,7 +124,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode($Cloud.*.processes-qemu-kvm.ps_count.processes, 1)",
+                "target": "aliasByNode(keepLastValue($Cloud.*.processes-qemu-kvm.ps_count.processes, 100), 1)",
                 "textEditor": false
               }
             ],

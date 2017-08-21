@@ -14,6 +14,15 @@ import argparse
 import json
 
 
+# Each Query in a Grafana Panel has a Reference ID, and this helps correct any drift or cut & paste
+# errors in the each Query's ID.
+refIds = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
+    "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB",
+    "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN",
+    "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ"
+    ]
+
 def main():
     """Script used to fix panel ids in static dashboards.  Typically adding a new panel or row into
     a static dashboard will involve re-ordering all subsequent panels.  This script automates that.
@@ -33,6 +42,15 @@ def main():
             if index != panel['id']:
                 print "Found error in panel({}): {}".format(index, panel['title'])
                 panel['id'] = index
+
+            # Check over Query RefIds while after fixing Panel ID
+            refid_index = 0
+            for target in panel['targets']:
+                if target["refId"] != refIds[refid_index]:
+                    print "Panel: {}, Incorrect Target ID: {} Should be: {}".format(
+                        panel['title'], target["refId"], refIds[refid_index])
+                    target['refId'] = refIds[refid_index]
+                refid_index += 1
 
     with open(args.outputfile, 'w') as outputfile:
         json.dump(data, outputfile, sort_keys=True, indent=2, separators=(',', ': '))
