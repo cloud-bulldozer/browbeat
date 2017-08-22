@@ -37,7 +37,7 @@ rally_version: 0.8.1
 shaker_venv: "{{home_dir}}/shaker-venv"
 
 # Shaker version to Install
-shaker_version: 0.0.17
+shaker_version: 1.1.0
 
 # The default YODA venv
 yoda_venv: /home/stack/yoda-venv
