@@ -222,6 +222,13 @@ elif grep -q $uuid <<< {$blockstorage_uuids}; then
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 done
 
+# Sort Controllers
+controller_hn=( $(
+    for item in "${controller_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+
 echo ""
 echo "---------------------------"
 echo "Creating ansible inventory file:"
