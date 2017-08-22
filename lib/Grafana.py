@@ -58,7 +58,7 @@ class Grafana(object):
 
     def print_dashboard_url(self, test_name):
         for dashboard in self.grafana_url:
-            self.logger.info(
+            self.logger.debug(
                 '{} - Grafana Dashboard {} URL: {}'.format(
                     test_name,
                     dashboard,
@@ -70,7 +70,7 @@ class Grafana(object):
                 from_ts, to_ts, result_dir, test_name)
             snapshot_cmd = 'ansible-playbook -i {} {} -e "{}"'.format(
                 self.hosts_file, self.playbook, extra_vars)
-            self.logger.info('Snapshot command: {}'.format(snapshot_cmd))
+            self.logger.debug('Snapshot command: {}'.format(snapshot_cmd))
 
     def run_playbook(self, from_ts, to_ts, result_dir, test_name):
         if 'grafana' in self.config and self.config['grafana']['enabled']:
