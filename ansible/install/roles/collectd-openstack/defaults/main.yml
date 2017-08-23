@@ -129,6 +129,16 @@ controller_monitored_queues:
 swift_stat_controller_collectd_plugin: false
 swift_stat_controller_collectd_interval: 10
 
+
+############################
+# OpenDaylight JAVA Plugin
+###########################
+
+# Plugin assumes that JAVA is already installed on the host
+opendaylight_java_plugin: false
+karaf_user: karaf
+karaf_password: karaf
+
 ########################
 # tail plugin
 ########################

@@ -51,6 +51,10 @@ LoadPlugin tail
 LoadPlugin turbostat
 LoadPlugin unixsock
 LoadPlugin uptime
+{% if opendaylight_java_plugin %}
+LoadPlugin java
+{% endif %}
+
 
 # Open unix domain socket for collectdctl
 <Plugin unixsock>
@@ -1803,5 +1807,96 @@ PreCacheChain "PreCache"
 
 </Plugin>
 
+{% if opendaylight_java_plugin %}
+
+<Plugin "java">
+JVMArg "-Djava.class.path=/usr/share/collectd/java/collectd-api.jar:/usr/share/collectd/java/generic-jmx.jar"
+LoadPlugin "org.collectd.java.GenericJMX"
+<Plugin "GenericJMX">
+  <MBean "gc-count">
+    ObjectName "java.lang:type=GarbageCollector,*"
+    InstancePrefix "gc-"
+    InstanceFrom "name"
+    <Value>
+      Type "derive"
+      Table false
+      Attribute "CollectionCount"
+      InstancePrefix "count"
+    </Value>
+  </MBean>
+   <MBean "gc-time">
+    ObjectName "java.lang:type=GarbageCollector,*"
+    InstancePrefix "gc-"
+    InstanceFrom "name"
+    <Value>
+      Type "derive"
+      Table false
+      Attribute "CollectionTime"
+      InstancePrefix "time"
+    </Value>
+  </MBean>
+  <MBean "memory_pool">
+    ObjectName "java.lang:type=MemoryPool,*"
+    InstancePrefix "memory_pool-"
+    InstanceFrom "name"
+    <Value>
+      Type "memory"
+      Table true
+      Attribute "Usage"
+    </Value>
+  </MBean>
+   <MBean "memory-heap">
+    ObjectName "java.lang:type=Memory"
+    InstancePrefix "memory-heap"
+    <Value>
+      Type "memory"
+      Table true
+      Attribute "HeapMemoryUsage"
+    </Value>
+  </MBean>
+  <MBean "memory-nonheap">
+    ObjectName "java.lang:type=Memory"
+    InstancePrefix "memory-nonheap"
+    <Value>
+      Type "memory"
+      Table true
+      Attribute "NonHeapMemoryUsage"
+    </Value>
+  </MBean>
+   <MBean "thread">
+    ObjectName "java.lang:type=Threading"
+    InstancePrefix "threading"
+    <Value>
+      Type "gauge"
+      Table false
+      Attribute "ThreadCount"
+      InstancePrefix "count"
+    </Value>
+  </MBean>
+  <MBean "thread-daemon">
+    ObjectName "java.lang:type=Threading"
+    InstancePrefix "threading"
+    <Value>
+      Type "gauge"
+      Table false
+      Attribute "DaemonThreadCount"
+      InstancePrefix "count-daemon"
+    </Value>
+  </MBean>
+  <Connection>
+    ServiceURL "service:jmx:rmi:///jndi/rmi://localhost:1099/karaf-root"
+    Collect "memory_pool"
+    Collect "memory-heap"
+    Collect "memory-nonheap"
+    Collect "gc-count"
+    Collect "gc-time"
+    Collect "thread"
+    Collect "thread-daemon"
+    User "{{karaf_user}}"
+    Password "{{karaf_password}}"
+  </Connection>
+</Plugin>
+</Plugin>
+{% endif %}
 # Include other collectd configuration files
 Include "/etc/collectd.d"

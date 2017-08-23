@@ -266,6 +266,15 @@ regex_warn: false
 regex_info: false
 
 
+############################
+# OpenDaylight JAVA Plugin
+###########################
+
+# Plugin assumes that JAVA is already installed on the host
+opendaylight_java_plugin: false
+karaf_user: karaf
+karaf_password: karaf
+
 ########################################
 # Docker related
 # (use these if deploying graphite/carbon/grafana as containers)

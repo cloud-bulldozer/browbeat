@@ -31,6 +31,17 @@
     - collectd-mysql
     - collectd-turbostat
 
+# (sai) Separating out collectd java rpms as they have a lot of dependencies and
+# are only required for ODL monitoring on controllers only
+- name: Install collectd java specific rpms
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - collectd-java
+    - collectd-generic-jmx
+  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
+
 # Iostat plugin requires sysstat since shelling iostat for stats, Also it is
 # handy to have sysstat.
 # (akrzos) Ignore errors on install since we attempt to install without
@@ -272,6 +283,15 @@
     group: root
     mode: 0644
   become: true
+
+# OpenDaylight Monitoring
+- name: Symlink libjvm
+  file:
+    src: /usr/lib/jvm/jre/lib/amd64/server/libjvm.so
+    dest: /usr/lib64/libjvm.so
+    state: link
+  become: true
+  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
 
 #
 # Configure selinux bits
