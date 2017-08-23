@@ -2,6 +2,8 @@
 #
 # Reduce the archive-policy to a single retention period to reduce the telemetry load.
 #
+# Versions tested: Newton, Ocata
+#
 
 - hosts: undercloud
   remote_user: "{{ local_remote_user }}"
@@ -24,5 +26,17 @@
       - section: dispatcher_gnocchi
         option: archive_policy
         value: low-workload
+  pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Newton, Ocata) Set Config File based on OpenStack Version
+      set_fact:
+        ceilometer_config_file: /etc/ceilometer/ceilometer.conf
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
   roles:
     - ceilometer-config

@@ -2,6 +2,8 @@
 #
 # Playbook to force ntp time sync
 #
+# Versions tested: Newton, Ocata, Pike
+#
 # Example:
 #
 # ansible-playbook -i hosts browbeat/ntp-sync.yml -e 'ntp_server=clock.walkabout.com'

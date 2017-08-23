@@ -156,14 +156,14 @@ PreCacheChain "PreCache"
 # A Minus before the version means the process was not found in that version. (Ex -9)
 <Plugin processes>
   # Ceph (OpenStack Installed)
-  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"                                          # 10,11
+  ProcessMatch "ceph-osd" "^/usr/bin/ceph-osd"                                          # 10,11,12
 
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12
 </Plugin>
 
 <Plugin swap>

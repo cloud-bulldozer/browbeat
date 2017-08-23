@@ -260,121 +260,127 @@ PreCacheChain "PreCache"
 # A Minus before the version means the process was not found in that version. (Ex -10)
 <Plugin processes>
   # Aodh (OpenStack Installed)
-  ProcessMatch "aodh-evaluator" "aodh-evaluator"                                        # 10,11
-  ProcessMatch "aodh-listener" "aodh-listener"                                          # 10,11
-  ProcessMatch "aodh-notifier" "aodh-notifier"                                          # 10,11
-  ProcessMatch "aodh_wsgi" "aodh_wsgi.*-DFOREGROUND"                                    # 11
+  ProcessMatch "aodh-evaluator" "aodh-evaluator"                                        # 10,11,12
+  ProcessMatch "aodh-listener" "aodh-listener"                                          # 10,11,12
+  ProcessMatch "aodh-notifier" "aodh-notifier"                                          # 10,11,12
+  ProcessMatch "aodh_wsgi" "aodh_wsgi.*-DFOREGROUND"                                    # 11,12
 
   # Ceilometer (OpenStack Installed)
-  ProcessMatch "ceilometer-agent-notification" "ceilometer-agent-notification"          # 10,11
-  ProcessMatch "ceilometer-api" "python.+ceilometer-api"                                # -10(httpd),-11(httpd)
-  ProcessMatch "ceilometer-collector" "ceilometer-collector"                            # 10,11
-  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 10,11
-  ProcessMatch "ceilometer_wsgi" "ceilometer_wsgi.*-DFOREGROUND"                        # 11
+  ProcessMatch "ceilometer-agent-notification" "ceilometer-agent-notification"          # 10,11,12
+  ProcessMatch "ceilometer-collector" "ceilometer-collector"                            # 10,11,-12
+  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 10,11,12
+  ProcessMatch "ceilometer_wsgi" "ceilometer_wsgi.*-DFOREGROUND"                        # 11,-12
 
   # Ceph (OpenStack Installed)
   # When CephStorage nodes deployed
-  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"                                          # -10,-11
+  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"                                          # -10,-11,-12
 
   # Cinder (OpenStack Installed)
-  ProcessMatch "cinder-api" "python.+cinder-api"                                        # 10,-11
-  ProcessMatch "cinder-scheduler" "python.+cinder-scheduler"                            # 10,11
-  ProcessMatch "cinder-volume" "python.+cinder-volume"                                  # 10,11
-  ProcessMatch "cinder_wsgi" "cinder_wsgi.*-DFOREGROUND"                                # 11
+  ProcessMatch "cinder-api" "python.+cinder-api"                                        # 10,-11,-12
+  ProcessMatch "cinder-scheduler" "python.+cinder-scheduler"                            # 10,11,12
+  ProcessMatch "cinder-volume" "python.+cinder-volume"                                  # 10,11,12
+  ProcessMatch "cinder_wsgi" "cinder_wsgi.*-DFOREGROUND"                                # 11,12
 
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # Pacemaker / Corosync (OpenStack Installed)
-  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"                                   # 10,11
-  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"                                       # 10,11
-  Process "corosync"                                                                    # 10,11
-  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"                                     # 10,11
-  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"                                     # 10,11
-  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"                                      # 10,11
-  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"                                   # 10,11
-  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"                               # 10,11
-  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"                             # 10,11
+  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"                                   # 10,11,12
+  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"                                       # 10,11,12
+  Process "corosync"                                                                    # 10,11,12
+  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"                                     # 10,11,12
+  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"                                     # 10,11,12
+  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"                                      # 10,11,12
+  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"                                   # 10,11,12
+  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"                               # 10,11,12
+  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"                             # 10,11,12
 
   # Everything Else (OpenStack Installed)
   # (Processes displayed under "Everything Else" on Grafana Dashboards)
-  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 10,11
-  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # 10,11
-  Process "httpd"                                                                       # 10,11
-  Process "memcached"                                                                   # 10,11
-  Process "mongod"                                                                      # 10,11
-  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11
-  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11
-  Process "redis-server"                                                                # 10,11
+  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 10,11,12
+  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # 10,11,12
+  Process "httpd"                                                                       # 10,11,12
+  Process "keepalived"                                                                  # 10,11,12
+  Process "memcached"                                                                   # 10,11,12
+  Process "mongod"                                                                      # 10,11,-12
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11,12
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11,12
+  Process "redis-server"                                                                # 10,11,12
   ProcessMatch "karaf" "java.+karaf"                                                    # ODL Specific
 
   # Glance (OpenStack Installed)
-  ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11
-  ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11
+  ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11,12
+  ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11,-12
 
   # Gnocchi (OpenStack Installed)
-  ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd.*master"                       # 11
-  ProcessMatch "gnocchi-metricd-scheduler" "gnocchi-metricd.*scheduler"                 # 10,11
-  ProcessMatch "gnocchi-metricd-processing" "gnocchi-metricd.*processing"               # 10,11
-  ProcessMatch "gnocchi-metricd-reporting" "gnocchi-metricd.*reporting"                 # 10,11
-  ProcessMatch "gnocchi-metricd-janitor" "gnocchi-metricd.*janitor"                     # 10,11
+  ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd.*master"                       # 11,12
+  ProcessMatch "gnocchi-metricd-scheduler" "gnocchi-metricd.*scheduler"                 # 10,11,-12
+  ProcessMatch "gnocchi-metricd-processing" "gnocchi-metricd.*processing"               # 10,11,12
+  ProcessMatch "gnocchi-metricd-reporting" "gnocchi-metricd.*reporting"                 # 10,11,12
+  ProcessMatch "gnocchi-metricd-janitor" "gnocchi-metricd.*janitor"                     # 10,11,12
   ProcessMatch "gnocchi-metricd" "gnocchi-metricd "                                     # 10(Old proctitle)
-  ProcessMatch "gnocchi-statsd" "python.+gnocchi-statsd"                                # 10,11
-  ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11
+  ProcessMatch "gnocchi-statsd" "python.+gnocchi-statsd"                                # 10,11,12
+  ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11,12
 
   # Heat (OpenStack Installed)
-  ProcessMatch "heat-api" "python.+heat-api --config-file"                              # 10,11
-  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 10,11
-  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # 10,11
-  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 10,11
+  ProcessMatch "heat-api" "python.+heat-api --config-file"                              # 10,11,-12(httpd)
+  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 10,11,-12(httpd)
+  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # 10,11,-12(httpd)
+  ProcessMatch "heat_api_cfn" "heat_api_cfn_ws"                                         # 12
+  ProcessMatch "heat_api_cloudwatch" "heat_api_cloudw"                                  # 12
+  ProcessMatch "heat_api_wsgi" "heat_api_wsgi"                                          # 12
+  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 10,11,12
 
   # Keystone (OpenStack Installed)
-  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11
-  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11
-  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11
+  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11,12
+  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11,12
+  # Starting Pike, fernet tokens are default thus token_flush not needed
+  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11,-12
 
   # Neutron (OpenStack Installed)
-  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11
-  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # 10,11
-  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # 10,11
+  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11,12
+  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # 10,11,12
+  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # 10,11,12
   ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # 10,11
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11
-  ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12
+  ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11,12
 
   # Nova (OpenStack Installed)
   ProcessMatch "nova-api" "python.+nova-api"                                            # 10,11
-  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11
-  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # 10,11
-  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # 10,11
-  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11
-  ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11
+  ProcessMatch "nova-api-metadata" "python.+nova-api-metadata"                          # 12
+  ProcessMatch "nova_api_wsgi" "nova_api_wsgi"                                          # 12
+  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11,12
+  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # 10,11,12
+  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # 10,11,12
+  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11,12
+  ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11,12
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
-  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12
+  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12
   ProcessMatch "ovn-northd" "ovn-northd.+openvswitch"                                   # 9,10
   ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
   ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
 
   # Panko (OpenStack Installed)
-  ProcessMatch "panko_wsgi" "panko_wsgi.*-DFOREGROUND"                                  # 11
+  ProcessMatch "panko_wsgi" "panko_wsgi.*-DFOREGROUND"                                  # 11,12
 
   # Swift (OpenStack Installed)
-  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,11
-  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11
-  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,11
-  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11
-  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,11
-  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,11
-  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11
-  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11
-  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,11
-  ProcessMatch "swift-object-expirer" "python.+swift-object-expirer"                    # 11
-  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,11
-  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11
-  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11
-  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,11,12
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11,12
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,11,12
+  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11,12
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,11,12
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,11,12
+  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11,12
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11,12
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,11,12
+  ProcessMatch "swift-object-expirer" "python.+swift-object-expirer"                    # 11,12
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,11,12
+  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11,12
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11,12
+  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11,12
 </Plugin>
 
 {%if rabbitmq_controller_collectd_plugin %}
@@ -449,7 +455,11 @@ PreCacheChain "PreCache"
 
 # Tail httpd request time
 {%if apache_controller_collectd_request_time %}
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/gnocchi-api/gnocchi_wsgi_access.log">
+  {% else %}
   <File "/var/log/httpd/gnocchi_wsgi_access.log">
+  {% endif %}
     Instance "gnocchi-api"
 
     # Gnocchi API Post
@@ -549,7 +559,12 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/keystone/keystone_wsgi_admin_access.log">
+  {% else %}
   <File "/var/log/httpd/keystone_wsgi_admin_access.log">
+  {% endif %}
     Instance "keystone-admin-api"
 
     # Keystone Admin Post
@@ -623,7 +638,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/keystone/keystone_wsgi_main_access.log">
+  {% else %}
   <File "/var/log/httpd/keystone_wsgi_main_access.log">
+  {% endif %}
     Instance "keystone-main-api"
 
     # Keystone Main Post
@@ -697,7 +716,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/nova-placement/placement_wsgi_access.log">
+  {% else %}
   <File "/var/log/httpd/placement_wsgi_access.log">
+  {% endif %}
     Instance "nova-placement-api"
 
     # Nova Placement Post
@@ -809,7 +832,11 @@ PreCacheChain "PreCache"
 {% endif %}
 # End Tail httpd request time
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/aodh/aodh-evaluator.log">
+  {% else %}
   <File "/var/log/aodh/evaluator.log">
+  {% endif %}
     Instance "aodh-evaluator"
     <Match>
       Regex " ERROR "
@@ -834,7 +861,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/aodh/aodh-listener.log">
+  {% else %}
   <File "/var/log/aodh/listener.log">
+  {% endif %}
     Instance "aodh-listener"
     <Match>
       Regex " ERROR "
@@ -859,7 +890,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/aodh/aodh-notifier.log">
+  {% else %}
   <File "/var/log/aodh/notifier.log">
+  {% endif %}
     Instance "aodh-notifier"
     <Match>
       Regex " ERROR "
@@ -884,7 +919,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/aodh-api/aodh_wsgi_error.log">
+  {% else %}
   <File "/var/log/httpd/aodh_wsgi_error.log">
+  {% endif %}
     Instance "aodh-wsgi-api"
     <Match>
       Regex ":error"
@@ -894,7 +933,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/ceilometer/agent-notification.log">
+  {% else %}
   <File "/var/log/ceilometer/agent-notification.log">
+  {% endif %}
     Instance "ceilometer-agent-notification"
     <Match>
       Regex " ERROR "
@@ -944,6 +987,9 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+{%if 'Pike' in osp_version['content'] | b64decode %}
+  # No need to tail for ceilometer-collector/ceilometer_wsgi in Pike
+{% else %}
   <File "/var/log/ceilometer/collector.log">
     Instance "ceilometer-collector"
     <Match>
@@ -952,22 +998,22 @@ PreCacheChain "PreCache"
       Type "counter"
       Instance "error"
     </Match>
-{%if regex_warn %}
+    {%if regex_warn %}
     <Match>
       Regex " WARNING "
       DSType "CounterInc"
       Type "counter"
       Instance "warn"
     </Match>
-{% endif %}
-{%if regex_info %}
+    {% endif %}
+    {%if regex_info %}
     <Match>
       Regex " INFO "
       DSType "CounterInc"
       Type "counter"
       Instance "info"
     </Match>
-{% endif %}
+    {% endif %}
   </File>
   <File "/var/log/httpd/ceilometer_wsgi_error.log">
     Instance "ceilometer-wsgi-api"
@@ -978,6 +1024,7 @@ PreCacheChain "PreCache"
       Instance "error"
     </Match>
   </File>
+{% endif %}
 
   <File "/var/log/ceph/ceph.log">
     Instance "ceph"
@@ -1005,34 +1052,11 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
-  # (Newton) api.log
-  <File "/var/log/cinder/api.log">
-    Instance "cinder-api"
-    <Match>
-      Regex " ERROR "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "error"
-    </Match>
-{%if regex_warn %}
-    <Match>
-      Regex " WARNING "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "warn"
-    </Match>
-{% endif %}
-{%if regex_info %}
-    <Match>
-      Regex " INFO "
-      DSType "CounterInc"
-      Type "counter"
-      Instance "info"
-    </Match>
-{% endif %}
-  </File>
-  # (Ocata) cinder-api.log
+  {%if ('Pike' in osp_version['content'] | b64decode) or ('Ocata' in osp_version['content'] | b64decode) %}
   <File "/var/log/cinder/cinder-api.log">
+  {% else %}
+  <File "/var/log/cinder/api.log">
+  {% endif %}
     Instance "cinder-api"
     <Match>
       Regex " ERROR "
@@ -1108,7 +1132,11 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/glance/api.log">
+  {% else %}
   <File "/var/log/glance/api.log">
+  {% endif %}
     Instance "glance-api"
     <Match>
       Regex " ERROR "
@@ -1133,6 +1161,10 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+
+{%if 'Pike' in osp_version['content'] | b64decode %}
+  # No Glance registry in Pike
+{% else %}
   <File "/var/log/glance/registry.log">
     Instance "glance-registry"
     <Match>
@@ -1158,8 +1190,13 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+{% endif %}
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/gnocchi/app.log">
+  {% else %}
   <File "/var/log/gnocchi/app.log">
+  {% endif %}
     Instance "gnocchi-app"
     <Match>
       Regex " ERROR "
@@ -1184,7 +1221,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/gnocchi/gnocchi-metricd.log">
+  {% else %}
   <File "/var/log/gnocchi/metricd.log">
+  {% endif %}
     Instance "gnocchi-metricd"
     <Match>
       Regex " ERROR "
@@ -1209,7 +1250,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/gnocchi/gnocchi-statsd.log">
+  {% else %}
   <File "/var/log/gnocchi/statsd.log">
+  {% endif %}
     Instance "gnocchi-statsd"
     <Match>
       Regex " ERROR "
@@ -1234,7 +1279,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/gnocchi-api/gnocchi_wsgi_error.log">
+  {% else %}
   <File "/var/log/httpd/gnocchi_wsgi_error.log">
+  {% endif %}
     Instance "gnocchi-wsgi-api"
     <Match>
       Regex ":error"
@@ -1244,7 +1293,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/heat/heat_api_cfn.log">
+  {% else %}
   <File "/var/log/heat/heat-api-cfn.log">
+  {% endif %}
     Instance "heat-api-cfn"
     <Match>
       Regex " ERROR "
@@ -1269,7 +1322,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/heat/heat_api_cloudwatch.log">
+  {% else %}
   <File "/var/log/heat/heat-api-cloudwatch.log">
+  {% endif %}
     Instance "heat-api-cloudwatch"
     <Match>
       Regex " ERROR "
@@ -1294,7 +1351,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/heat/heat_api.log">
+  {% else %}
   <File "/var/log/heat/heat-api.log">
+  {% endif %}
     Instance "heat-api"
     <Match>
       Regex " ERROR "
@@ -1319,7 +1380,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/heat/heat-engine.log">
+  {% else %}
   <File "/var/log/heat/heat-engine.log">
+  {% endif %}
     Instance "heat-engine"
     <Match>
       Regex " ERROR "
@@ -1345,7 +1410,11 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/keystone/keystone.log">
+  {% else %}
   <File "/var/log/keystone/keystone.log">
+  {% endif %}
     Instance "keystone"
     <Match>
       Regex " ERROR "
@@ -1370,7 +1439,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/keystone/keystone_wsgi_admin_error.log">
+  {% else %}
   <File "/var/log/httpd/keystone_wsgi_admin_error.log">
+  {% endif %}
     Instance "keystone-wsgi-admin"
     <Match>
       Regex ":error"
@@ -1379,7 +1452,11 @@ PreCacheChain "PreCache"
       Instance "error"
     </Match>
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/keystone/keystone_wsgi_main_error.log">
+  {% else %}
   <File "/var/log/httpd/keystone_wsgi_main_error.log">
+  {% endif %}
     Instance "keystone-wsgi-main"
     <Match>
       Regex ":error"
@@ -1542,7 +1619,11 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-api.log">
+  {% else %}
   <File "/var/log/nova/nova-api.log">
+  {% endif %}
     Instance "nova-api"
     <Match>
       Regex " ERROR "
@@ -1567,7 +1648,39 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+{%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-api-metadata.log">
+    Instance "nova-api-metadata"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+    {%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+    {% endif %}
+    {%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+    {% endif %}
+  </File>
+{% endif %}
+
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-conductor.log">
+  {% else %}
   <File "/var/log/nova/nova-conductor.log">
+  {% endif %}
     Instance "nova-conductor"
     <Match>
       Regex " ERROR "
@@ -1592,7 +1705,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-consoleauth.log">
+  {% else %}
   <File "/var/log/nova/nova-consoleauth.log">
+  {% endif %}
     Instance "nova-consoleauth"
     <Match>
       Regex " ERROR "
@@ -1617,7 +1734,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-novncproxy.log">
+  {% else %}
   <File "/var/log/nova/nova-novncproxy.log">
+  {% endif %}
     Instance "nova-novncproxy"
     <Match>
       Regex " ERROR "
@@ -1642,7 +1763,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-placement-api.log">
+  {% else %}
   <File "/var/log/nova/nova-placement-api.log">
+  {% endif %}
     Instance "nova-placement-api"
     <Match>
       Regex " ERROR "
@@ -1667,7 +1792,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/nova/nova-scheduler.log">
+  {% else %}
   <File "/var/log/nova/nova-scheduler.log">
+  {% endif %}
     Instance "nova-scheduler"
     <Match>
       Regex " ERROR "
@@ -1692,7 +1821,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/nova-placement/placement_wsgi_error.log">
+  {% else %}
   <File "/var/log/httpd/placement_wsgi_error.log">
+  {% endif %}
     Instance "nova-placement-wsgi-api"
     <Match>
       Regex ":error"
@@ -1702,7 +1835,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/panko/app.log">
+  {% else %}
   <File "/var/log/panko/app.log">
+  {% endif %}
     Instance "panko"
     <Match>
       Regex " ERROR "
@@ -1727,7 +1864,11 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/httpd/panko-api/panko_wsgi_error.log">
+  {% else %}
   <File "/var/log/httpd/panko_wsgi_error.log">
+  {% endif %}
     Instance "panko-wsgi-api"
     <Match>
       Regex ":error"

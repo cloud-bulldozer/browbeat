@@ -3,6 +3,8 @@
 # Playbook to adjust Nova Scheduler settings to avoid over-scheduling hosts
 # with greater memory in uneven memory environments.
 #
+# Versions tested: Newton, Ocata, Pike
+#
 # Examples:
 # ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350'
 # ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350 ram_weight_multiplier=0'
@@ -41,6 +43,22 @@
     host_subset_size_item: []
 
   pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Newton, Ocata) Set Config File based on OpenStack Version
+      set_fact:
+        nova_config_file: /etc/nova/nova.conf
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+    - name: (Pike) Set Config File based on OpenStack Version
+      set_fact:
+        nova_config_file: /var/lib/config-data/puppet-generated/nova/etc/nova/nova.conf
+      when: "'Pike' in osp_version['content'] | b64decode"
+
     - name: Set default max_instances_per_host, ram_weight_multiplier, enabled_filters, and host_subset_size
       set_fact:
         nova_configuration:

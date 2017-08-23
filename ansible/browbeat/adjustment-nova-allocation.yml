@@ -2,6 +2,8 @@
 #
 # Playbook to adjust Nova allocation ratios
 #
+# Versions tested: Newton, Ocata
+#
 # Examples:
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24"
 # ansible-playbook -i hosts browbeat/adjustment-nova-allocation.yml -e "cpu_allocation_ratio=24 ram_allocation_ratio=10.0"
@@ -36,6 +38,17 @@
     ram_allocation_ratio_item: []
     disk_allocation_ratio_item: []
   pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Newton, Ocata) Set Config File based on OpenStack Version
+      set_fact:
+        nova_config_file: /etc/nova/nova.conf
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
     - name: Set default cpu_allocation_ratio/ram_allocation_ratio/disk_allocation_ratio configuration for Nova
       set_fact:
         nova_configuration:

@@ -2,6 +2,8 @@
 #
 # Playbook to adjust Apache prefork settings
 #
+# Versions tested: Newton, Ocata
+#
 # Example:
 #
 # ansible-playbook -i hosts browbeat/adjustment-httpd.yml -e 'httpd_startservers=8 httpd_minspareservers=5 httpd_maxspareservers=20 httpd_serverlimit=256 httpd_maxclients=256 httpd_maxrequestsperchild=4000'
@@ -13,7 +15,7 @@
   vars_files:
     - ../install/group_vars/all.yml
   vars:
-    # Defaults per Pike (OSP11)
+    # Defaults per Ocata (OSP11)
     httpd_startservers: 8
     httpd_minspareservers: 5
     httpd_maxspareservers: 20

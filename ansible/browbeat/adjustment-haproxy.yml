@@ -2,12 +2,12 @@
 #
 # Playbook to bump the number of max "defaults" (vs global) connections through haproxy
 #
+# Versions tested: Newton, Ocata
+#
 # Examples:
 #
 # ansible-playbook -i hosts browbeat/adjustment-haproxy.yml -e 'old_maxconn=4096 new_maxconn=8192'
 #
-#
-
 
 - hosts: controller
   remote_user: "{{ host_remote_user }}"

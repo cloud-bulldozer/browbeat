@@ -127,7 +127,7 @@
   when: "(gnocchi_status_controller_collectd_plugin == true) and (inventory_hostname == groups['controller'][0])"
 
 # Apache Request Response Timing
-- name: Deploy Apache httpd.conf
+- name: (Newton, Ocata) Deploy Apache httpd.conf for request timings
   become: true
   copy:
     src: httpd.conf
@@ -136,15 +136,31 @@
     group: root
     mode: 0644
     backup: true
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true)"
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-- name: Restart Apache
+- name: (Pike) Deploy Apache httpd.conf for request timings
+  become: true
+  copy:
+    src: httpd.conf
+    dest: /var/lib/config-data/puppet-generated/gnocchi/etc/httpd/conf/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Pike' in osp_version['content'] | b64decode)"
+
+- name: (Newton, Ocata) Restart Apache
   become: true
   service:
     name: httpd
     state: restarted
     enabled: true
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true)"
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+- name: (Pike) Restart Gnocchi API Container
+  become: true
+  command: docker restart gnocchi_api
+  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Pike' in osp_version['content'] | b64decode)"
 # End Apache Request Response Timing
 
 # Apache Monitoring

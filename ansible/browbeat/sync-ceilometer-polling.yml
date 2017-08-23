@@ -1,13 +1,15 @@
 ---
 #
-# Playbook to sync ceilometer polling across the controller and compute nodes
+# Playbook to sync ceilometer polling across the controller and compute nodes.
+# Requires atd installed and runinng on controllers and compute nodes.
+#
+# Versions tested: Newton, Ocata, Pike
 #
 # Example:
 #
 # ansible-playbook -i hosts browbeat/sync-ceilometer-polling.yml -e 'task_time=18:25'
 #
 
-# Pike
 - hosts: controller,compute
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
@@ -32,12 +34,12 @@
 
     - name: (Pike) Set Controller Task
       set_fact:
-        the_task: "systemctl restart openstack-ceilometer-polling.service"
+        the_task: "docker restart ceilometer_agent_central"
       when: "('Pike' in osp_version['content'] | b64decode) and ('controller' in group_names)"
 
     - name: (Pike) Set Compute Task
       set_fact:
-        the_task: "systemctl restart openstack-ceilometer-polling.service"
+        the_task: "docker restart ceilometer_agent_compute"
       when: "('Pike' in osp_version['content'] | b64decode) and ('compute' in group_names)"
 
   roles:
