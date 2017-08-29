@@ -266,6 +266,8 @@ class Yoda(WorkloadBase.WorkloadBase):
                      start_time).total_seconds())
 
             elif (datetime.datetime.utcnow() - start_time) > timeout:
+                # return currently active node to the deque to be failed
+                nodes.appendleft(node)
                 for node in nodes:
                     node_obj = conn.bare_metal.get_node(node)
 
