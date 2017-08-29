@@ -144,9 +144,8 @@ class Tools(object):
         os.putenv("ANSIBLE_SSH_ARGS",
                   " -F {}".format(self.config['ansible']['ssh_config']))
 
-        ansible_cmd = \
-            'ansible-playbook -i {} {}' \
-            .format(self.config['ansible']['hosts'], self.config['ansible']['metadata'])
+        ansible_cmd = 'ansible-playbook -i {} {}' .format(
+            self.config['ansible']['hosts'], self.config['ansible']['metadata'])
         self.run_cmd(ansible_cmd)
         if not self.check_metadata():
             self.logger.warning("Metadata could not be gathered")
@@ -206,11 +205,11 @@ class Tools(object):
         values = {}
         with open(filepath) as stackrc:
             for line in stackrc:
+                line = line.replace('export', '')
                 pair = line.split('=')
-                if 'export' not in line and '#' not in line and '$(' not in line:
+                if '#' not in line and len(pair) == 2 and '$(' not in line:
                     values[pair[0].strip()] = pair[1].strip()
-                elif '$(' in line and 'for key' not in line:
-                    values[pair[0].strip()] = \
-                        self.run_cmd(
+                elif '#' not in line and '$(' in line and 'for key' not in line:
+                    values[pair[0].strip()] = self.run_cmd(
                         "echo " + pair[1].strip())['stdout'].strip()
         return values
