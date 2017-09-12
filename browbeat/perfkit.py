@@ -11,30 +11,30 @@
 #   limitations under the License.
 
 import ast
-import Connmon
+import connmon
 import datetime
-import Elastic
+import elastic
 import glob
-import Grafana
+import grafana
 import logging
 import os
 import shutil
 import subprocess
 import time
-import Tools
-import WorkloadBase
+import tools
+import workloadbase
 
 
-class PerfKit(WorkloadBase.WorkloadBase):
+class PerfKit(workloadbase.WorkloadBase):
 
     def __init__(self, config):
-        self.logger = logging.getLogger('browbeat.PerfKit')
+        self.logger = logging.getLogger('browbeat.perfkit')
         self.config = config
         self.error_count = 0
-        self.tools = Tools.Tools(self.config)
-        self.connmon = Connmon.Connmon(self.config)
-        self.grafana = Grafana.Grafana(self.config)
-        self.elastic = Elastic.Elastic(self.config, self.__class__.__name__.lower())
+        self.tools = tools.Tools(self.config)
+        self.connmon = connmon.Connmon(self.config)
+        self.grafana = grafana.Grafana(self.config)
+        self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.test_count = 0
         self.scenario_count = 0
         self.pass_count = 0
@@ -193,7 +193,7 @@ class PerfKit(WorkloadBase.WorkloadBase):
 
         return success, to_ts, from_ts
 
-    def start_workloads(self):
+    def run_workloads(self):
         self.logger.info("Starting PerfKitBenchmarker Workloads.")
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))

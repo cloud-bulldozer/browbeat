@@ -10,7 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import Tools
+import tools
 import os
 import logging
 import shutil
@@ -19,9 +19,9 @@ import shutil
 class Connmon(object):
 
     def __init__(self, config):
-        self.logger = logging.getLogger('browbeat.Connmon')
+        self.logger = logging.getLogger('browbeat.connmon')
         self.config = config
-        self.tools = Tools.Tools(self.config)
+        self.tools = tools.Tools(self.config)
         return None
 
     # Start connmond

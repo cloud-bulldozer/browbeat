@@ -33,7 +33,7 @@ class Elastic(object):
         self.max_cache_size = cache_size
         self.last_upload = datetime.datetime.utcnow()
         self.max_cache_age = datetime.timedelta(minutes=max_cache_time)
-        self.logger = logging.getLogger('browbeat.Elastic')
+        self.logger = logging.getLogger('browbeat.elastic')
         self.es = elasticsearch.Elasticsearch([
             {'host': self.config['elasticsearch']['host'],
              'port': self.config['elasticsearch']['port']}],
@@ -304,8 +304,8 @@ class Elastic(object):
         data['_id'] = _id
         self.cache.append(data)
         now = datetime.datetime.utcnow()
-        if len(self.cache) <= self.max_cache_size \
-           and (now - self.last_upload) <= self.max_cache_age:
+        if (len(self.cache) <= self.max_cache_size and
+                (now - self.last_upload) <= self.max_cache_age):
             return True
         else:
             return self.flush_cache()

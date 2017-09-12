@@ -13,13 +13,13 @@
 
 import argparse
 import datetime
-import lib.Elastic
-import lib.PerfKit
-import lib.Rally
-import lib.Shaker
-import lib.Yoda
-import lib.WorkloadBase
-import lib.Tools
+import browbeat.elastic
+import browbeat.perfkit
+import browbeat.rally
+import browbeat.shaker
+import browbeat.yoda
+import browbeat.workloadbase
+import browbeat.tools
 import logging
 import os
 import sys
@@ -31,7 +31,7 @@ debug_log_file = 'log/debug.log'
 
 
 def main():
-    tools = lib.Tools.Tools()
+    tools = browbeat.tools.Tools()
     parser = argparse.ArgumentParser(
         description="Browbeat Performance and Scale testing for Openstack")
     parser.add_argument(
@@ -76,7 +76,7 @@ def main():
     _config = tools._load_config(_cli_args.setup)
 
     if _cli_args.compare == "software-metadata":
-        es = lib.Elastic.Elastic(_config, "BrowbeatCLI")
+        es = browbeat.elastic.Elastic(_config, "BrowbeatCLI")
         es.compare_metadata("_all", 'controller', _cli_args.uuids)
         exit(0)
 
@@ -103,7 +103,7 @@ def main():
     else:
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         _logger.info("Browbeat test suite kicked off")
-        _logger.info("Browbeat UUID: {}".format(lib.Elastic.browbeat_uuid))
+        _logger.info("Browbeat UUID: {}".format(browbeat.elastic.browbeat_uuid))
         if _config['elasticsearch']['enabled']:
             _logger.info("Checking for Metadata")
             metadata_exists = tools.check_metadata()
@@ -129,28 +129,28 @@ def main():
                 _logger.error("{} is missing in {}".format(
                     wkld_provider, _cli_args.setup))
         result_dir = _config['browbeat']['results']
-        lib.WorkloadBase.WorkloadBase.print_report(result_dir, time_stamp)
+        browbeat.workloadbase.WorkloadBase.print_report(result_dir, time_stamp)
         _logger.info("Saved browbeat result summary to {}".format(
             os.path.join(result_dir, time_stamp + '.' + 'report')))
-        lib.WorkloadBase.WorkloadBase.print_summary()
+        browbeat.workloadbase.WorkloadBase.print_summary()
 
         browbeat_rc = 0
-        if lib.WorkloadBase.WorkloadBase.failure > 0:
+        if browbeat.workloadbase.WorkloadBase.failure > 0:
             browbeat_rc = 1
-        if lib.WorkloadBase.WorkloadBase.index_failures > 0:
+        if browbeat.workloadbase.WorkloadBase.index_failures > 0:
             browbeat_rc = 2
 
         if browbeat_rc == 1:
             _logger.info("Browbeat finished with test failures, UUID: {}".format(
-                lib.Elastic.browbeat_uuid))
+                browbeat.elastic.browbeat_uuid))
             sys.exit(browbeat_rc)
         elif browbeat_rc == 2:
             _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
-                         .format(lib.Elastic.browbeat_uuid))
+                         .format(browbeat.elastic.browbeat_uuid))
             sys.exit(browbeat_rc)
         else:
             _logger.info("Browbeat finished successfully, UUID: {}".format(
-                lib.Elastic.browbeat_uuid))
+                browbeat.elastic.browbeat_uuid))
             sys.exit(0)
 
 if __name__ == '__main__':

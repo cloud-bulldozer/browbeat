@@ -16,7 +16,7 @@ import logging
 class Grafana(object):
 
     def __init__(self, config):
-        self.logger = logging.getLogger('browbeat.Grafana')
+        self.logger = logging.getLogger('browbeat.grafana')
         self.config = config
         self.cloud_name = self.config['browbeat']['cloud_name']
         self.hosts_file = self.config['ansible']['hosts']

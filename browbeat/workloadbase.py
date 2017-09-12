@@ -18,7 +18,7 @@ import yaml
 
 class WorkloadBase(object):
     __metaclass__ = abc.ABCMeta
-    logger = logging.getLogger('browbeat.WorkloadBase')
+    logger = logging.getLogger('browbeat.workloadbase')
     success = 0
     failure = 0
     total_tests = 0
@@ -27,11 +27,11 @@ class WorkloadBase(object):
     browbeat = {}
 
     @abc.abstractmethod
-    def update_scenarios(self):
+    def run_workloads(self):
         pass
 
     @abc.abstractmethod
-    def update_tests(self):
+    def update_fail_tests(self):
         pass
 
     @abc.abstractmethod
@@ -39,7 +39,11 @@ class WorkloadBase(object):
         pass
 
     @abc.abstractmethod
-    def update_fail_tests(self):
+    def update_scenarios(self):
+        pass
+
+    @abc.abstractmethod
+    def update_tests(self):
         pass
 
     def update_total_scenarios(self):

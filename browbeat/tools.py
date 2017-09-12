@@ -10,10 +10,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import PerfKit
-import Rally
-import Shaker
-import Yoda
+import perfkit
+import rally
+import shaker
+import yoda
 import logging
 import os
 import subprocess
@@ -26,7 +26,7 @@ from pykwalify import errors as pykwalify_errors
 class Tools(object):
 
     def __init__(self, config=None):
-        self.logger = logging.getLogger('browbeat.Tools')
+        self.logger = logging.getLogger('browbeat.tools')
         self.config = config
         return None
 
@@ -103,7 +103,7 @@ class Tools(object):
     def validate_yaml(self):
         self.logger.info(
             "Validating the configuration file passed by the user")
-        stream = open("lib/validate.yaml", 'r')
+        stream = open("browbeat/validate.yaml", 'r')
         schema = yaml.safe_load(stream)
         check = pykwalify_core.Core(
             source_data=self.config, schema_data=schema)
@@ -117,19 +117,16 @@ class Tools(object):
     def _run_workload_provider(self, provider):
         self.logger = logging.getLogger('browbeat')
         if provider == "perfkit":
-            perfkit = PerfKit.PerfKit(self.config)
-            perfkit.start_workloads()
+            workloads = perfkit.PerfKit(self.config)
         elif provider == "rally":
-            rally = Rally.Rally(self.config)
-            rally.start_workloads()
+            workloads = rally.Rally(self.config)
         elif provider == "shaker":
-            shaker = Shaker.Shaker(self.config)
-            shaker.run_shaker()
+            workloads = shaker.Shaker(self.config)
         elif provider == "yoda":
-            yoda = Yoda.Yoda(self.config)
-            yoda.start_workloads()
+            workloads = yoda.Yoda(self.config)
         else:
             self.logger.error("Unknown workload provider: {}".format(provider))
+        workloads.run_workloads()
 
     def check_metadata(self):
         meta = self.config['elasticsearch']['metadata_files']
@@ -144,8 +141,9 @@ class Tools(object):
         os.putenv("ANSIBLE_SSH_ARGS",
                   " -F {}".format(self.config['ansible']['ssh_config']))
 
-        ansible_cmd = 'ansible-playbook -i {} {}' .format(
-            self.config['ansible']['hosts'], self.config['ansible']['metadata'])
+        ansible_cmd = \
+            'ansible-playbook -i {} {}' \
+            .format(self.config['ansible']['hosts'], self.config['ansible']['metadata'])
         self.run_cmd(ansible_cmd)
         if not self.check_metadata():
             self.logger.warning("Metadata could not be gathered")
@@ -191,9 +189,9 @@ class Tools(object):
         if len(workload_results) > 0:
             for workload in workload_results:
                 if workload is "rally":
-                    rally = Rally.Rally(self.config)
+                    rally_workload = rally.Rally(self.config)
                     for file in workload_results[workload]:
-                        errors, results = rally.file_to_json(file)
+                        errors, results = rally_workload.file_to_json(file)
                 if workload is "shaker":
                     # Stub for Shaker.
                     continue
@@ -205,11 +203,11 @@ class Tools(object):
         values = {}
         with open(filepath) as stackrc:
             for line in stackrc:
-                line = line.replace('export', '')
                 pair = line.split('=')
-                if '#' not in line and len(pair) == 2 and '$(' not in line:
+                if 'export' not in line and '#' not in line and '$(' not in line:
                     values[pair[0].strip()] = pair[1].strip()
-                elif '#' not in line and '$(' in line and 'for key' not in line:
-                    values[pair[0].strip()] = self.run_cmd(
+                elif '$(' in line and 'for key' not in line:
+                    values[pair[0].strip()] = \
+                        self.run_cmd(
                         "echo " + pair[1].strip())['stdout'].strip()
         return values

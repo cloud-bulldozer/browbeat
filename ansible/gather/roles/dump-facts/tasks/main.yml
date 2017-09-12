@@ -3,4 +3,4 @@
   template: src=dump_facts.j2 dest={{ browbeat_path }}/metadata/machine_facts.json
 
 - name: Generate metadata jsons
-  shell : python {{ browbeat_path }}/lib/Metadata.py {{ browbeat_path }}/metadata
+  shell : python {{ browbeat_path }}/browbeat/metadata.py {{ browbeat_path }}/metadata

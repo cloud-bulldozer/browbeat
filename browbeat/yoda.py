@@ -13,13 +13,13 @@
 
 # Yet another cloud deployment tool
 import datetime
-import Elastic
-import Grafana
+import elastic
+import grafana
 import json
 import logging
 import time
-import Tools
-import WorkloadBase
+import tools
+import workloadbase
 from openstack import connection
 from openstack import exceptions
 import os
@@ -31,15 +31,14 @@ except ImportError:
 from collections import deque
 
 
-class Yoda(WorkloadBase.WorkloadBase):
+class Yoda(workloadbase.WorkloadBase):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.yoda')
         self.config = config
-        self.tools = Tools.Tools(self.config)
-        self.grafana = Grafana.Grafana(self.config)
-        self.elastic = Elastic.Elastic(
-            self.config, self.__class__.__name__.lower())
+        self.tools = tools.Tools(self.config)
+        self.grafana = grafana.Grafana(self.config)
+        self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -638,7 +637,7 @@ class Yoda(WorkloadBase.WorkloadBase):
             results = out[0]
             changed = out[1]
 
-    def start_workloads(self):
+    def run_workloads(self):
         """Iterates through all yoda scenarios in browbeat yaml config file"""
         self.logger.info("Starting YODA workloads")
         es_ts = datetime.datetime.utcnow()

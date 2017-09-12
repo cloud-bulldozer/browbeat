@@ -12,26 +12,26 @@
 
 import collections
 import datetime
-import Elastic
-import Grafana
+import elastic
+import grafana
 import json
 import logging
 import os
 import time
-import Tools
+import tools
 import uuid
-import WorkloadBase
+import workloadbase
 import yaml
 
 
-class Shaker(WorkloadBase.WorkloadBase):
+class Shaker(workloadbase.WorkloadBase):
 
     def __init__(self, config):
-        self.logger = logging.getLogger('browbeat.Shaker')
+        self.logger = logging.getLogger('browbeat.shaker')
         self.config = config
-        self.tools = Tools.Tools(self.config)
-        self.grafana = Grafana.Grafana(self.config)
-        self.elastic = Elastic.Elastic(self.config, self.__class__.__name__.lower())
+        self.tools = tools.Tools(self.config)
+        self.grafana = grafana.Grafana(self.config)
+        self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
         self.pass_count = 0
         self.test_count = 0
@@ -403,7 +403,7 @@ class Shaker(WorkloadBase.WorkloadBase):
         else:
             self.result_check(result_dir, test_name, scenario, to_time, from_time)
 
-    def run_shaker(self):
+    def run_workloads(self):
         self.logger.info("Starting Shaker workloads")
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))

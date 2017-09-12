@@ -10,10 +10,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import json
-import sys
-import os
 import argparse
+import json
+import os
+import sys
 
 
 class Metadata(object):
@@ -78,22 +78,22 @@ class Metadata(object):
                         a seperator.
                         """
                         service = soft.split('_S_')
-                        if len(service) < 2 :
+                        if len(service) < 2:
                             service = soft.split('_')
                             key = service[2]
                             section = "DEFAULT"
                             service_name = service[1]
-                        else :
+                        else:
                             key = service[3]
                             section = service[2]
                             service_name = service[1]
 
                         node = item['inventory_hostname']
 
-                        if service_name in software_dict :
-                            if section in software_dict[service_name] :
+                        if service_name in software_dict:
+                            if section in software_dict[service_name]:
                                 software_dict[service_name][section][key] = item[soft]
-                            else :
+                            else:
                                 software_dict[service_name][section] = {}
                                 software_dict[service_name][section][key] = item[soft]
                         else:
