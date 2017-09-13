@@ -11,7 +11,6 @@
 #   limitations under the License.
 
 import logging
-import subprocess
 
 
 class Grafana(object):
@@ -63,31 +62,3 @@ class Grafana(object):
                     test_name,
                     dashboard,
                     self.grafana_url[dashboard]))
-
-    def log_snapshot_playbook_cmd(self, from_ts, to_ts, result_dir, test_name):
-        if 'grafana' in self.config and self.config['grafana']['enabled']:
-            extra_vars = self.extra_vars(
-                from_ts, to_ts, result_dir, test_name)
-            snapshot_cmd = 'ansible-playbook -i {} {} -e "{}"'.format(
-                self.hosts_file, self.playbook, extra_vars)
-            self.logger.debug('Snapshot command: {}'.format(snapshot_cmd))
-
-    def run_playbook(self, from_ts, to_ts, result_dir, test_name):
-        if 'grafana' in self.config and self.config['grafana']['enabled']:
-            if self.config['grafana']['snapshot']['enabled']:
-                extra_vars = self.extra_vars(
-                    from_ts, to_ts, result_dir, test_name)
-                subprocess_cmd = [
-                    'ansible-playbook',
-                    '-i',
-                    self.hosts_file,
-                    self.playbook,
-                    '-e',
-                    '{}'.format(extra_vars)]
-                snapshot_log = open('{}/snapshot.log'.format(result_dir), 'a+')
-                self.logger.info(
-                    'Running ansible to create snapshots for: {}'.format(test_name))
-                subprocess.Popen(
-                    subprocess_cmd,
-                    stdout=snapshot_log,
-                    stderr=subprocess.STDOUT)

@@ -26,7 +26,6 @@ ansible:
     neutron_l3: ansible/browbeat/adjustment-l3.yml
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
-  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
   metadata: ansible/gather/site.yml
 connmon:
   enabled: false
@@ -37,9 +36,6 @@ grafana:
   grafana_port: 3000
   dashboards:
     - openstack-general-system-performance
-  snapshot:
-    enabled: false
-    snapshot_compute: false
 perfkit:
   enabled: false
   sleep_before: 0

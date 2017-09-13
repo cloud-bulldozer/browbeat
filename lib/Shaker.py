@@ -395,9 +395,6 @@ class Shaker(WorkloadBase.WorkloadBase):
         # Snapshotting
         self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
         self.grafana.print_dashboard_url(test_name)
-        self.grafana.log_snapshot_playbook_cmd(
-            from_ts, to_ts, result_dir, test_name)
-        self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
         # Send Data to elastic
         if self.config['elasticsearch']['enabled']:
             index_status = self.send_to_elastic(outputfile, scenario['name'], shaker_uuid,

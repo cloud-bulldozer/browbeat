@@ -73,9 +73,6 @@ class Rally(WorkloadBase.WorkloadBase):
         to_ts = int(time.time() * 1000)
         self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
         self.grafana.print_dashboard_url(test_name)
-        self.grafana.log_snapshot_playbook_cmd(
-            from_ts, to_ts, result_dir, test_name)
-        self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
         return (from_time, to_time)
 
     def update_tests(self):

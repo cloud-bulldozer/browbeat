@@ -190,9 +190,6 @@ class PerfKit(WorkloadBase.WorkloadBase):
             {'from_ts': int(from_ts * 1000),
              'to_ts': int(to_ts * 1000)})
         self.grafana.print_dashboard_url(test_name)
-        self.grafana.log_snapshot_playbook_cmd(
-            from_ts, to_ts, result_dir, test_name)
-        self.grafana.run_playbook(from_ts, to_ts, result_dir, test_name)
 
         return success, to_ts, from_ts
 

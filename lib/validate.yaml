@@ -74,9 +74,6 @@ mapping:
             type: str
           workers:
             type: str
-      grafana_snapshot:
-        type: str
-        required: True
       shaker_build:
         type: str
       metadata:
