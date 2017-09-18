@@ -11,7 +11,7 @@
 
 - name: Clone and Install Browbeat-ML dependencies
   pip:
-    name: "git+https://github.com/aakarshg/Browbeat-ML#egg=bml"
+    name: "git+https://github.com/jkilpatr/Browbeat-ML#egg=bml"
     virtualenv: "{{ ansible_env.HOME }}/browbeat-venv"
 
 - name: Run Browbeat-ML on uuid
