@@ -1,5 +1,17 @@
 *.py[cod]
 
+# Virtual Environments:
+.browbeat-venv
+.perfkit-venv
+.rally-venv
+.shaker-venv
+.yoda-venv
+
+# OpenStack Environment Files
+stackrc
+overcloudrc
+overcloudrc.v3
+
 # Ansible files
 *.retry
 

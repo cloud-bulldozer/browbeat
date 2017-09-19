@@ -13,8 +13,8 @@ Your Overcloud check output is located in results/bug_report.log
 
 NOTE: It is strongly advised to not run the ansible playbooks in a venv.
 
-Run performance stress tests through Browbeat on the undercloud:
-----------------------------------------------------------------
+Run performance stress tests through Browbeat on the undercloud
+---------------------------------------------------------------
 
 ::
 
@@ -145,7 +145,8 @@ using some simple searches such as:
    shaker_uuid: c918a263-3b0b-409b-8cf8-22dfaeeaf33e AND record.concurrency:1 AND record.test:Bi-Directional
 
 Running YODA
-============
+------------
+
 YODA (Yet Openstack Deployment tool, Another) is a workload integrated into
 Browbeat for benchmarking TripleO deployment.  This includes importing baremetal
 nodes, running introspections and overcloud deployements of various kinds. Note
@@ -153,12 +154,14 @@ that YODA assumes it is on the undercloud of a TripleO instance post undercloud
 installation and introspection.
 
 Configuration
--------------
+~~~~~~~~~~~~~
+
 For examples of the configuration see `browbeat-complete.yaml` in the repo root directory.
 Additional configuration documentation can be found below for each subworkload of YODA.
 
 Overcloud
 ~~~~~~~~~
+
 For overcloud workloads, note that the nodes dictionary is dynamic, so you don't
 have to define types you aren't using, this is done in the demonstration
 configurations for the sake of completeness. Furthermore the node name is taken
@@ -191,6 +194,7 @@ to edit your node properties, don't define `node_pinning` in your configuration.
 
 Introspection
 ~~~~~~~~~~~~~
+
 Introspection workloads have two modes, batch and individual, the batch workload
 follows the documentation exactly, nodes are imported, then bulk introspection
 is run. Individual introspection has it's own custom batch size and handles
@@ -216,7 +220,7 @@ I would suggest bulk introspection for testing documented TripleO workflows and
 individual introspection to test the performance of introspection itself.
 
 Interpreting Browbeat Results
-------------------------------
+-----------------------------
 
 By default results for each test will be placed in a timestamped folder `results/` inside your Browbeat folder.
 Each run folder will contain output files from the various workloads and benchmarks that ran during that Browbeat
@@ -233,7 +237,7 @@ and Kibana to view them more easily.
 
 
 Working with Multiple Clouds
------------------------------
+----------------------------
 
 If you are running playbooks from your local machine you can run against more
 than one cloud at the same time.  To do this, you should create a directory
@@ -252,7 +256,7 @@ per-cloud and clone Browbeat into that specific directory:
 Repeat the above steps for as many clouds as you have to run playbooks against your clouds.
 
 Compare software-metadata from two different runs
---------------------------------------------------
+-------------------------------------------------
 
 Browbeat's metadata is great to help build visuals in Kibana by querying on specific metadata fields, but sometimes
 we need to see what the difference between two builds might be. Kibana doesn't have a good way to show this, so we
