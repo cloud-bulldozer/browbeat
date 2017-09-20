@@ -21,6 +21,14 @@
     version: "{{ rally_version }}"
     virtualenv: "{{ rally_venv }}"
 
+# https://github.com/openstack/rally/blob/master/requirements.txt#L6
+# remove when os-faults is fixed and rally is upgraded
+- name: Downgrade ansible in Rally venv
+  pip:
+    name: ansible
+    version: 2.3.2.0
+    virtualenv: "{{ rally_venv }}"
+
 - name: Install elasticsearch into rally-venv
   pip:
     name: elasticsearch
