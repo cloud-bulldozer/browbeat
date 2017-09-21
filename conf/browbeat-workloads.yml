@@ -3,7 +3,6 @@ browbeat:
   results: results/
   rerun: 1
   cloud_name: openstack
-  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   regather: false
