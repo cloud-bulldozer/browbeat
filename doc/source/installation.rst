@@ -46,11 +46,9 @@ On the Undercloud
   [stack@undercloud ansible]$ sudo pip install ansible
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
   [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat.yml
-  [stack@undercloud ansible]$ vi install/group_vars/all.yml # Edit Browbeat network settings
-  [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shakerimage)
   [stack@undercloud ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 
-.. note:: ``browbeat-network.yml`` might not work for you depending on your
+.. note:: Your default network might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
    appropriate networks for instances to allow them to reach the
    internet. Some useful documentation can be found at:
@@ -121,12 +119,10 @@ From your local machine
   $ ./generate_tripleo_hostfile.sh -t <undercloud-ip>
   $ vi install/group_vars/all.yml # Review and edit configuration items
   $ ansible-playbook -i hosts install/browbeat.yml
-  $ vi install/group_vars/all.yml # Edit Browbeat network settings
-  $ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
   $ ansible-playbook -i hosts install/shaker_build.yml
 
 
-.. note:: ``browbeat-network.yml`` might not work for you depending on your
+.. note:: Your default network might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
    appropriate networks for instances to allow them to reach the
    internet. Some useful documentation can be found at:
@@ -358,15 +354,13 @@ environment is different and thus your configuration options will vary.
   [browbeat1@browbeatvm browbeat]$ . .browbeat-venv/bin/activate
   (browbeat-venv) [browbeat1@browbeatvm browbeat]$ python browbeat.py rally
 
-11. Setup network for Shaker+PerfKitBenchmarker and build Shaker image
+11. Build Shaker image
 
 ::
 
-  [browbeatuser1@browbeat-vm ~]$ vi install/group_vars/all.yml # Edit Browbeat network settings
-  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/browbeat_network.yml # For external access(required to build Shaker image)
   [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/shaker_build.yml
 
-.. note:: ``browbeat-network.yml`` might not work for you depending on your
+.. note:: Your default network might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
    appropriate networks for instances to allow them to reach the
    internet. Some useful documentation can be found at:

@@ -1,0 +1,16 @@
+---
+# Public network that perfkit and shaker utilize
+browbeat_pub_net_name: browbeat_public
+browbeat_pub_subnet: 1.1.1.1/22
+browbeat_pub_pool_start: 1.1.1.1
+browbeat_pub_pool_end: 1.1.1.1
+browbeat_pub_pool_gw: 1.1.1.1
+# Private subnet
+browbeat_pri_net_name: browbeat_private
+browbeat_pri_subnet: 172.16.10.0/24
+browbeat_pri_pool_start: 172.16.10.2
+browbeat_pri_pool_end: 172.16.10.100
+browbeat_pri_pool_gw: 172.16.10.1
+browbeat_pri_pool_dns: 8.8.8.8
+
+browbeat_router_name: browbeat_router

@@ -13,6 +13,6 @@
     - browbeat/shaker
     - browbeat/flavors
     - browbeat/images
-    - browbeat/browbeat-network
+    - browbeat/ci-network
     - browbeat/template-configs
     - browbeat/statsd-ironic

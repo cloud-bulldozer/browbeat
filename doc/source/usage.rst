@@ -28,15 +28,11 @@ Run Browbeat performance tests from Undercloud
 Running PerfKitBenchmarker
 ---------------------------
 
-Work is on-going to utilize PerfKitBenchmarker as a workload provider to
-Browbeat. Many benchmarks work out of the box with Browbeat. You must
-ensure that your network is setup correctly to run those benchmarks and
-you will need to configure the settings in
-ansible/install/group_vars/all.yml for Browbeat public/private
-networks. Currently tested benchmarks include: aerospike, bonnie++,
-cluster_boot, copy_throughput(cp,dd,scp), fio, iperf, mesh_network,
-mongodb_ycsb, netperf, object_storage_service, ping, scimark2, and
-sysbench_oltp.
+Many benchmarks work out of the box with Browbeat. You must ensure that your
+network is setup correctly to run those benchmarks. Currently tested benchmarks
+include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio,
+iperf, mesh_network, mongodb_ycsb, netperf, object_storage_service, ping,
+scimark2, and sysbench_oltp.
 
 To run Browbeat's PerfKit Benchmarks, you can start by viewing the
 tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml.
@@ -54,7 +50,7 @@ browbeat-config.yaml:
 
 ::
 
-    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py  perfkit -s browbeat-config.yaml
+    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py perfkit -s browbeat-config.yaml
 
 Running Shaker
 ---------------
@@ -66,7 +62,6 @@ convenience they are being mentioned here as well.
 
 ::
 
-    $ ansible-playbook -i hosts install/browbeat_network.yml
     $ ansible-playbook -i hosts install/shaker_build.yml
 
 .. note:: The playbook to setup networking is provided as an example only and
