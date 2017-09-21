@@ -1,6 +1,5 @@
 name: Browbeat configuration schema
 type: map
-allowempty: True
 mapping:
   browbeat:
     required: True
@@ -18,7 +17,6 @@ mapping:
       overcloud_credentials:
         type: str
         required: True
-
 
   elasticsearch:
     required: True
@@ -50,7 +48,6 @@ mapping:
             file:
               type: str
               required: True
-
 
   ansible:
     required: True
@@ -91,7 +88,6 @@ mapping:
   grafana:
     required: True
     type: map
-    allowempty: True
     mapping:
       enabled:
         type: bool
@@ -105,15 +101,6 @@ mapping:
         type: seq
         sequence:
         - type: str
-      snapshot:
-        type: map
-        mapping:
-          enabled:
-            type: bool
-            required: True
-          snapshot_compute:
-            type: bool
-            required: True
 
   perfkit:
     required: False

@@ -19,24 +19,9 @@ class Grafana(object):
         self.logger = logging.getLogger('browbeat.grafana')
         self.config = config
         self.cloud_name = self.config['browbeat']['cloud_name']
-        self.hosts_file = self.config['ansible']['hosts']
         self.grafana_ip = self.config['grafana']['grafana_ip']
         self.grafana_port = self.config['grafana']['grafana_port']
-        self.playbook = self.config['ansible']['grafana_snapshot']
         self.grafana_url = {}
-
-    def extra_vars(self, from_ts, to_ts, result_dir, test_name):
-        extra_vars = 'grafana_ip={} '.format(
-            self.config['grafana']['grafana_ip'])
-        extra_vars += 'grafana_port={} '.format(
-            self.config['grafana']['grafana_port'])
-        extra_vars += 'from={} '.format(from_ts)
-        extra_vars += 'to={} '.format(to_ts)
-        extra_vars += 'results_dir={}/{} '.format(result_dir, test_name)
-        extra_vars += 'var_cloud={} '.format(self.cloud_name)
-        if self.config['grafana']['snapshot']['snapshot_compute']:
-            extra_vars += 'snapshot_compute=true '
-        return extra_vars
 
     def grafana_urls(self):
         return self.grafana_url

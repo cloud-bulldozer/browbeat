@@ -24,7 +24,6 @@ ansible:
     neutron_l3: ansible/browbeat/adjustment-l3.yml
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
-  grafana_snapshot: ansible/browbeat/snapshot-general-performance-dashboard.yml
   metadata: ansible/gather/site.yml
 connmon:
   enabled: false
@@ -35,9 +34,6 @@ grafana:
   grafana_port: 3000
   dashboards:
     - openstack-general-system-performance
-  snapshot:
-    enabled: false
-    snapshot_compute: false
 perfkit:
   enabled: true
   sleep_before: 0
@@ -242,4 +238,3 @@ shaker:
       time: 60
       placement: single_room
       file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
-
