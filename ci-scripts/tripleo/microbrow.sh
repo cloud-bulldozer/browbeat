@@ -1,6 +1,16 @@
 #!/bin/bash
 set -eu
 
+if [[ $GERRIT_CHANGE_SUBJECT == "WIP "* ]] || [[ $GERRIT_CHANGE_SUBJECT == "wip "* ]]; then
+  echo "Commit is a work in progress, short circuiting"
+  exit 1
+fi
+
+if [[ $GERRIT_CHANGE_SUBJECT == "WIP: "* ]] || [[ $GERRIT_CHANGE_SUBJECT == "wip: "* ]]; then
+  echo "Commit is a work in progress, short circuiting"
+  exit 1
+fi
+
 pushd $WORKSPACE/tripleo-quickstart
  sed -i.bak '/extras/d' $WORKSPACE/tripleo-quickstart/quickstart-extras-requirements.txt
  echo "file://$WORKSPACE/tripleo-quickstart-extras/#egg=tripleo-quickstart-extras" >> $WORKSPACE/tripleo-quickstart/quickstart-extras-requirements.txt
