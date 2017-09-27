@@ -204,7 +204,16 @@ class Tools(object):
         with open(filepath) as stackrc:
             for line in stackrc:
                 pair = line.split('=')
-                if 'export' not in line and '#' not in line and '$(' not in line:
+                if 'export' in line:
+                    continue
+                elif '#' in line:
+                    continue
+                elif 'if' in line or 'fi' in line:
+                    continue
+                elif line == '\n':
+                    continue
+
+                if '$(' not in line:
                     values[pair[0].strip()] = pair[1].strip()
                 elif '$(' in line and 'for key' not in line:
                     values[pair[0].strip()] = \
