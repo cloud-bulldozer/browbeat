@@ -3,14 +3,23 @@
 # Playbook to build shaker-image
 #
 
-- hosts: undercloud
-  remote_user: "{{ local_remote_user }}"
+- hosts: browbeat
+  remote_user: "{{ browbeat_user }}"
   tasks:
-    - name: build shaker image
+    - name: Check external connectivity
+      shell: ping -c 1 google.com
+      register: ping
+      ignore_errors: true
+
+    - name: Fail if no external connectivity
+      fail:
+        msg: "There should be external connectivity to build shaker image"
+      when: ping.rc != 0
+
+    - name: Build shaker image
       shell: >
              source {{ overcloudrc }}; source {{ shaker_venv }}/bin/activate;
-             shaker-image-builder --flavor-name {{ shaker_flavor }} --image-builder-template
-             {{ shaker_image }} --dns-nameservers {{ shaker_dns_nameserver }} --os-region-name {{ shaker_region }}
-      become: true
+             shaker-image-builder --image-builder-mode dib --image-builder-distro centos7
+             --os-region-name {{ shaker_region }}
       register: image_result
       failed_when: image_result.rc != 0
