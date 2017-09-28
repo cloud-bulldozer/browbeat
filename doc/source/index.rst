@@ -16,6 +16,7 @@ Contents:
    usage
    plugins
    ci
+   developing
    contributing
 
 Indices and tables
