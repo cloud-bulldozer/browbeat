@@ -8,7 +8,6 @@ browbeat:
   results : results/
   rerun: 1
   cloud_name: openstack
-  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   host: 1.1.1.1
@@ -47,7 +46,6 @@ rally:
   # Sleeps 30 minutes after each iteration to allow for system resources to degrade or
   # display stepped degrading (If the system is hitting saturation or high utilization)
   sleep_after: 1800
-  venv: /home/stack/rally-venv
   plugins:
     - nova: rally/rally-plugins/nova
     - neutron: rally/rally-plugins/neutron

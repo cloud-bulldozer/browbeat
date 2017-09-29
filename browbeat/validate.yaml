@@ -14,9 +14,6 @@ mapping:
       cloud_name:
         type: str
         required: True
-      overcloud_credentials:
-        type: str
-        required: True
 
   elasticsearch:
     required: True
@@ -116,9 +113,6 @@ mapping:
       sleep_after:
         type: number
         required: True
-      venv:
-        type: str
-        required: True
       default:
         type: map
         required: True
@@ -191,9 +185,6 @@ mapping:
       sleep_after:
         type: number
         required: True
-      venv:
-        type: str
-        required: True
       shaker_region:
         type: str
         required: true
@@ -230,9 +221,6 @@ mapping:
         required: True
       sleep_after:
         type: number
-        required: True
-      venv:
-        type: str
         required: True
       benchmarks:
         type: seq

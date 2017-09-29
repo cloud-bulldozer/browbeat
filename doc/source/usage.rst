@@ -11,30 +11,18 @@ Run Overcloud checks
 
 Your Overcloud check output is located in results/bug_report.log
 
-NOTE: It is strongly advised to not run the ansible playbooks in a venv.
+NOTE: It is strongly advised to not run the ansible playbooks in a virtual environment.
 
-Run performance stress tests through Browbeat on the undercloud
----------------------------------------------------------------
+Run Browbeat performance tests from Undercloud
+----------------------------------------------
 
 ::
 
     $ ssh undercloud-root
     [root@ospd ~]# su - stack
-    [stack@ospd ~]$ screen -S browbeat
-    [stack@ospd ~]$ . browbeat-venv/bin/activate
-    (browbeat-venv)[stack@ospd ~]$ cd browbeat/
+    [stack@ospd ~]$ cd browbeat/
+    [stack@ospd browbeat]$ . .browbeat-venv/bin/activate
     (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
-    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
-
-
-Run performance stress tests through Browbeat
----------------------------------------------
-
-::
-
-    [stack@ospd ansible]$ . ../../browbeat-venv/bin/activate
-    (browbeat-venv)[stack@ospd ansible]$ cd ..
-    (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat.cfg to control how many stress tests are run.
     (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
 
 Running PerfKitBenchmarker
@@ -99,8 +87,6 @@ summarized below:
    :join_timeout: Timeout in seconds for agents to join
    :sleep_before: Time in seconds to sleep before executing a scenario
    :sleep_after: Time in seconds to sleep after executing a scenario
-   :venv: venv to execute shaker commands in, ``/home/stack/shaker-venv`` by
-    default
    :shaker_region: OpenStack region you want to use
    :external_host: IP of a server for  external tests (should have
     ``browbeat/util/shaker-external.sh`` executed on it previously and have

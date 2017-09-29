@@ -397,9 +397,7 @@ setup Browbeat with Rally against your local quickstart cloud.
 
 Edit your browbeat-config and validate the following:
 
-* Correct overcloudrc referenced
 * Elastic Indexing configuration
-* Rally venv is set correctly
 * Scenarios you want to run are setup and set to a low times/concurrency
 
 Troubleshooting

@@ -25,25 +25,22 @@ overcloudrc: "{{home_dir}}/overcloudrc"
 # overcloud_ca_path: /etc/pki/ca-trust/source/anchors/overcloud.crt.pem
 
 # The default Browbeat venv
-browbeat_venv: "{{home_dir}}/browbeat-venv"
+browbeat_venv: "{{browbeat_path}}/.browbeat-venv"
 
 # The default Rally venv
-rally_venv: "{{home_dir}}/rally-venv"
+rally_venv: "{{browbeat_path}}/.rally-venv"
 
 # Rally version to install
 rally_version: 0.8.1
 
 # The default Shaker venv
-shaker_venv: "{{home_dir}}/shaker-venv"
+shaker_venv: "{{browbeat_path}}/.shaker-venv"
 
 # Shaker version to Install
 shaker_version: 1.1.0
 
-# The default YODA venv
-yoda_venv: /home/stack/yoda-venv
-
 # PerfKitBenchmarker Settings
-perfkit_venv: "{{home_dir}}/perfkit-venv"
+perfkit_venv: "{{browbeat_path}}/.perfkit-venv"
 perfkit_version: v1.12.0
 
 # Configuration items to adjust browbeat results served through httpd

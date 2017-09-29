@@ -12,23 +12,26 @@
 #   limitations under the License.
 
 # Yet another cloud deployment tool
+
+from collections import deque
 import datetime
-import elastic
-import grafana
 import json
 import logging
+import os
 import time
-import tools
-import workloadbase
+
 from openstack import connection
 from openstack import exceptions
-import os
-import requests
 try:
     from ostag import ostag
 except ImportError:
     ostag = None
-from collections import deque
+import requests
+
+import elastic
+import grafana
+import workloadbase
+import tools
 
 
 class Yoda(workloadbase.WorkloadBase):

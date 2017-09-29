@@ -11,24 +11,27 @@
 #   limitations under the License.
 
 import ast
-import connmon
 import datetime
-import elastic
 import glob
-import grafana
 import logging
 import os
 import shutil
 import subprocess
 import time
+
+import connmon
+import elastic
+import grafana
+from path import get_overcloudrc
+from path import get_workload_venv
 import tools
 import workloadbase
-
 
 class PerfKit(workloadbase.WorkloadBase):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.perfkit')
+        self.overcloudrc = get_overcloudrc()
         self.config = config
         self.error_count = 0
         self.tools = tools.Tools(self.config)
@@ -125,11 +128,12 @@ class PerfKit(workloadbase.WorkloadBase):
         # Build command to run
         if 'enabled' in benchmark_config:
             del benchmark_config['enabled']
-        cmd = ("source {0}/bin/activate; source {1} "
-               "/home/stack/perfkit-venv/PerfKitBenchmarker/pkb.py "
-               "--cloud={2} --run_uri=browbeat".format(
-                   self.config['perfkit']['venv'],
-                   self.config['browbeat']['overcloud_credentials'], cloud_type))
+        cmd = ("source {0}; source {1}; "
+               "{2}/PerfKitBenchmarker/pkb.py "
+               "--cloud={3} --run_uri=browbeat".format(
+                   get_workload_venv('perfkit', True),
+                   self.overcloudrc,
+                   get_workload_venv('perfkit', False), cloud_type))
         for parameter, value in benchmark_config.iteritems():
             if not parameter == 'name':
                 self.logger.debug(

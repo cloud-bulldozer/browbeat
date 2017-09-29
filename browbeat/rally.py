@@ -11,19 +11,21 @@
 #   limitations under the License.
 
 import collections
-import connmon
 import datetime
-import elastic
 import glob
-import grafana
+import json
 import logging
 import os
 import re
 import shutil
 import time
-import tools
+
+import connmon
+import elastic
+import grafana
+from path import get_workload_venv
 import workloadbase
-import json
+import tools
 
 
 class Rally(workloadbase.WorkloadBase):
@@ -61,7 +63,7 @@ class Rally(workloadbase.WorkloadBase):
         plugin_string = ""
         if len(plugins) > 0:
             plugin_string = "--plugin-paths {}".format(",".join(plugins))
-        cmd = "source {}/bin/activate; ".format(self.config['rally']['venv'])
+        cmd = "source {}; ".format(get_workload_venv('rally', True))
         cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(
             plugin_string, task_file, task_args, test_name)
         from_time = time.time()
@@ -104,18 +106,18 @@ class Rally(workloadbase.WorkloadBase):
 
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
-        cmd = "source {}/bin/activate; ".format(self.config['rally']['venv'])
+        cmd = "source {}; ".format(get_workload_venv('rally', True))
         cmd += "rally task report --task {} --out {}.html".format(
             all_task_ids, test_name)
         return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json(self, task_id):
-        cmd = "source {}/bin/activate; ".format(self.config['rally']['venv'])
+        cmd = "source {}; ".format(get_workload_venv('rally', True))
         cmd += "rally task results {}".format(task_id)
         return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json_file(self, task_id, test_name):
-        cmd = "source {}/bin/activate; ".format(self.config['rally']['venv'])
+        cmd = "source {}; ".format(get_workload_venv('rally', True))
         cmd += "rally task results {} > {}.json".format(task_id, test_name)
         return self.tools.run_cmd(cmd)['stdout']
 

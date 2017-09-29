@@ -355,12 +355,8 @@ environment is different and thus your configuration options will vary.
 
   [browbeat1@browbeatvm ansible]$ cd ..
   [browbeat1@browbeatvm browbeat]$ vi browbeat-config.yaml
-  [browbeat1@browbeatvm browbeat]$ . ../browbeat-venv/bin/activate
+  [browbeat1@browbeatvm browbeat]$ . .browbeat-venv/bin/activate
   (browbeat-venv) [browbeat1@browbeatvm browbeat]$ python browbeat.py rally
-
-Make sure to modify the venv settings for Rally to match the directory in which
-Rally was installed in. You will have to do so for other workload providers as
-well.
 
 11. Setup network for Shaker+PerfKitBenchmarker and build Shaker image
 
