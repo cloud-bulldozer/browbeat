@@ -7,8 +7,8 @@
 {% set password = password or 'None' %}
 {% set protocols = protocols or 'tcp' %}
 {% set message_sizes = message_sizes or '64,1024,16384' %}
-{% set hypervisor_server = hypervsior_server or 'None' %}
-{% set hypervisor_client = hypervsior_client or 'None' %}
+{% set hypervisor_server = hypervisor_server or 'None' %}
+{% set hypervisor_client = hypervisor_client or 'None' %}
 
 ---
 BrowbeatPlugin.pbench_uperf:
@@ -60,4 +60,3 @@ BrowbeatPlugin.pbench_uperf:
       max_seconds_per_iteration: {{sla_max_seconds}}
       failure_rate:
         max: {{sla_max_failure}}
-
