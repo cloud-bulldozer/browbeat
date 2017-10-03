@@ -340,12 +340,10 @@ statsd_enabled: False
 ########################################
 # Port for Shaker (5555 should suffice)
 shaker_port: 5555
-# Should choose m1.small or larger
-shaker_flavor: m1.small
-# Shaker centos image builder template
-shaker_image: "{{shaker_venv}}/lib/python2.7/site-packages/shaker/resources/image_builder_templates/centos.yaml"
+# Base image for disk image builder
+shaker_image: centos7
 shaker_region: regionOne
-shaker_dns_nameserver: "{{ dns_server }}"
+
 
 #######################################
 # Connman Configuration

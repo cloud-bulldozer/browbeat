@@ -19,7 +19,7 @@
     - name: Build shaker image
       shell: >
              source {{ overcloudrc }}; source {{ shaker_venv }}/bin/activate;
-             shaker-image-builder --image-builder-mode dib --image-builder-distro centos7
-             --os-region-name {{ shaker_region }}
+             shaker-image-builder --image-builder-mode dib --image-builder-distro
+              {{shaker_image}} --os-region-name {{ shaker_region }}
       register: image_result
       failed_when: image_result.rc != 0
