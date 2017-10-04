@@ -53,6 +53,23 @@
   become: true
   ignore_errors: true
 
+# (archit): yum modules prior to this one depend on availability of EPEL repo
+# this check is to ensure (for a new user) if a subscription manager registration
+# is needed as well, since keystone token dependencies aren't installed through EPEL.
+- name: Check for presence of token dependency in official repository
+  command: yum list "{{item}}"
+  become: true
+  when: "(('controller' in group_names and {{keystone_overcloud_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{keystone_undercloud_collectd_plugin}} == true))"
+  register: token_dep
+  ignore_errors: true
+  with_items:
+    - libdbi-dbd-mysql
+    - collectd-dbi
+   
+- fail:
+    msg: "You probably need to enable official RHEL repositories with subscription manager. Packages not found.."
+  when: "((token_dep|failed) and (('controller' in group_names and {{keystone_overcloud_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{keystone_undercloud_collectd_plugin}} == true)))"
+
 - name: (Keystone Token Count) Install libdbi mysql driver
   yum:
     name: "{{item}}"
