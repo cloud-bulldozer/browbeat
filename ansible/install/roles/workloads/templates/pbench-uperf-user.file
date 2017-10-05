@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo echo "nameserver {{ dns_server }}" > /etc/resolv.conf
-sudo wget -O /etc/yum.repos.d/pbench.repo "{{ pbench_internal_url }}"
+sudo curl -o /etc/yum.repos.d/pbench.repo "{{ pbench_internal_url }}"
 
 sudo cat << EOF >> /etc/yum.repos.d/pbench.repo
 # Template file to be used with ansible playbook "pbench-repo.yml"
@@ -25,5 +25,6 @@ sudo yum install -y pbench-sysstat
 sudo yum install -y pbench-uperf
 sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
 cat /etc/cloud/cloud.cfg | grep disable_root
+sudo sed -i 's/^no-port.*;sleep 10" //g' /root/.ssh/authorized_keys
 
 echo "Browbeat workload installed"

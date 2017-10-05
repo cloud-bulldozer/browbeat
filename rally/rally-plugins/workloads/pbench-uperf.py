@@ -16,13 +16,13 @@ from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import types
 from rally.task import validation
 from rally.common import sshutils
+import browbeat.elastic
 import time
 import StringIO
 import csv
 import json
 import datetime
 import logging
-from Elastic import Elastic
 
 LOG = logging.getLogger(__name__)
 
@@ -252,7 +252,7 @@ class BrowbeatPlugin(neutron_utils.NeutronScenario,
                         'cloud_name': cloudname,
                         'timestamp': es_ts,
                         'num_pairs': num_pairs}}
-                elastic = Elastic(config, 'pbench')
+                elastic = browbeat.elastic.Elastic(config, 'pbench')
                 json_result = StringIO.StringIO(stdout_json)
                 json_data = json.load(json_result)
                 for iteration in json_data:
