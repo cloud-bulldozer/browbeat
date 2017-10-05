@@ -1,6 +1,5 @@
 elastic_enabled: false
 elastic_host: "1.2.3.4.5"
-connmon_enabled: false
 grafana_enabled: false
 grafana_host: "1.2.3.4.5"
 browbeat_config_file: "browbeat-basic.yaml.j2"

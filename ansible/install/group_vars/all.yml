@@ -121,9 +121,6 @@ repos: {}
 #   rhel-7-server-beta:
 #     baseurl: http://walkabout.foobar.com/released/RHEL-7/7.3-Beta/Server/x86_64/os/
 
-# Host where connmond will be running
-connmon_host: 192.0.2.1
-
 ########################################
 # Collectd Configuration
 ########################################
@@ -340,13 +337,6 @@ shaker_port: 5555
 # Base image for disk image builder
 shaker_image: centos7
 shaker_region: regionOne
-
-
-#######################################
-# Connman Configuration
-#######################################
-# Port for Connman
-connmon_port: 5800
 
 ########################################
 # ELK Server Variables

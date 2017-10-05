@@ -20,7 +20,6 @@ import re
 import shutil
 import time
 
-import connmon
 import elastic
 import grafana
 from path import get_workload_venv
@@ -34,7 +33,6 @@ class Rally(workloadbase.WorkloadBase):
         self.logger = logging.getLogger('browbeat.rally')
         self.config = config
         self.tools = tools.Tools(self.config)
-        self.connmon = connmon.Connmon(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
@@ -307,27 +305,10 @@ class Rally(workloadbase.WorkloadBase):
                                             "Failed to create result directory")
                                         exit(1)
 
-                                    # Start connmon before rally
-                                    if self.config['connmon']['enabled']:
-                                        self.connmon.start_connmon()
-
                                     from_time, to_time = self.run_scenario(
                                         scenario_file, scenario, result_dir, test_name,
                                         benchmark['name'])
 
-                                    # Stop connmon at end of rally task
-                                    if self.config['connmon']['enabled']:
-                                        self.connmon.stop_connmon()
-                                        try:
-                                            self.connmon.move_connmon_results(
-                                                result_dir, test_name)
-                                        except Exception:
-                                            self.logger.error(
-                                                "Connmon Result data missing, \
-                                                Connmon never started")
-                                            return False
-                                        self.connmon.connmon_graphs(
-                                            result_dir, test_name)
                                     new_test_name = test_name.split('-')
                                     new_test_name = new_test_name[3:]
                                     new_test_name = "-".join(new_test_name)

@@ -30,9 +30,6 @@ ansible:
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
   metadata: ansible/gather/site.yml
-connmon:
-  enabled: false
-  sudo: true
 grafana:
   enabled: false
   grafana_ip: 1.1.1.1
@@ -61,7 +58,7 @@ rally:
           flavor_name: m1.xtiny
           volume_size: 1
           cleanup_delay: 1800
-          external_net_name: 
+          external_net_name:
           private_net_id:
           file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume_fip.yml
         - name: nova-boot-persist-with-network-volume-fip-100-02

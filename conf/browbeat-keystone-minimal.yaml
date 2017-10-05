@@ -28,9 +28,6 @@ ansible:
     nova_db: ansible/browbeat/adjustment-db.yml
     workers: ansible/browbeat/adjustment-workers.yml
   metadata: ansible/gather/site.yml
-connmon:
-  enabled: false
-  sudo: true
 grafana:
   enabled: false
   grafana_ip: 1.1.1.1

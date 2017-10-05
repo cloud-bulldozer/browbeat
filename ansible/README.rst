@@ -15,7 +15,7 @@ Ansible for Browbeat
 Currently we support Ansible 1.9.4 within browbeat-venv and Ansible 2.0+ for installation.
 
 Playbooks for:
-  * Installing Browbeat, collectd, connmon, ELK stack and clients, graphite, grafana, and grafana dashboards
+  * Installing Browbeat, collectd, ELK stack and clients, graphite, grafana, and grafana dashboards
   * Check overcloud for performance issues
   * Tune overcloud for performance (Experimental)
   * Adjust number of workers for cinder/keystone/neutron/nova
@@ -89,15 +89,6 @@ To Install Kibana Visuals
 ::
 
     # ansible-playbook -i hosts install/kibana-visuals.yml
-
-Install Connmon
-'''''''''''''''
-
-Requires Ansible 2.0
-
-::
-
-    # ansible-playbook -i hosts install/connmon.yml
 
 Install Generic ELK Stack
 '''''''''''''''''''''''''
@@ -290,4 +281,3 @@ To switch to UUID tokens:
 ::
 
     # ansible-playbook -i hosts browbeat/adjustment-keystone-token.yml -e "token_provider=uuid"
-

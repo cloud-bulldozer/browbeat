@@ -19,7 +19,6 @@ import shutil
 import subprocess
 import time
 
-import connmon
 import elastic
 import grafana
 from path import get_overcloudrc
@@ -35,7 +34,6 @@ class PerfKit(workloadbase.WorkloadBase):
         self.config = config
         self.error_count = 0
         self.tools = tools.Tools(self.config)
-        self.connmon = connmon.Connmon(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.test_count = 0
@@ -144,9 +142,6 @@ class PerfKit(workloadbase.WorkloadBase):
         if os.path.exists("/tmp/perfkitbenchmarker/runs/browbeat"):
             shutil.rmtree("/tmp/perfkitbenchmarker/runs/browbeat")
 
-        if self.config['connmon']['enabled']:
-            self.connmon.start_connmon()
-
         self.logger.info("Running Perfkit Command: {}".format(cmd))
         stdout_file = open("{}/pkb.stdout.log".format(result_dir), 'w')
         stderr_file = open("{}/pkb.stderr.log".format(result_dir), 'w')
@@ -159,16 +154,6 @@ class PerfKit(workloadbase.WorkloadBase):
         if 'sleep_after' in self.config['perfkit']:
             time.sleep(self.config['perfkit']['sleep_after'])
         to_ts = time.time()
-
-        # Stop connmon at end of perfkit task
-        if self.config['connmon']['enabled']:
-            self.connmon.stop_connmon()
-            try:
-                self.connmon.move_connmon_results(result_dir, test_name)
-                self.connmon.connmon_graphs(result_dir, test_name)
-            except Exception:
-                self.logger.error(
-                    "Connmon Result data missing, Connmon never started")
 
         # Determine success
         success = False
