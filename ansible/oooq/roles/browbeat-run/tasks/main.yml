@@ -2,6 +2,6 @@
 
 - name: Run Browbeat
   shell:
-    "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; \
+    "source {{ ansible_env.HOME }}/browbeat/.browbeat-venv/bin/activate; \
      cd {{ ansible_env.HOME }}/browbeat/; \
      python browbeat.py all"

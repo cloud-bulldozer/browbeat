@@ -13,17 +13,14 @@
 
 import argparse
 import datetime
-import browbeat.elastic
-import browbeat.perfkit
-import browbeat.rally
-import browbeat.shaker
-import browbeat.yoda
-import browbeat.workloadbase
-import browbeat.tools
 import logging
 import os
 import sys
 import time
+
+import browbeat.elastic
+import browbeat.tools
+import browbeat.workloadbase
 
 _workload_opts = ['perfkit', 'rally', 'shaker', 'yoda']
 _config_file = 'browbeat-config.yaml'

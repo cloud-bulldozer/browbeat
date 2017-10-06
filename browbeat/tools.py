@@ -10,17 +10,19 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import logging
+import os
+import re
+import subprocess
+import yaml
+
+from pykwalify import core as pykwalify_core
+from pykwalify import errors as pykwalify_errors
+
 import perfkit
 import rally
 import shaker
 import yoda
-import logging
-import os
-import subprocess
-import yaml
-import re
-from pykwalify import core as pykwalify_core
-from pykwalify import errors as pykwalify_errors
 
 
 class Tools(object):

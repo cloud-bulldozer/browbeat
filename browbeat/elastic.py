@@ -11,16 +11,17 @@
 #   limitations under the License.
 
 from collections import deque
-import elasticsearch
-from elasticsearch import helpers
-import logging
-import json
 import datetime
-import uuid
-import sys
-import time
+import json
+import logging
 import os
 import re
+import sys
+import time
+import uuid
+
+import elasticsearch
+from elasticsearch import helpers
 
 browbeat_uuid = uuid.uuid4()
 

@@ -3,7 +3,6 @@ browbeat:
   results : results/
   rerun: 3
   cloud_name: openstack
-  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: false
   regather: false
@@ -40,7 +39,6 @@ perfkit:
   enabled: true
   sleep_before: 0
   sleep_after: 0
-  venv: /home/stack/perfkit-venv
   default:
     image: centos7
     machine_type: m1.small
@@ -59,7 +57,6 @@ rally:
   enabled: true
   sleep_before: 5
   sleep_after: 5
-  venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - netcreate-boot-ping: rally/rally-plugins/netcreate-boot-ping
@@ -275,7 +272,6 @@ shaker:
   join_timeout: 600
   sleep_before: 5
   sleep_after: 5
-  venv: /home/stack/shaker-venv
   shaker_region: regionOne
   external_host: 2.2.2.2
   scenarios:
@@ -371,7 +367,6 @@ yoda:
   enabled: false
   instackenv: "/home/stack/instackenv.json"
   stackrc: "/home/stack/stackrc"
-  venv: "/home/stack/yoda-venv/bin/activate"
   benchmarks:
     - name: scale-deploy
       type: overcloud

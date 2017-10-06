@@ -1,10 +1,9 @@
-# Tests to be compleated for the install-and-check.sh script minimal and short workloads are performed
+# Tests to be completed for the install-and-check.sh script minimal and short workloads are performed
 #  to confirm functionality.
 browbeat:
   results : results/
   rerun: 1
   cloud_name: {{ browbeat_cloud_name }}
-  overcloud_credentials: /home/stack/overcloudrc
 elasticsearch:
   enabled: {{ elastic_enabled }}
   host: {{ elastic_host }}

@@ -12,22 +12,26 @@
 
 import collections
 import datetime
-import elastic
-import grafana
 import json
 import logging
 import os
 import time
-import tools
 import uuid
-import workloadbase
 import yaml
+
+import elastic
+import grafana
+from path import get_overcloudrc
+from path import get_workload_venv
+import workloadbase
+import tools
 
 
 class Shaker(workloadbase.WorkloadBase):
 
     def __init__(self, config):
         self.logger = logging.getLogger('browbeat.shaker')
+        self.overcloudrc = get_overcloudrc()
         self.config = config
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
@@ -38,7 +42,7 @@ class Shaker(workloadbase.WorkloadBase):
         self.scenario_count = 0
 
     def shaker_checks(self):
-        cmd = "source /home/stack/overcloudrc; glance image-list | grep -w shaker-image"
+        cmd = "source {}; glance image-list | grep -w shaker-image".format(self.overcloudrc)
         if self.tools.run_cmd(cmd)['stdout'] == "":
             self.logger.error("Shaker Image is not built, try again")
             exit(1)
@@ -351,14 +355,13 @@ class Shaker(workloadbase.WorkloadBase):
         server_endpoint = self.config['shaker']['server']
         port_no = self.config['shaker']['port']
         flavor = self.config['shaker']['flavor']
-        venv = self.config['shaker']['venv']
+        venv = get_workload_venv('shaker', True)
         shaker_region = self.config['shaker']['shaker_region']
         timeout = self.config['shaker']['join_timeout']
         self.logger.info(
             "The uuid for this shaker scenario is {}".format(shaker_uuid))
         cmd_env = (
-            "source {0}/bin/activate; source {1}").format(venv, self.config['browbeat']
-                                                          ['overcloud_credentials'])
+            "source {0}; source {1}").format(venv, self.overcloudrc)
         if 'external' in filename and 'external_host' in self.config['shaker']:
             external_host = self.config['shaker']['external_host']
             cmd_shaker = (
@@ -408,7 +411,7 @@ class Shaker(workloadbase.WorkloadBase):
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         scenarios = self.config.get('shaker')['scenarios']
-        venv = self.config['shaker']['venv']
+        venv = get_workload_venv('shaker')
         default_time = 60
         self.shaker_checks()
         if (scenarios is not None and len(scenarios) > 0):
