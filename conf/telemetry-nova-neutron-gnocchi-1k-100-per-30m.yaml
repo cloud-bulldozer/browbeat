@@ -47,6 +47,7 @@ rally:
   sleep_before: 5
   sleep_after: 5
   plugins:
+    - browbeat: rally/rally-plugins/browbeat
     - nova: rally/rally-plugins/nova
     - neutron: rally/rally-plugins/neutron
     - gnocchi: rally/rally-plugins/gnocchi

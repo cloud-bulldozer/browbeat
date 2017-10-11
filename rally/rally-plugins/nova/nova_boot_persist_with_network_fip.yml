@@ -2,18 +2,22 @@
 {% set flavor_name = flavor_name or 'm1.xtiny' %}
 {% set setup_delay = setup_delay or 0 %}
 {% set cleanup_delay = cleanup_delay or 0 %}
-{% set network_start_cidr = network_start_cidr or '10.1.0.0/23' %}
+{% set external_net_name = external_net_name or 'browbeat_public' %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-BrowbeatNova.nova_boot_persist_with_network:
+BrowbeatNova.nova_boot_persist_with_network_fip:
   -
     args:
       flavor:
         name: '{{flavor_name}}'
       image:
         name: '{{image_name}}'
+      external_net_name: '{{external_net_name}}'
+      boot_server_kwargs:
+        nics:
+          - net-id: '{{private_net_id}}'
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
@@ -22,10 +26,6 @@ BrowbeatNova.nova_boot_persist_with_network:
       browbeat_delay:
         setup_delay: {{setup_delay}}
         cleanup_delay: {{cleanup_delay}}
-      browbeat_persist_network:
-        networks_per_tenant: 1
-        subnets_per_network: 1
-        start_cidr: {{network_start_cidr}}
       users:
         tenants: 1
         users_per_tenant: 8
