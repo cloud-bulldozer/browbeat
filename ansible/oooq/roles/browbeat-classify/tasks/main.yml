@@ -20,5 +20,5 @@
 
 - debug: msg="{{ browbeatml_summary.stdout_lines }}"
 
-
-
+- name: Upload timeseries data summaries to cockroach db
+  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-timesummary {{browbeat_uuid.stdout}}"
