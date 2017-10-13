@@ -2,7 +2,7 @@
 #Collect and template Metadata about the deployment
 
 - name: Get Overcloud Image Build date
-  shell: "curl -s -v -X HEAD {{ undercloud_image_url }} 2>&1 | grep '^< Date:'"
+  shell: "curl -s -v -X HEAD {{ overcloud_image_url }} 2>&1 | grep '^< Date:'"
   register: build
   ignore_errors: true
 
