@@ -85,17 +85,17 @@ browbeat_workloads:
 # Guest images for the Overcloud
 # Note hash key name must match intended name for image upload to
 # work consistently (Ex. images['cirros'].name == 'cirros')
-images:
-  centos7:
-    name: centos7
-    url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
-    type: qcow2
-    convert_to_raw: false
-  cirros:
-    name: cirros
-    url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
-    type: qcow2
-    convert_to_raw: false
+browbeat_guest_images:
+                  centos7:
+                    name: centos7
+                    url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+                    type: qcow2
+                    convert_to_raw: false
+                  cirros:
+                    name: cirros
+                    url: http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img
+                    type: qcow2
+                    convert_to_raw: false
 
 # DNS Server to add
 dns_server: 8.8.8.8

@@ -5,9 +5,16 @@
 
 - name: Remove Non-EPEL collectd install
   yum:
-    name: libcollectdclient
+    name: "{{ item }}"
     state: absent
   become: true
+  with_items:
+    - libcollectdclient
+    - collectd
+    - collectd-apache
+    - collectd-ceph
+    - collectd-mysql
+    - collectd-turbostat
   when: collectd_from_epel
 
 - name: Clean Non-EPEL collectd configuration
