@@ -40,15 +40,6 @@
     - virtualenv
     - setuptools
 
-- name: Create browbeat virtualenv
-  command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
-
-- name: Setup browbeat-venv CA certificate path
-  lineinfile:
-    dest: "{{ browbeat_venv }}/bin/activate"
-    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
-  when: overcloud_ca_path is defined
-
 - name: Determine if browbeat directory exists already
   stat:
     path: "{{ browbeat_path }}"
@@ -63,6 +54,15 @@
     dest: "{{ browbeat_path }}"
     version: master
   when: browbeat_exists.stat.isdir is undefined
+
+- name: Create browbeat virtualenv
+  command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
+
+- name: Setup browbeat-venv CA certificate path
+  lineinfile:
+    dest: "{{ browbeat_venv }}/bin/activate"
+    line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
+  when: overcloud_ca_path is defined
 
 - name: Determine if generate_tripleo_hostfile has been run
   stat:
