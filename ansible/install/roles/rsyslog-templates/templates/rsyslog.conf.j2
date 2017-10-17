@@ -1,0 +1,7 @@
+# Browbeat Rsyslog config defaults blown away for consistency in logging
+
+# Include all config files in /etc/rsyslog.d/                                                                                                                                                 │
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+# Prevents messages from getting dumped to /var/log/messages
+stop

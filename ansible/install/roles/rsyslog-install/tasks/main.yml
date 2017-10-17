@@ -10,7 +10,6 @@
     - rsyslog
     - rsyslog-elasticsearch
     - rsyslog-mmjsonparse
-    - rsyslog-mmutf8fix
   register: install_rsyslog
   ignore_errors: true
 
@@ -33,16 +32,16 @@
 
 - name: Add repository
   yum_repository:
-    name: rsyslog_v8
-    description: Up to date rsyslog
-    baseurl: http://rpms.adiscon.com/v8-stable/epel-7/x86_64/
+    name: CentOS-7-Base
+    description: Core CentOS7 Packages
+    baseurl: http://mirror.centos.org/centos/7/os/$basearch/
   become: true
   when: install_rsyslog|failed
 
 - name: Add key
   rpm_key:
     state: present
-    key: http://rpms.adiscon.com/RPM-GPG-KEY-Adiscon
+    key: https://www.centos.org/keys/RPM-GPG-KEY-CentOS-7
   become: true
   when: install_rsyslog|failed
 
@@ -55,5 +54,4 @@
     - rsyslog
     - rsyslog-elasticsearch
     - rsyslog-mmjsonparse
-    - rsyslog-mmutf8fix
   when: install_rsyslog|failed

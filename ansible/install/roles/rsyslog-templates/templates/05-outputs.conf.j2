@@ -19,6 +19,3 @@ action(
 {% if rsyslog_forwarding and not rsyslog_aggregator %}
 action(type="omfwd" Target="{{rsyslog_aggregator_server}}" Port="{{rsyslog_aggregator_port}}" Protocol="tcp" Template="ViaQ_SyslogProtocol23Format")
 {% endif %}
-
-# Drop messages before they get to /var/log/messages
-stop
