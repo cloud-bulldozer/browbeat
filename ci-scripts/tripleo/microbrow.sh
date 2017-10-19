@@ -44,14 +44,14 @@ if [ ! -z ${current_build+x} ]
  then
   source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
   hash=$(get_delorean_hash_from_url $current_build)
+  expanded_hash=$(get_expanded_delorean_hash_from_url $current_build)
+  export VARS="$VARS --extra-vars current_build=$hash"
 
   if [[ $RELEASE == *rhos-* ]]
    then
-    cached_image="$INTERNAL_IMAGE_SERVER/$RELEASE/$current_build/undercloud.qcow2"
-    export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars rhos_puddle=$current_build"
+    export RELEASE="$RELEASE" #no mutations needed after latest changes
   else
-    cached_image="$INTERNAL_IMAGE_SERVER/centos-org-image-cache/$RELEASE/rdo_trunk/$hash/undercloud.qcow2"
-    export VARS="$VARS --extra-vars undercloud_image_url=$cached_image --extra-vars dlrn_hash=$hash"
+    export RELEASE="$RELEASE-rhel"
   fi
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
@@ -85,5 +85,6 @@ echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 -R $RELEASE \
 --config $HW_ENV_DIR/network_configs/$NETWORK_ISOLATION/config_files/config.yml \
 --extra-vars @$HW_ENV_DIR/network_configs/$NETWORK_ISOLATION/env_settings.yml \
+--extra-vars @$HW_ENV_DIR/all.yml \
 --extra-vars $VARS \
 $VIRTHOST

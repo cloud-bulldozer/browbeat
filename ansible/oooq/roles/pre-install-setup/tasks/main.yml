@@ -19,6 +19,3 @@
 
 - name: Load Browbeat vars
   include_vars: /tmp/all.yml
-
-- name: Load CI vars
-  include_vars: "{{ lookup('env','HW_ENV_DIR') }}/all.yml"
