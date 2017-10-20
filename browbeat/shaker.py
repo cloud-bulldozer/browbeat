@@ -411,7 +411,7 @@ class Shaker(workloadbase.WorkloadBase):
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
         scenarios = self.config.get('shaker')['scenarios']
-        venv = get_workload_venv('shaker')
+        venv = get_workload_venv('shaker', False)
         default_time = 60
         self.shaker_checks()
         if (scenarios is not None and len(scenarios) > 0):
