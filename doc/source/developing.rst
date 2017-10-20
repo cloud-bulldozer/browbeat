@@ -77,9 +77,10 @@ Create Configuration and Nodes YAML Files
 
 For this usage of Tripleo-quickstart, there are two configuration files to build a cloud,
 quickstart_config.yml and quickstart_nodes.yml configuration file.  Quickstart_config.yml contains
-some basic options you may configure for your under/over clouds including ssl, cached undercloud
-image, enabling telemetry, and the networking setup. The nodes configuration file defines the
-amount of resources for your virtual overcloud including node count, 3 examples are included here.
+some basic options you may configure for your under/over clouds including ssl, cached image urls,
+enabling telemetry, and the networking setup. The nodes configuration file defines the
+amount of resources for your virtual overcloud including node count, Three examples are included
+here.
 
 quickstart_config.yml
 
@@ -97,8 +98,17 @@ quickstart_config.yml
   # Turn off introspection
   step_introspect: false
 
-  # Use a cached Undercloud image when possible
+  # Version of OpenStack (Ex: newton, ocata, pike)
+  release: ocata
+
+  #overcloud_as_undercloud: false
+  #force_cached_images: true
+  #dlrn_hash: current-passed-ci
+
+  # Use cached images when possible
   #undercloud_image_url: http://walkabout.foobar.com/ci-images/ocata/current-passed-ci/undercloud.qcow2
+  #ipa_image_url: http://walkabout.foobar.com/ci-images/ocata/current-passed-ci/ironic-python-agent.tar
+  #overcloud_image_url: http://walkabout.foobar.com/ci-images/ocata/current-passed-ci/overcloud-full.tar
 
   # Tell tripleo how we want things done.
   extra_args: >-
@@ -269,24 +279,24 @@ quickstart_nodes.yml - 3 Controllers
 
 Run quickstart.sh playbooks
 
-You can change the `-R` option for the version of OpenStack (Ex. newton, ocata, master) you need
-to run.
+You can change version of OpenStack (Ex. newton, ocata, master) you need by editing the `release`
+yaml parameter in quickstart_config.yaml (above).
 
 ::
 
-  time bash quickstart.sh -v -X -p quickstart.yml -R ocata -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -T all 127.0.0.2
+  time bash quickstart.sh -v -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -p quickstart.yml -T all -X 127.0.0.2
 
 ::
 
-  time bash quickstart.sh -v -p quickstart-extras-undercloud.yml -R ocata -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -T none 127.0.0.2
+  time bash quickstart.sh -v -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -p quickstart-extras-undercloud.yml -T none 127.0.0.2
 
 ::
 
-  time bash quickstart.sh -v -p quickstart-extras-overcloud-prep.yml -R ocata -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -T none 127.0.0.2
+  time bash quickstart.sh -v -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -p quickstart-extras-overcloud-prep.yml -T none 127.0.0.2
 
 ::
 
-  time bash quickstart.sh -v -p quickstart-extras-overcloud.yml -R ocata -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -T none 127.0.0.2
+  time bash quickstart.sh -v -c quickstart_config.yml -N quickstart_nodes.yml -I -t all -p quickstart-extras-overcloud.yml -T none 127.0.0.2
 
 If all 4 playbooks completed without errors, you should have a local tripleo quickstart cloud.  In
 order to validate, I would recommend ssh-ing into the Undercloud and issuing various openstack cli
