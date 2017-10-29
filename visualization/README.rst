@@ -1,4 +1,4 @@
-# OpenStack Browbeat Kibna visualization
+# OpenStack Browbeat Kibana visualization
 -----------------------------------------
 To import these Visualizations, you need Kibana 4.1 or greater.
 
