@@ -249,6 +249,14 @@ rally:
           image_location: /home/stack/cirros.qcow2
           flavor_name: m1.xtiny
           file: rally/rally-plugins/glance/glance_create_boot_delete.yml
+        - name: rally-port-create-associate
+          file: rally/rally-plugins/neutron/port_create_assoicate.yml
+          enabled: true
+          num_networks: 1
+          num_ports: 100
+          hypervisor: overcloud-compute-0.localdomain
+          browbeat_ssh_config: ansible/ssh-config
+          username: heat-admin
 #shaker scenarios require atleast 2 compute nodes
 shaker:
   enabled: true
