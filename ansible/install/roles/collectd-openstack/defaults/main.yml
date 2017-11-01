@@ -123,6 +123,22 @@ controller_monitored_queues:
   - "notifications.critical"
 
 ########################
+# ovsagent monitoring
+########################
+ovsagent_compute_monitor: false
+ovsagent_controller_monitor: false
+
+controller_monitored_ints:
+  - "tap"
+
+compute_monitored_ints:
+  - "qvo"
+
+controller_monitored_ns:
+  - "qrouter"
+  - "qdhcp"
+
+########################
 # Swift stat plugin
 ########################
 # Provides metrics on Swift Account using Gnocchi Swift Configuration

@@ -228,6 +228,19 @@
       dest: /usr/local/bin/collectd_swift_stat.py
   when: "('controller' in group_names and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names)"
 
+- name: Copy python plugins
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  with_items:
+    - src: collectd_ovsagent.py
+      dest: /usr/local/bin/collectd_ovsagent.py
+  when: "('controller' in group_names ) or ('compute' in group_names)"
+
 # Rabbitmq monitoring
 - name: Install pyrabbit
   easy_install:

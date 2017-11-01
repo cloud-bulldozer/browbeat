@@ -7,6 +7,7 @@
 {% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {% set swift_stat_groups = ['controller', '*'] %}
 {% set odl_groups = ['controller', '*'] %}
+{% set ovsagent_groups = ['controller', 'compute', '*'] %}
 
 {
   "dashboard": {
@@ -9135,7 +9136,102 @@
         "titleSize": "h6"
       },
       {% endif %}
+      {% if item.template_node_type in ovsagent_groups %}
       {
+        "collapse": true,
+        "height": 200,
+        "panels": [
+        {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": null,
+            "fill": 1,
+            {% if vars.update({'panel_idx': (vars.panel_idx + 1)}) %} {% endif %}
+            "id": {{vars.panel_idx}},
+            "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "refId": "A",
+                "target": "$Cloud.$Node.ovsagent_monitoring.gauge-qdhcp_ns_total-count"
+            },
+            {
+                "refId": "B",
+                "target": "$Cloud.$Node.ovsagent_monitoring.gauge-qrouter_ns_total-count"
+            },
+            {
+                "refId": "C",
+                "target": "$Cloud.$Node.ovsagent_monitoring.gauge-tap_interface_total-count"
+            }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$Cloud - Neutron $Node Resources",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": true,
+        "title": "Neutron Resources",
+        "titleSize": "h6"
+        },
+        {% endif %}
+        {
         "collapse": true,
         "editable": true,
         "height": "200px",

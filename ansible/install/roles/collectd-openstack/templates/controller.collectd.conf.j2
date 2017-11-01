@@ -2060,5 +2060,23 @@ LoadPlugin "org.collectd.java.GenericJMX"
 </Plugin>
 </Plugin>
 {% endif %}
+
+{% if ovsagent_controller_monitor %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_ovsagent"
+  <Module collectd_ovsagent>
+    interval 10
+    prefix ovsagent
+    interfaces {% for int in controller_monitored_ints %} {{int}} {% endfor %}
+
+    namespaces {% for ns in controller_monitored_ns %} {{ns}} {% endfor %}
+
+  </Module>
+</Plugin>
+{% endif %}
+
 # Include other collectd configuration files
 Include "/etc/collectd.d"

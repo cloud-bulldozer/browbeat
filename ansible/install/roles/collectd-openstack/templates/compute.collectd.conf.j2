@@ -318,5 +318,20 @@ PreCacheChain "PreCache"
 
 </Plugin>
 
+{% if ovsagent_compute_monitor  %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_ovsagent"
+  <Module collectd_ovsagent>
+    prefix ovsagent
+    interval 10
+    interfaces {% for int in compute_monitored_ints %} {{int}} {% endfor %}
+
+  </Module>
+</Plugin>
+{% endif %}
+
 # Include other collectd configuration files
 Include "/etc/collectd.d"
