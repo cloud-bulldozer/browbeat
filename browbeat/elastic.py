@@ -109,6 +109,7 @@ class Elastic(object):
                 for item in to_upload:
                     self.logger.debug("{} of {} Elastic objects uploaded".format(num_items,
                                                                                  counter))
+                    counter = counter + 1
                 output = "Pushed {} items to Elasticsearch to index {}".format(num_items,
                                                                                self.index)
                 output += " and browbeat UUID {}".format(str(browbeat_uuid))
