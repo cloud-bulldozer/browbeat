@@ -37,6 +37,7 @@
     - collectd-ceph
     - collectd-mysql
     - collectd-turbostat
+    - collectd-ping
 
 # (sai) Separating out collectd java rpms as they have a lot of dependencies and
 # are only required for ODL monitoring on controllers only

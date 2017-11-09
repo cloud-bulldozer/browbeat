@@ -145,3 +145,10 @@ karaf_password: karaf
 # Determines if WARN/INFO messages are also counted
 regex_warn: false
 regex_info: false
+
+########################################################
+# Ping Plugin for Latency and Jitter between controllers
+########################################################
+# Might result in more network traffic
+ping_plugin: false
+ping_interval: 1

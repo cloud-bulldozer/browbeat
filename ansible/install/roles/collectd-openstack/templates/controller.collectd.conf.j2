@@ -51,10 +51,12 @@ LoadPlugin tail
 LoadPlugin turbostat
 LoadPlugin unixsock
 LoadPlugin uptime
+{% if ping_plugin %}
+LoadPlugin ping
+{% endif %}
 {% if opendaylight_java_plugin %}
 LoadPlugin java
 {% endif %}
-
 
 # Open unix domain socket for collectdctl
 <Plugin unixsock>
@@ -422,6 +424,25 @@ PreCacheChain "PreCache"
   ReportBytes true
   ValuesPercentage true
 </Plugin>
+
+# ping plugin
+{% if ping_plugin %}
+{% if groups['controller'] | length > 1 %}
+<Plugin "ping">
+{% if inventory_hostname == groups['controller'][0] %}
+   Host "{{groups['controller'][1]}}"
+   Host "{{groups['controller'][2]}}"
+{% elif inventory_hostname == groups['controller'][1] %}
+   Host "{{groups['controller'][0]}}"
+   Host "{{groups['controller'][2]}}"
+{% elif inventory_hostname == groups['controller'][2] %}
+   Host "{{groups['controller'][0]}}"
+   Host "{{groups['controller'][1]}}"
+{% endif %}
+   Interval {{ping_interval}}
+</Plugin>
+{% endif %}
+{% endif %}
 
 # Tail plugin configuration
 <Plugin "tail">
