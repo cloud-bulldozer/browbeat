@@ -44,6 +44,7 @@
   yum:
     name: "{{ item }}"
     state: present
+  become: true
   with_items:
     - collectd-java
     - collectd-generic-jmx
