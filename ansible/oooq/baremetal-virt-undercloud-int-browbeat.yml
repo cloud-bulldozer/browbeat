@@ -20,4 +20,3 @@
   hosts: undercloud
   roles:
     - browbeat/browbeat-run
-    - browbeat/browbeat-classify
