@@ -4,10 +4,10 @@ if [ $? -gt 0 ]
 then
   exit 1
 fi
-sudo curl -O http://registrationcenter-download.intel.com/akdlm/irc_nas/9752/l_mklb_p_2017.3.018.tgz
-sudo tar -xvzf l_mklb_p_2017.3.018.tgz
+sudo curl -O {{ linpack_url }}
+sudo tar -xvzf {{ linpack_url | basename }}
 sudo mkdir /opt/linpack
-sudo cp l_mklb_p_2017.3.018/benchmarks_2017/linux/mkl/benchmarks/linpack/* /opt/linpack
+sudo cp {{ linpack_url | basename | replace(".tgz", "") }}{{ linpack_path}}* /opt/linpack
 if [ $? -gt 0 ]
 then
   exit 1
