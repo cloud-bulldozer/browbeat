@@ -4,9 +4,9 @@
 
 - include: configure-browbeat.yml
 
-- include: undercloud-collectd.yml
+- include: undercloud-metrics.yml
 
-- include: overcloud-collectd.yml
+- include: overcloud-metrics.yml
 
 - include: install-browbeat.yml
 

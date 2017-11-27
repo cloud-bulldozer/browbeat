@@ -28,6 +28,7 @@
   command: pcs property set is-managed-default=true
   when: "'eventlet' in '{{ keystone_deployment }}' and pacemaker_controlled"
 
+- name: pacemaker cleanup keystone
   become: true
   command: pcs resource cleanup openstack-keystone
   when: "'eventlet' in '{{ keystone_deployment }}' and pacemaker_controlled"

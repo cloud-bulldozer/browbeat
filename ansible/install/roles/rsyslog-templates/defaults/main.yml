@@ -31,4 +31,3 @@ rsyslog_cloud_name: "{{graphite_prefix}}"
 disk_backed_rsyslog: false
 rsyslog_forwarding: true
 rsyslog_aggregator: false
-disk_backed_rsyslog: false
