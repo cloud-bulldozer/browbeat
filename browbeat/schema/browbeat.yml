@@ -1,0 +1,194 @@
+# This schema defines how Browbeat config files are formated. Generally items
+# in a dictionary format will be alphabetically ordered however the Browbeat
+# options will appear first in base level yaml dictionary.
+name: Browbeat configuration schema
+type: map
+mapping:
+  # General Browbeat Configuration Items
+  browbeat:
+    required: True
+    type: map
+    mapping:
+      cloud_name:
+        type: str
+        required: True
+      rerun:
+        type: int
+        required: True
+      rerun_type:
+        type: str
+        enum: ['iteration', 'complete']
+        required: True
+  ansible:
+    required: True
+    type: map
+    mapping:
+      hosts:
+        type: str
+        required: True
+      metadata_playbook:
+        type: str
+        required: True
+      ssh_config:
+        type: str
+        required: True
+  elasticsearch:
+    required: True
+    type: map
+    mapping:
+      enabled:
+        type: bool
+        required: True
+      host:
+        type: str
+        required: True
+      metadata_files:
+        type: seq
+        required: True
+        sequence:
+          - type: map
+            mapping:
+              name:
+                type: str
+                required: True
+              file:
+                type: str
+                required: True
+      port:
+        type: int
+        required: True
+      regather:
+        type: bool
+        required: True
+  grafana:
+    required: True
+    type: map
+    mapping:
+      dashboards:
+        type: seq
+        required: True
+        sequence:
+          - type: str
+      enabled:
+        type: bool
+        required: True
+      host:
+        type: str
+        required: True
+      port:
+        type: int
+        required: True
+  perfkit:
+    required: True
+    type: map
+    mapping:
+      default:
+        type: map
+        required: True
+        mapping:
+          image:
+            type: str
+            required: True
+          machine_type:
+            type: str
+            required: True
+          os_type:
+            type: str
+            required: True
+            enum: ['rhel', 'debian', 'ubuntu_container', 'windows']
+          openstack_image_username:
+            type: str
+            required: True
+          openstack_floating_ip_pool:
+            type: str
+            required: True
+          openstack_network:
+            type: str
+            required: True
+          ignore_package_requirements:
+            type: bool
+            required: False
+          timing_measurements:
+            type: str
+            required: False
+      sleep_after:
+        type: number
+        required: True
+      sleep_before:
+        type: number
+        required: True
+  rally:
+    required: True
+    type: map
+    mapping:
+      plugins:
+        type: seq
+        required: False
+        sequence:
+          - type: map
+            required: False
+            allowempty: True
+      sleep_after:
+        type: number
+        required: True
+      sleep_before:
+        type: number
+        required: True
+  shaker:
+    required: True
+    type: map
+    mapping:
+      server:
+        type: str
+        required: True
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
+      port:
+        type: int
+        required: True
+      flavor:
+        type: str
+        required: True
+      join_timeout:
+        type: int
+        required: True
+      sleep_before:
+        type: number
+        required: True
+      sleep_after:
+        type: number
+        required: True
+      shaker_region:
+        type: str
+        required: true
+      external_host:
+        type: str
+        required: False
+        pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
+  yoda:
+    type: map
+    required: True
+    mapping:
+      instackenv:
+        type: str
+        required: True
+      stackrc:
+        type: str
+        required: True
+  workloads:
+    required: True
+    type: seq
+    sequence:
+      - type: map
+        required: True
+        allowempty: True
+        mapping:
+          enabled:
+            type: bool
+            required: True
+          name:
+            type: str
+            required: True
+          type:
+            type: str
+            required: True
+            enum: ['perfkit', 'rally', 'shaker', 'yoda']

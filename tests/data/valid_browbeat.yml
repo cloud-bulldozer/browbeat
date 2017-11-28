@@ -1,16 +1,15 @@
-# Tests to be completed for the install-and-check.sh script minimal and short workloads are performed
-#  to confirm functionality.
+# Valid Browbeat Config
 browbeat:
-  cloud_name: {{ browbeat_cloud_name }}
+  cloud_name: browbeat-test
   rerun: 1
-  rerun_type: iteration
+  rerun_type: complete
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/site.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
-  enabled: {{ elastic_enabled }}
-  host: {{ elastic_host }}
+  enabled: false
+  host: browbeat.test.com
   port: 9200
   regather: false
   metadata_files:
@@ -23,8 +22,8 @@ elasticsearch:
     - name: version
       file: metadata/version.json
 grafana:
-  enabled: {{ grafana_enabled }}
-  host: {{ grafana_host }}
+  enabled: true
+  host: browbeat.test.com
   port: 3000
   dashboards:
     - openstack-general-system-performance
@@ -43,8 +42,6 @@ perfkit:
 rally:
   sleep_before: 0
   sleep_after: 0
-  plugins:
-    - netcreate-boot: rally/rally-plugins/netcreate-boot
 shaker:
   server: 1.1.1.1
   port: 5555
@@ -59,36 +56,33 @@ yoda:
   stackrc: "/home/stack/stackrc"
 
 workloads:
-  - name: introspect-{{ overcloud_size }}-batch-5
-    enabled: true
+  - name: browbeat-test-perfkit-ping
+    enabled: false
+    type: perfkit
+    benchmarks: ping
+  - name: browbeat-test-authenticate
+    enabled: false
+    type: rally
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: browbeat-test-authentic-keystone
+        enabled: false
+        file: rally/authenticate/keystone-cc.yml
+  - name: browbeat-test-shaker-l2
+    enabled: false
+    type: shaker
+    density: 1
+    compute: 1
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: browbeat-test-introspect-batch
+    enabled: false
     type: yoda
     yoda_type: introspection
     method: individual
     times: 3
-    timeout: 1800
-    batch_size: 5
-  - name: introspect-{{ overcloud_size }}-bulk
-    enabled: true
-    type: yoda
-    yoda_type: introspection
-    method: bulk
-    times: 3
-    timeout: 1800
-  - name: HA-Max-Compute-{{ overcloud_size }}-stack-update
-    enabled: true
-    type: yoda
-    yoda_type: overcloud
-    ntp_server: pool.ntp.org
-    timeout: 600
-    templates:
-      - ""
-    step: 1
-    keep_stack: true
-    times: 1
-    cloud:
-      - node: "compute"
-        start_scale: {{ overcloud_size | int - 3 }}
-        end_scale: {{ overcloud_size | int - 3 }}
-      - node: "control"
-        start_scale: 3
-        end_scale: 3
+    timeout: 900
+    batch_size: 2

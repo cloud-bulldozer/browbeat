@@ -1,13 +1,21 @@
 # Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
 browbeat:
-  results: results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 1
+  # Two types of rerun:
+  # iteration reruns on the iteration
+  # complete reruns after all workloads complete
+  # rerun_type: complete
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
-  enabled: true
-  regather: true
+  enabled: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -17,23 +25,13 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: true
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: false
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
 perfkit:
-  enabled: false
   sleep_before: 0
   sleep_after: 0
   default:
@@ -45,45 +43,7 @@ perfkit:
     openstack_network: browbeat_private
     timing_measurements: runtimes
     ignore_package_requirements: true
-  benchmarks:
-    - name: fio-centos-m1-small
-      enabled: false
-      benchmarks: fio
-      openstack_volume_size: 1
-shaker:
-  enabled: true
-  server: 1.1.1.1
-  port: 5555
-  flavor: m1.small
-  join_timeout: 600
-  sleep_before: 5
-  sleep_after: 5
-  shaker_region: regionOne
-  external_host: 2.2.2.2
-  scenarios:
-    - name: l2
-      enabled: true
-      density: 1
-      compute: 1
-      progression: linear
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name: l3-north-south
-      enabled: true
-      placement: double_room
-      density: 1
-      compute: 1
-      progression: null
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
-    - name: l3-east-west
-      enabled: true
-      density: 1
-      compute: 1
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
   plugins:
@@ -91,178 +51,231 @@ rally:
     - neutron: rally/rally-plugins/neutron
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - workloads: rally/rally-plugins/workloads
-  benchmarks:
-    - name: authenticate
-      enabled: true
-      concurrency:
-        - 8
-      times: 100
-      scenarios:
-        - name: authentic-keystone
-          enabled: true
-          file: rally/authenticate/keystone-cc.yml
-        - name: authentic-neutron
-          enabled: true
-          file: rally/authenticate/validate_neutron-cc.yml
-        - name: authentic-nova
-          enabled: true
-          file: rally/authenticate/validate_nova-cc.yml
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
 
-    - name: cinder
-      enabled: true
-      concurrency:
-        - 2
-      times: 10
-      scenarios:
-        - name: create-attach-volume-cirros
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+workloads:
+# PerfKitBenchmarker
+  - name: fio-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: fio
+    openstack_volume_size: 1
+# Shaker
+  - name: shaker-l2
+    enabled: true
+    type: shaker
+    density: 1
+    compute: 1
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: shaker-l3-north-south
+    enabled: true
+    type: shaker
+    placement: double_room
+    density: 1
+    compute: 1
+    progression: null
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+  - name: shaker-l3-east-west
+    enabled: true
+    type: shaker
+    density: 1
+    compute: 1
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+# Rally
+  - name: authenticate
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 100
+    scenarios:
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+      - name: authentic-neutron
+        enabled: true
+        file: rally/authenticate/validate_neutron-cc.yml
+      - name: authentic-nova
+        enabled: true
+        file: rally/authenticate/validate_nova-cc.yml
 
-    - name: keystonebasic
-      enabled: true
-      concurrency:
-        - 8
-      times: 100
-      scenarios:
-        - name: create-and-list-tenants
-          enabled: false
-          file: rally/keystonebasic/create_and_list_tenants-cc.yml
-        - name: create-and-list-users
-          enabled: true
-          file: rally/keystonebasic/create_and_list_users-cc.yml
+  - name: cinder
+    enabled: true
+    type: rally
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: create-attach-volume-cirros
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.tiny
+        file: rally/cinder/cinder-create-and-attach-volume-cc.yml
 
-    - name: neutron
-      enabled: true
-      concurrency:
-        - 2
-      times: 10
-      scenarios:
-        - name: create-list-network
-          enabled: true
-          file: rally/neutron/neutron-create-list-network-cc.yml
-        - name: create-list-port
-          enabled: true
-          file: rally/neutron/neutron-create-list-port-cc.yml
-        - name: create-list-router
-          enabled: true
-          file: rally/neutron/neutron-create-list-router-cc.yml
-        - name: create-list-security-group
-          enabled: true
-          file: rally/neutron/neutron-create-list-security-group-cc.yml
-        - name: create-list-subnet
-          enabled: true
-          file: rally/neutron/neutron-create-list-subnet-cc.yml
+  - name: keystonebasic
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 100
+    scenarios:
+      - name: create-and-list-tenants
+        enabled: false
+        file: rally/keystonebasic/create_and_list_tenants-cc.yml
+      - name: create-and-list-users
+        enabled: true
+        file: rally/keystonebasic/create_and_list_users-cc.yml
 
-    - name: nova
-      enabled: true
-      concurrency:
-        - 2
-      times: 10
-      scenarios:
-        - name: boot-snapshot-delete-cirros
-          enabled: true
-          file: rally/nova/nova-boot-snapshot-cc.yml
-          image_name: cirros
-          flavor_name: m1.xtiny
-        - name: boot-list-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-list-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-show-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-show-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-bounce-delete-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-bounce-delete-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-lock-unlock-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-lock-unlock-cc.yml
-          flavor_name: m1.xtiny
+  - name: neutron
+    enabled: true
+    type: rally
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: create-list-network
+        enabled: true
+        file: rally/neutron/neutron-create-list-network-cc.yml
+      - name: create-list-port
+        enabled: true
+        file: rally/neutron/neutron-create-list-port-cc.yml
+      - name: create-list-router
+        enabled: true
+        file: rally/neutron/neutron-create-list-router-cc.yml
+      - name: create-list-security-group
+        enabled: true
+        file: rally/neutron/neutron-create-list-security-group-cc.yml
+      - name: create-list-subnet
+        enabled: true
+        file: rally/neutron/neutron-create-list-subnet-cc.yml
 
-    - name: glance
-      enabled: true
-      concurrency:
-        - 2
-      times: 10
-      scenarios:
-        - name: create-and-delete-image
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          container_format: bare
-          disk_format: qcow2
-          file: rally/glance/create-and-delete-image-cc.yml
+  - name: nova
+    enabled: true
+    type: rally
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: boot-snapshot-delete-cirros
+        enabled: true
+        file: rally/nova/nova-boot-snapshot-cc.yml
+        image_name: cirros
+        flavor_name: m1.xtiny
+      - name: boot-list-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-list-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-show-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-show-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-bounce-delete-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-bounce-delete-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-lock-unlock-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-lock-unlock-cc.yml
+        flavor_name: m1.xtiny
 
-    - name: simple-plugins
-      enabled: true
-      concurrency:
-        - 8
-      times: 10
-      scenarios:
-        - name: netcreate-boot
-          enabled: true
-          enable_dhcp: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
-        - name: netcreate-boot-ping
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          ext_net_id:
-          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
-        - name: router-subnet-create-delete
-          enabled: true
-          num_networks:  5
-          file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
-        - name: glance-create-boot-delete
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/glance/glance_create_boot_delete.yml
-        - name: neutron-securitygroup-port
-          enabled: true
-          file: rally/rally-plugins/neutron/securitygroup_port.yml
+  - name: glance
+    enabled: true
+    type: rally
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: create-and-delete-image
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        container_format: bare
+        disk_format: qcow2
+        file: rally/glance/create-and-delete-image-cc.yml
 
-    - name: plugin-workloads
-      enabled: true
-      concurrency:
-        - 1
-      times: 1
-      scenarios:
-        - name: linpack
-          enabled: true
-          image_name: browbeat-linpack
-          flavor_name: m1.small
-          external_network:
-          net_id:
-          file: rally/rally-plugins/workloads/linpack.yml
+  - name: simple-plugins
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 10
+    scenarios:
+      - name: netcreate-boot
+        enabled: true
+        enable_dhcp: true
+        image_name: cirros
+        flavor_name: m1.tiny
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+      - name: netcreate-boot-ping
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        ext_net_id:
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
+      - name: router-subnet-create-delete
+        enabled: true
+        num_networks:  5
+        file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
+      - name: glance-create-boot-delete
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        flavor_name: m1.xtiny
+        file: rally/rally-plugins/glance/glance_create_boot_delete.yml
+      - name: neutron-securitygroup-port
+        enabled: true
+        file: rally/rally-plugins/neutron/securitygroup_port.yml
 
-        - name: browbeat-pbench-uperf
-          enabled: true
-          user: root
-          image_name: browbeat-uperf
-          flavor_name: m1.small
-          # hypervisor_server: "nova:overcloud-compute-1.localdomain"
-          # hypervisor_client: "nova:overcloud-compute-0.localdomain"
-          external_network:
-          net_id:
-          protocols: tcp,udp
-          instances: 1
-          num_pairs: 1
-          samples: 1
-          test_types: stream,rr
-          message_sizes: 64,1024,16384
-          test_name: "browbeat-pbench-uperf"
-          send_results: true
-          cloudname:
-          elastic_host:
-          elastic_port: 9200
-          file: rally/rally-plugins/workloads/pbench-uperf.yml
+  - name: plugin-workloads
+    enabled: false
+    type: rally
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: linpack
+        enabled: true
+        image_name: browbeat-linpack
+        flavor_name: m1.small
+        external_network:
+        net_id:
+        file: rally/rally-plugins/workloads/linpack.yml
+
+      - name: browbeat-pbench-uperf
+        enabled: true
+        user: root
+        image_name: browbeat-uperf
+        flavor_name: m1.small
+        # hypervisor_server: "nova:overcloud-compute-1.localdomain"
+        # hypervisor_client: "nova:overcloud-compute-0.localdomain"
+        external_network:
+        net_id:
+        protocols: tcp,udp
+        instances: 1
+        num_pairs: 1
+        samples: 1
+        test_types: stream,rr
+        message_sizes: 64,1024,16384
+        test_name: "browbeat-pbench-uperf"
+        send_results: true
+        cloudname:
+        elastic_host:
+        elastic_port: 9200
+        file: rally/rally-plugins/workloads/pbench-uperf.yml

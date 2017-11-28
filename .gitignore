@@ -1,4 +1,10 @@
 *.py[cod]
+
+# Distribution / packaging
+.eggs
+
+# Testing
+.cache
 .tox
 
 # Virtual Environments:

@@ -1,0 +1,87 @@
+# Valid and invalid workload schemas for testing per workload
+perfkit:
+  - valid: true
+    data:
+      name: valid-test-perfkit-ping
+      enabled: false
+      type: perfkit
+      benchmarks: ping
+  - valid: false
+    data:
+      opps_name: invalid-test-perfkit-ping
+      enabled: false
+      type: perfkit
+      benchmarks: ping
+rally:
+  - valid: true
+    data:
+      name: valid-test-authenticate-01
+      enabled: true
+      type: rally
+      concurrency:
+        - 1
+      times: 1
+      scenarios:
+        - name: valid-test-authentic-keystone
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+        - name: valid-test-authentic-neutron
+          enabled: false
+          file: rally/authenticate/validate_neutron-cc.yml
+  - valid: false
+    data:
+      name: invalid-test-authenticate-01
+      enabled: true
+      type: rally-incorrect
+      concurrency:
+        - 1
+      times: 1
+      scenarios:
+        - name: invalid-test-authentic-keystone
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+        - name: invalid-test-authentic-neutron
+          enabled: false
+          file: rally/authenticate/validate_neutron-cc.yml
+shaker:
+  - valid: true
+    data:
+      name: valid-test-shaker-l2
+      enabled: false
+      type: shaker
+      density: 1
+      compute: 1
+      progression: linear
+      time: 60
+      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - valid: false
+    data:
+      name: invalid-test-shaker-l2
+      enabled: false
+      type: shaker
+      density: 1
+      compute: 1
+      progression: linear
+      time: 60
+      opps_file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+yoda:
+  - valid: true
+    data:
+      name: valid-test-yoda-introspection
+      enabled: false
+      type: yoda
+      yoda_type: introspection
+      method: individual
+      times: 3
+      timeout: 900
+      batch_size: 2
+  - valid: false
+    data:
+      name: invalid-test-yoda-introspection
+      enabled: false
+      type: yoda
+      fake_yoda_type: introspection
+      method: individual
+      times: 3
+      timeout: 900
+      batch_size: 2

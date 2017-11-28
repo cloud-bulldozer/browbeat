@@ -23,15 +23,17 @@ import time
 import elastic
 import grafana
 from path import get_workload_venv
+from path import results_path
 import workloadbase
 import tools
 
 
 class Rally(workloadbase.WorkloadBase):
 
-    def __init__(self, config, hosts=None):
+    def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.rally')
         self.config = config
+        self.result_dir_ts = result_dir_ts
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
@@ -43,7 +45,7 @@ class Rally(workloadbase.WorkloadBase):
     def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark):
         self.logger.debug("--------------------------------")
         self.logger.debug("task_file: {}".format(task_file))
-        self.logger.debug("scenario_args: {}".format(scenario_args))
+        self.logger.info("Running with scenario_args: {}".format(scenario_args))
         self.logger.debug("result_dir: {}".format(result_dir))
         self.logger.debug("test_name: {}".format(test_name))
         self.logger.debug("--------------------------------")
@@ -90,17 +92,6 @@ class Rally(workloadbase.WorkloadBase):
         cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(
             test_name)
         return self.tools.run_cmd(cmd)['stdout']
-
-    def _get_details(self):
-        self.logger.info(
-            "Current number of Rally scenarios executed:{}".format(
-                self.scenario_count))
-        self.logger.info(
-            "Current number of Rally tests executed:{}".format(self.test_count))
-        self.logger.info(
-            "Current number of Rally tests passed:{}".format(self.pass_count))
-        self.logger.info(
-            "Current number of Rally test failures:{}".format(self.error_count))
 
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
@@ -223,152 +214,113 @@ class Rally(workloadbase.WorkloadBase):
                 success = False
         return success
 
-    def run_workloads(self):
-        """Iterates through all rally scenarios in browbeat yaml config file"""
-        results = collections.OrderedDict()
-        self.logger.info("Starting Rally workloads")
+    def run_workload(self, workload, run_iteration):
+        """Runs a Browbeat Rally workload"""
+        results = []
+        self.logger.info("Running Rally workload: {}".format(workload["name"]))
         es_ts = datetime.datetime.utcnow()
-        dir_ts = es_ts.strftime("%Y%m%d-%H%M%S")
-        self.logger.debug("Time Stamp (Prefix): {}".format(dir_ts))
-        benchmarks = self.config.get('rally')['benchmarks']
-        if (benchmarks is not None and len(benchmarks) > 0):
-            for benchmark in benchmarks:
-                if benchmark['enabled']:
-                    self.logger.info("Benchmark: {}".format(benchmark['name']))
-                    scenarios = benchmark['scenarios']
-                    def_concurrencies = benchmark['concurrency']
-                    def_times = benchmark['times']
-                    self.logger.debug(
-                        "Default Concurrencies: {}".format(def_concurrencies))
-                    self.logger.debug("Default Times: {}".format(def_times))
-                    for scenario in scenarios:
-                        if scenario['enabled']:
-                            self.update_scenarios()
-                            self.update_total_scenarios()
-                            scenario_name = scenario['name']
-                            scenario_file = scenario['file']
-                            self.logger.info(
-                                "Running Scenario: {}".format(scenario_name))
-                            self.logger.debug(
-                                "Scenario File: {}".format(scenario_file))
+        def_concurrencies = workload["concurrency"]
+        def_times = workload["times"]
+        self.logger.debug("Default Concurrencies: {}".format(def_concurrencies))
+        self.logger.debug("Default Times: {}".format(def_times))
+        for scenario in workload["scenarios"]:
+            if not scenario["enabled"]:
+                self.logger.info("{} scenario is disabled".format(scenario['name']))
+                continue
 
-                            del scenario['enabled']
-                            del scenario['file']
-                            del scenario['name']
-                            if len(scenario) > 0:
-                                self.logger.debug(
-                                    "Overriding Scenario Args: {}".format(scenario))
+            self.logger.info("Running Scenario: {}".format(scenario["name"]))
+            self.logger.debug("Scenario File: {}".format(scenario["file"]))
+            self.update_scenarios()
+            self.update_total_scenarios()
+            scenario_name = scenario["name"]
+            scenario_file = scenario["file"]
+            del scenario["enabled"]
+            del scenario["file"]
+            del scenario["name"]
+            if len(scenario) > 0:
+                self.logger.debug("Overriding Scenario Args: {}".format(scenario))
 
-                            result_dir = self.tools.create_results_dir(
-                                self.config['browbeat']['results'], dir_ts,
-                                self.__class__.__name__.lower(),
-                                benchmark['name'], scenario_name
-                            )
-                            self.logger.debug(
-                                "Created result directory: {}".format(result_dir))
-                            workload = self.__class__.__name__
-                            self.workload_logger(result_dir, workload)
+            result_dir = self.tools.create_results_dir(
+                results_path, self.result_dir_ts,
+                self.__class__.__name__.lower(),
+                workload["name"], scenario_name
+            )
 
-                            # Override concurrency/times
-                            if 'concurrency' in scenario:
-                                concurrencies = scenario['concurrency']
-                                del scenario['concurrency']
-                            else:
-                                concurrencies = def_concurrencies
-                            concurrency_count_dict = collections.Counter(
-                                concurrencies)
-                            if 'times' not in scenario:
-                                scenario['times'] = def_times
+            self.logger.debug("Created result directory: {}".format(result_dir))
+            self.workload_logger(self.__class__.__name__)
 
-                            for concurrency in concurrencies:
-                                scenario['concurrency'] = concurrency
-                                for run in range(self.config['browbeat']['rerun']):
-                                    if run not in results:
-                                        results[run] = []
-                                    self.update_tests()
-                                    self.update_total_tests()
-                                    if concurrency_count_dict[concurrency] == 1:
-                                        test_name = "{}-browbeat-{}-{}-iteration-{}".format(
-                                                    dir_ts, scenario_name, concurrency, run)
-                                    else:
-                                        test_name = "{}-browbeat-{}-{}-{}-iteration-{}".format(
-                                                    dir_ts, scenario_name, concurrency,
-                                                    concurrency_count_dict[concurrency], run)
-                                        self.logger.debug("Duplicate concurrency {} found,"
-                                                          " setting test name"
-                                                          " to {}".format(concurrency, test_name))
-                                        concurrency_count_dict[
-                                            concurrency] -= 1
+            # Override concurrency/times
+            if "concurrency" in scenario:
+                concurrencies = scenario["concurrency"]
+                del scenario["concurrency"]
+            else:
+                concurrencies = def_concurrencies
+            if "times" not in scenario:
+                scenario["times"] = def_times
 
-                                    if not result_dir:
-                                        self.logger.error(
-                                            "Failed to create result directory")
-                                        exit(1)
+            concurrency_count_dict = collections.Counter()
+            for concurrency in concurrencies:
+                scenario["concurrency"] = concurrency
 
-                                    from_time, to_time = self.run_scenario(
-                                        scenario_file, scenario, result_dir, test_name,
-                                        benchmark['name'])
+                # Correct iteration/rerun
+                rerun_range = range(self.config["browbeat"]["rerun"])
+                if self.config["browbeat"]["rerun_type"] == "complete":
+                    rerun_range = range(run_iteration, run_iteration + 1)
 
-                                    new_test_name = test_name.split('-')
-                                    new_test_name = new_test_name[3:]
-                                    new_test_name = "-".join(new_test_name)
+                for run in rerun_range:
+                    self.update_tests()
+                    self.update_total_tests()
+                    concurrency_count_dict[concurrency] += 1
+                    test_name = "{}-browbeat-{}-{}-{}-iteration-{}".format(
+                        es_ts.strftime("%Y%m%d-%H%M%S"), scenario_name, concurrency,
+                        concurrency_count_dict[concurrency], run)
 
-                                    # Find task id (if task succeeded in
-                                    # running)
-                                    task_id = self.get_task_id(test_name)
-                                    if task_id:
-                                        self.logger.info(
-                                            "Generating Rally HTML for task_id : {}".
-                                            format(task_id))
-                                        self.gen_scenario_html(
-                                            [task_id], test_name)
-                                        self.gen_scenario_json_file(
-                                            task_id, test_name)
-                                        results[run].append(task_id)
-                                        self.update_pass_tests()
-                                        self.update_total_pass_tests()
-                                        if self.config['elasticsearch']['enabled']:
-                                            # Start indexing
-                                            index_status = self.json_result(
-                                                task_id, scenario_name, run, test_name, result_dir)
-                                            if not index_status:
-                                                self.update_index_failures()
-                                            self.get_time_dict(to_time, from_time,
-                                                               benchmark[
-                                                                   'name'], new_test_name,
-                                                               workload, "pass", index_status)
-                                        else:
-                                            self.get_time_dict(to_time, from_time, benchmark[
-                                                               'name'], new_test_name,
-                                                               workload, "pass", )
+                    if not result_dir:
+                        self.logger.error(
+                            "Failed to create result directory")
+                        exit(1)
 
-                                    else:
-                                        self.logger.error(
-                                            "Cannot find task_id")
-                                        self.update_fail_tests()
-                                        self.update_total_fail_tests()
-                                        self.get_time_dict(
-                                            to_time, from_time, benchmark[
-                                                'name'], new_test_name,
-                                            workload, "fail")
+                    from_time, to_time = self.run_scenario(
+                        scenario_file, scenario, result_dir, test_name, workload["name"])
 
-                                    for data in glob.glob("./{}*".format(test_name)):
-                                        shutil.move(data, result_dir)
+                    new_test_name = test_name.split("-")
+                    new_test_name = new_test_name[3:]
+                    new_test_name = "-".join(new_test_name)
 
-                                    self._get_details()
-
+                    # Find task id (if task succeeded in running)
+                    task_id = self.get_task_id(test_name)
+                    if task_id:
+                        self.logger.info("Generating Rally HTML for task_id : {}".format(task_id))
+                        self.gen_scenario_html([task_id], test_name)
+                        self.gen_scenario_json_file(task_id, test_name)
+                        results.append(task_id)
+                        self.update_pass_tests()
+                        self.update_total_pass_tests()
+                        if self.config["elasticsearch"]["enabled"]:
+                            # Start indexing
+                            index_status = self.json_result(
+                                task_id, scenario_name, run, test_name, result_dir)
+                            if not index_status:
+                                self.update_index_failures()
+                            self.get_time_dict(to_time, from_time, workload["name"], new_test_name,
+                                               self.__class__.__name__, "pass", index_status)
                         else:
-                            self.logger.info(
-                                "Skipping {} scenario enabled: false".format(scenario['name']))
-                else:
-                    self.logger.info(
-                        "Skipping {} benchmarks enabled: false".format(benchmark['name']))
-            self.logger.debug("Creating Combined Rally Reports")
-            for run in results:
-                combined_html_name = 'all-rally-run-{}'.format(run)
-                self.gen_scenario_html(results[run], combined_html_name)
-                if os.path.isfile('{}.html'.format(combined_html_name)):
-                    shutil.move('{}.html'.format(combined_html_name),
-                                '{}/{}'.format(self.config['browbeat']['results'], dir_ts))
-        else:
-            self.logger.error("Config file contains no rally benchmarks.")
+                            self.get_time_dict(to_time, from_time, workload["name"], new_test_name,
+                                               self.__class__.__name__, "pass", )
+
+                    else:
+                        self.logger.error("Cannot find task_id")
+                        self.update_fail_tests()
+                        self.update_total_fail_tests()
+                        self.get_time_dict(to_time, from_time, workload["name"], new_test_name,
+                                           self.__class__.__name__, "fail")
+
+                    for data in glob.glob("./{}*".format(test_name)):
+                        shutil.move(data, result_dir)
+
+        self.logger.debug("Creating Combined Rally Reports")
+        combined_html_name = "all-rally-run-{}".format(run_iteration)
+        self.gen_scenario_html(results, combined_html_name)
+        if os.path.isfile("{}.html".format(combined_html_name)):
+            shutil.move("{}.html".format(combined_html_name), "{}/{}/{}/{}".format(results_path,
+                        self.result_dir_ts, self.__class__.__name__.lower(), workload["name"]))

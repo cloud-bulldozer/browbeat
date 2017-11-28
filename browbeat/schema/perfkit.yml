@@ -1,0 +1,48 @@
+# This schema defines how a PerfKitBenchmarker workload is formated
+name: PerfKitBenchmarker workload schema
+type: map
+allowempty: True
+mapping:
+  # Required items to be a PerfKit workload
+  benchmarks:
+    type: str
+    required: True
+  enabled:
+    type: bool
+    required: True
+  name:
+    type: str
+    required: True
+  type:
+    type: str
+    required: True
+    enum: ["perfkit"]
+  # Over-ridable defaults:
+  ignore_package_requirements:
+    type: bool
+    required: False
+  image:
+    type: str
+    required: False
+  machine_type:
+    type: str
+    required: False
+  openstack_floating_ip_pool:
+    type: str
+    required: False
+  openstack_image_username:
+    type: str
+    required: False
+  openstack_network:
+    type: str
+    required: False
+  openstack_volume_size:
+    type: int
+    required: False
+  os_type:
+    type: str
+    required: False
+    enum: ['rhel', 'debian', 'ubuntu_container', 'windows']
+  timing_measurements:
+    type: str
+    required: False

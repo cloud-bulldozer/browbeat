@@ -1,13 +1,17 @@
 # Complete set of Stress Tests, this can take a long time (day(s))
 browbeat:
-  results: results/
-  rerun: 3
   cloud_name: openstack
+  rerun: 3
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
-  enabled: false
-  regather: false
+  enabled: true
   host: 1.1.1.1
   port: 9200
+  regather: true
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -17,23 +21,13 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
   enabled: true
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
 perfkit:
-  enabled: true
   sleep_before: 0
   sleep_after: 0
   default:
@@ -45,13 +39,7 @@ perfkit:
     openstack_network: browbeat_private
     timing_measurements: runtimes
     ignore_package_requirements: true
-  benchmarks:
-    - name: fio-centos-m1-small
-      enabled: false
-      benchmarks: fio
-      openstack_volume_size: 1
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
   plugins:
@@ -59,207 +47,7 @@ rally:
     - neutron: rally/rally-plugins/neutron
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - workloads: rally/rally-plugins/workloads
-  benchmarks:
-    - name: authenticate
-      enabled: true
-      concurrency:
-        - 64
-        - 128
-        - 192
-        - 256
-        - 320
-        - 384
-        - 448
-        - 512
-      times: 10000
-      scenarios:
-        - name: authentic-keystone
-          enabled: true
-          file: rally/authenticate/keystone-cc.yml
-          sla_max_avg_duration: 6
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-neutron
-          enabled: true
-          file: rally/authenticate/validate_neutron-cc.yml
-          sla_max_avg_duration: 18
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-nova
-          enabled: true
-          file: rally/authenticate/validate_nova-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    - name: cinder
-      enabled: true
-      concurrency:
-        - 16
-        - 32
-        - 48
-        - 64
-      times: 128
-      scenarios:
-        - name: create-attach-volume-centos
-          enabled: true
-          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-attach-volume-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/cinder/cinder-create-and-attach-volume-cc.yml
-          flavor_name: m1.tiny
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    - name: keystonebasic
-      enabled: true
-      concurrency:
-        - 256
-      times: 5000
-      scenarios:
-        - name: create-and-list-tenants
-          enabled: true
-          file: rally/keystonebasic/create_and_list_tenants-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-list-users
-          enabled: true
-          file: rally/keystonebasic/create_and_list_users-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    - name: neutron
-      enabled: true
-      concurrency:
-        - 16
-        - 32
-        - 48
-        - 64
-      times: 500
-      scenarios:
-        - name: create-list-network
-          enabled: true
-          file: rally/neutron/neutron-create-list-network-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-list-port
-          enabled: true
-          file: rally/neutron/neutron-create-list-port-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-list-router
-          enabled: true
-          file: rally/neutron/neutron-create-list-router-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-list-security-group
-          enabled: true
-          file: rally/neutron/neutron-create-list-security-group-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-list-subnet
-          enabled: true
-          file: rally/neutron/neutron-create-list-subnet-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    - name: nova
-      enabled: true
-      concurrency:
-        - 16
-        - 32
-        - 48
-        - 64
-        - 80
-        - 96
-      times: 128
-      scenarios:
-        - name: boot-snapshot-delete-cirros
-          enabled: true
-          file: rally/nova/nova-boot-snapshot-cc.yml
-          image_name: cirros
-          flavor_name: m1.xtiny
-        - name: boot-list-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-list-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-show-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-show-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-bounce-delete-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-boot-bounce-delete-cc.yml
-          flavor_name: m1.xtiny
-        - name: boot-lock-unlock-cirros
-          enabled: true
-          image_name: cirros
-          file: rally/nova/nova-lock-unlock-cc.yml
-          flavor_name: m1.xtiny
-    - name: glance
-      enabled: true
-      concurrency:
-        - 8
-      times: 10
-      scenarios:
-        - name: create-image-boot-instances
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          instances: 2
-          flavor_name: m1.small
-          file: rally/glance/create-image-and-boot-instances-cc.yml
-        - name: create-and-delete-image
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          flavor_name: m1.small
-          file: rally/glance/create-and-delete-image-cc.yml
-        - name: create-and-list-image
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          file: rally/glance/create-and-list-image-cc.yml
-        - name: list-images
-          enabled: true
-          file: rally/glance/list-images-cc.yml
-    - name: plugins
-      enabled: true
-      concurrency:
-        - 16
-        - 32
-        - 48
-        - 64
-      times: 128
-      scenarios:
-        - name: netcreate-boot
-          enabled: true
-          enable_dhcp: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: router-subnet-create-delete
-          enabled: true
-          num_networks:  50
-          file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
-        - name: glance-create-boot-delete
-          enabled: true
-          image_location: /home/stack/cirros.qcow2
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/glance/glance_create_boot_delete.yml
-        - name: rally-port-create-associate
-          file: rally/rally-plugins/neutron/port_create_assoicate.yml
-          enabled: true
-          num_networks: 1
-          num_ports: 100
-          hypervisor: overcloud-compute-0.localdomain
-          browbeat_ssh_config: ansible/ssh-config
-          username: heat-admin
-#shaker scenarios require atleast 2 compute nodes
 shaker:
-  enabled: true
   server: 1.1.1.1
   port: 5555
   flavor: m1.small
@@ -268,121 +56,349 @@ shaker:
   sleep_after: 5
   shaker_region: regionOne
   external_host: 2.2.2.2
-  scenarios:
-    - name: l2-4-1
-      enabled: true
-      density: 4
-      compute: 1
-      progression: linear
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name:  l2-8-1
-      enabled: true
-      density: 8
-      compute: 1
-      progression: linear
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name: l2-4-2
-      enabled: true
-      density: 4
-      compute: 2
-      progression: linear
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name: l2-8-2
-      enabled: true
-      density: 8
-      compute: 2
-      progression: linear
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-    - name: l3-north-south-4-1
-      enabled: true
-      placement: single_room
-      density: 4
-      compute: 1
-      progression: null
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
-    - name: l3-north-south-8-1
-      enabled: false
-      placement: single_room
-      density: 8
-      compute: 1
-      progression: null
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
-    - name: l3-north-south-4-2
-      enabled: true
-      placement: single_room
-      density: 4
-      compute: 2
-      progression: null
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
-    - name: l3-north-south-8-2
-      enabled: true
-      placement: single_room
-      density: 8
-      compute: 2
-      progression: null
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
-    - name: l3-east-west-4-1
-      enabled: true
-      density: 4
-      compute: 1
-      placement: single_room
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
-    - name: l3-east-west-8-1
-      enabled: true
-      density: 8
-      compute: 1
-      placement: single_room
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
-    - name: l3-east-west-4-2
-      enabled: true
-      density: 4
-      compute: 2
-      placement: single_room
-      time: 60
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
-    - name: l3-east-west-8-2
-      enabled: true
-      density: 8
-      compute: 2
-      time: 60
-      placement: single_room
-      file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
-#yoda scenarios WILL redeploy your overcloud
 yoda:
-  enabled: false
   instackenv: "/home/stack/instackenv.json"
   stackrc: "/home/stack/stackrc"
-  benchmarks:
-    - name: scale-deploy
-      type: overcloud
-      ntp_server: pool.ntp.org
-      enabled: true
-      templates:
-        - ""
-      timeout: 600 #deploy timeout in minutes
-      step: 1
-      keep_stack: false
-      times: 3
-      cloud:
-        - node: "compute"
-          start_scale: 1
-          end_scale: 1
-        - node: "control"
-          start_scale: 1
-          end_scale: 3
-    - name: introspect-batch
-      type: introspection
-      enabled: true
-      method: individual #other option is bulk
-      times: 3
-      timeout: 900 #introspection timeout in seconds
-      batch_size: 2
+
+workloads:
+# PerfKitBenchmarker
+  - name: fio-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: fio
+    openstack_volume_size: 1
+
+# Rally
+  - name: authenticate
+    enabled: true
+    type: rally
+    concurrency:
+      - 64
+      - 128
+      - 192
+      - 256
+      - 320
+      - 384
+      - 448
+      - 512
+    times: 10000
+    scenarios:
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+        sla_max_avg_duration: 6
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-neutron
+        enabled: true
+        file: rally/authenticate/validate_neutron-cc.yml
+        sla_max_avg_duration: 18
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-nova
+        enabled: true
+        file: rally/authenticate/validate_nova-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+  - name: cinder
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+      - 32
+      - 48
+      - 64
+    times: 128
+    scenarios:
+      - name: create-attach-volume-centos
+        enabled: true
+        file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-attach-volume-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/cinder/cinder-create-and-attach-volume-cc.yml
+        flavor_name: m1.tiny
+        sla_max_seconds: 30
+        sla_max_failure: 0
+  - name: keystonebasic
+    enabled: true
+    type: rally
+    concurrency:
+      - 256
+    times: 5000
+    scenarios:
+      - name: create-and-list-tenants
+        enabled: true
+        file: rally/keystonebasic/create_and_list_tenants-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-list-users
+        enabled: true
+        file: rally/keystonebasic/create_and_list_users-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+  - name: neutron
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+      - 32
+      - 48
+      - 64
+    times: 500
+    scenarios:
+      - name: create-list-network
+        enabled: true
+        file: rally/neutron/neutron-create-list-network-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-port
+        enabled: true
+        file: rally/neutron/neutron-create-list-port-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-router
+        enabled: true
+        file: rally/neutron/neutron-create-list-router-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-security-group
+        enabled: true
+        file: rally/neutron/neutron-create-list-security-group-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-list-subnet
+        enabled: true
+        file: rally/neutron/neutron-create-list-subnet-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+  - name: nova
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+      - 32
+      - 48
+      - 64
+      - 80
+      - 96
+    times: 128
+    scenarios:
+      - name: boot-snapshot-delete-cirros
+        enabled: true
+        file: rally/nova/nova-boot-snapshot-cc.yml
+        image_name: cirros
+        flavor_name: m1.xtiny
+      - name: boot-list-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-list-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-show-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-show-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-bounce-delete-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-bounce-delete-cc.yml
+        flavor_name: m1.xtiny
+      - name: boot-lock-unlock-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-lock-unlock-cc.yml
+        flavor_name: m1.xtiny
+  - name: glance
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 10
+    scenarios:
+      - name: create-image-boot-instances
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        instances: 2
+        flavor_name: m1.small
+        file: rally/glance/create-image-and-boot-instances-cc.yml
+      - name: create-and-delete-image
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        flavor_name: m1.small
+        file: rally/glance/create-and-delete-image-cc.yml
+      - name: create-and-list-image
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        file: rally/glance/create-and-list-image-cc.yml
+      - name: list-images
+        enabled: true
+        file: rally/glance/list-images-cc.yml
+  - name: plugins
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+      - 32
+      - 48
+      - 64
+    times: 128
+    scenarios:
+      - name: netcreate-boot
+        enabled: true
+        enable_dhcp: true
+        image_name: cirros
+        flavor_name: m1.tiny
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: router-subnet-create-delete
+        enabled: true
+        num_networks:  50
+        file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
+      - name: glance-create-boot-delete
+        enabled: true
+        image_location: /home/stack/cirros.qcow2
+        flavor_name: m1.xtiny
+        file: rally/rally-plugins/glance/glance_create_boot_delete.yml
+      - name: rally-port-create-associate
+        file: rally/rally-plugins/neutron/port_create_assoicate.yml
+        enabled: true
+        num_networks: 1
+        num_ports: 100
+        hypervisor: overcloud-compute-0.localdomain
+        browbeat_ssh_config: ansible/ssh-config
+        username: heat-admin
+
+# Shaker scenarios require atleast 2 compute nodes
+  - name: l2-4-1
+    enabled: true
+    type: shaker
+    density: 4
+    compute: 1
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name:  l2-8-1
+    enabled: true
+    type: shaker
+    density: 8
+    compute: 1
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: l2-4-2
+    enabled: true
+    type: shaker
+    density: 4
+    compute: 2
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: l2-8-2
+    enabled: true
+    type: shaker
+    density: 8
+    compute: 2
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: l3-north-south-4-1
+    enabled: true
+    type: shaker
+    placement: single_room
+    density: 4
+    compute: 1
+    progression: null
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+  - name: l3-north-south-8-1
+    enabled: false
+    type: shaker
+    placement: single_room
+    density: 8
+    compute: 1
+    progression: null
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+  - name: l3-north-south-4-2
+    enabled: true
+    type: shaker
+    placement: single_room
+    density: 4
+    compute: 2
+    progression: null
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+  - name: l3-north-south-8-2
+    enabled: true
+    type: shaker
+    placement: single_room
+    density: 8
+    compute: 2
+    progression: null
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+  - name: l3-east-west-4-1
+    enabled: true
+    type: shaker
+    density: 4
+    compute: 1
+    placement: single_room
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+  - name: l3-east-west-8-1
+    enabled: true
+    type: shaker
+    density: 8
+    compute: 1
+    placement: single_room
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+  - name: l3-east-west-4-2
+    enabled: true
+    type: shaker
+    density: 4
+    compute: 2
+    placement: single_room
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+  - name: l3-east-west-8-2
+    enabled: true
+    type: shaker
+    density: 8
+    compute: 2
+    time: 60
+    placement: single_room
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+
+# Yoda scenarios WILL redeploy your overcloud
+  - name: scale-deploy
+    enabled: true
+    type: yoda
+    yoda_type: overcloud
+    ntp_server: pool.ntp.org
+    templates:
+      - ""
+    timeout: 600 #deploy timeout in minutes
+    step: 1
+    keep_stack: false
+    times: 3
+    cloud:
+      - node: "compute"
+        start_scale: 1
+        end_scale: 1
+      - node: "control"
+        start_scale: 1
+        end_scale: 3
+  - name: introspect-batch
+    enabled: true
+    type: yoda
+    yoda_type: introspection
+    method: individual #other option is bulk
+    times: 3
+    timeout: 900 #introspection timeout in seconds
+    batch_size: 2

@@ -1,0 +1,71 @@
+# This schema defines how a Yoda workload is formated
+name: Yoda workload schema
+type: map
+mapping:
+  # Required items to be a Yoda workload
+  enabled:
+    required: True
+    type: bool
+  name:
+    type: str
+    required: True
+  timeout:
+    type: int
+    required: True
+  times:
+    type: int
+    required: True
+  type:
+    type: str
+    required: True
+    enum: ["yoda"]
+  yoda_type:
+    type: str
+    required: True
+    enum: ['introspection', 'overcloud']
+  # Optional/type-specific items for Yoda workload:
+  batch_size:
+    type: int
+    required: False
+  cloud:
+    type: seq
+    required: False
+    sequence:
+    - type: map
+      allowempty: True
+      mapping:
+        node:
+          type: str
+          required: True
+        start_scale:
+          type: int
+          required: True
+        end_scale:
+          type: int
+          required: True
+  instackenv:
+    type: str
+    required: False
+  keep_stack:
+    type: bool
+    required: False
+  max_fail_amnt:
+    type: float
+    required: False
+  method:
+    type: str
+    required: False
+  node_pinning:
+    type: bool
+    required: False
+  ntp_server:
+    type: str
+    required: False
+  step:
+    type: int
+    required: False
+  templates:
+    type: seq
+    required: False
+    sequence:
+      - type: str

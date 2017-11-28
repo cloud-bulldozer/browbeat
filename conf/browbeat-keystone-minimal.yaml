@@ -1,14 +1,18 @@
 # Complete set of Keystone Stress tests run minimal number of times.
 # Good sanity test to see if OSP will be able to handle the longer stress tests.
 browbeat:
-  results: results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 1
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
-  regather: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -18,190 +22,208 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: false
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: true
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
-  benchmarks:
-    - name: authenticate
-      enabled: true
-      concurrency:
-        - 32
-      times: 100
-      scenarios:
-        - name: authentic-ceilometer
-          enabled: true
-          file: rally/authenticate/validate_ceilometer-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-cinder
-          enabled: true
-          file: rally/authenticate/validate_cinder-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-glance
-          enabled: true
-          file: rally/authenticate/validate_glance-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-heat
-          enabled: true
-          file: rally/authenticate/validate_heat-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-keystone
-          enabled: true
-          file: rally/authenticate/keystone-cc.yml
-          sla_max_avg_duration: 6
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-monasca
-          enabled: false
-          file: rally/authenticate/validate_monasca-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-neutron
-          enabled: true
-          file: rally/authenticate/validate_neutron-cc.yml
-          sla_max_avg_duration: 18
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authentic-nova
-          enabled: true
-          file: rally/authenticate/validate_nova-cc.yml
-          sla_max_avg_duration: 12
-          sla_max_seconds: 30
-          sla_max_failure: 0
-    - name: keystonebasic
-      enabled: true
-      concurrency:
-        - 25
-      times: 100
-      scenarios:
-        - name: create-user
-          enabled: true
-          file: rally/keystonebasic/create_user-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-delete-user
-          enabled: true
-          file: rally/keystonebasic/create_delete_user-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-user-set-enabled-and-delete
-          enabled: true
-          enabled_flag: true
-          file: rally/keystonebasic/create_user_set_enabled_and_delete-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-tenant
-          enabled: true
-          file: rally/keystonebasic/create_tenant-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: authenticate_user_and_validate_token
-          enabled: true
-          file: rally/keystonebasic/authenticate_user_and_validate_token-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-tenant-with-users
-          enabled: true
-          users_per_tenant: 2
-          file: rally/keystonebasic/create_tenant_with_users-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-list-users
-          enabled: true
-          file: rally/keystonebasic/create_and_list_users-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-list-tenants
-          enabled: true
-          file: rally/keystonebasic/create_and_list_tenants-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: add-and-remove-user-role
-          enabled: true
-          file: rally/keystonebasic/add_and_remove_user_role-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-delete-role
-          enabled: true
-          file: rally/keystonebasic/create_and_delete_role-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-add-and-list-user-roles
-          enabled: true
-          file: rally/keystonebasic/create_add_and_list_user_roles-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: get-entities
-          enabled: true
-          file: rally/keystonebasic/get_entities-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-delete-service
-          enabled: true
-          file: rally/keystonebasic/create_and_delete_service-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-update-and-delete-tenant
-          enabled: true
-          file: rally/keystonebasic/create_update_and_delete_tenant-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-user-update-password
-          enabled: true
-          file: rally/keystonebasic/create_user_update_password-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-list-services
-          enabled: true
-          file: rally/keystonebasic/create_and_list_services-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-list-ec2credentials
-          enabled: true
-          file: rally/keystonebasic/create_and_list_ec2credentials-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-delete-ec2credentials
-          enabled: true
-          file: rally/keystonebasic/create_and_delete_ec2credentials-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-get-role
-          enabled: true
-          file: rally/keystonebasic/create_and_get_role-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-add-list-roles
-          enabled: true
-          file: rally/keystonebasic/create_add_list_roles-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
-        - name: create-and-update-user
-          enabled: true
-          file: rally/keystonebasic/create_and_update_user-cc.yml
-          sla_max_seconds: 30
-          sla_max_failure: 0
+  plugins: []
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  - name: authenticate
+    enabled: true
+    type: rally
+    concurrency:
+      - 32
+    times: 100
+    scenarios:
+      - name: authentic-ceilometer
+        enabled: true
+        file: rally/authenticate/validate_ceilometer-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-cinder
+        enabled: true
+        file: rally/authenticate/validate_cinder-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-glance
+        enabled: true
+        file: rally/authenticate/validate_glance-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-heat
+        enabled: true
+        file: rally/authenticate/validate_heat-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+        sla_max_avg_duration: 6
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-monasca
+        enabled: false
+        file: rally/authenticate/validate_monasca-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-neutron
+        enabled: true
+        file: rally/authenticate/validate_neutron-cc.yml
+        sla_max_avg_duration: 18
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authentic-nova
+        enabled: true
+        file: rally/authenticate/validate_nova-cc.yml
+        sla_max_avg_duration: 12
+        sla_max_seconds: 30
+        sla_max_failure: 0
+  - name: keystonebasic
+    enabled: true
+    type: rally
+    concurrency:
+      - 25
+    times: 100
+    scenarios:
+      - name: create-user
+        enabled: true
+        file: rally/keystonebasic/create_user-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-delete-user
+        enabled: true
+        file: rally/keystonebasic/create_delete_user-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-user-set-enabled-and-delete
+        enabled: true
+        enabled_flag: true
+        file: rally/keystonebasic/create_user_set_enabled_and_delete-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-tenant
+        enabled: true
+        file: rally/keystonebasic/create_tenant-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: authenticate_user_and_validate_token
+        enabled: true
+        file: rally/keystonebasic/authenticate_user_and_validate_token-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-tenant-with-users
+        enabled: true
+        users_per_tenant: 2
+        file: rally/keystonebasic/create_tenant_with_users-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-list-users
+        enabled: true
+        file: rally/keystonebasic/create_and_list_users-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-list-tenants
+        enabled: true
+        file: rally/keystonebasic/create_and_list_tenants-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: add-and-remove-user-role
+        enabled: true
+        file: rally/keystonebasic/add_and_remove_user_role-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-delete-role
+        enabled: true
+        file: rally/keystonebasic/create_and_delete_role-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-add-and-list-user-roles
+        enabled: true
+        file: rally/keystonebasic/create_add_and_list_user_roles-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: get-entities
+        enabled: true
+        file: rally/keystonebasic/get_entities-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-delete-service
+        enabled: true
+        file: rally/keystonebasic/create_and_delete_service-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-update-and-delete-tenant
+        enabled: true
+        file: rally/keystonebasic/create_update_and_delete_tenant-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-user-update-password
+        enabled: true
+        file: rally/keystonebasic/create_user_update_password-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-list-services
+        enabled: true
+        file: rally/keystonebasic/create_and_list_services-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-list-ec2credentials
+        enabled: true
+        file: rally/keystonebasic/create_and_list_ec2credentials-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-delete-ec2credentials
+        enabled: true
+        file: rally/keystonebasic/create_and_delete_ec2credentials-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-get-role
+        enabled: true
+        file: rally/keystonebasic/create_and_get_role-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-add-list-roles
+        enabled: true
+        file: rally/keystonebasic/create_add_list_roles-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+      - name: create-and-update-user
+        enabled: true
+        file: rally/keystonebasic/create_and_update_user-cc.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0

@@ -27,6 +27,8 @@ base_path = os.path.abspath(os.path.join(browbeat_path, os.pardir))
 
 conf_path = os.path.join(browbeat_path, 'conf')
 
+conf_schema_path = os.path.join(browbeat_project_path, 'schema')
+
 log_path = os.path.join(browbeat_path, 'log')
 
 results_path = os.path.join(browbeat_path, 'results')

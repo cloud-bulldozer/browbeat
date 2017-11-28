@@ -15,6 +15,8 @@ import logging
 import os
 import yaml
 
+from browbeat.path import results_path
+
 
 class WorkloadBase(object):
     __metaclass__ = abc.ABCMeta
@@ -26,8 +28,11 @@ class WorkloadBase(object):
     index_failures = 0
     browbeat = {}
 
+    def __init__(self):
+        self.result_dir_ts = ""
+
     @abc.abstractmethod
-    def run_workloads(self):
+    def run_workload(self, workload, run_iteration):
         pass
 
     @abc.abstractmethod
@@ -61,17 +66,15 @@ class WorkloadBase(object):
     def update_index_failures(self):
         WorkloadBase.index_failures += 1
 
-    def workload_logger(self, result_dir, workload):
-        base = result_dir.split('/')
-        if not os.path.isfile("{}/{}/browbeat-{}-run.log".format(base[0], base[1], workload)):
-            file = logging.FileHandler(
-                "{}/{}/browbeat-{}-run.log".format(base[0], base[1], workload))
-            file.setLevel(logging.DEBUG)
-            formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
-            file.setFormatter(formatter)
-            self.logger.addHandler(file)
-        return None
+    def workload_logger(self, workload):
+        workload_result_dir = os.path.join(results_path, self.result_dir_ts)
+        if not os.path.isfile("{}/browbeat-{}-run.log".format(workload_result_dir, workload)):
+            filehandler = logging.FileHandler(
+                "{}/browbeat-{}-run.log".format(workload_result_dir, workload))
+            filehandler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)5s - %(message)s')
+            filehandler.setFormatter(formatter)
+            self.logger.addHandler(filehandler)
 
     def get_time_dict(self, to_time, from_time, benchmark, test_name, workload, status,
                       index_status="disabled"):

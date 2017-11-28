@@ -23,15 +23,17 @@ import elastic
 import grafana
 from path import get_overcloudrc
 from path import get_workload_venv
+from path import results_path
 import tools
 import workloadbase
 
 class PerfKit(workloadbase.WorkloadBase):
 
-    def __init__(self, config):
+    def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.perfkit')
         self.overcloudrc = get_overcloudrc()
         self.config = config
+        self.result_dir_ts = result_dir_ts
         self.error_count = 0
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
@@ -39,16 +41,6 @@ class PerfKit(workloadbase.WorkloadBase):
         self.test_count = 0
         self.scenario_count = 0
         self.pass_count = 0
-
-    def _log_details(self):
-        self.logger.info(
-            "Current number of Perkit scenarios executed: {}".format(self.scenario_count))
-        self.logger.info(
-            "Current number of Perfkit test(s) executed: {}".format(self.test_count))
-        self.logger.info(
-            "Current number of Perfkit test(s) succeeded: {}".format(self.pass_count))
-        self.logger.info(
-            "Current number of Perfkit test failures: {}".format(self.error_count))
 
     def string_to_dict(self, string):
         """Function for converting "|" quoted hash data into python dictionary."""
@@ -126,6 +118,8 @@ class PerfKit(workloadbase.WorkloadBase):
         # Build command to run
         if 'enabled' in benchmark_config:
             del benchmark_config['enabled']
+        if 'type' in benchmark_config:
+            del benchmark_config['type']
         cmd = ("source {0}; source {1}; "
                "{2}/PerfKitBenchmarker/pkb.py "
                "--cloud={3} --run_uri=browbeat".format(
@@ -182,54 +176,47 @@ class PerfKit(workloadbase.WorkloadBase):
 
         return success, to_ts, from_ts
 
-    def run_workloads(self):
+    def run_workload(self, workload, run_iteration):
         self.logger.info("Starting PerfKitBenchmarker Workloads.")
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
-        benchmarks = self.config.get('perfkit')['benchmarks']
-        if (benchmarks is not None and len(benchmarks) > 0):
-            for benchmark in benchmarks:
-                if benchmark['enabled']:
-                    self.logger.info("Benchmark: {}".format(benchmark['name']))
-                    self.update_scenarios()
-                    self.update_total_scenarios()
-                    # Add default parameters as necessary
-                    for default_item, value in self.config['perfkit']['default'].iteritems():
-                        if default_item not in benchmark:
-                            benchmark[default_item] = value
-                    for run in range(self.config['browbeat']['rerun']):
-                        self.update_tests()
-                        self.update_total_tests()
-                        result_dir = self.tools.create_results_dir(
-                            self.config['browbeat']['results'], time_stamp, benchmark['name'],
-                            str(run))
-                        test_name = "{}-{}-{}".format(time_stamp, benchmark['name'], run)
-                        workload = self.__class__.__name__
-                        self.workload_logger(result_dir, workload)
-                        success, to_ts, from_ts = self.run_benchmark(benchmark, result_dir,
-                                                                     test_name)
-                        index_success = 'disabled'
-                        if self.config['elasticsearch']['enabled']:
-                            index_success = self.index_results(success, result_dir, test_name, run,
-                                                               benchmark)
-                        new_test_name = test_name.split('-')
-                        new_test_name = new_test_name[2:]
-                        new_test_name = '-'.join(new_test_name)
-                        if success:
-                            self.update_pass_tests()
-                            self.update_total_pass_tests()
-                            self.get_time_dict(to_ts, from_ts, benchmark['benchmarks'],
-                                               new_test_name, self.__class__.__name__, "pass",
-                                               index_success)
-                        else:
-                            self.update_fail_tests()
-                            self.update_total_fail_tests()
-                            self.get_time_dict(to_ts, from_ts, benchmark['benchmarks'],
-                                               new_test_name, self.__class__.__name__, "fail",
-                                               index_success)
-                        self._log_details()
-                else:
-                    self.logger.info(
-                        "Skipping {} benchmark, enabled: false".format(benchmark['name']))
-        else:
-            self.logger.error("Config file contains no perfkit benchmarks.")
+
+        self.logger.info("Benchmark: {}".format(workload['name']))
+        self.update_scenarios()
+        self.update_total_scenarios()
+        # Add default parameters as necessary
+        for default_item, value in self.config['perfkit']['default'].iteritems():
+            if default_item not in workload:
+                workload[default_item] = value
+
+        # Correct iteration/rerun
+        rerun_range = range(self.config["browbeat"]["rerun"])
+        if self.config["browbeat"]["rerun_type"] == "complete":
+            rerun_range = range(run_iteration, run_iteration + 1)
+
+        for run in rerun_range:
+            self.update_tests()
+            self.update_total_tests()
+            result_dir = self.tools.create_results_dir(
+                results_path, self.result_dir_ts, workload['name'], str(run))
+            test_name = "{}-{}-{}".format(time_stamp, workload['name'], run)
+            self.workload_logger(self.__class__.__name__)
+            success, to_ts, from_ts = self.run_benchmark(workload, result_dir, test_name)
+            index_success = 'disabled'
+            if self.config['elasticsearch']['enabled']:
+                index_success = self.index_results(success, result_dir, test_name, run, workload)
+            new_test_name = test_name.split('-')
+            new_test_name = new_test_name[2:]
+            new_test_name = '-'.join(new_test_name)
+            if success:
+                self.update_pass_tests()
+                self.update_total_pass_tests()
+                self.get_time_dict(to_ts, from_ts, workload['benchmarks'],
+                                   new_test_name, self.__class__.__name__, "pass",
+                                   index_success)
+            else:
+                self.update_fail_tests()
+                self.update_total_fail_tests()
+                self.get_time_dict(to_ts, from_ts, workload['benchmarks'],
+                                   new_test_name, self.__class__.__name__, "fail",
+                                   index_success)

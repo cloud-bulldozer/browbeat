@@ -19,8 +19,8 @@ class Grafana(object):
         self.logger = logging.getLogger('browbeat.grafana')
         self.config = config
         self.cloud_name = self.config['browbeat']['cloud_name']
-        self.grafana_ip = self.config['grafana']['grafana_ip']
-        self.grafana_port = self.config['grafana']['grafana_port']
+        self.host = self.config['grafana']['host']
+        self.port = self.config['grafana']['port']
         self.grafana_url = {}
 
     def grafana_urls(self):
@@ -31,7 +31,7 @@ class Grafana(object):
             from_ts = time['from_ts']
             to_ts = time['to_ts']
             url = 'http://{}:{}/dashboard/db/'.format(
-                self.grafana_ip, self.grafana_port)
+                self.host, self.port)
             for dashboard in self.config['grafana']['dashboards']:
                 self.grafana_url[dashboard] = '{}{}?from={}&to={}&var-Cloud={}'.format(
                     url,

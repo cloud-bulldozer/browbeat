@@ -21,6 +21,8 @@ import time
 import browbeat.elastic
 import browbeat.tools
 import browbeat.workloadbase
+from browbeat.config import load_browbeat_config
+from browbeat.path import results_path
 
 _workload_opts = ['perfkit', 'rally', 'shaker', 'yoda']
 _config_file = 'browbeat-config.yaml'
@@ -28,26 +30,20 @@ debug_log_file = 'log/debug.log'
 
 
 def main():
-    tools = browbeat.tools.Tools()
     parser = argparse.ArgumentParser(
         description="Browbeat Performance and Scale testing for Openstack")
     parser.add_argument(
-        '-s',
-        '--setup',
-        nargs='?',
-        default=_config_file,
+        '-s', '--setup', nargs='?', default=_config_file,
         help='Provide Browbeat YAML configuration file. Default is ./{}'.format(_config_file))
-    parser.add_argument('workloads', nargs='*', help='Browbeat workload(s). Takes a space separated'
-                        ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
-    parser.add_argument('--debug', action='store_true',
-                        help='Enable Debug messages')
-    parser.add_argument('-p', '--postprocess',
-                        dest="path", help="Path to process, ie results/20170101/")
-    parser.add_argument('-c', '--compare',
-                        help="Compare metadata", dest="compare",
-                        choices=['software-metadata'])
-    parser.add_argument('-u', '--uuid',
-                        help="UUIDs to pass", dest="uuids", nargs=2)
+    parser.add_argument(
+        'workloads', nargs='*', help='Browbeat workload(s). Takes a space separated'
+        ' list of workloads ({}) or \"all\"'.format(', '.join(_workload_opts)))
+    parser.add_argument('--debug', action='store_true', help='Enable Debug messages')
+    parser.add_argument(
+        '-p', '--postprocess', dest="path", help="Path to process, ie results/20171130-191420/")
+    parser.add_argument(
+        '-c', '--compare', help="Compare metadata", dest="compare", choices=['software-metadata'])
+    parser.add_argument('-u', '--uuid', help="UUIDs to pass", dest="uuids", nargs=2)
     _cli_args = parser.parse_args()
 
     _logger = logging.getLogger('browbeat')
@@ -70,8 +66,10 @@ def main():
     _logger.debug("CLI Args: {}".format(_cli_args))
 
     # Load Browbeat yaml config file:
-    _config = tools._load_config(_cli_args.setup)
+    _config = load_browbeat_config(_cli_args.setup)
+    tools = browbeat.tools.Tools(_config)
 
+    # Browbeat compare
     if _cli_args.compare == "software-metadata":
         es = browbeat.elastic.Elastic(_config, "BrowbeatCLI")
         es.compare_metadata("_all", 'controller', _cli_args.uuids)
@@ -81,74 +79,93 @@ def main():
         parser.print_help()
         exit(1)
 
-    # Default to all workloads
+    # Browbeat postprocess
+    if _cli_args.path:
+        _logger.info("Browbeat Postprocessing {}".format(_cli_args.path))
+        return tools.post_process(_cli_args)
+
+    # Browbeat workload - "browbeat run"
     if _cli_args.workloads == []:
         _cli_args.workloads.append('all')
-    if _cli_args.path:
-        return tools.post_process(_cli_args)
 
     if len(_cli_args.workloads) == 1 and 'all' in _cli_args.workloads:
         _cli_args.workloads = _workload_opts
-    invalid_wkld = [
-        wkld for wkld in _cli_args.workloads if wkld not in _workload_opts]
+    invalid_wkld = [wkld for wkld in _cli_args.workloads if wkld not in _workload_opts]
     if invalid_wkld:
         _logger.error("Invalid workload(s) specified: {}".format(invalid_wkld))
         if 'all' in _cli_args.workloads:
             _logger.error(
                 "If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
         exit(1)
-    else:
-        time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
-        _logger.info("Browbeat test suite kicked off")
-        _logger.info("Browbeat UUID: {}".format(browbeat.elastic.browbeat_uuid))
-        if _config['elasticsearch']['enabled']:
-            _logger.info("Checking for Metadata")
-            metadata_exists = tools.check_metadata()
-            if not metadata_exists:
-                _logger.error("Elasticsearch has been enabled but"
-                              " metadata files do not exist")
-                _logger.info("Gathering Metadata")
-                tools.gather_metadata()
-            elif _config['elasticsearch']['regather']:
-                _logger.info("Regathering Metadata")
-                tools.gather_metadata()
 
-        _logger.info("Running workload(s): {}".format(
-            ','.join(_cli_args.workloads)))
-        for wkld_provider in _cli_args.workloads:
-            if wkld_provider in _config:
-                if _config[wkld_provider]['enabled']:
-                    tools._run_workload_provider(wkld_provider)
-                else:
-                    _logger.warning("{} is not enabled in {}".format(wkld_provider,
-                                                                     _cli_args.setup))
-            else:
-                _logger.error("{} is missing in {}".format(
-                    wkld_provider, _cli_args.setup))
-        result_dir = _config['browbeat']['results']
-        browbeat.workloadbase.WorkloadBase.print_report(result_dir, time_stamp)
-        _logger.info("Saved browbeat result summary to {}".format(
-            os.path.join(result_dir, time_stamp + '.' + 'report')))
-        browbeat.workloadbase.WorkloadBase.print_summary()
+    result_dir_ts = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+    _logger.info("Browbeat test suite kicked off")
+    _logger.info("Browbeat UUID: {}".format(browbeat.elastic.browbeat_uuid))
+    if _config['elasticsearch']['enabled']:
+        _logger.info("Checking for Metadata")
+        metadata_exists = tools.check_metadata()
+        if not metadata_exists:
+            _logger.error("Elasticsearch has been enabled but"
+                          " metadata files do not exist")
+            _logger.info("Gathering Metadata")
+            tools.gather_metadata()
+        elif _config['elasticsearch']['regather']:
+            _logger.info("Regathering Metadata")
+            tools.gather_metadata()
 
-        browbeat_rc = 0
-        if browbeat.workloadbase.WorkloadBase.failure > 0:
-            browbeat_rc = 1
-        if browbeat.workloadbase.WorkloadBase.index_failures > 0:
-            browbeat_rc = 2
+    _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
+    # Iteration rerun_type pushes rerun logic down to the workload itself.  This allows the workload
+    # to run multiple times before moving to the next workload
+    if _config["browbeat"]["rerun_type"] == "iteration":
+        for workload in _config["workloads"]:
+            if not workload["enabled"]:
+                _logger.info("{} workload {} disabled in browbeat config".format(workload["type"],
+                             workload["name"]))
+                continue
 
-        if browbeat_rc == 1:
-            _logger.info("Browbeat finished with test failures, UUID: {}".format(
-                browbeat.elastic.browbeat_uuid))
-            sys.exit(browbeat_rc)
-        elif browbeat_rc == 2:
-            _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
-                         .format(browbeat.elastic.browbeat_uuid))
-            sys.exit(browbeat_rc)
-        else:
-            _logger.info("Browbeat finished successfully, UUID: {}".format(
-                browbeat.elastic.browbeat_uuid))
-            sys.exit(0)
+            if not workload["type"] in _cli_args.workloads:
+                _logger.info(
+                    "{} workload {} disabled via cli".format(workload["type"], workload["name"]))
+                continue
+
+            _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
+            tools.run_workload(workload, result_dir_ts, 0)
+            browbeat.workloadbase.WorkloadBase.print_summary()
+
+    elif _config["browbeat"]["rerun_type"] == "complete":
+        # Complete rerun_type, reruns after all workloads have been run.
+        for run_iteration in range(0, _config["browbeat"]["rerun"]):
+            for workload in _config["workloads"]:
+                if not workload["enabled"]:
+                    _logger.info("{} workload {} disabled in browbeat config"
+                                 .format(workload["type"], workload["name"]))
+                    continue
+
+                if not workload["type"] in _cli_args.workloads:
+                    _logger.info("{} workload {} disabled via cli".format(workload["type"],
+                                 workload["name"]))
+                    continue
+
+                _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
+                tools.run_workload(workload, result_dir_ts, run_iteration)
+                browbeat.workloadbase.WorkloadBase.print_summary()
+
+    browbeat.workloadbase.WorkloadBase.print_report(results_path, result_dir_ts)
+    _logger.info("Saved browbeat result summary to {}"
+                 .format(os.path.join(results_path, "{}.report".format(result_dir_ts))))
+
+    if browbeat.workloadbase.WorkloadBase.failure > 0:
+        _logger.info(
+            "Browbeat finished with test failures, UUID: {}".format(browbeat.elastic.browbeat_uuid))
+        sys.exit(1)
+
+    if browbeat.workloadbase.WorkloadBase.index_failures > 0:
+        _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
+                     .format(browbeat.elastic.browbeat_uuid))
+        sys.exit(2)
+
+    _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat.elastic.browbeat_uuid))
+    sys.exit(0)
 
 if __name__ == '__main__':
     sys.exit(main())

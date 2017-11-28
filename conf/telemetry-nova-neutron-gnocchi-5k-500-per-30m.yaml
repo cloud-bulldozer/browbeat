@@ -7,14 +7,18 @@
 # how system resources and api responsiveness degrade over each new set of
 # instances booted.
 browbeat:
-  results: results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 10
+  rerun_type: complete
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
-  regather: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -24,23 +28,25 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: false
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: true
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
   plugins:
@@ -48,355 +54,55 @@ rally:
     - nova: rally/rally-plugins/nova
     - neutron: rally/rally-plugins/neutron
     - gnocchi: rally/rally-plugins/gnocchi
-  benchmarks:
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
 
-    # Baseline
-    - name: BrowbeatGnocchiBaseline
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-Baseline
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-Baseline
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-Baseline
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
+workloads:
 
-    - name: BrowbeatNovaPersistWithNetwork01
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-01
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.0.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi01
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-01
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-01
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-01
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
+  # Baseline Gnocchi API
+  - name: BrowbeatGnocchiResponsiveness
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 5000
+    scenarios:
+      - name: gnocchi-metric-get-measures-agg-mean-Baseline
+        enabled: true
+        all_metrics: true
+        aggregation: mean
+        file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
+      - name: gnocchi-create-delete-metric-Baseline
+        enabled: true
+        times: 1000
+        file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
+      - name: gnocchi-create-delete-resource-Baseline
+        enabled: true
+        times: 1000
+        file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
 
-    - name: BrowbeatNovaPersistWithNetwork02
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-02
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.2.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi02
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-02
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-02
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-02
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork03
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-03
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.4.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi03
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-03
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-03
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-03
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork04
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-04
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.6.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi04
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-04
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-04
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-04
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork05
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-05
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.8.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi05
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-05
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-05
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-05
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork06
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-06
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.10.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi06
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-06
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-06
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-06
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork07
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-07
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.12.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi07
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-07
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-07
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-07
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork08
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-08
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.14.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi08
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-08
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-08
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-08
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork09
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-09
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.16.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi09
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-09
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-09
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-09
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
-
-    - name: BrowbeatNovaPersistWithNetwork10
-      enabled: true
-      concurrency:
-        - 20
-      times: 500
-      scenarios:
-        - name: nova-boot-persist-with-network-500-10
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          network_start_cidr: 10.1.18.0/23
-          cleanup_delay: 1800
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
-    - name: BrowbeatGnocchi10
-      enabled: true
-      concurrency:
-        - 8
-      times: 5000
-      scenarios:
-        - name: gnocchi-metric-get-measures-agg-mean-10
-          enabled: true
-          all_metrics: true
-          aggregation: mean
-          file: rally/rally-plugins/gnocchi/gnocchi-metric-get-measures.yml
-        - name: gnocchi-create-delete-metric-10
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-metric.yml
-        - name: gnocchi-create-delete-resource-10
-          enabled: true
-          times: 1000
-          file: rally/rally-plugins/gnocchi/gnocchi-create-delete-resource.yml
+  # Boot 500 instances
+  - name: BrowbeatNovaPersistWithNetwork
+    enabled: true
+    type: rally
+    concurrency:
+      - 20
+    times: 500
+    scenarios:
+      - name: nova-boot-persist-with-network-500
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        network_start_cidr: 10.1.0.0/23
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml

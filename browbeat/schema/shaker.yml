@@ -1,0 +1,19 @@
+# This schema defines how a Rally workload is formated
+name: Shaker workload schema
+type: map
+allowempty: True
+mapping:
+  # Required items to be a Shaker workload
+  enabled:
+    type: bool
+    required: True
+  file:
+    type: str
+    required: True
+  name:
+    type: str
+    required: True
+  type:
+    type: str
+    required: True
+    enum: ["shaker"]

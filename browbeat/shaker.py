@@ -23,16 +23,18 @@ import elastic
 import grafana
 from path import get_overcloudrc
 from path import get_workload_venv
+from path import results_path
 import workloadbase
 import tools
 
 
 class Shaker(workloadbase.WorkloadBase):
 
-    def __init__(self, config):
+    def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.shaker')
         self.overcloudrc = get_overcloudrc()
         self.config = config
+        self.result_dir_ts = result_dir_ts
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
@@ -42,23 +44,13 @@ class Shaker(workloadbase.WorkloadBase):
         self.scenario_count = 0
 
     def shaker_checks(self):
-        cmd = "source {}; glance image-list | grep -w shaker-image".format(self.overcloudrc)
+        cmd = "source {}; source {}; glance image-list | grep -w shaker-image".format(
+            get_workload_venv('shaker', True), self.overcloudrc)
         if self.tools.run_cmd(cmd)['stdout'] == "":
             self.logger.error("Shaker Image is not built, try again")
             exit(1)
         else:
             self.logger.info("Shaker image is built, continuing")
-
-    def get_stats(self):
-        self.logger.info(
-            "Current number of Shaker tests executed: {}".format(
-                self.test_count))
-        self.logger.info(
-            "Current number of Shaker tests passed: {}".format(
-                self.pass_count))
-        self.logger.info(
-            "Current number of Shaker tests failed: {}".format(
-                self.error_count))
 
     def accommodation_to_dict(self, accommodation):
         accommodation_dict = {}
@@ -406,57 +398,46 @@ class Shaker(workloadbase.WorkloadBase):
         else:
             self.result_check(result_dir, test_name, scenario, to_time, from_time)
 
-    def run_workloads(self):
+    def run_workload(self, workload, run_iteration):
         self.logger.info("Starting Shaker workloads")
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
-        scenarios = self.config.get('shaker')['scenarios']
-        venv = get_workload_venv('shaker', False)
-        default_time = 60
-        self.shaker_checks()
-        if (scenarios is not None and len(scenarios) > 0):
-            for scenario in scenarios:
-                if scenario['enabled']:
-                    self.update_scenarios()
-                    self.update_total_scenarios()
-                    shaker_uuid = uuid.uuid4()
-                    es_ts = datetime.datetime.utcnow()
-                    es_list = []
-                    if "time" in scenario:
-                        test_time = scenario['time']
-                    else:
-                        test_time = default_time
-                    for interval in range(0, test_time + 9):
-                        es_list.append(
-                            datetime.datetime.utcnow() +
-                            datetime.timedelta(0, interval))
 
-                    for run in range(self.config['browbeat']['rerun']):
-                        self.logger.info("Scenario: {}".format(scenario['name']))
-                        self.logger.info("Run: {}".format(run))
-                        fname = os.path.join(venv, scenario['file'])
-                        self.set_scenario(scenario, fname, default_time)
-                        self.logger.debug("Set Scenario File: {}".format(
-                            fname))
-                        result_dir = self.tools.create_results_dir(
-                            self.config['browbeat'][
-                                'results'], time_stamp, "shaker",
-                            scenario['name'] + "-" + str(run))
-                        workload = self.__class__.__name__
-                        self.workload_logger(result_dir, workload)
-                        time_stamp1 = datetime.datetime.now().strftime(
-                            "%Y%m%d-%H%M%S")
-                        test_name = "{}-browbeat-{}-{}-{}".format(
-                            time_stamp1, "shaker", scenario['name'], run)
-                        self.run_scenario(
-                            scenario, result_dir, test_name, fname, shaker_uuid,
-                            es_ts, es_list, run)
-                        self.get_stats()
-                else:
-                    self.logger.info(
-                        "Skipping {} as scenario enabled: false".format(
-                            scenario['name']))
-            self.final_stats(self.scenario_count)
-        else:
-            self.logger.error(
-                "Configuration file contains no shaker scenarios")
+        venv = get_workload_venv('shaker', False)
+        self.shaker_checks()
+
+        self.update_scenarios()
+        self.update_total_scenarios()
+        shaker_uuid = uuid.uuid4()
+        es_ts = datetime.datetime.utcnow()
+        es_list = []
+        # Default test time to 60
+        test_time = workload.get("time", 60)
+        for interval in range(0, test_time + 9):
+            es_list.append(
+                datetime.datetime.utcnow() +
+                datetime.timedelta(0, interval))
+
+        rerun_range = range(self.config["browbeat"]["rerun"])
+        if self.config["browbeat"]["rerun_type"] == "complete":
+            # Compelete rerun type means force
+            rerun_range = range(run_iteration, run_iteration + 1)
+
+        for run in rerun_range:
+            self.logger.info("Scenario: {}".format(workload['name']))
+            self.logger.info("Run: {}".format(run))
+            fname = os.path.join(venv, workload['file'])
+            self.set_scenario(workload, fname, 60)
+            self.logger.debug("Set Scenario File: {}".format(fname))
+            result_dir = self.tools.create_results_dir(
+                results_path, self.result_dir_ts, "shaker",
+                workload['name'] + "-" + str(run))
+            self.workload_logger(self.__class__.__name__)
+            time_stamp1 = datetime.datetime.now().strftime(
+                "%Y%m%d-%H%M%S")
+            test_name = "{}-browbeat-{}-{}-{}".format(
+                time_stamp1, "shaker", workload['name'], run)
+            self.run_scenario(
+                workload, result_dir, test_name, fname, shaker_uuid,
+                es_ts, es_list, run)
+        self.final_stats(self.scenario_count)

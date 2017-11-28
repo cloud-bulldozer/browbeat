@@ -10,14 +10,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import copy
 import logging
 import os
 import re
 import subprocess
-import yaml
-
-from pykwalify import core as pykwalify_core
-from pykwalify import errors as pykwalify_errors
 
 import perfkit
 import rally
@@ -27,10 +24,9 @@ import yoda
 
 class Tools(object):
 
-    def __init__(self, config=None):
+    def __init__(self, config):
         self.logger = logging.getLogger('browbeat.tools')
         self.config = config
-        return None
 
     # Returns true if ping successful, false otherwise
     def is_pingable(self, ip):
@@ -88,47 +84,24 @@ class Tools(object):
                 return False
         return the_directory
 
-    def _load_config(self, path, validate=True):
-        try:
-            stream = open(path, 'r')
-        except IOError:
-            self.logger.error(
-                "Configuration file {} passed is missing".format(path))
-            exit(1)
-        config = yaml.safe_load(stream)
-        stream.close()
-        self.config = config
-        if validate:
-            self.validate_yaml()
-        return config
+    def run_workload(self, workload, result_dir_ts, run_iteration):
+        """Creates workload object and runs a specific workload.
 
-    def validate_yaml(self):
-        self.logger.info(
-            "Validating the configuration file passed by the user")
-        stream = open("browbeat/validate.yaml", 'r')
-        schema = yaml.safe_load(stream)
-        check = pykwalify_core.Core(
-            source_data=self.config, schema_data=schema)
-        try:
-            check.validate(raise_exception=True)
-            self.logger.info("Validation successful")
-        except pykwalify_errors.SchemaError as e:
-            self.logger.error("Schema Validation failed")
-            raise Exception('File does not conform to schema: {}'.format(e))
-
-    def _run_workload_provider(self, provider):
-        self.logger = logging.getLogger('browbeat')
-        if provider == "perfkit":
-            workloads = perfkit.PerfKit(self.config)
-        elif provider == "rally":
-            workloads = rally.Rally(self.config)
-        elif provider == "shaker":
-            workloads = shaker.Shaker(self.config)
-        elif provider == "yoda":
-            workloads = yoda.Yoda(self.config)
+        :param workload: Dictionary of workload attributes defined by browbeat config
+        :param result_dir_ts: Result directory timestamp
+        :param run_iteration: Iteration for a specific run
+        """
+        if workload["type"] == "perfkit":
+            workloads = perfkit.PerfKit(self.config, result_dir_ts)
+        elif workload["type"] == "rally":
+            workloads = rally.Rally(self.config, result_dir_ts)
+        elif workload["type"] == "shaker":
+            workloads = shaker.Shaker(self.config, result_dir_ts)
+        elif workload["type"] == "yoda":
+            workloads = yoda.Yoda(self.config, result_dir_ts)
         else:
-            self.logger.error("Unknown workload provider: {}".format(provider))
-        workloads.run_workloads()
+            self.logger.error("Unknown workload provider: {}".format(workload["type"]))
+        workloads.run_workload(copy.deepcopy(workload), run_iteration)
 
     def check_metadata(self):
         meta = self.config['elasticsearch']['metadata_files']
@@ -140,12 +113,11 @@ class Tools(object):
         return True
 
     def gather_metadata(self):
-        os.putenv("ANSIBLE_SSH_ARGS",
-                  " -F {}".format(self.config['ansible']['ssh_config']))
+        os.putenv("ANSIBLE_SSH_ARGS", " -F {}".format(self.config['ansible']['ssh_config']))
 
         ansible_cmd = \
             'ansible-playbook -i {} {}' \
-            .format(self.config['ansible']['hosts'], self.config['ansible']['metadata'])
+            .format(self.config['ansible']['hosts'], self.config['ansible']['metadata_playbook'])
         self.run_cmd(ansible_cmd)
         if not self.check_metadata():
             self.logger.warning("Metadata could not be gathered")

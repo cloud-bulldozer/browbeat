@@ -3,14 +3,18 @@
 # each iteration it measures response time of several Ceilometer APIs.
 # Currently it maxs at 200 instances
 browbeat:
-  results: results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 10
+  rerun_type: complete
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
-  regather: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -20,387 +24,77 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: false
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: true
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
   plugins:
+    - browbeat: rally/rally-plugins/browbeat
     - nova: rally/rally-plugins/nova
-  benchmarks:
-    # Ceilometer Baseline
-    - name: Ceilometer01
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-01
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-01
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-01
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-01
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-01
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist01
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-01
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer02
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-02
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-02
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-02
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-02
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-02
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist02
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-02
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer03
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-03
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-03
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-03
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-03
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-03
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist03
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-03
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer04
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-04
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-04
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-04
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-04
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-04
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist04
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-04
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer05
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-05
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-05
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-05
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-05
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-05
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist05
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-05
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer06
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-06
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-06
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-06
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-06
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-06
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist06
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-06
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer07
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-07
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-07
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-07
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-07
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-07
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist07
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-07
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer08
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-08
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-08
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-08
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-08
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-08
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist08
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-08
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer09
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-09
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-09
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-09
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-09
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-09
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist09
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-09
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Measure Ceilometer Response Timings
-    - name: Ceilometer10
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-10
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-10
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-10
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-10
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-10
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
-    # Boot 20 instances
-    - name: BrowbeatNovaPersist10
-      enabled: true
-      concurrency:
-        - 5
-      times: 20
-      scenarios:
-        - name: nova-boot-20-10
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          file: rally/rally-plugins/nova/nova_boot_persist.yml
-    # Final Measure Ceilometer Response Timings
-    - name: Ceilometer11
-      enabled: true
-      concurrency:
-        - 8
-      times: 500
-      scenarios:
-        - name: list_meters-11
-          enabled: true
-          file: rally/CeilometerMeters/list_meters-cc.yml
-        - name: create_and_query_samples-11
-          enabled: true
-          file: rally/CeilometerQueries/create_and_query_samples-cc.yml
-        - name: list_resources-11
-          enabled: true
-          file: rally/CeilometerResource/list_resources-cc.yml
-        - name: list_samples-11
-          enabled: true
-          file: rally/CeilometerSamples/list_samples-cc.yml
-        - name: get_stats-11
-          enabled: true
-          file: rally/CeilometerStats/get_stats-cc.yml
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  # Measure Ceilometer Response Timings
+  - name: Ceilometer
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 500
+    scenarios:
+      - name: list_meters
+        enabled: true
+        file: rally/CeilometerMeters/list_meters-cc.yml
+      - name: create_and_query_samples-01
+        enabled: true
+        file: rally/CeilometerQueries/create_and_query_samples-cc.yml
+      - name: list_resources
+        enabled: true
+        file: rally/CeilometerResource/list_resources-cc.yml
+      - name: list_samples
+        enabled: true
+        file: rally/CeilometerSamples/list_samples-cc.yml
+      - name: get_stats
+        enabled: true
+        file: rally/CeilometerStats/get_stats-cc.yml
+  # Boot 20 instances
+  - name: BrowbeatNovaPersist
+    enabled: true
+    type: rally
+    concurrency:
+      - 5
+    times: 20
+    scenarios:
+      - name: nova-boot-20
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        file: rally/rally-plugins/nova/nova_boot_persist.yml

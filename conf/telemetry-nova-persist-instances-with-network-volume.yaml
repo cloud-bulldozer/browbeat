@@ -3,14 +3,18 @@
 # with a concurrency of 20 instances. A total of 1000 instances are
 # booted. The instances have a nic and volume.
 browbeat:
-  results: results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 1
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
-  regather: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -20,114 +24,130 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: false
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: true
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
 rally:
-  enabled: true
   sleep_before: 0
   sleep_after: 0
   plugins:
     - browbeat: rally/rally-plugins/browbeat
     - nova: rally/rally-plugins/nova
     - neutron: rally/rally-plugins/neutron
-  benchmarks:
-    # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms
-    - name: BrowbeatNovaPersistWithNetworkVolume01
-      enabled: true
-      concurrency:
-        - 20
-      times: 100
-      scenarios:
-        - name: nova-boot-persist-with-network-volume-100-01
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.0.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-02
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.2.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-03
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.4.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-04
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.6.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-05
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.8.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-06
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.10.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-07
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.12.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-08
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.14.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-09
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.16.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
-        - name: nova-boot-persist-with-network-volume-100-10
-          enabled: true
-          image_name: cirros
-          flavor_name: m1.xtiny
-          volume_size: 1
-          cleanup_delay: 1800
-          network_start_cidr: 10.1.18.0/23
-          file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms
+  - name: BrowbeatNovaPersistWithNetworkVolume01
+    enabled: true
+    type: rally
+    concurrency:
+      - 20
+    times: 100
+    scenarios:
+      - name: nova-boot-persist-with-network-volume-100-01
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.0.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-02
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.2.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-03
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.4.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-04
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.6.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-05
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.8.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-06
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.10.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-07
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.12.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-08
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.14.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-09
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.16.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
+      - name: nova-boot-persist-with-network-volume-100-10
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        network_start_cidr: 10.1.18.0/23
+        file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml

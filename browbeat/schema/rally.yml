@@ -1,0 +1,38 @@
+# This schema defines how a Rally workload is formated
+name: Rally workload schema
+type: map
+mapping:
+  # Required items to be a Rally workload
+  concurrency:
+    type: seq
+    required: True
+    sequence:
+      - type: int
+  enabled:
+    type: bool
+    required: True
+  name:
+    type: str
+    required: True
+  times:
+    type: int
+    required: True
+  type:
+    type: str
+    required: True
+    enum: ["rally"]
+  scenarios:
+    type: seq
+    sequence:
+    - type: map
+      allowempty: True
+      mapping:
+        enabled:
+          type: bool
+          required: True
+        file:
+          type: str
+          required: True
+        name:
+          type: str
+          required: True

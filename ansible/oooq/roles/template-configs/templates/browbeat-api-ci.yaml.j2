@@ -1,7 +1,11 @@
 browbeat:
-  results: results/
-  rerun: 3
   cloud_name: {{ browbeat_cloud_name }}
+  rerun: 3
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: {{ elastic_enabled }}
   host: {{ elastic_host }}
@@ -16,116 +20,136 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
   enabled: {{ grafana_enabled }}
-  grafana_ip: {{ grafana_host }}
-  grafana_port: 3000
+  host: {{ grafana_host }}
+  port: 3000
   dashboards:
     - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
 rally:
-  enabled: true
   sleep_before: 5
   sleep_after: 5
-  venv: /home/stack/rally-venv
   plugins:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
-  benchmarks:
-    - name: authenticate
-      enabled: true
-      concurrency:
-        - 16
-        - 24
-      times: 2500
-      scenarios:
-        - name: authentic-keystone
-          enabled: true
-          file: rally/authenticate/keystone-cc.yml
-    - name: keystonebasic
-      enabled: true
-      concurrency:
-        - 16
-      times: 1000
-      scenarios:
-        - name: create-and-list-tenants
-          enabled: true
-          file: rally/keystonebasic/create_and_list_tenants-cc.yml
-    - name: neutron
-      enabled: true
-      concurrency:
-        - 8
-        - 12
-      times: 128
-      scenarios:
-        - name: create-list-router
-          enabled: true
-          file: rally/neutron/neutron-create-list-router-cc.yml
-        - name: create-list-network
-          enabled: true
-          file: rally/neutron/neutron-create-list-network-cc.yml
-        - name: create-list-subnet
-          enabled: true
-          file: rally/neutron/neutron-create-list-subnet-cc.yml
-        - name: create-list-port
-          enabled: true
-          file: rally/neutron/neutron-create-list-port-cc.yml
-        - name: create-list-security-group
-          enabled: true
-          file: rally/neutron/neutron-create-list-security-group-cc.yml
-    - name: nova
-      enabled: true
-      concurrency:
-        - 8
-        - 12
-      times: 64
-      scenarios:
-        - name: boot-snapshot-delete
-          enabled: true
-          file: rally/nova/nova-boot-snapshot-cc.yml
-          image_name: cirros
-          flavor_name: m1.tiny
-        - name: boot-list
-          enabled: true
-          file: rally/nova/nova-boot-list-cc.yml
-          image_name: cirros
-          flavor_name: m1.tiny
-    - name: glance
-      enabled: true
-      concurrency:
-        - 8
-        - 12
-      times: 64
-      scenarios:
-        - name: create-and-delete-image
-          enabled: true
-          image_location: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz
-          flavor_name: m1.tiny
-          file: rally/glance/create-and-delete-image-cc.yml
-    - name: plugins
-      enabled: true
-      concurrency:
-        - 8
-      times: 64
-      scenarios:
-        - name: netcreate-1-boot
-          enabled: true
-          enable_dhcp: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          num_networks: 1
-          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
-        - name: netcreate-5-boot
-          enabled: true
-          enable_dhcp: true
-          image_name: cirros
-          flavor_name: m1.tiny
-          num_networks: 5
-          file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  - name: authenticate
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+      - 24
+    times: 2500
+    scenarios:
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+  - name: keystonebasic
+    enabled: true
+    type: rally
+    concurrency:
+      - 16
+    times: 1000
+    scenarios:
+      - name: create-and-list-tenants
+        enabled: true
+        file: rally/keystonebasic/create_and_list_tenants-cc.yml
+  - name: neutron
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+      - 12
+    times: 128
+    scenarios:
+      - name: create-list-router
+        enabled: true
+        file: rally/neutron/neutron-create-list-router-cc.yml
+      - name: create-list-network
+        enabled: true
+        file: rally/neutron/neutron-create-list-network-cc.yml
+      - name: create-list-subnet
+        enabled: true
+        file: rally/neutron/neutron-create-list-subnet-cc.yml
+      - name: create-list-port
+        enabled: true
+        file: rally/neutron/neutron-create-list-port-cc.yml
+      - name: create-list-security-group
+        enabled: true
+        file: rally/neutron/neutron-create-list-security-group-cc.yml
+  - name: nova
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+      - 12
+    times: 64
+    scenarios:
+      - name: boot-snapshot-delete
+        enabled: true
+        file: rally/nova/nova-boot-snapshot-cc.yml
+        image_name: cirros
+        flavor_name: m1.tiny
+      - name: boot-list
+        enabled: true
+        file: rally/nova/nova-boot-list-cc.yml
+        image_name: cirros
+        flavor_name: m1.tiny
+  - name: glance
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+      - 12
+    times: 64
+    scenarios:
+      - name: create-and-delete-image
+        enabled: true
+        image_location: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz
+        flavor_name: m1.tiny
+        file: rally/glance/create-and-delete-image-cc.yml
+  - name: plugins
+    enabled: true
+    type: rally
+    concurrency:
+      - 8
+    times: 64
+    scenarios:
+      - name: netcreate-1-boot
+        enabled: true
+        enable_dhcp: true
+        image_name: cirros
+        flavor_name: m1.tiny
+        num_networks: 1
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+      - name: netcreate-5-boot
+        enabled: true
+        enable_dhcp: true
+        image_name: cirros
+        flavor_name: m1.tiny
+        num_networks: 5
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml

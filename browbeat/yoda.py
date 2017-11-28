@@ -30,15 +30,17 @@ import requests
 
 import elastic
 import grafana
+from path import results_path
 import workloadbase
 import tools
 
 
 class Yoda(workloadbase.WorkloadBase):
 
-    def __init__(self, config):
+    def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.yoda')
         self.config = config
+        self.result_dir_ts = result_dir_ts
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
@@ -497,7 +499,7 @@ class Yoda(workloadbase.WorkloadBase):
 
     def setup_scenario(self, benchmark_name, dir_ts):
         results_dir = self.tools.create_results_dir(
-            self.config['browbeat']['results'], dir_ts, benchmark_name, benchmark_name)
+            results_path, dir_ts, benchmark_name, benchmark_name)
 
         if isinstance(results_dir, bool):
             self.logger.error(
@@ -505,8 +507,7 @@ class Yoda(workloadbase.WorkloadBase):
             exit(1)
 
         self.logger.debug("Created result directory: {}".format(results_dir))
-        workload = self.__class__.__name__
-        self.workload_logger(results_dir, workload)
+        self.workload_logger(self.__class__.__name__)
         return results_dir
 
     def introspection_workload(
@@ -640,7 +641,7 @@ class Yoda(workloadbase.WorkloadBase):
             results = out[0]
             changed = out[1]
 
-    def run_workloads(self):
+    def run_workload(self, workload, run_iteration):
         """Iterates through all yoda scenarios in browbeat yaml config file"""
         self.logger.info("Starting YODA workloads")
         es_ts = datetime.datetime.utcnow()
@@ -667,39 +668,24 @@ class Yoda(workloadbase.WorkloadBase):
         conn = connection.Connection(**auth_args)
 
         instackenv = self.config.get('yoda')['instackenv']
-        benchmarks = self.config.get('yoda')['benchmarks']
-        if (benchmarks is not None and len(benchmarks) > 0):
-            for benchmark in benchmarks:
-                if benchmark['enabled']:
 
-                    results_dir = self.setup_scenario(
-                        benchmark['name'], dir_ts)
-                    times = benchmark['times']
-                    if 'instackenv' not in benchmark:
-                        benchmark['instackenv'] = instackenv
-                    for rerun in range(self.config['browbeat']['rerun']):
-                        for run in range(times):
-                            if benchmark['type'] == "overcloud":
-                                self.overcloud_workload(benchmark,
-                                                        run,
-                                                        results_dir,
-                                                        env_setup,
-                                                        conn)
-                            elif benchmark['type'] == "introspection":
-                                self.introspection_workload(benchmark,
-                                                            run,
-                                                            results_dir,
-                                                            env_setup,
-                                                            conn)
-                            else:
-                                self.logger.error(
-                                    "Could not identify YODA workload!")
-                                exit(1)
-                        self.update_scenarios()
+        results_dir = self.setup_scenario(workload['name'], dir_ts)
+        times = workload['times']
+        if 'instackenv' not in workload:
+            workload['instackenv'] = instackenv
 
+        # Correct iteration/rerun
+        rerun_range = range(self.config["browbeat"]["rerun"])
+        if self.config["browbeat"]["rerun_type"] == "complete":
+            rerun_range = range(run_iteration, run_iteration + 1)
+
+        for run in rerun_range:
+            for run in range(times):
+                if workload['yoda_type'] == "overcloud":
+                    self.overcloud_workload(workload, run, results_dir, env_setup, conn)
+                elif workload['yoda_type'] == "introspection":
+                    self.introspection_workload(workload, run, results_dir, env_setup, conn)
                 else:
-                    self.logger.info(
-                        "Skipping {} benchmarks enabled: false".format(
-                            benchmark['name']))
-        else:
-            self.logger.error("Config file contains no yoda benchmarks.")
+                    self.logger.error("Could not identify YODA workload!")
+                    exit(1)
+            self.update_scenarios()

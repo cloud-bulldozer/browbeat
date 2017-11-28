@@ -5,14 +5,18 @@
 # each of the benchmarks.  The settings for the benchmarks below
 # are not tuned for best performance analysis either.
 browbeat:
-  results : results/
-  rerun: 1
   cloud_name: openstack
+  rerun: 1
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
-  regather: false
   host: 1.1.1.1
   port: 9200
+  regather: false
   metadata_files:
     - name: hardware-metadata
       file: metadata/hardware-metadata.json
@@ -22,23 +26,13 @@ elasticsearch:
       file: metadata/software-metadata.json
     - name: version
       file: metadata/version.json
-ansible:
-  ssh_config: ansible/ssh-config
-  hosts: ansible/hosts
-  adjust:
-    keystone_token: ansible/browbeat/adjustment-keystone-token.yml
-    neutron_l3: ansible/browbeat/adjustment-l3.yml
-    nova_db: ansible/browbeat/adjustment-db.yml
-    workers: ansible/browbeat/adjustment-workers.yml
-  metadata: ansible/gather/site.yml
 grafana:
-  enabled: false
-  grafana_ip: 1.1.1.1
-  grafana_port: 3000
+  enabled: true
+  host: example.grafana.com
+  port: 3000
   dashboards:
     - openstack-general-system-performance
 perfkit:
-  enabled: true
   sleep_before: 0
   sleep_after: 0
   default:
@@ -50,80 +44,119 @@ perfkit:
     openstack_network: browbeat_private
     timing_measurements: runtimes
     ignore_package_requirements: true
-  benchmarks:
-    - name: aerospike-centos-m1-small
-      enabled: false
-      benchmarks: aerospike
-    - name: block_storage_workload-database-centos-m1-small
-      enabled: false
-      benchmarks: block_storage_workload
-      openstack_volume_size: 20
-      workload_mode: database
-    - name: block_storage_workload-logging-centos-m1-small
-      enabled: false
-      benchmarks: block_storage_workload
-      openstack_volume_size: 20
-      workload_mode: logging
-    - name: block_storage_workload-streaming-centos-m1-small
-      enabled: false
-      benchmarks: block_storage_workload
-      openstack_volume_size: 20
-      workload_mode: streaming
-    - name: cluster_boot-centos-m1-small
-      enabled: false
-      benchmarks: cluster_boot
-      config_override: "cluster_boot.vm_groups.default.vm_count=4"
-    - name: copy_throughput-cp-centos-m1-small
-      enabled: false
-      benchmarks: copy_throughput
-      copy_benchmark_mode: cp
-      openstack_volume_size: 20
-    - name: copy_throughput-dd-centos-m1-small
-      enabled: false
-      benchmarks: copy_throughput
-      copy_benchmark_mode: dd
-      openstack_volume_size: 20
-    - name: copy_throughput-scp-centos-m1-small
-      enabled: false
-      benchmarks: copy_throughput
-      copy_benchmark_mode: scp
-      openstack_volume_size: 20
-    - name: fio-centos-m1-small
-      enabled: false
-      benchmarks: fio
-      openstack_volume_size: 20
-    - name: fio-centos-m1-small-10m
-      enabled: false
-      benchmarks: fio
-      openstack_volume_size: 20
-      fio_generate_scenarios: all
-      fio_runtime: 600
-      fio_working_set_size: 4
-    - name: iperf-centos-m1-small
-      enabled: false
-      benchmarks: iperf
-    - name: mesh_network-centos-m1-small
-      enabled: false
-      benchmarks: mesh_network
-      num_vms: 3
-    - name: netperf-centos-m1-small
-      enabled: false
-      benchmarks: netperf
-    - name: ping-centos-m1-small
-      enabled: false
-      benchmarks: ping
-    - name: redis_ycsb-centos-m1-small
-      enabled: false
-      benchmarks: redis_ycsb
-      ycsb_client_vms: 2
-    - name: scimark2-centos-m1-small
-      enabled: false
-      benchmarks: scimark2
-    - name: sysbench_oltp-centos-m1-small
-      enabled: false
-      benchmarks: sysbench_oltp
-      openstack_volume_size: 20
-    - name: unixbench-centos-m1-small
-      enabled: false
-      benchmarks: unixbench
-      openstack_volume_size: 20
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - workloads: rally/rally-plugins/workloads
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  - name: aerospike-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: aerospike
+  - name: block_storage_workload-database-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: block_storage_workload
+    openstack_volume_size: 20
+    workload_mode: database
+  - name: block_storage_workload-logging-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: block_storage_workload
+    openstack_volume_size: 20
+    workload_mode: logging
+  - name: block_storage_workload-streaming-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: block_storage_workload
+    openstack_volume_size: 20
+    workload_mode: streaming
+  - name: cluster_boot-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: cluster_boot
+    config_override: "cluster_boot.vm_groups.default.vm_count=4"
+  - name: copy_throughput-cp-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: copy_throughput
+    copy_benchmark_mode: cp
+    openstack_volume_size: 20
+  - name: copy_throughput-dd-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: copy_throughput
+    copy_benchmark_mode: dd
+    openstack_volume_size: 20
+  - name: copy_throughput-scp-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: copy_throughput
+    copy_benchmark_mode: scp
+    openstack_volume_size: 20
+  - name: fio-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: fio
+    openstack_volume_size: 20
+  - name: fio-centos-m1-small-10m
+    enabled: false
+    type: perfkit
+    benchmarks: fio
+    openstack_volume_size: 20
+    fio_generate_scenarios: all
+    fio_runtime: 600
+    fio_working_set_size: 4
+  - name: iperf-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: iperf
+  - name: mesh_network-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: mesh_network
+    num_vms: 3
+  - name: netperf-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: netperf
+  - name: ping-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: ping
+  - name: redis_ycsb-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: redis_ycsb
+    ycsb_client_vms: 2
+  - name: scimark2-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: scimark2
+  - name: sysbench_oltp-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: sysbench_oltp
+    openstack_volume_size: 20
+  - name: unixbench-centos-m1-small
+    enabled: false
+    type: perfkit
+    benchmarks: unixbench
+    openstack_volume_size: 20
