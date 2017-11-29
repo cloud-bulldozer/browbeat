@@ -45,13 +45,14 @@ if [ ! -z ${current_build+x} ]
   source $WORKSPACE/tripleo-environments/ci-scripts/internal-functions.sh
   hash=$(get_delorean_hash_from_url $current_build)
   expanded_hash=$(get_expanded_delorean_hash_from_url $current_build)
-  export VARS="$VARS --extra-vars current_build=$hash"
 
   if [[ $RELEASE == *rhos-* ]]
    then
     export RELEASE="$RELEASE" #no mutations needed after latest changes
+    export VARS="$VARS --extra-vars current_build=$current_build"
   else
     export RELEASE="$RELEASE-rhel"
+    export VARS="$VARS --extra-vars current_build=$hash"
   fi
 
 #If we are not in the pipeline downstream builds need to use current-passed-ci
