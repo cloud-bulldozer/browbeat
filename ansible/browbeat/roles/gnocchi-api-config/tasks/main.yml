@@ -12,12 +12,19 @@
   become: true
   template:
     src: gnocchi_wsgi.conf.j2
-    dest: /etc/httpd/conf.d/10-gnocchi_wsgi.conf
+    dest: "{{gnocchi_api_apache_file}}"
     mode: 0640
-    owner: root
-    group: root
+    # (akrzos) Commented out Group as to prevent in Pike incorrect permissions on config file
+    # owner: root
+    # group: root
     backup: true
 
-- name: Restart Gnocchi API (httpd)
+- name: (Newton, Ocata) Restart Gnocchi API (httpd)
   become: true
   command: systemctl restart httpd
+  when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+- name: (Pike) Restart Gnocchi API (httpd)
+  become: true
+  command: docker restart gnocchi_api
+  when: "'Pike' in osp_version['content'] | b64decode"

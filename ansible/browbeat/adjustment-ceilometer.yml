@@ -3,9 +3,12 @@
 # Playbook to adjust Ceilometer configuration items and restart either the
 # notification agent or the collector.
 #
+# Versions tested: Newton, Ocata, Pike
+#
 # Examples:
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64"
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 executor_thread_pool_size=64"
+# ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 executor_thread_pool_size=64 notification_workers=1"
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 restart_notification=true"
 # ansible-playbook -i hosts browbeat/adjustment-ceilometer.yml -e "rabbit_qos_prefetch_count=64 restart_collector=true"
 #
@@ -28,10 +31,28 @@
     # Defaults
     default_rabbit_qos_prefetch_count: 0
     default_executor_thread_pool_size: 64
+    default_notification_workers: 1
     # Each configuration item needs to be a list so it can be merged
     rabbit_qos_prefetch_count_item: []
     executor_thread_pool_size_item: []
+    notification_workers_item: []
   pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
+      become: true
+
+    - name: (Newton, Ocata) Set Config File based on OpenStack Version
+      set_fact:
+        ceilometer_config_file: /etc/ceilometer/ceilometer.conf
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+    - name: (Pike) Set Config File based on OpenStack Version
+      set_fact:
+        ceilometer_config_file: /var/lib/config-data/puppet-generated/ceilometer/etc/ceilometer/ceilometer.conf
+      when: "'Pike' in osp_version['content'] | b64decode"
+
     - name: Set default rabbit_qos_prefetch_count and executor_thread_pool_size
       set_fact:
         ceilometer_configuration:
@@ -41,7 +62,10 @@
           - section: DEFAULT
             option: executor_thread_pool_size
             value: "{{default_executor_thread_pool_size}}"
-      when: rabbit_qos_prefetch_count is undefined and executor_thread_pool_size is undefined
+          - section: notification
+            option: workers
+            value: "{{default_notification_workers}}"
+      when: rabbit_qos_prefetch_count is undefined and executor_thread_pool_size is undefined and notification_workers is undefined
 
     - name: Set rabbit_qos_prefetch_count configuration for Ceilometer
       set_fact:
@@ -59,9 +83,17 @@
             value: "{{executor_thread_pool_size}}"
       when: executor_thread_pool_size is defined
 
+    - name: Set notifications workers configuration for Ceilometer
+      set_fact:
+        notification_workers_item:
+          - section: notification
+            option: workers
+            value: "{{notification_workers}}"
+      when: notification_workers is defined
+
     - name: Merge configuration items
       set_fact:
-        ceilometer_configuration: "{{ceilometer_configuration + rabbit_qos_prefetch_count_item + executor_thread_pool_size_item }}"
+        ceilometer_configuration: "{{ceilometer_configuration + rabbit_qos_prefetch_count_item + executor_thread_pool_size_item + notification_workers_item }}"
 
   roles:
     - ceilometer-config

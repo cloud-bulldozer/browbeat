@@ -5,6 +5,7 @@
     - config_type: "{{group_names[0]}}"
   roles:
     - browbeat/common
+    - browbeat/osp_version
     - browbeat/epel
     - browbeat/collectd-openstack
     - browbeat/rsyslog-install

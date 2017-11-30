@@ -102,6 +102,8 @@ per_process_panels:
         - heat-api
         - heat-api-cfn
         - heat-engine
+        - heat_api_wsgi
+        - heat_api_cfn_ws
     - name: "Ironic"
       processes:
         - ironic-api
@@ -109,6 +111,7 @@ per_process_panels:
         - ironic-inspector
         - dnsmasq-ironic
         - dnsmasq-ironicinspector
+        - ironic_wsgi
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -122,9 +125,6 @@ per_process_panels:
     - name: "Neutron"
       processes:
         - neutron-dhcp-agent
-        - neutron-l3-agent
-        - neutron-metadata-agent
-        - neutron-ns-metadata-proxy
         - neutron-openvswitch-agent
         - neutron-server
     - name: "Nova"
@@ -152,8 +152,10 @@ per_process_panels:
         - swift-container-auditor
         - swift-container-replicator
         - swift-container-server
+        - swift-container-sync
         - swift-container-updater
         - swift-object-auditor
+        - swift-object-reconstructor
         - swift-object-replicator
         - swift-object-server
         - swift-object-updater
@@ -161,6 +163,7 @@ per_process_panels:
     - name: "Zaqar"
       processes:
         - zaqar-server
+        - zaqar_wsgi
     - name: "Collectd"
       processes:
         - collectd
@@ -178,7 +181,6 @@ per_process_panels:
     - name: "Ceilometer"
       processes:
         - ceilometer-agent-notification
-        - ceilometer-api
         - ceilometer-collector
         - ceilometer-polling
         - ceilometer_wsgi
@@ -207,6 +209,7 @@ per_process_panels:
         - dnsmasq
         - haproxy
         - httpd
+        - keepalived
         - memcached
         - mongod
         - mysqld
@@ -234,6 +237,9 @@ per_process_panels:
         - heat-api-cfn
         - heat-api-cloudwatch
         - heat-engine
+        - heat_api_cfn
+        - heat_api_cloudwatch
+        - heat_api_wsgi
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -250,6 +256,8 @@ per_process_panels:
     - name: "Nova"
       processes:
         - nova-api
+        - nova-api-metadata
+        - nova_api_wsgi
         - nova-conductor
         - nova-consoleauth
         - nova-novncproxy
@@ -420,6 +428,7 @@ per_process_panels:
         - dnsmasq
         - haproxy
         - httpd
+        - keepalived
         - memcached
         - mongod
         - mysqld
@@ -447,6 +456,9 @@ per_process_panels:
         - heat-api-cfn
         - heat-api-cloudwatch
         - heat-engine
+        - heat_api_cfn
+        - heat_api_cloudwatch
+        - heat_api_wsgi
     - name: "Ironic"
       processes:
         - ironic-api
@@ -454,6 +466,7 @@ per_process_panels:
         - ironic-inspector
         - dnsmasq-ironic
         - dnsmasq-ironicinspector
+        - ironic_wsgi
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -475,6 +488,8 @@ per_process_panels:
     - name: "Nova"
       processes:
         - nova-api
+        - nova-api-metadata
+        - nova_api_wsgi
         - nova-cert
         - nova-compute
         - nova-conductor
@@ -509,9 +524,11 @@ per_process_panels:
         - swift-container-auditor
         - swift-container-replicator
         - swift-container-server
+        - swift-container-sync
         - swift-container-updater
         - swift-object-auditor
         - swift-object-expirer
+        - swift-object-reconstructor
         - swift-object-replicator
         - swift-object-server
         - swift-object-updater
@@ -519,6 +536,7 @@ per_process_panels:
     - name: "Zaqar"
       processes:
         - zaqar-server
+        - zaqar_wsgi
     - name: "Collectd"
       processes:
         - collectd

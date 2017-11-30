@@ -3,12 +3,13 @@
 # Configure nova.conf tasks
 #
 
-- name: Configure nova.conf
+- name: (Newton, Ocata, Pike) Configure nova.conf
   become: true
   ini_file:
-    dest: /etc/nova/nova.conf
+    dest: "{{nova_config_file}}"
     mode: 0640
-    group: nova
+    # (akrzos) Commented out Group as to prevent in Pike incorrect permissions on config file
+    # group: nova
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
@@ -16,7 +17,7 @@
   with_items:
     - "{{nova_configuration}}"
 
-- name: Restart Nova Services
+- name: (Newton, Ocata) Restart Nova Services
   become: true
   service:
     name: "{{ item }}"
@@ -28,4 +29,11 @@
     - openstack-nova-novncproxy
     - openstack-nova-consoleauth
     - httpd
-  when: restart_nova
+  when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and (restart_nova)"
+
+- name: (Pike) Restart Nova Scheduler Container
+  become: true
+  command: "docker restart {{item}}"
+  with_items:
+    - nova_scheduler
+  when: "('Pike' in osp_version['content'] | b64decode) and (restart_nova)"

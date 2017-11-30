@@ -38,6 +38,7 @@
   vars:
     config_type: controller
   roles:
+    - { role: osp_version }
     - { role: common, when: collectd_controller }
     - { role: epel, when: collectd_controller }
     - { role: repo }
@@ -110,6 +111,7 @@
   vars:
     config_type: compute
   roles:
+    - { role: osp_version }
     - { role: common, when: collectd_compute }
     - { role: epel, when: collectd_compute }
     - { role: repo }

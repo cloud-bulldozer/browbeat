@@ -2,9 +2,11 @@
 #
 # Playbook to adjust Gnocchi config options
 #
+# Versions tested: Newton, Ocata, Pike
+#
 # Example:
 #
-# ansible-playbook -i hosts browbeat/adjustment-gnocchi.yml -e 'metricd_workers=12 metric_processing_delay=60 processing_replicas=3'
+# ansible-playbook -i hosts browbeat/adjustment-gnocchi.yml -e 'metricd_workers=12 metric_processing_delay=30 processing_replicas=3'
 #
 
 - hosts: controller
@@ -13,38 +15,104 @@
   vars_files:
     - ../install/group_vars/all.yml
   vars:
-    metricd_workers: 12
-    metric_processing_delay: 60
-    processing_replicas: 3
-  tasks:
-    - name: Configure Gnocchi Options
+    # Create initial blank configuration list
+    gnocchi_configuration: []
+    # Pike Defaults
+    default_metricd_workers: 12
+    default_metric_processing_delay: 30
+    default_processing_replicas: 3
+    # Each configuration item needs to be a list so it can be merged
+    metricd_workers_item: []
+    metric_processing_delay_item: []
+    processing_replicas_item: []
+  pre_tasks:
+    - name: Get OSP Version
+      slurp:
+        src: "/etc/rhosp-release"
+      register: osp_version
       become: true
-      ini_file:
-        dest: /etc/gnocchi/gnocchi.conf
-        mode: 0640
-        group: gnocchi
-        section: "{{item.section}}"
-        option: "{{item.option}}"
-        value: "{{item.value}}"
-        backup: yes
-      with_items:
-        # Newton, Ocata, Pike
-        - section: metricd
-          option: workers
-          value: "{{metricd_workers}}"
-        # Newton
-        - section: storage
-          option: metric_processing_delay
-          value: "{{metric_processing_delay}}"
-        # Ocata, Pike
-        - section: metricd
-          option: metric_processing_delay
-          value: "{{metric_processing_delay}}"
-        # Pike
-        - section: metricd
-          option: processing_replicas
-          value: "{{processing_replicas}}"
 
-    - name: Restart openstack-gnocchi-metricd
-      become: true
-      command: systemctl restart openstack-gnocchi-metricd
+    - name: (Newton, Ocata) Set Config File based on OpenStack Version
+      set_fact:
+        gnocchi_config_file: /etc/gnocchi/gnocchi.conf
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+    - name: (Pike) Set Config File based on OpenStack Version
+      set_fact:
+        gnocchi_config_file: /var/lib/config-data/puppet-generated/gnocchi/etc/gnocchi/gnocchi.conf
+      when: "'Pike' in osp_version['content'] | b64decode"
+
+    - name: (Newton) Set default metricd_workers and metric_processing_delay
+      set_fact:
+        gnocchi_configuration:
+          - section: metricd
+            option: workers
+            value: "{{default_metricd_workers}}"
+          - section: storage
+            option: metric_processing_delay
+            value: "{{default_metric_processing_delay}}"
+      when: "'Newton' in osp_version['content'] | b64decode and metricd_workers is undefined and metric_processing_delay is undefined"
+
+    - name: (Ocata) Set default metricd_workers and metric_processing_delay
+      set_fact:
+        gnocchi_configuration:
+          - section: metricd
+            option: workers
+            value: "{{default_metricd_workers}}"
+          - section: metricd
+            option: metric_processing_delay
+            value: "{{default_metric_processing_delay}}"
+      when: "'Ocata' in osp_version['content'] | b64decode and metricd_workers is undefined and metric_processing_delay is undefined"
+
+    - name: (Pike) Set default metricd_workers and metric_processing_delay
+      set_fact:
+        gnocchi_configuration:
+          - section: metricd
+            option: workers
+            value: "{{default_metricd_workers}}"
+          - section: metricd
+            option: metric_processing_delay
+            value: "{{default_metric_processing_delay}}"
+          - section: metricd
+            option: processing_replicas
+            value: "{{default_processing_replicas}}"
+      when: "'Pike' in osp_version['content'] | b64decode and metricd_workers is undefined and metric_processing_delay is undefined and processing_replicas is undefined"
+
+    - name: Set metricd_workers configuration
+      set_fact:
+        metricd_workers_item:
+          - section: metricd
+            option: workers
+            value: "{{metricd_workers}}"
+      when: metricd_workers is defined
+
+    - name: (Newton) Set metric_processing_delay configuration
+      set_fact:
+        metric_processing_delay_item:
+          - section: storage
+            option: metric_processing_delay
+            value: "{{metric_processing_delay}}"
+      when: "(metric_processing_delay is defined and 'Newton' in osp_version['content'] | b64decode)"
+
+    - name: (Ocata, Pike) Set metric_processing_delay configuration
+      set_fact:
+        metric_processing_delay_item:
+          - section: metricd
+            option: metric_processing_delay
+            value: "{{metric_processing_delay}}"
+      when: "(metric_processing_delay is defined and ('Ocata' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode))"
+
+    - name: Set processing_replicas configuration
+      set_fact:
+        processing_replicas_item:
+          - section: metricd
+            option: processing_replicas
+            value: "{{processing_replicas}}"
+      when: processing_replicas is defined
+
+    - name: Merge configuration items
+      set_fact:
+        gnocchi_configuration: "{{gnocchi_configuration + metricd_workers_item + metric_processing_delay_item + processing_replicas_item }}"
+
+  roles:
+    - gnocchi-config

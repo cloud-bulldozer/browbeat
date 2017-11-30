@@ -2,6 +2,8 @@
 #
 # Playbook to install and enable atd
 #
+# Versions tested: Newton, Ocata, Pike
+#
 # This allows you to syncohize a script/command across multiple machines.
 # Example: Synconhized restarting of ceilometer polling across computes
 # and controllers.

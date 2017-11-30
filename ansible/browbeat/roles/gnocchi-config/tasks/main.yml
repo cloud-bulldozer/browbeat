@@ -1,0 +1,28 @@
+---
+#
+# Tasks to adjust Gnocchi configuration items
+#
+
+- name: Configure gnocchi.conf
+  become: true
+  ini_file:
+    dest: "{{gnocchi_config_file}}"
+    mode: 0640
+    # (akrzos) Commented out Group as to prevent in Pike incorrect permissions on config file
+    # group: gnocchi
+    section: "{{item.section}}"
+    option: "{{item.option}}"
+    value: "{{item.value}}"
+    backup: yes
+  with_items:
+    - "{{gnocchi_configuration}}"
+
+- name: (Newton, Ocata) Restart Gnocchi Metricd
+  become: true
+  command: systemctl restart openstack-gnocchi-metricd
+  when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+
+- name: (Pike) Restart Gnocchi Metricd
+  become: true
+  command: docker restart gnocchi_metricd
+  when: "'Pike' in osp_version['content'] | b64decode"

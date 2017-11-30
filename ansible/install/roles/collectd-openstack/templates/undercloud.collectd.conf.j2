@@ -223,21 +223,21 @@ PreCacheChain "PreCache"
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
   # Docker (OpenStack Installed)
-  ProcessMatch "docker-registry" "registry.+serve.+/etc/docker-distribution"            # -10,11
-  ProcessMatch "dockerd-current" "dockerd-current"                                      # 11
-  ProcessMatch "docker-containerd-current" "docker-containerd-current"                  # 11
+  ProcessMatch "docker-registry" "registry.+serve.+/etc/docker-distribution"            # 11,12
+  ProcessMatch "dockerd-current" "dockerd-current"                                      # 11,12
+  ProcessMatch "docker-containerd-current" "docker-containerd-current"                  # 11,12
 
   # Everything Else (OpenStack Installed)
   # (Processes displayed under "Everything Else" on Grafana Dashboards)
-  Process "httpd"                                                                       # 10,11
-  Process "memcached"                                                                   # 10,11
-  Process "mongod"                                                                      # 10,11
-  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11
-  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11
+  Process "httpd"                                                                       # 10,11,12
+  Process "memcached"                                                                   # 10,11,12
+  Process "mongod"                                                                      # 10,11,-12
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11,12
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11,12
 
   # Glance (OpenStack Installed)
-  ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11
-  ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11
+  ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11,12
+  ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11,-12
 
   # Gnocchi (OpenStack Installed)
   ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd:.*master"                      # 11
@@ -249,69 +249,72 @@ PreCacheChain "PreCache"
   ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11
 
   # Heat (OpenStack Installed)
-  ProcessMatch "heat-api" "python.+heat-api"                                            # 10,11
-  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 10,11
-  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 10,11
+  ProcessMatch "heat-api" "python.+heat-api"                                            # 10,11,-12
+  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 10,11,-12
+  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 10,11,12
+  ProcessMatch "heat_api_wsgi" "heat_api_wsgi.*-DFOREGROUND"                            # 12
+  ProcessMatch "heat_api_cfn_ws" "heat_api_cfn_ws.*-DFOREGROUND"                        # 12
 
   # Ironic (OpenStack Installed)
-  ProcessMatch "ironic-api" "python.+ironic-api"                                        # 10,11
-  ProcessMatch "ironic-conductor" "python.+ironic-conductor"                            # 10,11
-  ProcessMatch "ironic-inspector" "python.+ironic-inspector"                            # 10,11
-  ProcessMatch "dnsmasq-ironic" "dnsmasq.+/etc/dnsmasq-ironic.conf"                     # 10,11
-  ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 10,11
+  ProcessMatch "ironic-api" "python.+ironic-api"                                        # 10,11,-12
+  ProcessMatch "ironic-conductor" "python.+ironic-conductor"                            # 10,11,12
+  ProcessMatch "ironic-inspector" "python.+ironic-inspector"                            # 10,11,12
+  ProcessMatch "dnsmasq-ironic" "dnsmasq.+/etc/dnsmasq-ironic.conf"                     # 10,11,12
+  ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 10,11,12
+  ProcessMatch "ironic_wsgi" "ironic_wsgi.*-DFOREGROUND"                                # 12
 
   # Keystone (OpenStack Installed)
-  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11
-  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11
+  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11,12
+  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11,12
   # Starting Ocata, fernet tokens are default thus token_flush not needed
-  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11
+  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11,-12
 
   # Mistral (Openstack Installed)
-  ProcessMatch "mistral-server-api" "python.+mistral-server.+api"                       # 10,11
-  ProcessMatch "mistral-server-engine" "python.+mistral-server.+engine"                 # 10,11
-  ProcessMatch "mistral-server-executor" "python.+mistral-server.+executor"             # 10,11
+  ProcessMatch "mistral-server-api" "python.+mistral-server.+api"                       # 10,11,12
+  ProcessMatch "mistral-server-engine" "python.+mistral-server.+engine"                 # 10,11,12
+  ProcessMatch "mistral-server-executor" "python.+mistral-server.+executor"             # 10,11,12
 
   # Neutron (OpenStack Installed)
-  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11
-  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # -10,-11
-  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # -10,-11
-  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # -10,-11
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11
-  ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11
+  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11,12
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12
+  ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11,12
 
   # Nova (OpenStack Installed)
-  ProcessMatch "nova-api" "python.+nova-api"                                            # 10,11
-  ProcessMatch "nova-cert" "python.+nova-cert"                                          # 10,11
-  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 10,11
-  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11
-  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11
-  ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11
+  ProcessMatch "nova-api" "python.+nova-api"                                            # 10,11,12
+  ProcessMatch "nova-cert" "python.+nova-cert"                                          # 10,11,-12
+  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 10,11,12
+  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11,12
+  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11,12
+  ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11,12
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11
-  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12
+  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12
 
   # Panko (OpenStack Installed)
   ProcessMatch "panko_wsgi" "panko_wsgi.*-DFOREGROUND"                                  # 11
 
   # Swift (OpenStack Installed)
-  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,-11
-  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11
-  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,-11
-  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11
-  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,-11
-  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,-11
-  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11
-  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11
-  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,-11
-  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,-11
-  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11
-  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11
-  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,-11,-12
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11,12
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,-11,-12
+  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11,12
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,-11,-12
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,-11,-12
+  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11,12
+  ProcessMatch "swift-container-sync" "python.+swift-container-sync"                    # 12
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11,12
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,-11,-12
+  ProcessMatch "swift-object-reconstructor" "python.+swift-object-reconstructor"        # 12
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,-11,-12
+  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11,12
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11,12
+  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11,12
 
   # Zaqar (Openstack Installed)
-  ProcessMatch "zaqar-server" "python.+zaqar-server"                                    # 10,11
+  ProcessMatch "zaqar-server" "python.+zaqar-server"                                    # 10,11,12
+  ProcessMatch "zaqar_wsgi" "zaqar_wsgi.*-DFOREGROUND"                                  # 12
 </Plugin>
 
 {%if rabbitmq_undercloud_collectd_plugin %}
@@ -535,7 +538,7 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
-  # Glance Registry does not exist in Ocata (OSP11)
+  # Glance Registry does not exist in Ocata or Pike
   <File "/var/log/glance/registry.log">
     Instance "glance-registry"
     <Match>
@@ -647,6 +650,7 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  # Newton, Ocata
   <File "/var/log/heat/heat-api-cfn.log">
     Instance "heat-api-cfn"
     <Match>
@@ -672,7 +676,60 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+  # Pike
+  <File "/var/log/heat/heat_api_cfn.log">
+    Instance "heat-api-cfn"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  # Newton, Ocata
   <File "/var/log/heat/heat-api.log">
+    Instance "heat-api"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  # Pike
+  <File "/var/log/heat/heat_api.log">
     Instance "heat-api"
     <Match>
       Regex " ERROR "
@@ -772,6 +829,15 @@ PreCacheChain "PreCache"
       Instance "info"
     </Match>
 {% endif %}
+  </File>
+  <File "/var/log/httpd/ironic_wsgi_error.log">
+    Instance "ironic-api-wsgi"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
   </File>
 
   <File "/var/log/ironic-inspector/ironic-inspector.log">
@@ -1330,6 +1396,40 @@ PreCacheChain "PreCache"
       Instance "info"
     </Match>
 {% endif %}
+  </File>
+  <File "/var/log/zaqar/zaqar-server.log">
+    Instance "zaqar-server"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+  <File "/var/log/httpd/zaqar_wsgi_error.log">
+    Instance "zaqar-wsgi-api"
+    <Match>
+      Regex ":error"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
   </File>
 
 </Plugin>
