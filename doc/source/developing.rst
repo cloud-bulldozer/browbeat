@@ -324,12 +324,12 @@ Create a vlan10 for external network access
 You can now access the overcloud's external/public api endpoints from your local machine and
 install Browbeat for benchmarking against it.
 
-Setup Browbeat with Rally against your Quickstart Cloud
--------------------------------------------------------
+Setup Browbeat against your Quickstart Cloud
+--------------------------------------------
 
 After you have your Quickstart cloud up and the networking connectivity working, you will want
-to run Browbeat against it so you can begin contributing.  Follow the next commands in order to
-setup Browbeat with Rally against your local quickstart cloud.
+to run Browbeat against it so you can begin contributing.  Simply run the script in the utils folder
+to install Browbeat for usage on the new Tripleo Quickstart cloud.
 
 .. code-block:: none
 
@@ -343,72 +343,40 @@ setup Browbeat with Rally against your local quickstart cloud.
   Resolving deltas: 100% (4963/4963), done.
   Checking connectivity... done.
   [akrzos@bithead ~]$ cd browbeat/
-  [akrzos@bithead browbeat]$ virtualenv .browbeat-venv
-  New python executable in /home/akrzos/browbeat/.browbeat-venv/bin/python2
-  Also creating executable in /home/akrzos/browbeat/.browbeat-venv/bin/python
-  Installing setuptools, pip, wheel...done.
-  [akrzos@bithead browbeat]$ virtualenv .rally-venv
-  New python executable in /home/akrzos/browbeat/.rally-venv/bin/python2
-  Also creating executable in /home/akrzos/browbeat/.rally-venv/bin/python
-  Installing setuptools, pip, wheel...done.
-  [akrzos@bithead browbeat]$ . .rally-venv/bin/activate
-  (.rally-venv) [akrzos@bithead browbeat]$ pip install rally==0.9.1 ansible==2.3.2.0 elasticsearch
+  [akrzos@bithead browbeat]$ ./utils/oooq-browbeat-install.sh
+  Installing Browbeat on localhost
   ...(Truncated)
-  (.rally-venv) [akrzos@bithead browbeat]$ rally-manage db recreate
-  (.rally-venv) [akrzos@bithead browbeat]$ scp -F ~/.quickstart/ssh.config.ansible stack@undercloud:overcloudrc .
-  Warning: Permanently added '127.0.0.2' (ECDSA) to the list of known hosts.
-  Warning: Permanently added 'undercloud' (ECDSA) to the list of known hosts.
-  overcloudrc                                                                        100%  620     0.6KB/s   00:00
-  Killed by signal 1.
-  (.rally-venv) [akrzos@bithead browbeat]$ . overcloudrc
-  (.rally-venv) [akrzos@bithead browbeat]$ rally deployment create --fromenv --name overcloud
-  2017-09-21 14:51:41.011 22178 INFO rally.deployment.engine [-] Deployment 41c2e7da-2d30-4e21-acea-6234ec0e73e8 | Starting:  OpenStack cloud deployment.
-  2017-09-21 14:51:41.022 22178 INFO rally.deployment.engine [-] Deployment 41c2e7da-2d30-4e21-acea-6234ec0e73e8 | Completed: OpenStack cloud deployment.
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  | uuid                                 | created_at                 | name      | status           | active |
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  | 41c2e7da-2d30-4e21-acea-6234ec0e73e8 | 2017-09-21 18:51:41.006885 | overcloud | deploy->finished |        |
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  Using deployment: 41c2e7da-2d30-4e21-acea-6234ec0e73e8
-  ...(Truncated)
-  (.rally-venv) [akrzos@bithead browbeat]$ rally deployment list
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  | uuid                                 | created_at                 | name      | status           | active |
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  | 41c2e7da-2d30-4e21-acea-6234ec0e73e8 | 2017-09-21 18:51:41.006885 | overcloud | deploy->finished | *      |
-  +--------------------------------------+----------------------------+-----------+------------------+--------+
-  (.rally-venv) [akrzos@bithead browbeat]$ deactivate
+  ~/code/browbeat-refactor/browbeat
   [akrzos@bithead browbeat]$ . .browbeat-venv/bin/activate
-  (.browbeat-venv) [akrzos@bithead browbeat]$ pip install -Ur requirements.txt
-  ...(Truncated)
-  (.browbeat-venv) [akrzos@bithead browbeat]$ cp browbeat-config.yaml browbeat-quickstart.yml
-  (.browbeat-venv) [akrzos@bithead browbeat]$ vi browbeat-quickstart.yml
-  (.browbeat-venv) [akrzos@bithead browbeat]$ ./browbeat.py -s browbeat-quickstart.yml rally
-  2017-09-21 18:55:51,231 - browbeat.tools -    INFO - Validating the configuration file passed by the user
-  2017-09-21 18:55:51,289 - browbeat.tools -    INFO - Validation successful
-  2017-09-21 18:55:51,289 - browbeat -    INFO - Browbeat test suite kicked off
-  2017-09-21 18:55:51,289 - browbeat -    INFO - Browbeat UUID: 970b8bee-72ec-489e-a7b4-d70e0ee4fb42
-  2017-09-21 18:55:51,289 - browbeat -    INFO - Running workload(s): rally
-  2017-09-21 18:55:51,290 - browbeat.rally -    INFO - Starting Rally workloads
-  2017-09-21 18:55:51,290 - browbeat.rally -    INFO - Benchmark: authenticate
-  2017-09-21 18:55:51,290 - browbeat.rally -    INFO - Running Scenario: authentic-keystone
-  2017-09-21 18:56:17,812 - browbeat.rally -    INFO - Generating Rally HTML for task_id : 66c81969-daae-4e06-8124-8a73bee7084c
-  2017-09-21 18:56:19,488 - browbeat.rally -    INFO - Current number of Rally scenarios executed:1
-  2017-09-21 18:56:19,488 - browbeat.rally -    INFO - Current number of Rally tests executed:1
-  2017-09-21 18:56:19,489 - browbeat.rally -    INFO - Current number of Rally tests passed:1
-  2017-09-21 18:56:19,489 - browbeat.rally -    INFO - Current number of Rally test failures:0
-  2017-09-21 18:56:20,370 - browbeat -    INFO - Saved browbeat result summary to results/20170921-185551.report
-  2017-09-21 18:56:20,370 - browbeat.workloadbase -    INFO - Total scenarios executed:1
-  2017-09-21 18:56:20,371 - browbeat.workloadbase -    INFO - Total tests executed:1
-  2017-09-21 18:56:20,371 - browbeat.workloadbase -    INFO - Total tests passed:1
-  2017-09-21 18:56:20,371 - browbeat.workloadbase -    INFO - Total tests failed:0
-  2017-09-21 18:56:20,371 - browbeat -    INFO - Browbeat finished successfully, UUID: 970b8bee-72ec-489e-a7b4-d70e0ee4fb42
-  (.browbeat-venv) [akrzos@bithead browbeat]$
-
-Edit your browbeat-config and validate the following:
-
-* Elastic Indexing configuration
-* Scenarios you want to run are setup and set to a low times/concurrency
+  (.browbeat-venv) [akrzos@bithead browbeat]$ ./browbeat.py -s conf/quickstart.yml rally
+  2017-12-13 15:46:34,648 - browbeat.config -    INFO - Config conf/quickstart.yml validated
+  2017-12-13 15:46:34,655 - browbeat.config -    INFO - Workload ping-m1-tiny-centos validated as perfkit
+  2017-12-13 15:46:34,657 - browbeat.config -    INFO - Workload quickstart-shaker-l2 validated as shaker
+  2017-12-13 15:46:34,665 - browbeat.config -    INFO - Workload quickstart-rally validated as rally
+  2017-12-13 15:46:34,665 - browbeat -    INFO - Browbeat test suite kicked off
+  2017-12-13 15:46:34,665 - browbeat -    INFO - Browbeat UUID: 8e869626-a596-4ec7-b0b1-ac7f2bf915a7
+  2017-12-13 15:46:34,666 - browbeat -    INFO - Running workload(s): rally
+  2017-12-13 15:46:34,666 - browbeat -    INFO - perfkit workload ping-m1-tiny-centos disabled via cli
+  2017-12-13 15:46:34,666 - browbeat -    INFO - shaker workload quickstart-shaker-l2 disabled via cli
+  2017-12-13 15:46:34,666 - browbeat -    INFO - rally workload quickstart-rally is enabled
+  2017-12-13 15:46:34,666 - browbeat.rally -    INFO - Running Rally workload: quickstart-rally
+  2017-12-13 15:46:34,666 - browbeat.rally -    INFO - Running Scenario: authentic-keystone
+  2017-12-13 15:46:34,669 - browbeat.rally -    INFO - Running with scenario_args: {'concurrency': 1, 'times': 1}
+  2017-12-13 15:47:08,665 - browbeat.rally -    INFO - Generating Rally HTML for task_id : 399b90d9-5bc2-431c-b7c9-b7782fef2dde
+  2017-12-13 15:47:10,224 - browbeat.rally -    INFO - Running Scenario: create-list-network
+  2017-12-13 15:47:10,226 - browbeat.rally -    INFO - Running with scenario_args: {'concurrency': 1, 'times': 1}
+  2017-12-13 15:47:45,781 - browbeat.rally -    INFO - Generating Rally HTML for task_id : 544b7cc4-b15c-4308-8f1b-158f06f1b002
+  2017-12-13 15:47:47,414 - browbeat.rally -    INFO - Running Scenario: boot-list-cirros
+  2017-12-13 15:47:47,417 - browbeat.rally -    INFO - Running with scenario_args: {'flavor_name': 'm1.xtiny', 'concurrency': 1, 'image_name': 'cirros', 'times': 1}
+  2017-12-13 15:53:42,181 - browbeat.rally -    INFO - Generating Rally HTML for task_id : 52c348d4-edba-4a3e-bfd9-48ee97cd6613
+  2017-12-13 15:53:44,566 - browbeat.workloadbase -    INFO - Total scenarios executed:3
+  2017-12-13 15:53:44,566 - browbeat.workloadbase -    INFO - Total tests executed:3
+  2017-12-13 15:53:44,566 - browbeat.workloadbase -    INFO - Total tests passed:3
+  2017-12-13 15:53:44,566 - browbeat.workloadbase -    INFO - Total tests failed:0
+  2017-12-13 15:53:44,568 - browbeat -    INFO - Saved browbeat result summary to /home/akrzos/code/browbeat-refactor/browbeat/results/20171213-154634.report
+  2017-12-13 15:53:44,568 - browbeat -    INFO - Browbeat finished successfully, UUID: 8e869626-a596-4ec7-b0b1-ac7f2bf915a7
+  (.browbeat-venv) [akrzos@bithead browbeat]$ ls results/
+  20171213-154634  20171213-154634.report  browbeat-Rally-run.log
 
 Troubleshooting
 ---------------
