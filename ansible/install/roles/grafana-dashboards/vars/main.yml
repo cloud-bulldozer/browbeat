@@ -59,6 +59,9 @@ per_process_panels:
   # This dashboard should only contain OpenStack Undercloud Node processes
   #
   OpenStack-Undercloud:
+    - name: "Ansible"
+      processes:
+        - ansible-playbook
     - name: "Aodh"
       processes:
         - aodh-evaluator
