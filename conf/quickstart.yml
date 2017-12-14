@@ -1,0 +1,89 @@
+# Basic set of benchmarks to validate on Tripleo Quickstart cloud
+browbeat:
+  cloud_name: quickstart
+  rerun: 1
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  regather: false
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+grafana:
+  enabled: true
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.tiny-centos
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins: []
+shaker:
+  server: 172.21.0.2
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  - name: ping-m1-tiny-centos
+    enabled: true
+    type: perfkit
+    benchmarks: ping
+  - name: quickstart-shaker-l2
+    enabled: true
+    type: shaker
+    density: 1
+    compute: 1
+    progression: linear
+    time: 60
+    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+  - name: quickstart-rally
+    enabled: true
+    type: rally
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+      - name: create-list-network
+        enabled: true
+        file: rally/neutron/neutron-create-list-network-cc.yml
+      - name: boot-list-cirros
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-list-cc.yml
+        flavor_name: m1.xtiny
