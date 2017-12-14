@@ -89,7 +89,7 @@ class Rally(workloadbase.WorkloadBase):
         self.scenario_count += 1
 
     def get_task_id(self, test_name):
-        cmd = "grep \"rally task results\" {}.log | awk '{{print $4}}'".format(
+        cmd = "grep \"rally task report [a-z0-9\-]* --out\" {}.log | awk '{{print $4}}'".format(
             test_name)
         return self.tools.run_cmd(cmd)['stdout']
 

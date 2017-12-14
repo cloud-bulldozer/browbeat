@@ -12,14 +12,13 @@
 
 import uuid
 
-from rally.common.i18n import _
+from rally.plugins.openstack import osclients
 from rally.plugins.openstack import scenario
 from rally.common import logging
 from rally.task import atomic
 from rally.task import context
 from rally.task import validation
 from rally import consts
-from rally import osclients
 
 
 LOG = logging.getLogger(__name__)
@@ -129,9 +128,9 @@ class GnocchiScenario(scenario.OpenStackScenario):
         return gnocchi_client.status.get(detailed)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.archive_policy_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.archive_policy_list", platform="openstack")
 class ArchivePolicyList(GnocchiScenario):
 
     def run(self):
@@ -140,9 +139,9 @@ class ArchivePolicyList(GnocchiScenario):
         self._archive_policy_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.archive_policy_rule_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.archive_policy_rule_list", platform="openstack")
 class ArchivePolicyRuleList(GnocchiScenario):
 
     def run(self):
@@ -151,9 +150,9 @@ class ArchivePolicyRuleList(GnocchiScenario):
         self._archive_policy_rule_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.capabilities_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.capabilities_list", platform="openstack")
 class CapabilitiesList(GnocchiScenario):
 
     def run(self):
@@ -162,9 +161,9 @@ class CapabilitiesList(GnocchiScenario):
         self._capabilities_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_archive_policy')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_archive_policy", platform="openstack")
 class CreateArchivePolicy(GnocchiScenario):
 
     def run(self):
@@ -176,9 +175,9 @@ class CreateArchivePolicy(GnocchiScenario):
         self._create_archive_policy(gnocchi_client, name, definition, aggregation_methods)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_delete_archive_policy", platform="openstack")
 class CreateDeleteArchivePolicy(GnocchiScenario):
 
     def run(self):
@@ -191,9 +190,9 @@ class CreateDeleteArchivePolicy(GnocchiScenario):
         self._delete_archive_policy(gnocchi_client, name)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_archive_policy_rule')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_archive_policy_rule", platform="openstack")
 class CreateArchivePolicyRule(GnocchiScenario):
 
     def run(self):
@@ -205,9 +204,9 @@ class CreateArchivePolicyRule(GnocchiScenario):
         self._create_archive_policy_rule(gnocchi_client, name, metric_pattern, archive_policy_name)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_delete_archive_policy_rule')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_delete_archive_policy_rule", platform="openstack")
 class CreateDeleteArchivePolicyRule(GnocchiScenario):
 
     def run(self):
@@ -220,9 +219,9 @@ class CreateDeleteArchivePolicyRule(GnocchiScenario):
         self._delete_archive_policy_rule(gnocchi_client, name)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_metric')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_metric", platform="openstack")
 class CreateMetric(GnocchiScenario):
 
     def run(self, metric_name=None, archive_policy_name=None, unit=None, resource_id=None):
@@ -231,9 +230,9 @@ class CreateMetric(GnocchiScenario):
         self._create_metric(gnocchi_client, metric_name, archive_policy_name, unit, resource_id)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_delete_metric')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_delete_metric", platform="openstack")
 class CreateDeleteMetric(GnocchiScenario):
 
     def run(self, metric_name=None, archive_policy_name=None, unit=None, resource_id=None):
@@ -244,9 +243,9 @@ class CreateDeleteMetric(GnocchiScenario):
         self._delete_metric(gnocchi_client, metric['id'])
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_resource')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_resource", platform="openstack")
 class CreateResource(GnocchiScenario):
 
     def run(self, resource_type):
@@ -255,9 +254,9 @@ class CreateResource(GnocchiScenario):
         self._create_resource(gnocchi_client, resource_type)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_delete_resource')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_delete_resource", platform="openstack")
 class CreateDeleteResource(GnocchiScenario):
 
     def run(self, resource_type):
@@ -267,9 +266,9 @@ class CreateDeleteResource(GnocchiScenario):
         self._delete_resource(gnocchi_client, resource['id'])
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_resource_type')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_resource_type", platform="openstack")
 class CreateResourceType(GnocchiScenario):
 
     def run(self):
@@ -278,9 +277,9 @@ class CreateResourceType(GnocchiScenario):
         self._create_resource_type(gnocchi_client, self.generate_random_name())
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.create_delete_resource_type')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.create_delete_resource_type", platform="openstack")
 class CreateDeleteResourceType(GnocchiScenario):
 
     def run(self):
@@ -290,10 +289,10 @@ class CreateDeleteResourceType(GnocchiScenario):
         self._delete_resource_type(gnocchi_client, resource_type['name'])
 
 
-@validation.required_contexts("browbeat_gnocchi_metric_list")
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.metric_aggregation')
+@validation.add("required_contexts", contexts=("browbeat_gnocchi_metric_list"))
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.metric_aggregation", platform="openstack")
 class MetricAggregation(GnocchiScenario):
 
     def run(self, aggregation=None, refresh=False):
@@ -306,10 +305,10 @@ class MetricAggregation(GnocchiScenario):
                                  aggregation, refresh)
 
 
-@validation.required_contexts("browbeat_gnocchi_metric_list")
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.metric_get_measures')
+@validation.add("required_contexts", contexts=("browbeat_gnocchi_metric_list"))
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.metric_get_measures", platform="openstack")
 class MetricGetMeasures(GnocchiScenario):
 
     def run(self, aggregation=None, refresh=False):
@@ -322,9 +321,9 @@ class MetricGetMeasures(GnocchiScenario):
                                   aggregation, refresh)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.metric_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.metric_list", platform="openstack")
 class MetricList(GnocchiScenario):
 
     def run(self):
@@ -333,9 +332,9 @@ class MetricList(GnocchiScenario):
         self._metric_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.resource_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.resource_list", platform="openstack")
 class ResourceList(GnocchiScenario):
 
     def run(self):
@@ -344,9 +343,9 @@ class ResourceList(GnocchiScenario):
         self._resource_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.resource_type_list')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.resource_type_list", platform="openstack")
 class ResourceTypeList(GnocchiScenario):
 
     def run(self):
@@ -355,9 +354,9 @@ class ResourceTypeList(GnocchiScenario):
         self._resource_type_list(gnocchi_client)
 
 
-@validation.required_services(consts.Service.GNOCCHI)
-@validation.required_openstack(admin=True)
-@scenario.configure(name='BrowbeatGnocchi.status_get')
+@validation.add("required_services", services=[consts.Service.GNOCCHI])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(name="BrowbeatGnocchi.status_get", platform="openstack")
 class StatusGet(GnocchiScenario):
 
     def run(self, detailed):
@@ -381,7 +380,6 @@ class BrowbeatGnocchiMetricList(context.Context):
         }
     }
 
-    @logging.log_task_wrapper(LOG.info, _("Enter context: `browbeat_gnocchi_metric_list`"))
     def setup(self):
         gnocchi_client = osclients.Clients(self.context["admin"]["credential"]).gnocchi()
         if self.config.get('all'):
@@ -394,6 +392,5 @@ class BrowbeatGnocchiMetricList(context.Context):
             self.context['metric_ids'] = [x['id'] for x in gnocchi_client.metric.list()]
         LOG.debug('Total metric_ids: {}'.format(len(self.context['metric_ids'])))
 
-    @logging.log_task_wrapper(LOG.info, _("Exit context: `browbeat_gnocchi_metric_list`"))
     def cleanup(self):
         pass

@@ -1,0 +1,143 @@
+# Stress test designed for telemetry services (ceilometer, gnocchi) by
+# booting persisting xtiny cirros instances. It boots 100 each iteration
+# with a concurrency of 20 instances. A total of 1000 instances are
+# booted. The instances have a volume.
+browbeat:
+  cloud_name: openstack
+  rerun: 1
+  rerun_type: iteration
+ansible:
+  hosts: ansible/hosts
+  metadata_playbook: ansible/gather/site.yml
+  ssh_config: ansible/ssh-config
+elasticsearch:
+  enabled: false
+  host: 1.1.1.1
+  port: 9200
+  regather: false
+  metadata_files:
+    - name: hardware-metadata
+      file: metadata/hardware-metadata.json
+    - name: environment-metadata
+      file: metadata/environment-metadata.json
+    - name: software-metadata
+      file: metadata/software-metadata.json
+    - name: version
+      file: metadata/version.json
+grafana:
+  enabled: true
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+perfkit:
+  sleep_before: 0
+  sleep_after: 0
+  default:
+    image: centos7
+    machine_type: m1.small
+    os_type: rhel
+    openstack_image_username: centos
+    openstack_floating_ip_pool: browbeat_public
+    openstack_network: browbeat_private
+    timing_measurements: runtimes
+    ignore_package_requirements: true
+rally:
+  sleep_before: 0
+  sleep_after: 0
+  plugins:
+    - browbeat: rally/rally-plugins/browbeat
+    - nova: rally/rally-plugins/nova
+    - neutron: rally/rally-plugins/neutron
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+yoda:
+  instackenv: "/home/stack/instackenv.json"
+  stackrc: "/home/stack/stackrc"
+
+workloads:
+  # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms
+  - name: BrowbeatNovaPersistWithVolume01
+    enabled: true
+    type: rally
+    concurrency:
+      - 20
+    times: 100
+    scenarios:
+      - name: nova-boot-persist-with-volume-100-01
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-02
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-03
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-04
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-05
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-06
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-07
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-08
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-09
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml
+      - name: nova-boot-persist-with-volume-100-10
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        volume_size: 1
+        cleanup_delay: 1800
+        file: rally/rally-plugins/nova/nova_boot_persist_with_volume.yml

@@ -12,7 +12,6 @@
 
 import time
 
-from rally.common.i18n import _
 from rally.common import logging
 from rally.task import context
 from rally import consts
@@ -41,13 +40,11 @@ class BrowbeatDelay(context.Context):
         "additionalProperties": False
     }
 
-    @logging.log_task_wrapper(LOG.info, _("Enter context: `browbeat_delay`"))
     def setup(self):
         if self.config.get('setup_delay'):
             LOG.info('Setup Delaying: {}'.format(self.config.get('setup_delay')))
             time.sleep(self.config.get('setup_delay'))
 
-    @logging.log_task_wrapper(LOG.info, _("Exit context: `browbeat_delay`"))
     def cleanup(self):
         if self.config.get('cleanup_delay'):
             LOG.info('Cleanup Delaying: {}'.format(self.config.get('cleanup_delay')))

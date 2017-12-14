@@ -20,11 +20,11 @@ from rally import consts
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_contexts("browbeat_delay")
-@validation.required_services(consts.Service.NOVA)
-@validation.required_openstack(users=True)
-@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist")
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay"))
+@validation.add("required_services",services=[consts.Service.NOVA])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist", platform="openstack")
 class NovaBootPersist(nova_utils.NovaScenario):
 
     def run(self, image, flavor, **kwargs):
@@ -32,12 +32,27 @@ class NovaBootPersist(nova_utils.NovaScenario):
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_contexts("browbeat_delay")
-@validation.required_contexts("browbeat_persist_network")
-@validation.required_services(consts.Service.NOVA)
-@validation.required_openstack(users=True)
-@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network")
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay"))
+@validation.add("required_services",services=[consts.Service.NOVA, consts.Service.CINDER])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_volume",
+                    platform="openstack")
+class NovaBootPersistWithVolume(nova_utils.NovaScenario, cinder_utils.CinderBasic):
+
+    def run(self, image, flavor, volume_size, **kwargs):
+        server = self._boot_server(image, flavor)
+        volume = self.cinder.create_volume(volume_size)
+        self._attach_volume(server, volume)
+
+
+@types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay", "browbeat_persist_network"))
+@validation.add("required_services",services=[consts.Service.NOVA])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network",
+                    platform="openstack")
 class NovaBootPersistWithNetwork(nova_utils.NovaScenario):
 
     def run(self, image, flavor, **kwargs):
@@ -45,42 +60,45 @@ class NovaBootPersistWithNetwork(nova_utils.NovaScenario):
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_contexts("browbeat_delay")
-@validation.required_contexts("browbeat_persist_network")
-@validation.required_services(consts.Service.NOVA, consts.Service.CINDER)
-@validation.required_openstack(users=True)
-@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_volume")
-class NovaBootPersistWithNetworkVolume(nova_utils.NovaScenario, cinder_utils.CinderScenario):
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay", "browbeat_persist_network"))
+@validation.add("required_services",services=[consts.Service.NOVA, consts.Service.CINDER])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_volume",
+                    platform="openstack")
+class NovaBootPersistWithNetworkVolume(nova_utils.NovaScenario, cinder_utils.CinderBasic):
 
     def run(self, image, flavor, volume_size, **kwargs):
         server = self._boot_server(image, flavor, **kwargs)
-        volume = self._create_volume(volume_size)
+        volume = self.cinder.create_volume(volume_size)
         self._attach_volume(server, volume)
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_contexts("browbeat_delay")
-@validation.required_services(consts.Service.NOVA, consts.Service.CINDER)
-@validation.required_openstack(users=True)
-@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_fip")
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay"))
+@validation.add("required_services",services=[consts.Service.NOVA])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_fip",
+                    platform="openstack")
 class NovaBootPersistWithNetworkFip(vm_utils.VMScenario):
 
     def run(self, image, flavor, external_net_name, boot_server_kwargs):
         server = self._boot_server(image, flavor, **boot_server_kwargs)
         self._attach_floating_ip(server, external_net_name)
 
+
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_contexts("browbeat_delay")
-@validation.required_services(consts.Service.NOVA, consts.Service.CINDER)
-@validation.required_openstack(users=True)
-@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_volume_fip")
-class NovaBootPersistWithNetworkVolumeFip(vm_utils.VMScenario):
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_contexts", contexts=("browbeat_delay"))
+@validation.add("required_services",services=[consts.Service.NOVA, consts.Service.CINDER])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={}, name="BrowbeatNova.nova_boot_persist_with_network_volume_fip",
+                    platform="openstack")
+class NovaBootPersistWithNetworkVolumeFip(vm_utils.VMScenario, cinder_utils.CinderBasic):
 
     def run(self, image, flavor, volume_size, boot_server_kwargs, external_net_name):
         server = self._boot_server(image, flavor, **boot_server_kwargs)
-        volume = self._create_volume(volume_size)
+        volume = self.cinder.create_volume(volume_size)
         self._attach_volume(server, volume)
         self._attach_floating_ip(server, external_net_name)

@@ -32,12 +32,12 @@ LOG = logging.getLogger(__name__)
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.required_services(consts.Service.NEUTRON, consts.Service.NOVA)
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_openstack(users=True)
-@scenario.configure(context={"cleanup": ["cinder", "neutron", "nova"], "keypair": {},
-                             "allow_ssh": None},
-                    name="BrowbeatPlugin.pbench_uperf")
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_services",services=[consts.Service.NEUTRON, consts.Service.NOVA])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={"cleanup@openstack": ["cinder", "neutron", "nova"],
+                             "keypair@openstack": {}, "allow_ssh@openstack": None},
+                    name="BrowbeatPlugin.pbench_uperf", platform="openstack")
 class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                           vm_utils.VMScenario):
 

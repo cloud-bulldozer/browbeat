@@ -21,12 +21,12 @@
     version: "{{ rally_version }}"
     virtualenv: "{{ rally_venv }}"
 
-# https://github.com/openstack/rally/blob/master/requirements.txt#L6
-# remove when os-faults is fixed and rally is upgraded
-- name: Downgrade ansible in Rally venv
+# (akrzos) Rally 0.10.1 installs a version (4.0.0) of gnocchiclient which deprecated service_type
+# session option.
+- name: Downgrade gnocchiclient in Rally venv
   pip:
-    name: ansible
-    version: 2.3.2.0
+    name: gnocchiclient
+    version: 3.3.1
     virtualenv: "{{ rally_venv }}"
 
 - name: Install elasticsearch into rally-venv
