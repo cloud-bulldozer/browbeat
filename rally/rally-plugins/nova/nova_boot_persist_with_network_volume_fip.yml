@@ -32,6 +32,9 @@ BrowbeatNova.nova_boot_persist_with_network_volume_fip:
         tenants: 1
         users_per_tenant: 8
       quotas:
+        cinder:
+          gigabytes: -1
+          volumes: -1
         neutron:
           network: -1
           port: -1
