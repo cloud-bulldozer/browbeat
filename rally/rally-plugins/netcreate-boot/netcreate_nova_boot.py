@@ -19,11 +19,11 @@ from rally import consts
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.required_services(consts.Service.NEUTRON, consts.Service.NOVA)
-@validation.image_valid_on_flavor("flavor", "image")
-@validation.required_openstack(users=True)
-@scenario.configure(context={"cleanup": ["neutron", "nova"]},
-                    name="BrowbeatPlugin.create_network_nova_boot")
+@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@validation.add("required_services",services=[consts.Service.NEUTRON, consts.Service.NOVA])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={"cleanup@openstack": ["neutron", "nova"]},
+                    name="BrowbeatPlugin.create_network_nova_boot", platform="openstack")
 class CreateNetworkNovaBoot(neutron_utils.NeutronScenario,
                             nova_utils.NovaScenario):
 

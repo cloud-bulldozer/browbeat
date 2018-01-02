@@ -1,0 +1,46 @@
+{% set image_name = image_name or 'cirros' %}
+{% set flavor_name = flavor_name or 'm1.xtiny' %}
+{% set setup_delay = setup_delay or 0 %}
+{% set cleanup_delay = cleanup_delay or 0 %}
+{% set volume_size = volume_size or 1 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatNova.nova_boot_persist_with_volume:
+  -
+    args:
+      flavor:
+        name: '{{flavor_name}}'
+      image:
+        name: '{{image_name}}'
+      volume_size: '{{volume_size}}'
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: 'constant'
+    context:
+      browbeat_delay:
+        setup_delay: {{setup_delay}}
+        cleanup_delay: {{cleanup_delay}}
+      users:
+        tenants: 1
+        users_per_tenant: 8
+      quotas:
+        cinder:
+          gigabytes: -1
+          volumes: -1
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}

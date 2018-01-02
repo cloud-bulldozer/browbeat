@@ -16,10 +16,10 @@ from rally.task import validation
 from rally import consts
 
 
-@validation.required_services(consts.Service.NEUTRON)
-@validation.required_openstack(users=True)
-@scenario.configure(context={"cleanup": ["neutron"]},
-                    name="BrowbeatPlugin.securitygroup_port")
+@validation.add("required_services",services=[consts.Service.NEUTRON])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={"cleanup@openstack": ["neutron"]},
+                    name="BrowbeatPlugin.securitygroup_port", platform="openstack")
 class BrowbeatPlugin(neutron_utils.NeutronScenario):
 
     def run(self, network_create_args=None, security_group_create_args={}, port_create_args={},

@@ -18,11 +18,11 @@ import subprocess
 import time
 
 
-@validation.required_services(consts.Service.NEUTRON)
-@validation.required_openstack(admin=True)
-@scenario.configure(context={"cleanup": ["neutron"]},
-                    name="BrowbeatPlugin.PortCreateAssoicate")
-class PortCreateAssoicate(neutron_utils.NeutronScenario):
+@validation.add("required_services",services=[consts.Service.NEUTRON])
+@validation.add("required_platform", platform="openstack", admin=True)
+@scenario.configure(context={"cleanup@openstack": ["neutron"]},
+                    name="BrowbeatPlugin.PortCreateAssociate", platform="openstack")
+class PortCreateAssociate(neutron_utils.NeutronScenario):
 
     def run(self, hypervisor, num_ports=1, user='heat-admin', ssh_config=None, wait=360,
             network_create_args=None, subnet_create_args=None, create_port_args=None, **kwargs):
@@ -74,5 +74,5 @@ class PortCreateAssoicate(neutron_utils.NeutronScenario):
                 subprocess.call(
                     "{} sudo ovs-vsctl del-port port-{}".format(ssh_cmd, num), shell=True)
 
-            for port in ports :
-                neutron.port_delete(port["port"]["id"])
+            for port in ports:
+                self._delete_port(port)

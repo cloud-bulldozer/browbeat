@@ -16,10 +16,10 @@ from rally.task import validation
 from rally import consts
 
 
-@validation.required_services(consts.Service.NEUTRON)
-@validation.required_openstack(users=True)
-@scenario.configure(context={"cleanup": ["neutron"]},
-                    name="BrowbeatPlugin.router_subnet_create_delete")
+@validation.add("required_services",services=[consts.Service.NEUTRON])
+@validation.add("required_platform", platform="openstack", users=True)
+@scenario.configure(context={"cleanup@openstack": ["neutron"]},
+                    name="BrowbeatPlugin.router_subnet_create_delete", platform="openstack")
 class RouterSubnetCreateDelete(neutron_utils.NeutronScenario):
 
     def run(self, num_networks=1, network_create_args=None, subnet_create_args=None, **kwargs):

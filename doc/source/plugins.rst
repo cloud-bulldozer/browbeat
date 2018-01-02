@@ -20,6 +20,11 @@ Scenario - nova_boot_persist
 
 This scenario creates instances without a network that persist upon completion of a rally run.  This scenario is best used for excerising the Telemetry systems within an OpenStack Cloud.  Alternatively, it can be used to put idle instances on a cloud for other workloads to compete for resources.  The scenario is referenced in the Telemetry Browbeat configurations in order to build a "stepped" workload that can be used to analyze Telemetry performance and scalability.
 
+Scenario - nova_boot_persist_with_volume
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This scenario creates instances that have an attached volume and persist upon completion of a rally run. This scenario is best used for excerising the Telemetry systems within an OpenStack Cloud.  It increases the Telemetry workload by creating more resources that the Telemetry services must collect and process metrics over.  Alternatively, it can be used to put idle instances on a cloud for other workloads to compete for resources.  The scenario is referenced in the Telemetry Browbeat configurations in order to build a "stepped" workload that can be used to analyze Telemetry scalability.
+
 Scenario - nova_boot_persist_with_network
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

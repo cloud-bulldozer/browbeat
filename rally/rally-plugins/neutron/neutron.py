@@ -10,7 +10,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from rally.common.i18n import _
 from rally.common import logging
 from rally.plugins.openstack.context.network import networks
 from rally.task import context
@@ -53,10 +52,8 @@ class BrowbeatPersistNetwork(networks.Network):
         "additionalProperties": True
     }
 
-    @logging.log_task_wrapper(LOG.info, _("Enter context: `browbeat_persist_network`"))
     def setup(self):
         super(BrowbeatPersistNetwork, self).setup()
 
-    @logging.log_task_wrapper(LOG.info, _("Exit context: `browbeat_persist_network`"))
     def cleanup(self):
         pass
