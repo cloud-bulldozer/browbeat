@@ -115,7 +115,7 @@
   shell: "cat /home/stack/overcloudrc | grep 'export OS' | awk '{gsub(/export /,\"Environment=\");print }'"
   delegate_to: "{{groups['undercloud'][0]}}"
   register: overcloudrc_file
-  when: "(gnocchi_status_controller_collectd_plugin == true) and (inventory_hostname == groups['controller'][0])"
+  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
 - name: (Controller) Add environment variables to collectd.service systemd file
   become: true
@@ -124,7 +124,7 @@
     insertafter: '\[Service\]'
     line: "{{item}}"
   with_items: "{{overcloudrc_file.stdout_lines | default(omit)}}"
-  when: "(gnocchi_status_controller_collectd_plugin == true) and (inventory_hostname == groups['controller'][0])"
+  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
 # Apache Request Response Timing
 - name: (Newton, Ocata) Deploy Apache httpd.conf for request timings
@@ -195,7 +195,7 @@
 - name: Reload systemd units
   command: systemctl daemon-reload
   become: true
-  when: "((gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true))"
+  when: "('controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin == true)"
 
 - name: (All Nodes) Copy python plugins
   copy:
@@ -274,14 +274,14 @@
   command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
   register: controller0_rabbitmq_username
   become: true
-  when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
 # Works with: Newton, Ocata
 - name: (Controller) Get Rabbitmq password
   command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
   register: controller0_rabbitmq_password
   become: true
-  when: "('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 # End Rabbitmq monitoring
 
 # Gnocchi Swift Stat Service monitoring
@@ -289,19 +289,19 @@
   command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_authurl
   register: controller0_gnocchi_swift_authurl
   become: true
-  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
 - name: Get Gnocchi Swift User
   shell: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_user | sed 's/service://'
   register: controller0_gnocchi_swift_user
   become: true
-  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
 - name: Get Gnocchi Swift Key
   command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_key
   register: controller0_gnocchi_swift_auth_key
   become: true
-  when: "('controller' in group_names and {{swift_stat_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0])"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 # End Swift Stat Service monitoring
 
 # CephStorage OSD monitoring

@@ -246,37 +246,37 @@ fi
 echo ""  | tee -a ${ansible_inventory_file}
 echo "[undercloud]" | tee -a ${ansible_inventory_file}
 echo "undercloud" | tee -a ${ansible_inventory_file}
+echo "" | tee -a ${ansible_inventory_file}
+echo "[controller]" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[controller]" | tee -a ${ansible_inventory_file}
  for ct in ${controller_hn[@]}; do
   echo "${ct}" | tee -a ${ansible_inventory_file}
  done
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[blockstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#blockstorage_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[blockstorage]" | tee -a ${ansible_inventory_file}
  for blockstorage in ${blockstorage_hn[@]}; do
   echo "${blockstorage}" | tee -a ${ansible_inventory_file}
  done
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[objectstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#objectstorage_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[objectstorage]" | tee -a ${ansible_inventory_file}
  for objectstorage in ${objectstorage_hn[@]}; do
   echo "${objectstorage}" | tee -a ${ansible_inventory_file}
  done
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[cephstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#cephstorage_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[cephstorage]" | tee -a ${ansible_inventory_file}
  for cephstorage in ${cephstorage_hn[@]}; do
   echo "${cephstorage}" | tee -a ${ansible_inventory_file}
  done
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[compute]" | tee -a ${ansible_inventory_file}
 if [[ ${#compute_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[compute]" | tee -a ${ansible_inventory_file}
  for c in ${compute_hn[@]}; do
   echo "${c}" | tee -a ${ansible_inventory_file}
  done
@@ -300,9 +300,9 @@ if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#obj
   echo "compute" | tee -a ${ansible_inventory_file}
  fi
 fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[other]" | tee -a ${ansible_inventory_file}
 if [[ ${#other_hn} -gt 0 ]]; then
- echo "" | tee -a ${ansible_inventory_file}
- echo "[other]" | tee -a ${ansible_inventory_file}
  for other in ${other_hn[@]}; do
   echo "${other}" | tee -a ${ansible_inventory_file}
  done
