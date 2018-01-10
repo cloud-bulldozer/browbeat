@@ -37,10 +37,6 @@ class Rally(workloadbase.WorkloadBase):
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
-        self.error_count = 0
-        self.pass_count = 0
-        self.test_count = 0
-        self.scenario_count = 0
 
     def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark):
         self.logger.debug("--------------------------------")
@@ -75,18 +71,6 @@ class Rally(workloadbase.WorkloadBase):
         self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
         self.grafana.print_dashboard_url(test_name)
         return (from_time, to_time)
-
-    def update_tests(self):
-        self.test_count += 1
-
-    def update_pass_tests(self):
-        self.pass_count += 1
-
-    def update_fail_tests(self):
-        self.error_count += 1
-
-    def update_scenarios(self):
-        self.scenario_count += 1
 
     def get_task_id(self, test_name):
         cmd = "grep \"rally task report [a-z0-9\-]* --out\" {}.log | awk '{{print $4}}'".format(
@@ -230,7 +214,6 @@ class Rally(workloadbase.WorkloadBase):
 
             self.logger.info("Running Scenario: {}".format(scenario["name"]))
             self.logger.debug("Scenario File: {}".format(scenario["file"]))
-            self.update_scenarios()
             self.update_total_scenarios()
             scenario_name = scenario["name"]
             scenario_file = scenario["file"]
@@ -268,7 +251,6 @@ class Rally(workloadbase.WorkloadBase):
                     rerun_range = range(run_iteration, run_iteration + 1)
 
                 for run in rerun_range:
-                    self.update_tests()
                     self.update_total_tests()
                     concurrency_count_dict[concurrency] += 1
                     test_name = "{}-browbeat-{}-{}-{}-iteration-{}".format(
@@ -294,7 +276,6 @@ class Rally(workloadbase.WorkloadBase):
                         self.gen_scenario_html([task_id], test_name)
                         self.gen_scenario_json_file(task_id, test_name)
                         results.append(task_id)
-                        self.update_pass_tests()
                         self.update_total_pass_tests()
                         if self.config["elasticsearch"]["enabled"]:
                             # Start indexing
@@ -310,7 +291,6 @@ class Rally(workloadbase.WorkloadBase):
 
                     else:
                         self.logger.error("Cannot find task_id")
-                        self.update_fail_tests()
                         self.update_total_fail_tests()
                         self.get_time_dict(to_time, from_time, workload["name"], new_test_name,
                                            self.__class__.__name__, "fail")

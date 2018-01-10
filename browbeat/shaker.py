@@ -38,10 +38,6 @@ class Shaker(workloadbase.WorkloadBase):
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
-        self.error_count = 0
-        self.pass_count = 0
-        self.test_count = 0
-        self.scenario_count = 0
 
     def shaker_checks(self):
         cmd = "source {}; source {}; glance image-list | grep -w shaker-image".format(
@@ -72,32 +68,8 @@ class Shaker(workloadbase.WorkloadBase):
                 accommodation_list.append(temp_dict)
         return accommodation_list
 
-    def final_stats(self, total):
-        self.logger.info(
-            "Total Shaker scenarios enabled by user: {}".format(total))
-        self.logger.info(
-            "Total number of Shaker tests executed: {}".format(
-                self.test_count))
-        self.logger.info(
-            "Total number of Shaker tests passed: {}".format(self.pass_count))
-        self.logger.info(
-            "Total number of Shaker tests failed: {}".format(self.error_count))
-
-    def update_tests(self):
-        self.test_count += 1
-
-    def update_pass_tests(self):
-        self.pass_count += 1
-
-    def update_fail_tests(self):
-        self.error_count += 1
-
-    def update_scenarios(self):
-        self.scenario_count += 1
-
     # Method to process JSON outputted by Shaker, model data in a format that can be consumed
     # by ElasticSearch and ship the data to ES
-
     def send_to_elastic(self, outputfile, browbeat_scenario,
                         shaker_uuid, es_ts, es_list, run, test_name, result_dir):
         fname = outputfile
@@ -325,7 +297,6 @@ class Shaker(workloadbase.WorkloadBase):
         self.logger.error("Failed Test: {}".format(scenario['name']))
         self.logger.error("saved log to: {}.log".format(os.path.join(result_dir,
                                                                      test_name)))
-        self.update_fail_tests()
         self.update_total_fail_tests()
         self.get_time_dict(to_time, from_time, scenario['name'],
                            new_test_name, workload, "fail", index_status)
@@ -337,7 +308,6 @@ class Shaker(workloadbase.WorkloadBase):
                          format(os.path.join(result_dir, test_name)))
         self.logger.info("saved log to: {}.log".format(os.path.join(result_dir,
                                                                     test_name)))
-        self.update_pass_tests()
         self.update_total_pass_tests()
         self.get_time_dict(to_time, from_time, scenario['name'],
                            new_test_name, workload, "pass", index_status)
@@ -381,7 +351,6 @@ class Shaker(workloadbase.WorkloadBase):
         from_time = time.time()
         self.tools.run_cmd(cmd)
         to_time = time.time()
-        self.update_tests()
         self.update_total_tests()
         outputfile = os.path.join(result_dir, test_name + "." + "json")
         if 'sleep_after' in self.config['shaker']:
@@ -406,7 +375,6 @@ class Shaker(workloadbase.WorkloadBase):
         venv = get_workload_venv('shaker', False)
         self.shaker_checks()
 
-        self.update_scenarios()
         self.update_total_scenarios()
         shaker_uuid = uuid.uuid4()
         es_ts = datetime.datetime.utcnow()
