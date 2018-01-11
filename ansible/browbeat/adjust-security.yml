@@ -1,0 +1,90 @@
+---
+#
+# Turn on/off Kernel Security for Meltdown + Spectre
+#
+# Defaults will turn security on, on the Overcloud
+#
+# Examples:
+#
+# Turn off security on entire overcloud
+# ansible-playbook -i hosts browbeat/adjust-security.yml -e 'security=false'
+#
+# Turn on security on entire overcloud
+# ansible-playbook -i hosts browbeat/adjust-security.yml
+#
+# Turn off security on just compute nodes
+# ansible-playbook -i hosts browbeat/adjust-security.yml -e 'target=compute security=false'
+#
+# "target" can be any of the typical groups or a specific host in the hosts file
+# Also you can force any of the three flags to 0 or 1 (Ex. ibpb_enabled=0 etc)
+#
+
+- hosts: "{{target|default('overcloud')}}"
+  gather_facts: true
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    ibpb_enabled: 1
+    ibrs_enabled: 1
+    pti_enabled: 1
+    security: true
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Check if rhel7
+      fail:
+        msg: Only run against RHEL7.X
+      when:
+        - ansible_distribution != "RedHat"
+        - ansible_distribution_major_version < '7'
+
+    - name: Check to turn off security
+      set_fact:
+        ibpb_enabled: 0
+        ibrs_enabled: 0
+        pti_enabled: 0
+      when: not security|bool
+
+    - name: Debug print the new values for security
+      debug:
+        msg: "Setting these: ibpb_enabled- {{ibpb_enabled}} ibrs_enabled- {{ibrs_enabled}} pti_enabled- {{pti_enabled}}"
+
+    - name: Check /sys/kernel for security performance affecting features
+      become: true
+      shell: |
+        echo "/sys/kernel/debug/x86/ibpb_enabled: $(cat /sys/kernel/debug/x86/ibpb_enabled)"
+        echo "/sys/kernel/debug/x86/ibrs_enabled: $(cat /sys/kernel/debug/x86/ibrs_enabled)"
+        echo "/sys/kernel/debug/x86/pti_enabled: $(cat /sys/kernel/debug/x86/pti_enabled)"
+      register: security_vars
+
+    - name: Debug print the security_vars before setting
+      debug:
+        msg: "{{security_vars.stdout_lines}}"
+
+    - name: Turn on/off security
+      become: true
+      shell: |
+        echo {{ibpb_enabled}} > /sys/kernel/debug/x86/ibpb_enabled
+        echo {{ibrs_enabled}} > /sys/kernel/debug/x86/ibrs_enabled
+        echo {{pti_enabled}} > /sys/kernel/debug/x86/pti_enabled
+
+    - name: Check /sys/kernel for security performance affecting features
+      become: true
+      shell: |
+        echo "/sys/kernel/debug/x86/ibpb_enabled: $(cat /sys/kernel/debug/x86/ibpb_enabled)"
+        echo "/sys/kernel/debug/x86/ibrs_enabled: $(cat /sys/kernel/debug/x86/ibrs_enabled)"
+        echo "/sys/kernel/debug/x86/pti_enabled: $(cat /sys/kernel/debug/x86/pti_enabled)"
+      register: security_vars
+
+    - name: Debug print the security_vars after setting
+      debug:
+        msg: "{{security_vars.stdout_lines}}"
+
+    - name: Check if Feat available
+      become: true
+      command: grep "FEATURE" /var/log/dmesg
+      ignore_errors: true
+      register: check_feat
+
+    - name: Debug print results of Feature Grep in dmesg
+      debug:
+        msg: "{{check_feat.stdout_lines}}"

@@ -66,6 +66,7 @@ if [ ${#clouds} -gt 0 ]; then
     echo "ERROR: nova list failed to execute properly, please check the openstack-nova-api on the undercloud."
     exit 1
   fi
+  ironic_uuids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack baremetal node list > >(grep -i -E 'active|running') 2>/dev/null")
   controller_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name Controller > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#controller_id} -lt 3 ]; then
      echo "Error: Controller ID is not reporting correctly. Please see check the openstack-heat-api on the undercloud."
@@ -202,7 +203,7 @@ for line in $nodes; do
  IP=$(echo $line | awk '{print $8}' | cut -d "=" -f2)
  if grep -q $uuid <<< {$controller_uuids}; then
   controller_hn+=("$host")
-elif grep -q $uuid <<< {$blockstorage_uuids}; then
+ elif grep -q $uuid <<< {$blockstorage_uuids}; then
   blockstorage_hn+=("$host")
  elif grep -q $uuid <<< {$objectstorage_uuids}; then
   objectstorage_hn+=("$host")
@@ -220,11 +221,33 @@ elif grep -q $uuid <<< {$blockstorage_uuids}; then
  echo "    IdentityFile ${DIR}/heat-admin-id_rsa" | tee -a ${ssh_config_file}
  echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
  echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
+ # Substitute the nova instance id for the host name so we can attach the ironic uuid as a host var
+ ironic_uuids=${ironic_uuids/$uuid/$host}
 done
 
-# Sort Controllers
+# Sort Host Types
 controller_hn=( $(
     for item in "${controller_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+blockstorage_hn=( $(
+    for item in "${blockstorage_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+objectstorage_hn=( $(
+    for item in "${objectstorage_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+cephstorage_hn=( $(
+    for item in "${cephstorage_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+compute_hn=( $(
+    for item in "${compute_hn[@]}"
     do
         echo "$item"
     done | sort) )
@@ -250,35 +273,80 @@ echo "" | tee -a ${ansible_inventory_file}
 echo "[controller]" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
  for ct in ${controller_hn[@]}; do
-  echo "${ct}" | tee -a ${ansible_inventory_file}
+   ironic_uuid=''
+   for line in ${ironic_uuids}; do
+     uuid=$(echo $line | awk '{print $2}')
+     host=$(echo $line | awk '{print $6}')
+     if [ "$host" == "$ct" ]; then
+       ironic_uuid=$uuid
+       break
+     fi
+   done
+  echo "${ct} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
 echo "[blockstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#blockstorage_hn} -gt 0 ]]; then
  for blockstorage in ${blockstorage_hn[@]}; do
-  echo "${blockstorage}" | tee -a ${ansible_inventory_file}
+  ironic_uuid=''
+  for line in ${ironic_uuids}; do
+   uuid=$(echo $line | awk '{print $2}')
+   host=$(echo $line | awk '{print $6}')
+   if [ "$host" == "$blockstorage" ]; then
+    ironic_uuid=$uuid
+    break
+   fi
+  done
+  echo "${blockstorage} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
 echo "[objectstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#objectstorage_hn} -gt 0 ]]; then
  for objectstorage in ${objectstorage_hn[@]}; do
-  echo "${objectstorage}" | tee -a ${ansible_inventory_file}
+  ironic_uuid=''
+  for line in ${ironic_uuids}; do
+   uuid=$(echo $line | awk '{print $2}')
+   host=$(echo $line | awk '{print $6}')
+   if [ "$host" == "$objectstorage" ]; then
+    ironic_uuid=$uuid
+    break
+   fi
+  done
+  echo "${objectstorage} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
 echo "[cephstorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#cephstorage_hn} -gt 0 ]]; then
  for cephstorage in ${cephstorage_hn[@]}; do
-  echo "${cephstorage}" | tee -a ${ansible_inventory_file}
+  ironic_uuid=''
+  for line in ${ironic_uuids}; do
+   uuid=$(echo $line | awk '{print $2}')
+   host=$(echo $line | awk '{print $6}')
+   if [ "$host" == "$cephstorage" ]; then
+    ironic_uuid=$uuid
+    break
+   fi
+  done
+  echo "${cephstorage} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
 echo "[compute]" | tee -a ${ansible_inventory_file}
 if [[ ${#compute_hn} -gt 0 ]]; then
- for c in ${compute_hn[@]}; do
-  echo "${c}" | tee -a ${ansible_inventory_file}
+ for compute in ${compute_hn[@]}; do
+   ironic_uuid=''
+   for line in ${ironic_uuids}; do
+     uuid=$(echo $line | awk '{print $2}')
+     host=$(echo $line | awk '{print $6}')
+     if [ "$host" == "$compute" ]; then
+       ironic_uuid=$uuid
+       break
+     fi
+   done
+  echo "${compute} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#objectstorage_hn} -gt 0 ]] || [[ ${#cephstorage_hn} -gt 0 ]] || [[ ${#compute_hn} -gt 0 ]]; then

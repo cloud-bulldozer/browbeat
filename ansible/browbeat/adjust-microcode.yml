@@ -1,0 +1,106 @@
+---
+#
+# Playbook to push new microcode.  Please read playbook before running.
+#
+# Examples:
+#
+# Update microcode on Overcloud:
+# ansible-playbook -i hosts browbeat/adjust-microcode.yml -e 'get_url_base=http://example.com.com/intel-ucode/'
+#
+# Update microcode on Controllers
+# ansible-playbook -i hosts browbeat/adjust-microcode.yml -e 'target=controller get_url_base=http://example.com.com/intel-ucode/'
+#
+# "target" can be any of the typical groups or a specific host in the hosts file
+# Set get_url_base to the base of a webserver allowing for download of the microcode
+#
+
+- hosts: "{{target|default('overcloud')}}"
+  gather_facts: true
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    get_url_base: http://example.com.com/intel-ucode/
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Get cpu family
+      become: true
+      shell: cat /proc/cpuinfo | egrep "cpu family" | head -n 1 | awk '{print $4}'
+      register: cpu_family
+
+    - name: Get cpu model
+      become: true
+      shell: cat /proc/cpuinfo | egrep "model" | head -n 1 | awk '{print $3}'
+      register: cpu_model
+
+    - name: Get cpu stepping
+      become: true
+      shell: cat /proc/cpuinfo | egrep "stepping" | head -n 1 | awk '{print $3}'
+      register: cpu_stepping
+
+    - name: Set microcode version
+      set_fact:
+        microcode_version: '{{"%02d"|format(cpu_family.stdout|int)}}-{{"%02x"|format(cpu_model.stdout|int)}}-{{"%02d"|format(cpu_stepping.stdout|int)}}'
+
+    - debug:
+        msg: "Setting up Microcode: {{microcode_version}}"
+
+    - name: Get Microcode
+      become: true
+      get_url:
+        url: "{{get_url_base}}/{{microcode_version}}"
+        dest: /lib/firmware/intel-ucode/{{microcode_version}}
+        force: true
+
+    - name: Run dracut
+      become: true
+      command: dracut -f
+
+    - name: Attempt graceful reboot
+      become: true
+      shell: nohup sh -c '( sleep 5 ; reboot )' &
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    # 8 minute timeout
+    - name: Wait for Machine Ready (1st try)
+      wait_for:
+        host: "{{ansible_default_ipv4.address}}"
+        port: 22
+        delay: 15
+        timeout: 480
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      register: machine_rebooted
+      ignore_errors: true
+
+    # "Rescue" the node
+    - name: Use Ironic to start each machine
+      shell: |
+        . /home/stack/stackrc
+        openstack baremetal node power off {{ironic_uuid}}
+        sleep 30
+        openstack baremetal node power on {{ironic_uuid}}
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      when: machine_rebooted.failed
+
+    - name: Wait for Machine Ready (2nd try)
+      wait_for:
+        host: "{{ansible_default_ipv4.address}}"
+        port: 22
+        delay: 15
+        timeout: 480
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      when: machine_rebooted.failed
+
+    - name: Check if Feat available
+      become: true
+      command: grep "FEATURE" /var/log/dmesg
+      ignore_errors: true
+      register: check_feat
+
+    - name: Debug print results of Feature Grep in dmesg
+      debug:
+        msg: "{{check_feat.stdout_lines}}"
