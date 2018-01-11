@@ -2,15 +2,6 @@
 #
 # Generate & Upload Browbeat OpenStack Grafana Dashboards
 #
-# Three types of Grafana Dashboards:
-# * Static Dashboards (Ex. cloud_system_performance_comparsion.json)
-# * Generated General Dashboards (Ex. OpenStack General System Performance)
-# * Generated Cloud Specific Dashboards ("Cloud01" CPU Graphs (for a specific cloud))
-#
-# The Cloud Specific Dashboards are the only ones that require a cloud's inventory be defined.
-# You can deploy the Static and General Dashboards without the Cloud Specific Dashboards
-# with cloud_dashboards=false
-#
 
 - name: Check Cloud Name
   fail:
@@ -18,53 +9,65 @@
   when: item == dashboard_cloud_name
   with_items: "{{forbidden_cloud_names}}"
 
-- name: Generate General Dashboards
-  template:
-    src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
-    dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
-  with_items: "{{general_dashboards}}"
-
+# Cloud Specific Dashboards (Generated off Ansible inventory)
 - name: Generate Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   vars:
     ansible_python_interpreter: "/usr/bin/python"
   template:
     src: "cloud_specific_{{item}}.json.j2"
     dest: "{{role_path}}/files/cloud_specific_{{item}}.json"
+  when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
-  when: cloud_dashboards
-
-- name: Remove Existing Static Dashboard(s)
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item|replace('_', '-')}}"
-  when: overwrite_existing
-  with_items: "{{static_dashboards}}"
-
-- name: Remove Existing General Dashboards
-  command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
-  when: overwrite_existing
-  with_items: "{{general_dashboards}}"
 
 - name: Remove Existing Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item|replace('_', '-')}}"
-  when: "{{overwrite_existing}} and {{cloud_dashboards}}"
+  when: overwrite_existing|bool and upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
-
-- name: Upload Static Dashboards to Grafana
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items: "{{static_dashboards}}"
-
-- name: Upload General Dashboards to Grafana
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
-  with_items: "{{general_dashboards}}"
 
 - name: Upload Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/cloud_specific_{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
-  when: cloud_dashboards
-
-- name: Remove leftover json file(s) from Generated General Dashboards
-  file: path={{role_path}}/files/{{item.process_list_name}}_general_system_performance.json state=absent
-  with_items: "{{general_dashboards}}"
 
 - name: Remove leftover json file(s) from Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
-  file: path={{role_path}}/files/cloud_specific_{{item}}.json state=absent
+  file:
+    path: "{{role_path}}/files/cloud_specific_{{item}}.json"
+    state: absent
+  when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
+
+# General Performance Dashboards (Templated from Ansible vars)
+- name: Generate General Dashboards
+  template:
+    src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
+    dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+- name: Remove Existing General Dashboards
+  command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
+  when: overwrite_existing|bool and upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+- name: Upload General Dashboards to Grafana
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+- name: Remove leftover json file(s) from Generated General Dashboards
+  file:
+    path: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
+    state: absent
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+# Static Dashboards:
+- name: Remove Existing Static Dashboard(s)
+  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item|replace('_', '-')}}"
+  when: overwrite_existing|bool and upload_static|bool
+  with_items: "{{static_dashboards}}"
+
+- name: Upload Static Dashboards to Grafana
+  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+  when: upload_static|bool
+  with_items: "{{static_dashboards}}"
