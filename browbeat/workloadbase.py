@@ -35,22 +35,6 @@ class WorkloadBase(object):
     def run_workload(self, workload, run_iteration):
         pass
 
-    @abc.abstractmethod
-    def update_fail_tests(self):
-        pass
-
-    @abc.abstractmethod
-    def update_pass_tests(self):
-        pass
-
-    @abc.abstractmethod
-    def update_scenarios(self):
-        pass
-
-    @abc.abstractmethod
-    def update_tests(self):
-        pass
-
     def update_total_scenarios(self):
         WorkloadBase.total_scenarios += 1
 
@@ -94,7 +78,7 @@ class WorkloadBase(object):
              'Elasticsearch Indexing': index_status})
 
     @staticmethod
-    def print_report(result_dir, time_stamp):
+    def dump_report(result_dir, time_stamp):
         with open(os.path.join(result_dir, time_stamp + '.' + 'report'), 'w') as yaml_file:
             yaml_file.write("Browbeat Report Card\n")
             if not WorkloadBase.browbeat:
@@ -104,7 +88,7 @@ class WorkloadBase(object):
                     yaml.dump(WorkloadBase.browbeat, default_flow_style=False))
 
     @staticmethod
-    def print_summary():
+    def display_summary():
         WorkloadBase.logger.info("Total scenarios executed:{}".format(
             WorkloadBase.total_scenarios))
         WorkloadBase.logger.info("Total tests executed:{}".format(WorkloadBase.total_tests))

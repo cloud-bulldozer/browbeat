@@ -130,7 +130,7 @@ def main():
 
             _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
             tools.run_workload(workload, result_dir_ts, 0)
-            browbeat.workloadbase.WorkloadBase.print_summary()
+            browbeat.workloadbase.WorkloadBase.display_summary()
 
     elif _config["browbeat"]["rerun_type"] == "complete":
         # Complete rerun_type, reruns after all workloads have been run.
@@ -148,9 +148,9 @@ def main():
 
                 _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
                 tools.run_workload(workload, result_dir_ts, run_iteration)
-                browbeat.workloadbase.WorkloadBase.print_summary()
+                browbeat.workloadbase.WorkloadBase.display_summary()
 
-    browbeat.workloadbase.WorkloadBase.print_report(results_path, result_dir_ts)
+    browbeat.workloadbase.WorkloadBase.dump_report(results_path, result_dir_ts)
     _logger.info("Saved browbeat result summary to {}"
                  .format(os.path.join(results_path, "{}.report".format(result_dir_ts))))
 

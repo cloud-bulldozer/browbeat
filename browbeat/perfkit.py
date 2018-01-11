@@ -34,13 +34,9 @@ class PerfKit(workloadbase.WorkloadBase):
         self.overcloudrc = get_overcloudrc()
         self.config = config
         self.result_dir_ts = result_dir_ts
-        self.error_count = 0
         self.tools = tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
-        self.test_count = 0
-        self.scenario_count = 0
-        self.pass_count = 0
 
     def string_to_dict(self, string):
         """Function for converting "|" quoted hash data into python dictionary."""
@@ -52,18 +48,6 @@ class PerfKit(workloadbase.WorkloadBase):
             split_item = item.replace('.', '_').split(':', 1)
             dict_data[split_item[0]] = ast.literal_eval("'" + split_item[1] + "'")
         return dict_data
-
-    def update_tests(self):
-        self.test_count += 1
-
-    def update_pass_tests(self):
-        self.pass_count += 1
-
-    def update_fail_tests(self):
-        self.error_count += 1
-
-    def update_scenarios(self):
-        self.scenario_count += 1
 
     def get_error_details(self, result_dir):
         error_details = []
@@ -182,7 +166,6 @@ class PerfKit(workloadbase.WorkloadBase):
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
 
         self.logger.info("Benchmark: {}".format(workload['name']))
-        self.update_scenarios()
         self.update_total_scenarios()
         # Add default parameters as necessary
         for default_item, value in self.config['perfkit']['default'].iteritems():
@@ -195,7 +178,6 @@ class PerfKit(workloadbase.WorkloadBase):
             rerun_range = range(run_iteration, run_iteration + 1)
 
         for run in rerun_range:
-            self.update_tests()
             self.update_total_tests()
             result_dir = self.tools.create_results_dir(
                 results_path, self.result_dir_ts, workload['name'], str(run))
@@ -209,13 +191,11 @@ class PerfKit(workloadbase.WorkloadBase):
             new_test_name = new_test_name[2:]
             new_test_name = '-'.join(new_test_name)
             if success:
-                self.update_pass_tests()
                 self.update_total_pass_tests()
                 self.get_time_dict(to_ts, from_ts, workload['benchmarks'],
                                    new_test_name, self.__class__.__name__, "pass",
                                    index_success)
             else:
-                self.update_fail_tests()
                 self.update_total_fail_tests()
                 self.get_time_dict(to_ts, from_ts, workload['benchmarks'],
                                    new_test_name, self.__class__.__name__, "fail",
