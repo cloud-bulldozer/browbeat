@@ -33,7 +33,7 @@ LOG = logging.getLogger(__name__)
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
-@validation.add("required_services",services=[consts.Service.NEUTRON, consts.Service.NOVA])
+@validation.add("required_services", services=[consts.Service.NEUTRON, consts.Service.NOVA])
 @validation.add("required_platform", platform="openstack", users=True)
 @scenario.configure(context={"cleanup@openstack": ["cinder", "neutron", "nova"],
                              "keypair@openstack": {}, "allow_ssh@openstack": None},
@@ -46,7 +46,8 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
         jump_host, jump_host_ip = self._boot_server_with_fip(image,
                                                              flavor,
                                                              use_floating_ip=True,
-                                                             floating_network=external['name'],
+                                                             floating_network=external[
+                                                                 'name'],
                                                              key_name=keyname,
                                                              **kwargs)
         # Wait for ping
@@ -165,7 +166,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
     def run(self, image, flavor, user, test_types, protocols, samples, test_name, external=None,
             send_results=True, num_pairs=1, password="", network_id=None, zones=None,
             message_sizes=None, instances=None, elastic_host=None, elastic_port=None,
-            cloudname=None, **kwargs):
+            cloudname=None, dns_ip=None, **kwargs):
 
         pbench_path = "/opt/pbench-agent"
         pbench_results = "/var/lib/pbench-agent"
@@ -241,22 +242,25 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
             else:
                 LOG.error("Error with PBench Results")
 
-        # Parse results
-        result = StringIO.StringIO('\n'.join(stdout.split('\n')[1:]))
-        creader = csv.reader(result)
-        report = []
-        for row in creader:
-            if len(row) >= 1:
-                report.append(["aggregate.{}".format(row[1]), float(row[2])])
-                report.append(["single.{}".format(row[1]), float(row[3])])
-        if len(report) > 0:
-            self.add_output(
-                additive={"title": "PBench UPerf Stats",
-                          "description": "PBench UPerf Scenario",
-                          "chart_plugin": "StatsTable",
-                          "axis_label": "Gbps",
-                          "label": "Gbps",
-                          "data": report})
-
+            # Parse results
+            result = StringIO.StringIO('\n'.join(stdout.split('\n')[1:]))
+            creader = csv.reader(result)
+            report = []
+            for row in creader:
+                if len(row) >= 1:
+                    report.append(
+                        ["aggregate.{}".format(row[1]), float(row[2])])
+                    report.append(["single.{}".format(row[1]), float(row[3])])
+            if len(report) > 0:
+                self.add_output(
+                    additive={"title": "PBench UPerf Stats",
+                              "description": "PBench UPerf Scenario",
+                              "chart_plugin": "StatsTable",
+                              "axis_label": "Gbps",
+                              "label": "Gbps",
+                              "data": report})
+        if dns_ip:
+            cmd = "echo nameserver {}".format(dns_ip)
+            self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})
         cmd = "{}/util-scripts/pbench-move-results".format(pbench_path)
         self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})

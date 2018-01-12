@@ -19,12 +19,14 @@ skip_if_unavailable=1
 EOF
 cat /etc/yum.repos.d/pbench.repo
 sudo yum clean all
-sudo yum install -y pbench-agent
 sudo yum install -y pbench-agent-internal
+sudo yum install -y pbench-agent
 sudo yum install -y pbench-sysstat
 sudo yum install -y pbench-uperf
 sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
-cat /etc/cloud/cloud.cfg | grep disable_root
-sudo sed -i 's/^no-port.*;sleep 10" //g' /root/.ssh/authorized_keys
+sudo sed -i 's/^.*sleep 10" //g' /root/.ssh/authorized_keys
+sudo cat /root/.ssh/authorized_keys
+sudo cat /etc/cloud/cloud.cfg
+sudo chattr +i /etc/cloud/cloud.cfg
 
 echo "Browbeat workload installed"

@@ -3,6 +3,7 @@
 {% set num_pairs = num_pairs or 1 %}
 {% set instances = instances or 1 %}
 {% set password = password or 'None' %}
+{% set dns_ip = dns_ip or 'None' %}
 {% set protocols = protocols or 'tcp' %}
 {% set message_sizes = message_sizes or '64,1024,16384' %}
 {% set hypervisor_server = hypervisor_server or 'None' %}
@@ -37,6 +38,7 @@ BrowbeatPlugin.pbench_uperf:
       cloudname: '{{cloudname}}'
       elastic_host: '{{elastic_host}}'
       elastic_port: '{{elastic_port}}'
+      dns_ip: '{{dns_ip}}'
     runner:
       concurrency: 1
       times: 1
