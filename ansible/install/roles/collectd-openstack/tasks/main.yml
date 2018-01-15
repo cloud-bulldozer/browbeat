@@ -291,6 +291,12 @@
   become: true
   when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
 
+- name: Get Gnocchi Swift Auth Version
+  command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_auth_version
+  register: controller0_gnocchi_swift_authversion
+  become: true
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+
 - name: Get Gnocchi Swift User
   shell: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_user | sed 's/service://'
   register: controller0_gnocchi_swift_user

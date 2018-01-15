@@ -30,6 +30,7 @@ class CollectdSwiftStat(object):
         self.user = None
         self.password = None
         self.authurl = None
+        self.authversion = None
         self.project = None
         self.swift_conn = None
 
@@ -46,6 +47,8 @@ class CollectdSwiftStat(object):
                 self.password = val
             elif node.key == 'AuthURL':
                 self.authurl = val
+            elif node.key == 'AuthVersion':
+                self.authversion = val
             elif node.key == 'Project':
                 self.project = val
             else:
@@ -66,15 +69,18 @@ class CollectdSwiftStat(object):
         if not self.authurl:
             collectd.error('collectd-swift-stat: AuthURL Undefined')
             read_plugin = False
+        if not self.authversion:
+            collectd.error('collectd-swift-stat: AuthVersion Undefined')
+            read_plugin = False
         if not self.project:
             collectd.error('collectd-swift-stat: Project Undefined')
             read_plugin = False
 
         if read_plugin:
             collectd.info(
-                'swift_stat: Connecting with user={}, password={}, tenant={},'
-                ' auth_url={}'.format(
-                    self.user, self.password, self.project, self.authurl))
+                'swift_stat: Connecting with user={}, password={}, tenant={}, auth_url={},'
+                ' auth_version={}'.format(
+                    self.user, self.password, self.project, self.authurl, self.authversion))
 
             self.swift_conn = self.create_swift_session()
             collectd.register_read(self.read_swift_stat, self.interval)
@@ -108,7 +114,7 @@ class CollectdSwiftStat(object):
     def create_swift_session(self):
         return Connection(
             authurl=self.authurl, user=self.user, key=self.password,
-            tenant_name=self.project, auth_version='2.0')
+            tenant_name=self.project, auth_version=self.authversion)
 
 
 collectd_swift_stat = CollectdSwiftStat()
