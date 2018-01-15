@@ -13,8 +13,8 @@
     - perfkitbenchmarker
     - rally
     - shaker
-    - flavors
-    - images
+    - { role: flavors, when: browbeat_create_flavors}
+    - { role: images, when: browbeat_upload_guest_images}
     - { role: workloads, when: install_browbeat_workloads}
   environment: "{{proxy_env}}"
 
