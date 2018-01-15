@@ -1466,8 +1466,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
-  # Slightly different than Undercloud
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/pacemaker/bundles/galera-bundle-0/mysqld.log">
+  {% else %}
   <File "/var/log/mysqld.log">
+  {% endif %}
     Instance "mysqld"
     <Match>
       Regex "\\[ERROR\\]"
@@ -1878,7 +1881,11 @@ PreCacheChain "PreCache"
     </Match>
   </File>
 
+  {%if 'Pike' in osp_version['content'] | b64decode %}
+  <File "/var/log/pacemaker/bundles/rabbitmq-bundle-0/rabbitmq/rabbit\@{{ansible_hostname}}.log">
+  {% else %}
   <File "/var/log/rabbitmq/rabbit\@{{ansible_hostname}}.log">
+  {% endif %}
     Instance "rabbitmq"
     <Match>
       Regex "ERROR REPORT"
