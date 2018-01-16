@@ -85,10 +85,13 @@ browbeat_workloads:
 ########################################
 # Other Install Configuration Items
 ########################################
+# Toggle creating flavors:
+browbeat_create_flavors: true
 
 # Guest images for the Overcloud
 # Note hash key name must match intended name for image upload to
 # work consistently (Ex. images['cirros'].name == 'cirros')
+browbeat_upload_guest_images: true
 browbeat_guest_images:
   centos7:
     name: centos7
