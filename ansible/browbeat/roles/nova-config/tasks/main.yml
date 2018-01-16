@@ -16,24 +16,3 @@
     backup: yes
   with_items:
     - "{{nova_configuration}}"
-
-- name: (Newton, Ocata) Restart Nova Services
-  become: true
-  service:
-    name: "{{ item }}"
-    state: restarted
-  with_items:
-    - openstack-nova-scheduler
-    - openstack-nova-api
-    - openstack-nova-conductor
-    - openstack-nova-novncproxy
-    - openstack-nova-consoleauth
-    - httpd
-  when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and (restart_nova)"
-
-- name: (Pike) Restart Nova Scheduler Container
-  become: true
-  command: "docker restart {{item}}"
-  with_items:
-    - nova_scheduler
-  when: "('Pike' in osp_version['content'] | b64decode) and (restart_nova)"
