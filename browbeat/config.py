@@ -47,9 +47,8 @@ def _validate_yaml(schema, config):
     :param schema: The schema to validate with (browbeat, perfkit, rally...)
     :param config: Loaded yaml to validate
     """
-    with open("{}/{}.yml".format(conf_schema_path, schema), "r") as schema_file:
-        schema = yaml.safe_load(schema_file)
-    check = pykwalify_core.Core(source_data=config, schema_data=schema)
+    check = pykwalify_core.Core(
+        source_data=config, schema_files=["{}/{}.yml".format(conf_schema_path, schema)])
     try:
         check.validate(raise_exception=True)
     except pykwalify_errors.SchemaError as e:
