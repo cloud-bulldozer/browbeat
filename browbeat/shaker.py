@@ -255,7 +255,7 @@ class Shaker(workloadbase.WorkloadBase):
                 test['time'] = default_time
         self.logger.debug("Execution time of each test set to {}".format(test['time']))
         with open(fname, 'w') as yaml_file:
-            yaml_file.write(yaml.dump(data, default_flow_style=False))
+            yaml_file.write(yaml.safe_dump(data, default_flow_style=False))
 
     def get_uuidlist(self, data):
         uuidlist = []
