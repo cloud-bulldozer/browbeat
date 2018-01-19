@@ -408,4 +408,3 @@ class Shaker(workloadbase.WorkloadBase):
             self.run_scenario(
                 workload, result_dir, test_name, fname, shaker_uuid,
                 es_ts, es_list, run)
-        self.final_stats(self.scenario_count)
