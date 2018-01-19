@@ -29,3 +29,9 @@
 - name: Update visibility
   shell: source {{ overcloudrc }} ; openstack image set {{ browbeat_workloads[item].name }} --public
   with_items: "{{ browbeat_workloads }}"
+
+- name: Delete workload guests after copying
+  shell: |
+    . {{ overcloudrc }}
+    openstack server delete {{browbeat_workloads[item].name}}
+  with_items: "{{browbeat_workloads}}"
