@@ -41,7 +41,7 @@ class Rally(workloadbase.WorkloadBase):
     def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark):
         self.logger.debug("--------------------------------")
         self.logger.debug("task_file: {}".format(task_file))
-        self.logger.info("Running with scenario_args: {}".format(scenario_args))
+        self.logger.info("Running with scenario_args: {}".format(json.dumps(scenario_args)))
         self.logger.debug("result_dir: {}".format(result_dir))
         self.logger.debug("test_name: {}".format(test_name))
         self.logger.debug("--------------------------------")
@@ -49,7 +49,7 @@ class Rally(workloadbase.WorkloadBase):
         from_ts = int(time.time() * 1000)
         if 'sleep_before' in self.config['rally']:
             time.sleep(self.config['rally']['sleep_before'])
-        task_args = str(scenario_args).replace("'", "\"")
+        task_args = json.dumps(scenario_args)
         plugins = []
         if "plugins" in self.config['rally']:
             if len(self.config['rally']['plugins']) > 0:
