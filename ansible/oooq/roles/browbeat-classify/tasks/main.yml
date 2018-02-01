@@ -23,5 +23,5 @@
 - name: Upload timeseries data summaries to cockroach db
   shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-timesummary {{browbeat_uuid.stdout}}"
 
-- name: Upload log data summaries to cockroach db
-  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-logsummary {{browbeat_uuid.stdout}}"
+#- name: Upload log data summaries to cockroach db
+#  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-logsummary {{browbeat_uuid.stdout}}"
