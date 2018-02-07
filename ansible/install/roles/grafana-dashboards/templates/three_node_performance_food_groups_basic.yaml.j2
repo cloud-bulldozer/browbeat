@@ -1,0 +1,35 @@
+#jinja2:lstrip_blocks: True
+{% set enhanced = False %}
+---
+dashboard:
+  title: Three Node Performance Food Groups
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node1
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+    - name: Node2
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+    - name: Node3
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% include 'three_node_performance/cpu.yaml.j2' %}
+
+    {% include 'three_node_performance/memory.yaml.j2' %}
+
+    {% include 'three_node_performance/disk.yaml.j2' %}
+
+    {% include 'three_node_performance/network.yaml.j2' %}

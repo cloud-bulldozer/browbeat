@@ -1,0 +1,26 @@
+    - title: Numa
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Numastat
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-interleave_hit, 'numa-', ''), 'vmpage_action-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-local_node, 'numa-', ''), 'vmpage_action-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_foreign, 'numa-', ''), 'vmpage_action-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_hit, 'numa-', ''), 'vmpage_action-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-numa_miss, 'numa-', ''), 'vmpage_action-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.numa-*.vmpage_action-other_node, 'numa-', ''), 'vmpage_action-', ''), 2, 3)

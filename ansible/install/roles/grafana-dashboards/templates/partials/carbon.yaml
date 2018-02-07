@@ -1,0 +1,105 @@
+    - title: Carbon Cache Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Metrics, Committed Points, Update Operations
+          type: graph
+          decimals: 1
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.metricsReceived, '[a-zA-Z0-9_]+-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(carbon.agents.*.committedPoints, '[a-zA-Z0-9_]+-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(carbon.agents.*.updateOperations, '[a-zA-Z0-9_]+-', ''), 2, 3)
+        - title: Average Update Time
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.avgUpdateTime, '[a-zA-Z0-9_]+-', ''), 2, 3)
+        - title: Creates
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.creates, '[a-zA-Z0-9_]+-', ''), 2, 3)
+        - title: Cache
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.cache.*, '[a-zA-Z0-9_]+-', ''), 2, 4)
+        - title: Blacklist/Whitelist
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.blacklistMatches, '[a-zA-Z0-9_]+-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(carbon.agents.*.whitelistRejects, '[a-zA-Z0-9_]+-', ''), 2, 3)
+        - title: Errors
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(carbon.agents.*.errors, '[a-zA-Z0-9_]+-', ''), 2, 3)

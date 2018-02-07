@@ -29,6 +29,7 @@ export VARS="elastic_enabled=true \
 --extra-vars grafana_host=$GRAPH_HOST \
 --extra-vars grafana_username=$GRAFANA_USER \
 --extra-vars grafana_password=$GRAFANA_PASS \
+--extra-vars grafana_apikey=$GRAFANA_APIKEY \
 --extra-vars browbeat_cloud_name=$CLOUD_NAME \
 --extra-vars browbeat_config_file=$BENCHMARK \
 --extra-vars graphite_prefix=$CLOUD_NAME \

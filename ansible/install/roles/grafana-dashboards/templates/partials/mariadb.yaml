@@ -1,0 +1,190 @@
+    - title: MariaDB
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: MySQL Threads
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.threads-*, 'threads-', ''), 3)
+        - title: MySQL Traffic
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.mysql-*.mysql_octets.*, 4)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Query Cache
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.cache_result-*, 'cache_result-qcache-', ''), 3)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Query Cache Size
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.cache_size-*, 'cache_size-', ''), 3)
+        - title: MySQL Buffer Pool Data
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_bpool_bytes-*, 'mysql_bpool_bytes-', ''), 3)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Buffer Pool Counters
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_bpool_counters-*, 'mysql_bpool_counters-', ''), 3)
+        - title: MySQL Commands
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_commands-*, 'mysql_commands-', ''), 3)
+        - title: MySQL Handler
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_handler-*, 'mysql_handler-', ''), 3)
+        - title: MySQL Locks
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_locks-*, 'mysql_locks-', ''), 3)
+        - title: MySQL Select
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_select-*, 'mysql_select-', ''), 3)
+        - title: MySQL Sort
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_sort-*, 'mysql_sort-', ''), 3)

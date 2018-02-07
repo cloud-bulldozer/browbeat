@@ -1,0 +1,69 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: {{item.process_list_name}} General System Performance
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: $Cloud.*
+      refresh: true
+      type: query
+    - name: Disk
+      query: $Cloud.$Node.disk-*
+      refresh: true
+      type: query
+    - name: Interface
+      query: $Cloud.$Node.interface-*
+      refresh: true
+      type: query
+    - name: cpus0
+      hide: 1
+      includeAll: true
+      multi: true
+      query: $Cloud.$Node.cpu-[0-9]
+      refresh: true
+      type: query
+    - name: cpus00
+      hide: 1
+      includeAll: true
+      multi: true
+      query: $Cloud.$Node.cpu-[1-9][0-9]
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% include 'partials/cpu_all.yaml' %}
+
+    {% include 'partials/cpu_cores.yaml' %}
+
+    {% include 'partials/memory.yaml' %}
+
+    {% include 'partials/disk.yaml' %}
+
+    {% include 'partials/df.yaml' %}
+
+    {% include 'partials/network.yaml' %}
+
+    {% include 'partials/turbostat.yaml' %}
+
+    {% include 'partials/numa.yaml' %}
+
+    {% include 'partials/irq.yaml' %}
+
+    {% include 'partials/load.yaml' %}
+
+    {% include 'partials/processes.yaml' %}
+
+    {% set per_process_row_title_prefix = 'Graphite' %}
+    {% include 'partials/per_process_rows.yaml.j2' %}
+
+    {% include 'partials/carbon.yaml' %}
+
+    {% include 'partials/tail.yaml' %}

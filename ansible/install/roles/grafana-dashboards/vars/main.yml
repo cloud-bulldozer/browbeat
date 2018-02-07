@@ -1,7 +1,16 @@
 ---
 #
-# Vars to generate Per-Process component of OpenStack Dashboards
+# Vars for Dashboard Generation
 #
+
+dashboard_groups:
+  - undercloud
+  - controller
+  - networker
+  - blockstorage
+  - objectstorage
+  - cephstorage
+  - compute
 
 per_process_metrics:
   - name: "Process/Thread Counts"

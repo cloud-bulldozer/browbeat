@@ -1,0 +1,58 @@
+    - title: Turbostat
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Gauge TSC & SMI Count
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: SMI Count
+              yaxis: 2
+          targets:
+            - target: aliasByNode(scale(aliasSub($Cloud.$Node.turbostat-cpu*.gauge-TSC, 'turbostat-','tsc-'), 1000000), 2)
+            - target: alias(sumSeries($Cloud.$Node.turbostat-cpu*.count), 'SMI Count')
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat Freq Avg
+          type: graph
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(scale(aliasSub($Cloud.$Node.turbostat-cpu*.frequency-average, 'turbostat-', ''), 1000000), 2)
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat Freq Busy
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(scale($Cloud.$Node.turbostat-cpu*.frequency-busy, 1000000), 2)
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat c0%
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.turbostat-cpu*.percent-c0, 2)
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - turbostat c1%
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.turbostat-cpu*.percent-c1, 2)
+          yaxes:
+            - format: percent
+            - format: short

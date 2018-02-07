@@ -1,0 +1,107 @@
+    - title: Memory & Swap
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Memory in Bytes
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias($Cloud.$Node.memory.memory-slab_unrecl, 'Slab Unrecl')
+            - target: alias($Cloud.$Node.memory.memory-used, 'Used')
+            - target: alias($Cloud.$Node.memory.memory-buffered, 'Buffered')
+            - target: alias($Cloud.$Node.memory.memory-slab_recl, 'Slab Recl')
+            - target: alias($Cloud.$Node.memory.memory-cached, 'Cached')
+            - target: alias($Cloud.$Node.memory.memory-free, 'Free')
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: $Cloud - $Node - Memory in Percentage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-slab_unrecl"
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-used"
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-buffered"
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-slab_recl"
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-cached"
+            - hide: true
+              target: "$Cloud.$Node.memory.memory-free"
+            - hide: true
+              target: sumSeries($Cloud.$Node.memory.*)
+            - target: 'alias(asPercent(#A, #G), ''Slab Unrecl'')'
+            - target: 'alias(asPercent(#B, #G), ''Used'')'
+            - target: 'alias(asPercent(#C, #G), ''Buffered'')'
+            - target: 'alias(asPercent(#D, #G), ''Slab Recl'')'
+            - target: 'alias(asPercent(#E, #G), ''Cached'')'
+            - target: 'alias(asPercent(#F, #G), ''Free'')'
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - Swap Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias($Cloud.$Node.swap.swap-used, 'Used')
+            - target: alias($Cloud.$Node.swap.swap-cached, 'Cached')
+            - target: alias($Cloud.$Node.swap.swap-free, 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+        - title: $Cloud - $Node - Swap IO
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.swap.swap_io-in, 'In')
+            - target: alias($Cloud.$Node.swap.swap_io-out, 'Out')
+          yaxes:
+            - format: bytes
+            - format: short

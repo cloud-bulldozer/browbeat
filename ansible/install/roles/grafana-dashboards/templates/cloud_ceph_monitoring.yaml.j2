@@ -1,0 +1,42 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: Cloud Ceph Monitoring
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+    - name: OSD
+      includeAll: true
+      multi: true
+      query: "$Cloud.$Node.collectd-ceph-storage-osd-*"
+      refresh: true
+      type: query
+    - name: Pool
+      includeAll: true
+      multi: true
+      query: "$Cloud.$Node.collectd-ceph-storage-pool-*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% set partial_panel = {
+        'title': 'Ceph Process Metrics',
+        'processes': ['ceph-mon', 'ceph-osd',],
+      }
+    %}
+    {% include 'partials/per_process_single_row.yaml.j2' %}
+
+    {% set partial_panel = {'node': '$Node'} %}
+    {% include 'partials/cephstorage_python_plugin_metrics.yaml.j2' %}
+
+    {% include 'partials/ceph_mon.yaml' %}

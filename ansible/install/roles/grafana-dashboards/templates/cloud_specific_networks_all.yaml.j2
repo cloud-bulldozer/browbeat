@@ -1,0 +1,143 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: {{dashboard_cloud_name}} - Networks - All
+  links:
+    - type: dashboards
+      asDropdown: true
+      icon: external link
+      includeVars: true
+      keepTime: true
+      tags:
+        - {{dashboard_cloud_name}}
+      targetBlank: true
+      title: "{{dashboard_cloud_name}} Dashboards"
+  tags:
+    - {{dashboard_cloud_name}}
+  templating:
+    - name: undercloud_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*undercloud*.interface-*"
+      refresh: true
+      type: query
+    - name: controller_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*controller*.interface-*"
+      refresh: true
+      type: query
+    - name: compute_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*compute*.interface-*"
+      refresh: true
+      type: query
+    - name: cephstorage_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*cephstorage*.interface-*"
+      refresh: true
+      type: query
+    - name: objectstorage_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*objectstorage*.interface-*"
+      refresh: true
+      type: query
+    - name: blockstorage_interface
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*blockstorage*.interface-*"
+      refresh: true
+      type: query
+  time:
+   from: now-1h
+   to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} Network pps
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network pps
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} - ${{group}}_interface pps
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: /.*rx/
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_interface.if_packets.tx, 'interface-', ''), 2, 4)
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_interface.if_packets.rx, 'interface-', ''), 2, 4)
+          yaxes:
+            - format: pps
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}}  Network Throughput
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Network Throughput
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} - ${{group}}_interface Throughput
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: /.*rx/
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_interface.if_octets.tx, 'interface-', ''), 2, 4)
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_interface.if_octets.rx, 'interface-', ''), 2, 4)
+          yaxes:
+            - format: Bps
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}

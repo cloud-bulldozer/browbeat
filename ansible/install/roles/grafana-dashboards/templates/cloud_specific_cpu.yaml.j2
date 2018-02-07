@@ -1,0 +1,69 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: {{dashboard_cloud_name}} - CPU
+  links:
+    - type: dashboards
+      asDropdown: true
+      icon: external link
+      includeVars: true
+      keepTime: true
+      tags:
+        - {{dashboard_cloud_name}}
+      targetBlank: true
+      title: "{{dashboard_cloud_name}} Dashboards"
+  tags:
+    - {{dashboard_cloud_name}}
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} CPU Usage
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) CPU Usage
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} CPU Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-system), 'System')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-user), 'User')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-nice), 'Nice')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-steal), 'Steal')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-softirq), 'SoftIRQ')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-interrupt), 'Interrupt')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-wait), 'Wait')
+            - target: alias(sumSeries({{dashboard_cloud_name}}.{{host}}.cpu-*.cpu-idle), 'Idle')
+          yaxes:
+            - format: percent
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}

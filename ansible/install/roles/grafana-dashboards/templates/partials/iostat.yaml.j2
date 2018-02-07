@@ -1,0 +1,278 @@
+    - title: IOStat
+      collapse: {{partial_panel.collapse}}
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - rrqm/s & wrqm/s
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*wrqm_s.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-rrqm_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-wrqm_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: $Cloud - $Node - r/s & w/s
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*w_s.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-r_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-w_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: $Cloud - $Node - rkB/s & wkB/s
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*wkB_s.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-rkB_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-wkB_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: deckbytes
+            - format: short
+        - title: $Cloud - $Node - Average Request Size (avgrq-sz)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-avgrq_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: $Cloud - $Node - Average Queue Length of Requests (avgqu-sz)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-avgqu_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: $Cloud - $Node - Average Time for I/O requests (await)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-await, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ms
+            - format: short
+        - title: $Cloud - $Node - Average Time Read/Write Requests (r_await/w_await)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*w_await.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-r_await, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-w_await, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ms
+            - format: short
+        - title: $Cloud - $Node - Average Service Time (svctm)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*w_await.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-svctm, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ms
+            - format: short
+        - title: $Cloud - $Node - %util
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*w_await.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-_util, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - Transfers per Second (tps)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*w_await.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-tps, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: iops
+            - format: short
+        - title: $Cloud - $Node - kB_read/s & kB_wrtn/s
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*kB_wrtn.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-kB_read_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-kB_wrtn_s, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: deckbytes
+            - format: short
+        - title: $Cloud - $Node - kB_read & kB_wrtn
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*kB_wrtn.*/"
+              transform: negative-Y
+          span: 6
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-kB_read, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-kB_wrtn, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: deckbytes
+            - format: short

@@ -1,0 +1,20 @@
+    - title: Neutron Resources
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - Neutron $Node Resources
+          type: graph
+          legend:
+            avg: false
+            current: false
+            max: false
+            min: false
+            show: true
+            total: false
+            values: false
+          nullPointMode: 'null'
+          targets:
+            - target: "$Cloud.$Node.ovsagent_monitoring.gauge-qdhcp_ns_total-count"
+            - target: "$Cloud.$Node.ovsagent_monitoring.gauge-qrouter_ns_total-count"
+            - target: "$Cloud.$Node.ovsagent_monitoring.gauge-tap_interface_total-count"

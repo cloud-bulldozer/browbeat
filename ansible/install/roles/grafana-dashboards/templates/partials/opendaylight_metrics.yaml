@@ -1,0 +1,41 @@
+    - title: OpenDaylight
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: ODL Java Heap Memory
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.GenericJMX-memory-heap.*, 3)
+          yaxes:
+            - format: bits
+            - format: short
+        - title: ODL Java Non-Heap Memory
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.GenericJMX-memory-nonheap.*, 3)
+          yaxes:
+            - format: bits
+            - format: short

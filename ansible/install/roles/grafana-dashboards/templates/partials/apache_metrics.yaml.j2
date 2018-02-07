@@ -1,0 +1,91 @@
+    - title: Apache Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Apache Bytes
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.apache-status.apache_bytes, 'apache_', ''), 'overcloud-', ''), 1, 3)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Apache Requests
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.apache-status.apache_requests, 'apache_', ''), 'overcloud-', ''), 1, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: Apache Connections/Workers
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.apache-status.apache_connections, 'apache_', ''), 'overcloud-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.apache-status.apache_idle_workers, 'apache_', ''), 'overcloud-', ''), 1, 3)
+          yaxes:
+            - format: ops
+            - format: short
+        - title: Apache Scoreboard (All Controllers Summed)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-closing), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-dnslookup), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-finishing), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-idle_cleanup), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-keepalive), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-logging), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-open), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-reading), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-sending), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-starting), 'apache_scoreboard-', ''), 3)
+            - target: aliasByNode(aliasSub(sumSeries($Cloud.{{partial_panel.node}}.apache-status.apache_scoreboard-waiting), 'apache_scoreboard-', ''), 3)

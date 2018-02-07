@@ -1,0 +1,730 @@
+---
+dashboard:
+  title: Cloud System Performance Comparsion
+  templating:
+    - name: Cloud1
+      query: "*"
+      refresh: true
+      type: query
+    - name: Cloud2
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node1
+      query: "$Cloud1.*"
+      refresh: true
+      type: query
+    - name: Node2
+      query: "$Cloud2.*"
+      refresh: true
+      type: query
+    - name: Node1_Disk
+      query: "$Cloud1.$Node1.disk-*"
+      refresh: true
+      type: query
+    - name: Node2_Disk
+      query: "$Cloud2.$Node2.disk-*"
+      refresh: true
+      type: query
+    - name: Node1_Interface
+      query: "$Cloud1.$Node1.interface-*"
+      refresh: true
+      type: query
+    - name: Node2_Interface
+      query: "$Cloud2.$Node2.interface-*"
+      refresh: true
+      type: query
+    - name: Node1_Process
+      query: "$Cloud1.$Node1.processes-*"
+      refresh: true
+      type: query
+    - name: Node2_Process
+      query: "$Cloud2.$Node2.processes-*"
+      refresh: true
+      type: query
+
+    # - name: Node1_Timeshift
+    #   current:
+    #     text: "0m"
+    #   options:
+    #     - 0m
+    #     - 1m
+    #     - 10m
+    #     - 30m
+    #     - 1h
+    #     - 2h
+    #     - 3h
+    #     - 4h
+    #     - 6h
+    #     - 12h
+    #     - 1d
+    #     - 2d
+    #     - 3d
+    #     - 4d
+    #     - 5d
+    #     - 6d
+    #     - 7d
+    #     - 14d
+    #     - 30d
+    #   type: custom
+    # - name: Node2_Timeshift
+    #   current:
+    #     text: "0m"
+    #   options:
+    #     - 0m
+    #     - 1m
+    #     - 10m
+    #     - 30m
+    #     - 1h
+    #     - 2h
+    #     - 3h
+    #     - 4h
+    #     - 6h
+    #     - 12h
+    #     - 1d
+    #     - 2d
+    #     - 3d
+    #     - 4d
+    #     - 5d
+    #     - 6d
+    #     - 7d
+    #     - 14d
+    #     - 30d
+    #   type: custom
+
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+    - title: CPU Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: CPU Average
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/Node1/i"
+              stack: A
+            - alias: "/Node2/i"
+              stack: B
+          targets:
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-system), 'Node1 - System')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-user), 'Node1 - User')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-nice), 'Node1 - Nice')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-steal), 'Node1 - Steal')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-softirq), 'Node1 - SoftIRQ')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), 'Node1 - Interrupt')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-wait), 'Node1 - Wait')
+            - target: alias(averageSeries($Cloud1.$Node1.cpu-*.cpu-idle), 'Node1 - Idle')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-system), 'Node2 - System')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-user), 'Node2 - User')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-nice), 'Node2 - Nice')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-steal), 'Node2 - Steal')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-softirq), 'Node2 - SoftIRQ')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), 'Node2 - Interrupt')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-wait), 'Node2 - Wait')
+            - target: alias(averageSeries($Cloud2.$Node2.cpu-*.cpu-idle), 'Node2 - Idle')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-system), '$Node1_Timeshift'), 'Node1 - System')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-user), '$Node1_Timeshift'), 'Node1 - User')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-nice), '$Node1_Timeshift'), 'Node1 - Nice')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-steal), '$Node1_Timeshift'), 'Node1 - Steal')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-softirq), '$Node1_Timeshift'), 'Node1 - SoftIRQ')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), '$Node1_Timeshift'), 'Node1 - Interrupt')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-wait), '$Node1_Timeshift'), 'Node1 - Wait')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.cpu-*.cpu-idle), '$Node1_Timeshift'), 'Node1 - Idle')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-system), '$Node2_Timeshift'), 'Node2 - System')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-user), '$Node2_Timeshift'), 'Node2 - User')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-nice), '$Node2_Timeshift'), 'Node2 - Nice')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-steal), '$Node2_Timeshift'), 'Node2 - Steal')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-softirq), '$Node2_Timeshift'), 'Node2 - SoftIRQ')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), '$Node2_Timeshift'), 'Node2 - Interrupt')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-wait), '$Node2_Timeshift'), 'Node2 - Wait')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.cpu-*.cpu-idle), '$Node2_Timeshift'), 'Node2 - Idle')
+          yaxes:
+            - format: percent
+            - format: short
+        - title: CPU Sum
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/Node1/i"
+              stack: A
+            - alias: "/Node2/i"
+              stack: B
+          targets:
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-system), 'Node1 - System')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-user), 'Node1 - User')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-nice), 'Node1 - Nice')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-steal), 'Node1 - Steal')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-softirq), 'Node1 - SoftIRQ')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), 'Node1 - Interrupt')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-wait), 'Node1 - Wait')
+            - target: alias(sumSeries($Cloud1.$Node1.cpu-*.cpu-idle), 'Node1 - Idle')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-system), 'Node2 - System')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-user), 'Node2 - User')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-nice), 'Node2 - Nice')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-steal), 'Node2 - Steal')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-softirq), 'Node2 - SoftIRQ')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), 'Node2 - Interrupt')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-wait), 'Node2 - Wait')
+            - target: alias(sumSeries($Cloud2.$Node2.cpu-*.cpu-idle), 'Node2 - Idle')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-system), '$Node1_Timeshift'), 'Node1 - System')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-user), '$Node1_Timeshift'), 'Node1 - User')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-nice), '$Node1_Timeshift'), 'Node1 - Nice')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-steal), '$Node1_Timeshift'), 'Node1 - Steal')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-softirq), '$Node1_Timeshift'), 'Node1 - SoftIRQ')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-interrupt), '$Node1_Timeshift'), 'Node1 - Interrupt')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-wait), '$Node1_Timeshift'), 'Node1 - Wait')
+            # - target: alias(timeShift(sumSeries($Cloud1.$Node1.cpu-*.cpu-idle), '$Node1_Timeshift'), 'Node1 - Idle')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-system), '$Node2_Timeshift'), 'Node2 - System')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-user), '$Node2_Timeshift'), 'Node2 - User')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-nice), '$Node2_Timeshift'), 'Node2 - Nice')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-steal), '$Node2_Timeshift'), 'Node2 - Steal')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-softirq), '$Node2_Timeshift'), 'Node2 - SoftIRQ')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-interrupt), '$Node2_Timeshift'), 'Node2 - Interrupt')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-wait), '$Node2_Timeshift'), 'Node2 - Wait')
+            # - target: alias(timeShift(sumSeries($Cloud2.$Node2.cpu-*.cpu-idle), '$Node2_Timeshift'), 'Node2 - Idle')
+          yaxes:
+            - format: percent
+            - format: short
+    - title: Memory Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Memory in Bytes
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/Node1/i"
+              stack: A
+            - alias: "/Node2/i"
+              stack: B
+          targets:
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-slab_unrecl), 'Node1 - Slab Unrecl')
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-used), 'Node1 - Used')
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-buffered), 'Node1 - Buffered')
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-slab_recl), 'Node1 - Slab Recl')
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-cached), 'Node1 - Cached')
+            - target: alias(averageSeries($Cloud1.$Node1.memory.memory-free), 'Node1 - Free')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-slab_unrecl), 'Node2 - Slab Unrecl')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-used), 'Node2 - Used')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-buffered), 'Node2 - Buffered')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-slab_recl), 'Node2 - Slab Recl')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-cached), 'Node2 - Cached')
+            - target: alias(averageSeries($Cloud2.$Node2.memory.memory-free), 'Node2 - Free')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-slab_unrecl), '$Node1_Timeshift'), 'Node1 - Slab Unrecl')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-used), '$Node1_Timeshift'), 'Node1 - Used')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-buffered), '$Node1_Timeshift'), 'Node1 - Buffered')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-slab_recl), '$Node1_Timeshift'), 'Node1 - Slab Recl')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-cached), '$Node1_Timeshift'), 'Node1 - Cached')
+            # - target: alias(timeShift(averageSeries($Cloud1.$Node1.memory.memory-free), '$Node1_Timeshift'), 'Node1 - Free')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-slab_unrecl), '$Node2_Timeshift'), 'Node2 - Slab Unrecl')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-used), '$Node2_Timeshift'), 'Node2 - Used')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-buffered), '$Node2_Timeshift'), 'Node2 - Buffered')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-slab_recl), '$Node2_Timeshift'), 'Node2 - Slab Recl')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-cached), '$Node2_Timeshift'), 'Node2 - Cached')
+            # - target: alias(timeShift(averageSeries($Cloud2.$Node2.memory.memory-free), '$Node2_Timeshift'), 'Node2 - Free')
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Memory in Percentage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/Node1/i"
+              stack: A
+            - alias: "/Node2/i"
+              stack: B
+          targets:
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-slab_unrecl
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-used
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-buffered
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-slab_recl
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-cached
+            - hide: true
+              target: $Cloud1.$Node1.memory.memory-free
+            - hide: true
+              target: sumSeries($Cloud1.$Node1.memory.*)
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-slab_unrecl, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-used, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-buffered, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-slab_recl, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-cached, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud1.$Node1.memory.memory-free, '$Node1_Timeshift')
+            # - hide: true
+            #   target: timeShift(sumSeries($Cloud1.$Node1.memory.*), '$Node1_Timeshift')
+            - target: 'alias(asPercent(#A, #G), ''Node1 - Slab Unrecl'')'
+            - target: 'alias(asPercent(#B, #G), ''Node1 - Used'')'
+            - target: 'alias(asPercent(#C, #G), ''Node1 - Buffered'')'
+            - target: 'alias(asPercent(#D, #G), ''Node1 - Slab Recl'')'
+            - target: 'alias(asPercent(#E, #G), ''Node1 - Cached'')'
+            - target: 'alias(asPercent(#F, #G), ''Node1 - Free'')'
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-slab_unrecl
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-used
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-buffered
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-slab_recl
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-cached
+            - hide: true
+              target: $Cloud2.$Node2.memory.memory-free
+            - hide: true
+              target: sumSeries($Cloud2.$Node2.memory.*)
+            # - hide: true
+            #   target: timeShift($Cloud2.$Node2.memory.memory-slab_unrecl, '$Node2_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud2.$Node2.memory.memory-buffered, '$Node2_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud2.$Node2.memory.memory-slab_recl, '$Node2_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud2.$Node2.memory.memory-cached, '$Node2_Timeshift')
+            # - hide: true
+            #   target: timeShift($Cloud2.$Node2.memory.memory-free, '$Node2_Timeshift')
+            # - hide: true
+            #   target: timeShift(sumSeries($Cloud2.$Node2.memory.*), '$Node2_Timeshift')
+            - target: 'alias(asPercent(#N, #T), ''Node2 - Slab Unrecl'')'
+            - target: 'alias(asPercent(#O, #T), ''Node2 - Used'')'
+            - target: 'alias(asPercent(#P, #T), ''Node2 - Buffered'')'
+            - target: 'alias(asPercent(#Q, #T), ''Node2 - Slab Recl'')'
+            - target: 'alias(asPercent(#R, #T), ''Node2 - Cached'')'
+            - target: 'alias(asPercent(#S, #T), ''Node2 - Free'')'
+          yaxes:
+            - format: percent
+            - format: short
+    - title: Disk Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Node1 - Write
+              transform: negative-Y
+            - alias: Node2 - Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Disk.disk_ops.read, 'Node1 - Read')
+            - target: alias($Cloud1.$Node1.$Node1_Disk.disk_ops.write, 'Node1 - Write')
+            - target: alias($Cloud2.$Node2.$Node2_Disk.disk_ops.read, 'Node2 - Read')
+            - target: alias($Cloud2.$Node2.$Node2_Disk.disk_ops.write, 'Node2 - Write')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_ops.read, '$Node1_Timeshift'), 'Node1 - Read')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_ops.write, '$Node1_Timeshift'), 'Node1 - Write')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_ops.read, '$Node2_Timeshift'), 'Node2 - Read')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_ops.write, '$Node2_Timeshift'), 'Node2 - Write')
+          yaxes:
+            - format: iops
+            - format: short
+        - title: Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Node1 - Write
+              transform: negative-Y
+            - alias: Node2 - Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Disk.disk_octets.read, 'Node1 - Read')
+            - target: alias($Cloud1.$Node1.$Node1_Disk.disk_octets.write, 'Node1 - Write')
+            - target: alias($Cloud2.$Node2.$Node2_Disk.disk_octets.read, 'Node2 - Read')
+            - target: alias($Cloud2.$Node2.$Node2_Disk.disk_octets.write, 'Node2 - Write')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_octets.read, '$Node1_Timeshift'), 'Node1 - Read')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Disk.disk_octets.write, '$Node1_Timeshift'), 'Node1 - Write')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_octets.read, '$Node2_Timeshift'), 'Node2 - Read')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Disk.disk_octets.write, '$Node2_Timeshift'), 'Node2 - Write')
+          yaxes:
+            - format: Bps
+            - format: short
+        - title: '% Time'
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias(scale($Cloud1.$Node1.$Node1_Disk.disk_io_time.io_time, 0.1), 'Node1 - Time')
+            - target: alias(scale($Cloud2.$Node2.$Node2_Disk.disk_io_time.io_time, 0.1), 'Node2 - Time')
+            # - target: alias(timeShift(scale($Cloud1.$Node1.$Node1_Disk.disk_io_time.io_time, 0.1), '$Node1_Timeshift'), 'Node1 - Time')
+            # - target: alias(timeShift(scale($Cloud2.$Node2.$Node2_Disk.disk_io_time.io_time, 0.1), '$Node2_Timeshift'), 'Node2 - Time')
+          yaxes:
+            - format: percent
+            - format: short
+    - title: Network Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: pps
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Node1 - RX
+              transform: negative-Y
+            - alias: Node2 - RX
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Interface.if_packets.tx, 'Node1 - TX')
+            - target: alias($Cloud1.$Node1.$Node1_Interface.if_packets.rx, 'Node1 - RX')
+            - target: alias($Cloud2.$Node2.$Node2_Interface.if_packets.tx, 'Node2 - TX')
+            - target: alias($Cloud2.$Node2.$Node2_Interface.if_packets.rx, 'Node2 - RX')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Interface.if_packets.tx, '$Node1_Timeshift'), 'Node1 - TX')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Interface.if_packets.rx, '$Node1_Timeshift'), 'Node1 - RX')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Interface.if_packets.tx, '$Node2_Timeshift'), 'Node2 - TX')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Interface.if_packets.rx, '$Node2_Timeshift'), 'Node2 - RX')
+          yaxes:
+            - format: pps
+            - format: short
+        - title: Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Node1 - RX
+              transform: negative-Y
+            - alias: Node2 - RX
+              transform: negative-Y
+          targets:
+            - target: alias(scale($Cloud1.$Node1.$Node1_Interface.if_octets.tx, 8), 'Node1 - TX')
+            - target: alias(scale($Cloud1.$Node1.$Node1_Interface.if_octets.rx, 8), 'Node1 - RX')
+            - target: alias(scale($Cloud2.$Node2.$Node2_Interface.if_octets.tx, 8), 'Node2 - TX')
+            - target: alias(scale($Cloud2.$Node2.$Node2_Interface.if_octets.rx, 8), 'Node2 - RX')
+            # - target: alias(timeShift(scale($Cloud1.$Node1.$Node1_Interface.if_octets.tx, 8), '$Node1_Timeshift'), 'Node1 - TX')
+            # - target: alias(timeShift(scale($Cloud1.$Node1.$Node1_Interface.if_octets.rx, 8), '$Node1_Timeshift'), 'Node1 - RX')
+            # - target: alias(timeShift(scale($Cloud2.$Node2.$Node2_Interface.if_octets.tx, 8), '$Node2_Timeshift'), 'Node2 - TX')
+            # - target: alias(timeShift(scale($Cloud2.$Node2.$Node2_Interface.if_octets.rx, 8), '$Node2_Timeshift'), 'Node2 - RX')
+          yaxes:
+            - format: bps
+            - format: short
+    - title: Node Process Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Processes State
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/Node1/i"
+              stack: A
+            - alias: "/Node2/i"
+              stack: B
+          targets:
+            - target: alias($Cloud1.$Node1.processes.ps_state-running, 'Node1 - Running')
+            - target: alias($Cloud1.$Node1.processes.ps_state-stopped, 'Node1 - Stopped')
+            - target: alias($Cloud1.$Node1.processes.ps_state-sleeping, 'Node1 - Sleeping')
+            - target: alias($Cloud1.$Node1.processes.ps_state-blocked, 'Node1 - Blocked')
+            - target: alias($Cloud1.$Node1.processes.ps_state-paging, 'Node1 - Paging')
+            - target: alias($Cloud1.$Node1.processes.ps_state-zombies, 'Node1 - Zombies')
+            - target: alias($Cloud2.$Node2.processes.ps_state-running, 'Node2 - Running')
+            - target: alias($Cloud2.$Node2.processes.ps_state-stopped, 'Node2 - Stopped')
+            - target: alias($Cloud2.$Node2.processes.ps_state-sleeping, 'Node2 - Sleeping')
+            - target: alias($Cloud2.$Node2.processes.ps_state-blocked, 'Node2 - Blocked')
+            - target: alias($Cloud2.$Node2.processes.ps_state-paging, 'Node2 - Paging')
+            - target: alias($Cloud2.$Node2.processes.ps_state-zombies, 'Node2 - Zombies')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-running, '$Node1_Timeshift'), 'Node1 - Running')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-stopped, '$Node1_Timeshift'), 'Node1 - Stopped')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-sleeping, '$Node1_Timeshift'), 'Node1 - Sleeping')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-blocked, '$Node1_Timeshift'), 'Node1 - Blocked')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-paging, '$Node1_Timeshift'), 'Node1 - Paging')
+            # - target: alias(timeShift($Cloud1.$Node1.processes.ps_state-zombies, '$Node1_Timeshift'), 'Node1 - Zombies')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-running, '$Node2_Timeshift'), 'Node2 - Running')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-stopped, '$Node2_Timeshift'), 'Node2 - Stopped')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-sleeping, '$Node2_Timeshift'), 'Node2 - Sleeping')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-blocked, '$Node2_Timeshift'), 'Node2 - Blocked')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-paging, '$Node2_Timeshift'), 'Node2 - Paging')
+            # - target: alias(timeShift($Cloud2.$Node2.processes.ps_state-zombies, '$Node2_Timeshift'), 'Node2 - Zombies')
+    - title: Per Process Comparsion
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Process Counts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_count.processes, 'Node1 - $Node1_Process - Processes')
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_count.threads, 'Node1 - $Node1_Process - Threads')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_count.processes, 'Node2 - $Node2_Process - Processes')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_count.threads, 'Node2 - $Node2_Process - Threads')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_count.processes, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Processes')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_count.threads, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Threads')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_count.processes, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Processes')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_count.threads, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Threads')
+        - title: Process CPU
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.syst, 0.0001), 'Node1 - $Node1_Process - System')
+            - target: alias(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.user, 0.0001), 'Node1 - $Node1_Process - User')
+            - target: alias(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.syst, 0.0001), 'Node2 - $Node2_Process - System')
+            - target: alias(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.user, 0.0001), 'Node2 - $Node2_Process - User')
+            # - target: alias(timeShift(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.syst, 0.0001), '$Node1_Timeshift'), 'Node1 - $Node1_Process - System')
+            # - target: alias(timeShift(scale($Cloud1.$Node1.$Node1_Process.ps_cputime.user, 0.0001), '$Node1_Timeshift'), 'Node1 - $Node1_Process - User')
+            # - target: alias(timeShift(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.syst, 0.0001), '$Node2_Timeshift'), 'Node2 - $Node2_Process - System')
+            # - target: alias(timeShift(scale($Cloud2.$Node2.$Node2_Process.ps_cputime.user, 0.0001), '$Node2_Timeshift'), 'Node2 - $Node2_Process - User')
+          yaxes:
+            - format: percent
+            - format: short
+        - title: Process Memory
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_rss, 'Node1 - $Node1_Process - RSS')
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_vm, 'Node1 - $Node1_Process - Virtual')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_rss, 'Node2 - $Node2_Process - RSS')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_vm, 'Node2 - $Node2_Process - Virtual')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_rss, '$Node1_Timeshift'), 'Node1 - $Node1_Process - RSS')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_vm, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Virtual')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_rss, '$Node2_Timeshift'), 'Node2 - $Node2_Process - RSS')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_vm, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Virtual')
+          yaxes:
+            - format: bits
+            - format: short
+        - title: Page Faults
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_pagefaults.majflt, 'Node1 - $Node1_Process - Majflt')
+            - target: alias($Cloud1.$Node1.$Node1_Process.ps_pagefaults.minflt, 'Node1 - $Node1_Process - Minflt')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_pagefaults.majflt, 'Node2 - $Node2_Process - Majflt')
+            - target: alias($Cloud2.$Node2.$Node2_Process.ps_pagefaults.minflt, 'Node2 - $Node2_Process - Minflt')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_pagefaults.majflt, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Majflt')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_pagefaults.minflt, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Minflt')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_pagefaults.majflt, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Majflt')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_pagefaults.minflt, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Minflt')
+        - title: iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.io_ops.read, 'Node1 - $Node1_Process - Read')
+            - target: alias($Cloud1.$Node1.$Node1_Process.io_ops.write, 'Node1 - $Node1_Process - Write')
+            - target: alias($Cloud2.$Node2.$Node2_Process.io_ops.read, 'Node2 - $Node2_Process - Read')
+            - target: alias($Cloud2.$Node2.$Node2_Process.io_ops.write, 'Node2 - $Node2_Process - Write')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.io_ops.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.io_ops.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.io_ops.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.io_ops.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')
+          yaxes:
+            - format: iops
+            - format: short
+        - title: IO Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.io_octets.rx, 'Node1 - $Node1_Process - Rx')
+            - target: alias($Cloud1.$Node1.$Node1_Process.io_octets.tx, 'Node1 - $Node1_Process - Tx')
+            - target: alias($Cloud2.$Node2.$Node2_Process.io_octets.rx, 'Node2 - $Node2_Process - Rx')
+            - target: alias($Cloud2.$Node2.$Node2_Process.io_octets.tx, 'Node2 - $Node2_Process - Tx')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.io_octets.rx, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Rx')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.io_octets.tx, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Tx')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.io_octets.rx, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Rx')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.io_octets.tx, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Tx')
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Disk IO Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud1.$Node1.$Node1_Process.disk_octets.read, 'Node1 - $Node1_Process - Disk Read')
+            - target: alias($Cloud1.$Node1.$Node1_Process.disk_octets.write, 'Node1 - $Node1_Process - Disk Write')
+            - target: alias($Cloud2.$Node2.$Node2_Process.disk_octets.read, 'Node2 - $Node2_Process - Disk Read')
+            - target: alias($Cloud2.$Node2.$Node2_Process.disk_octets.write, 'Node2 - $Node2_Process - Disk Write')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.disk_octets.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Disk Read')
+            # - target: alias(timeShift($Cloud1.$Node1.$Node1_Process.disk_octets.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Disk Write')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.disk_octets.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Disk Read')
+            # - target: alias(timeShift($Cloud2.$Node2.$Node2_Process.disk_octets.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Disk Write')
+          yaxes:
+            - format: bytes
+            - format: short

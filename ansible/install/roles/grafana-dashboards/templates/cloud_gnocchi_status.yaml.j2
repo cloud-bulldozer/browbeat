@@ -1,0 +1,21 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: Cloud Gnocchi Status
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% set partial_panel = {'collapse': 'false'} %}
+    {% include 'partials/gnocchi_backlog.yaml.j2' %}

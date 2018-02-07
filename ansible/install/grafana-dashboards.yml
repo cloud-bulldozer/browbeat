@@ -2,21 +2,26 @@
 #
 # Builds and Uploads Dashboards for Browbeat analysis of System Performance Metrics
 #
-# Three types of Grafana Dashboards:
-# * Static Dashboards (Ex. cloud_system_performance_comparsion.json)
-# * Generated General Dashboards (Ex. OpenStack General System Performance)
-# * Generated Cloud Specific Dashboards ("Cloud01" CPU Graphs (for a specific cloud))
+# Four types of Grafana Dashboards:
+# * Static Dashboards (Ex. cloud_system_performance_comparsion.yaml)
+# * Templated Dashboards (Ex. Gnocchi Performance Dashboard)
+# * Templated General Dashboards (Ex. OpenStack General System Performance)
+# * Templated Cloud Specific Dashboards ("Cloud01" CPU Graphs (for a specific cloud))
 #
 # The Cloud Specific Dashboards are the only ones that require a cloud's inventory be defined.
 #
 # If you have a cloud inventory defined, you can upload all dashboards via:
 # ansible-playbook -i hosts install/grafana-dashboards.yml
+# or
+# ansible-playbook -i hosts install/grafana-dashboards.yml -e 'upload_cloud_specific=true upload_general=true upload_static=true upload_templated=true'
 #
-# If you just want to upload Static and Generated General Dashboards:
+# Toggle the desired dashboards with the above extra vars ^^
+#
+# If you just want to upload all dashboards that do not require a cloud inventory:
 # ansible-playbook -i hosts install/grafana-dashboards.yml -e 'upload_cloud_specific=false'
 #
-# If you just want to upload your Cloud Specific Dashboards:
-# ansible-playbook -i hosts install/grafana-dashboards.yml -e 'upload_general=false upload_static=false'
+# If you just want to upload only your Cloud Specific Dashboards:
+# ansible-playbook -i hosts install/grafana-dashboards.yml -e 'upload_general=false upload_static=false upload_templated=false'
 #
 
 - hosts: localhost
@@ -26,13 +31,14 @@
     upload_cloud_specific: true
     upload_general: true
     upload_static: true
-    overwrite_existing: true
+    upload_templated: true
     cloud_specific_dashboards:
       - cpu
       - memory
       - disk
       - disks_all
       - network
+      - networks_all
       - log
     general_dashboards:
       - template_name: openstack
@@ -56,7 +62,7 @@
       - template_name: openstack
         template_node_type: "*"
         process_list_name: OpenStack
-      # Non-OpenStack specific dashboards that are included:
+      # # Non-OpenStack specific dashboards that are included:
       - template_name: baremetal
         process_list_name: Baremetal
       - template_name: guest
@@ -65,17 +71,19 @@
         process_list_name: Graphite
     static_dashboards:
       - apache_request_latency
-      - cloud_ceph_monitoring
-      - cloud_gnocchi_status
       - cloud_instance_count
       - cloud_keystone_token_count
-      - cloud_rabbitmq_monitoring
       - cloud_system_performance_comparsion
       - cloud_total_memory_usage
+      - openstack_ironic_metrics
+    templated_dashboards:
+      - cloud_ceph_monitoring
+      - cloud_gnocchi_status
+      - cloud_rabbitmq_monitoring
       - gnocchi_performance
       - iostat
-      - three_node_performance_food_groups
-      - openstack_ironic_metrics
+      - three_node_performance_food_groups_basic
+      - three_node_performance_food_groups_enhanced
   roles:
     - grafana-dashboards
   environment: "{{proxy_env}}"

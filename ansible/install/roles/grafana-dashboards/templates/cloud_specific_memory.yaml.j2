@@ -1,0 +1,67 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: {{dashboard_cloud_name}} - Memory
+  links:
+    - type: dashboards
+      asDropdown: true
+      icon: external link
+      includeVars: true
+      keepTime: true
+      tags:
+        - {{dashboard_cloud_name}}
+      targetBlank: true
+      title: "{{dashboard_cloud_name}} Dashboards"
+  tags:
+    - {{dashboard_cloud_name}}
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} Memory Usage
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Memory Usage
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-slab_unrecl, 'Slab Unrecl')
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-used, 'Used')
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-buffered, 'Buffered')
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-slab_recl, 'Slab Recl')
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-cached, 'Cached')
+            - target: alias({{dashboard_cloud_name}}.{{host}}.memory.memory-free, 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}

@@ -1,0 +1,61 @@
+#jinja2:lstrip_blocks: True
+{% set log_types = ['error', 'warn', 'info'] %}
+---
+dashboard:
+  title: {{dashboard_cloud_name}} - Log
+  links:
+    - type: dashboards
+      asDropdown: true
+      icon: external link
+      includeVars: true
+      keepTime: true
+      tags:
+        - {{dashboard_cloud_name}}
+      targetBlank: true
+      title: "{{dashboard_cloud_name}} Dashboards"
+  tags:
+    - {{dashboard_cloud_name}}
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+{% for log_type in log_types %}
+  {% for group in dashboard_groups %}
+    {% if group in groups %}
+      {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+        {% if 'undercloud' in group %}
+    - title: {{group}} {{log_type}} Rate in Logs
+        {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) {{log_type}} Rate in Logs
+        {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        {% for index, host in batched_hosts %}
+        - title: {{host}} Tail
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub({{dashboard_cloud_name}}.{{host}}.tail-*.counter-*{{log_type}}, 'tail-', ''), 'counter-', ''), 10), 'max'), 2, 3)
+        {% endfor %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
