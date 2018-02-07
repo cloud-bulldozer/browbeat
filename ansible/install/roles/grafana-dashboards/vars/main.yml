@@ -40,17 +40,25 @@ per_process_metrics:
     y1units: "iops"
     metrics:
       - name: "Read"
-        query: ".ps_disk_ops.read"
+        query: ".io_ops.read"
       - name: "Write"
-        query: ".ps_disk_ops.write"
+        query: ".io_ops.write"
     nullPointMode: "null"
   - name: "Process IO Throughput(Estimated via SYSCALLS)"
     y1units: "bytes"
     metrics:
+      - name: "Rx"
+        query: ".io_octets.rx"
+      - name: "Tx"
+        query: ".io_octets.tx"
+    nullPointMode: "null"
+  - name: "Process Disk IO Throughput(Estimated via SYSCALLS)"
+    y1units: "bytes"
+    metrics:
       - name: "Read"
-        query: ".ps_disk_octets.read"
+        query: ".disk_octets.read"
       - name: "Write"
-        query: ".ps_disk_octets.write"
+        query: ".disk_octets.write"
     nullPointMode: "null"
 
 per_process_panels:

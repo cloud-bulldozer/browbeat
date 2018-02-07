@@ -385,19 +385,19 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.read, 'Ceph Mon Read')"
+                "target": "alias($Cloud.$Node.processes-ceph-mon.io_ops.read, 'Ceph Mon Read')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_ops.write, 'Ceph Mon Write')"
+                "target": "alias($Cloud.$Node.processes-ceph-mon.io_ops.write, 'Ceph Mon Write')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.read, 'Ceph OSD Read')"
+                "target": "alias($Cloud.$Node.processes-ceph-osd.io_ops.read, 'Ceph OSD Read')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_ops.write, 'Ceph OSD Write')"
+                "target": "alias($Cloud.$Node.processes-ceph-osd.io_ops.write, 'Ceph OSD Write')"
               }
             ],
             "thresholds": [],
@@ -469,25 +469,109 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.read, 'Ceph Mon Read')"
+                "target": "alias($Cloud.$Node.processes-ceph-mon.io_octets.rx, 'Ceph Mon Rx')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.processes-ceph-mon.ps_disk_octets.write, 'Ceph Mon Write')"
+                "target": "alias($Cloud.$Node.processes-ceph-mon.io_octets.tx, 'Ceph Mon Tx')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.read, 'Ceph OSD Read')"
+                "target": "alias($Cloud.$Node.processes-ceph-osd.io_octets.rx, 'Ceph OSD Rx')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud.$Node.processes-ceph-osd.ps_disk_octets.write, 'Ceph OSD Write')"
+                "target": "alias($Cloud.$Node.processes-ceph-osd.io_octets.tx, 'Ceph OSD Tx')"
               }
             ],
             "thresholds": [],
             "timeFrom": null,
             "timeShift": null,
             "title": "IO Throughput(Estimated via SYSCALLS)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 7,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.disk_octets.read, 'Ceph Mon Disk Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-ceph-mon.disk_octets.write, 'Ceph Mon Disk Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.disk_octets.read, 'Ceph OSD Disk Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias($Cloud.$Node.processes-ceph-osd.disk_octets.write, 'Ceph OSD Disk Write')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Disk IO Throughput(Estimated via SYSCALLS)",
             "tooltip": {
               "shared": true,
               "sort": 0,
@@ -534,7 +618,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 7,
+            "id": 8,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -608,7 +692,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 8,
+            "id": 9,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -678,7 +762,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 9,
+            "id": 10,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -748,7 +832,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 10,
+            "id": 11,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -818,7 +902,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 11,
+            "id": 12,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -900,7 +984,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 12,
+            "id": 13,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -970,7 +1054,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 13,
+            "id": 14,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1044,7 +1128,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 14,
+            "id": 15,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1118,7 +1202,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 15,
+            "id": 16,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1192,7 +1276,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 16,
+            "id": 17,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1262,7 +1346,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 17,
+            "id": 18,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1336,7 +1420,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 18,
+            "id": 19,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1410,7 +1494,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 19,
+            "id": 20,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1484,7 +1568,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 20,
+            "id": 21,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1567,7 +1651,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 21,
+            "id": 22,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1657,7 +1741,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 22,
+            "id": 23,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1739,7 +1823,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 23,
+            "id": 24,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1821,7 +1905,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 24,
+            "id": 25,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1903,7 +1987,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 25,
+            "id": 26,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -1985,7 +2069,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 26,
+            "id": 27,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2067,7 +2151,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 27,
+            "id": 28,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2137,7 +2221,7 @@
             "bars": false,
             "datasource": null,
             "fill": 1,
-            "id": 28,
+            "id": 29,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2224,7 +2308,7 @@
             "bars": false,
             "datasource": null,
             "fill": 1,
-            "id": 29,
+            "id": 30,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2294,7 +2378,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 30,
+            "id": 31,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2374,7 +2458,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 31,
+            "id": 32,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2444,7 +2528,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 32,
+            "id": 33,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2529,7 +2613,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 33,
+            "id": 34,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2599,7 +2683,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 34,
+            "id": 35,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2669,7 +2753,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 35,
+            "id": 36,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2756,7 +2840,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 36,
+            "id": 37,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -2843,7 +2927,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 37,
+            "id": 38,
             "legend": {
               "alignAsTable": true,
               "avg": false,
