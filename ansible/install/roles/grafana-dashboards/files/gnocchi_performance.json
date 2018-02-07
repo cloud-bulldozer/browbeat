@@ -9,7 +9,7 @@
     "hideControls": false,
     "id": null,
     "links": [],
-    "refresh": "30s",
+    "refresh": false,
     "rows": [
       {
         "collapse": false,
@@ -243,15 +243,15 @@
               },
               {
                 "refId": "B",
-                "target": "alias(scale($Cloud.overcloud-controller-0.processes-gnocchi-metricd-processing.ps_cputime.user, 0.0001), 'Con0 Metricd Processing CPU %User')"
+                "target": "alias(sumSeries(scale($Cloud.overcloud-controller-0.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con0 Metricd Processing CPU %')"
               },
               {
                 "refId": "C",
-                "target": "alias(scale($Cloud.overcloud-controller-1.processes-gnocchi-metricd-processing.ps_cputime.user, 0.0001), 'Con1 Metricd Processing CPU %User')"
+                "target": "alias(sumSeries(scale($Cloud.overcloud-controller-1.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con1 Metricd Processing CPU %')"
               },
               {
                 "refId": "D",
-                "target": "alias(scale($Cloud.overcloud-controller-2.processes-gnocchi-metricd-processing.ps_cputime.user, 0.0001), 'Con2 Metricd Processing CPU %User')"
+                "target": "alias(sumSeries(scale($Cloud.overcloud-controller-2.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con2 Metricd Processing CPU %')"
               }
             ],
             "thresholds": [],
@@ -342,20 +342,19 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.overcloud-controller-0.processes-gnocchi-metricd.ps_rss, 'Con0 Metricd RSS')"
+                "target": "alias(sumSeries($Cloud.overcloud-controller-0.processes-gnocchi-metricd-*.ps_rss), 'Con0 Metricd RSS')"
               },
               {
                 "refId": "C",
-                "target": "alias($Cloud.overcloud-controller-1.processes-gnocchi-metricd.ps_rss, 'Con1 Metricd RSS')"
+                "target": "alias(sumSeries($Cloud.overcloud-controller-1.processes-gnocchi-metricd-*.ps_rss), 'Con1 Metricd RSS')"
               },
               {
                 "refId": "D",
-                "target": "alias($Cloud.overcloud-controller-2.processes-gnocchi-metricd.ps_rss, 'Con2 Metricd RSS')"
+                "target": "alias(sumSeries($Cloud.overcloud-controller-2.processes-gnocchi-metricd-*.ps_rss), 'Con2 Metricd RSS')"
               }
             ],
             "thresholds": [],
@@ -5329,8 +5328,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-queue_total-*-count, 'gauge-queue_total-', ''), '-count', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-queue_total-*-count, 'gauge-queue_total-', ''), '-count', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -5400,8 +5398,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-queue_total-*-rate, 'gauge-queue_total-', ''), '-rate', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-queue_total-*-rate, 'gauge-queue_total-', ''), '-rate', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -5471,8 +5468,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-message_total-*-count, 'gauge-message_total-', ''), '-count', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-message_total-*-count, 'gauge-message_total-', ''), '-count', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -5542,8 +5538,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-message_total-*-rate, 'gauge-message_total-', ''), '-rate', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.gauge-message_total-*-rate, 'gauge-message_total-', ''), '-rate', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -5613,8 +5608,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByMetric(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.*-msg_count-*, 'gauge-msg_count-', ''))",
-                "textEditor": false
+                "target": "aliasByMetric(aliasSub($Cloud.overcloud-controller-0.rabbitmq_monitoring.*-msg_count-*, 'gauge-msg_count-', ''))"
               }
             ],
             "thresholds": [],
@@ -6801,8 +6795,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.swift_stat.gauge-*-containers, 'gauge-', ''), '-containers', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.swift_stat.gauge-*-containers, 'gauge-', ''), '-containers', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -6874,8 +6867,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.swift_stat.gauge-*-objects, 'gauge-', ''), '-objects', ''), 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(aliasSub($Cloud.overcloud-controller-0.swift_stat.gauge-*-objects, 'gauge-', ''), '-objects', ''), 3)"
               }
             ],
             "thresholds": [],
@@ -6961,8 +6953,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7036,8 +7027,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7111,8 +7101,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-gnocchi-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7198,8 +7187,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7273,8 +7261,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7348,8 +7335,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-ceilometer-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7435,8 +7421,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7510,8 +7495,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7585,8 +7569,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)",
-                "textEditor": false
+                "target": "aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-compute-*.tail-ceilometer-*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)"
               }
             ],
             "thresholds": [],
@@ -7820,8 +7803,7 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-swift.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-info', ''), 1, 3)",
-                "textEditor": false
+                "target": "aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-swift.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-info', ''), 1, 3)"
               }
             ],
             "thresholds": [],

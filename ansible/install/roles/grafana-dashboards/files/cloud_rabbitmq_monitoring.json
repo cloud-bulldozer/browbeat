@@ -354,11 +354,11 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_ops.read, 'rabbitmq Read')"
+                "target": "alias($Cloud.$Node.processes-rabbitmq.io_ops.read, 'rabbitmq Read')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_ops.write, 'rabbitmq Write')"
+                "target": "alias($Cloud.$Node.processes-rabbitmq.io_ops.write, 'rabbitmq Write')"
               }
             ],
             "thresholds": [],
@@ -430,17 +430,93 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_octets.read, 'rabbitmq Read')"
+                "target": "alias($Cloud.$Node.processes-rabbitmq.io_octets.rx, 'rabbitmq Rx')"
               },
               {
                 "refId": "B",
-                "target": "alias($Cloud.$Node.processes-rabbitmq.ps_disk_octets.write, 'rabbitmq Write')"
+                "target": "alias($Cloud.$Node.processes-rabbitmq.io_octets.tx, 'rabbitmq Tx')"
               }
             ],
             "thresholds": [],
             "timeFrom": null,
             "timeShift": null,
             "title": "IO Throughput(Estimated via SYSCALLS)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bytes",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "decimals": 0,
+            "editable": true,
+            "error": false,
+            "fill": 0,
+            "grid": {},
+            "id": 7,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.disk_octets.read, 'rabbitmq Disk Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias($Cloud.$Node.processes-rabbitmq.disk_octets.write, 'rabbitmq Disk Write')"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Disk IO Throughput(Estimated via SYSCALLS)",
             "tooltip": {
               "shared": true,
               "sort": 0,
@@ -487,7 +563,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 7,
+            "id": 8,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -573,7 +649,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 8,
+            "id": 9,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -644,7 +720,7 @@
             "bars": false,
             "datasource": null,
             "fill": 1,
-            "id": 9,
+            "id": 10,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -715,7 +791,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 10,
+            "id": 11,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -786,7 +862,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 11,
+            "id": 12,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -857,7 +933,7 @@
             "bars": false,
             "datasource": null,
             "fill": 0,
-            "id": 12,
+            "id": 13,
             "legend": {
               "alignAsTable": true,
               "avg": false,
@@ -943,7 +1019,7 @@
             "error": false,
             "fill": 1,
             "grid": {},
-            "id": 13,
+            "id": 14,
             "legend": {
               "alignAsTable": true,
               "avg": true,

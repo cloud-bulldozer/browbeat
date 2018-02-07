@@ -1519,19 +1519,19 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_ops.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.io_ops.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')"
               },
               {
                 "refId": "B",
-                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_ops.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.io_ops.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')"
               },
               {
                 "refId": "C",
-                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_ops.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.io_ops.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')"
               },
               {
                 "refId": "D",
-                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_ops.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.io_ops.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')"
               }
             ],
             "timeFrom": null,
@@ -1596,24 +1596,101 @@
             "targets": [
               {
                 "refId": "A",
-                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_octets.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Read')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.io_octets.rx, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Rx')"
               },
               {
                 "refId": "B",
-                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.ps_disk_octets.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Write')"
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.io_octets.tx, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Tx')"
               },
               {
                 "refId": "C",
-                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_octets.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Read')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.io_octets.rx, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Rx')"
               },
               {
                 "refId": "D",
-                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.ps_disk_octets.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Write')"
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.io_octets.tx, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Tx')"
               }
             ],
             "timeFrom": null,
             "timeShift": null,
             "title": "IO Throughput",
+            "tooltip": {
+              "shared": true,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "x-axis": true,
+            "y-axis": true,
+            "y_formats": [
+              "bytes",
+              "short"
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": null,
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "leftLogBase": 1,
+              "leftMax": null,
+              "leftMin": null,
+              "rightLogBase": 1,
+              "rightMax": null,
+              "rightMin": null,
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 17,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "refId": "A",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.disk_octets.read, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Disk Read')"
+              },
+              {
+                "refId": "B",
+                "target": "alias(timeShift($Cloud1.$Node1.$Node1_Process.disk_octets.write, '$Node1_Timeshift'), 'Node1 - $Node1_Process - Disk Write')"
+              },
+              {
+                "refId": "C",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.disk_octets.read, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Disk Read')"
+              },
+              {
+                "refId": "D",
+                "target": "alias(timeShift($Cloud2.$Node2.$Node2_Process.disk_octets.write, '$Node2_Timeshift'), 'Node2 - $Node2_Process - Disk Write')"
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Disk IO Throughput",
             "tooltip": {
               "shared": true,
               "value_type": "cumulative"
@@ -1684,8 +1761,8 @@
           "name": "Node1",
           "options": [],
           "query": "$Cloud1.*",
-          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "refresh": 2,
+          "regex": "/^(?!stats[d]*[_counts]*$).*$/",
           "type": "query"
         },
         {
