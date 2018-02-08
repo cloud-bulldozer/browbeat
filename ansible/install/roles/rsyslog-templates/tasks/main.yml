@@ -145,3 +145,4 @@
 - name: Generate and install syslog policy file
   shell: "grep syslog /var/log/audit/audit.log  | audit2allow -M syslogd_t; semodule -i syslogd_t.pp"
   become: true
+  ignore_errors: true
