@@ -58,7 +58,7 @@ if [ ! -z ${current_build+x} ]
 #If we are not in the pipeline downstream builds need to use current-passed-ci
 elif [[ $RELEASE == *rhos-* ]]
  then
-  export RELEASE="$RELEASE-current-passed-ci"
+  export RELEASE="perfci/$RELEASE-current-passed-ci"
 fi
 
 
