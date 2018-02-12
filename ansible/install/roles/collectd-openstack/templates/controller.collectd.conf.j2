@@ -549,6 +549,15 @@ PreCacheChain "PreCache"
     </Match>
     <Match>
       Regex "RT:([0-9]+).*GET"
+      <DSType "Distribution">
+        Percentile 99
+        Bucket 0 100
+      </DSType>
+      Type "latency"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "RT:([0-9]+).*GET"
       DSType "GaugeAverage"
       Type "latency"
       Instance "get-avg"
