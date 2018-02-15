@@ -57,6 +57,13 @@ if [ ! -z ${current_build+x} ]
   fi
 fi
 
+#Adding extra vars to deploy cloud with ovn
+#if the job is an ovn job
+if [[ $TOOL == ovn ]]
+   then
+    echo "Deploying cloud with OVN"
+    export VARS="$VARS --extra-vars deploy_ha_ovn=true"
+fi
 
 #used to ensure concurrent jobs on the same executor work
 socketdir=$(mktemp -d /tmp/sockXXXXXX)
