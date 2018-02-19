@@ -54,13 +54,7 @@ if [ ! -z ${current_build+x} ]
     export RELEASE="$RELEASE-rhel"
     export VARS="$VARS --extra-vars current_build=$hash"
   fi
-
-#If we are not in the pipeline downstream builds need to use current-passed-ci
-elif [[ $RELEASE == *rhos-* ]]
- then
-  export RELEASE="perfci/$RELEASE-current-passed-ci"
 fi
-
 
 
 #used to ensure concurrent jobs on the same executor work
