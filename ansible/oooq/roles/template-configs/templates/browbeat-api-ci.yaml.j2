@@ -57,13 +57,13 @@ yoda:
   stackrc: "/home/stack/stackrc"
 
 workloads:
-  - name: authenticate
+  - name: authenticate-keystone
     enabled: true
     type: rally
     concurrency:
-      - 16
-      - 24
-    times: 2500
+      - 6
+      - 8
+    times: 256
     scenarios:
       - name: authentic-keystone
         enabled: true
@@ -72,8 +72,9 @@ workloads:
     enabled: true
     type: rally
     concurrency:
-      - 16
-    times: 1000
+      - 6
+      - 8
+    times: 256
     scenarios:
       - name: create-and-list-tenants
         enabled: true
@@ -82,8 +83,8 @@ workloads:
     enabled: true
     type: rally
     concurrency:
+      - 6
       - 8
-      - 12
     times: 128
     scenarios:
       - name: create-list-router
@@ -105,15 +106,10 @@ workloads:
     enabled: true
     type: rally
     concurrency:
+      - 6
       - 8
-      - 12
     times: 64
     scenarios:
-      - name: boot-snapshot-delete
-        enabled: true
-        file: rally/nova/nova-boot-snapshot-cc.yml
-        image_name: cirros
-        flavor_name: m1.tiny
       - name: boot-list
         enabled: true
         file: rally/nova/nova-boot-list-cc.yml
@@ -123,19 +119,20 @@ workloads:
     enabled: true
     type: rally
     concurrency:
+      - 6
       - 8
-      - 12
     times: 64
     scenarios:
       - name: create-and-delete-image
         enabled: true
-        image_location: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz
+        image_location: /home/stack/centos7.qcow2
         flavor_name: m1.tiny
         file: rally/glance/create-and-delete-image-cc.yml
   - name: plugins
     enabled: true
     type: rally
     concurrency:
+      - 6
       - 8
     times: 64
     scenarios:
