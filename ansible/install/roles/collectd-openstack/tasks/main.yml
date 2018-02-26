@@ -239,7 +239,7 @@
   with_items:
     - src: collectd_ovsagent.py
       dest: /usr/local/bin/collectd_ovsagent.py
-  when: "('controller' in group_names ) or ('compute' in group_names)"
+  when: "('controller' in group_names ) or ('compute' in group_names) or ('networker' in group_names)"
 
 # Rabbitmq monitoring
 - name: Install pyrabbit

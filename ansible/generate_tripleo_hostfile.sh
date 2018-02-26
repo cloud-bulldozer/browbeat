@@ -78,6 +78,16 @@ if [ ${#clouds} -gt 0 ]; then
      exit 1
   fi
 
+  networker_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name Networker > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
+  if [ ${#networker_id} -lt 3 ]; then
+    echo "Info: No Networker resources."
+  else
+    networker_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${networker_id} > >(grep -i networker) 2>/dev/null" | awk '{print $2}')
+    if [ ${#networker_ids} -lt 1 ]; then
+      echo "Info: No Networker resources."
+    fi
+  fi
+
   blockstorage_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name BlockStorage > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
   if [ ${#blockstorage_id} -lt 3 ]; then
     echo "Info: No BlockStorage resources."
@@ -123,6 +133,15 @@ if [ ${#clouds} -gt 0 ]; then
      controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${controller_id} ${controller} | grep -i nova_server_resource" | awk '{print $4}')
    else
      controller_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${controller_id} ${controller} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   fi
+  done
+  networker_uuids=()
+  for networker in ${networker_ids}
+  do
+   if [[ ${version_tripleo} -lt 2 ]] ; then
+     networker_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${networker_id} ${networker} | grep -i nova_server_resource" | awk '{print $4}')
+   else
+     networker_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${networker_id} ${networker} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
    fi
   done
   blockstorage_uuids=()
@@ -191,11 +210,12 @@ echo "    IdentityFile ~/.ssh/id_rsa" | tee -a ${ssh_config_file}
 echo "    StrictHostKeyChecking no" | tee -a ${ssh_config_file}
 echo "    UserKnownHostsFile=/dev/null" | tee -a ${ssh_config_file}
 
+blockstorage_hn=()
+cephstorage_hn=()
 compute_hn=()
 controller_hn=()
-blockstorage_hn=()
+networker_hn=()
 objectstorage_hn=()
-cephstorage_hn=()
 IFS=$'\n'
 for line in $nodes; do
  uuid=$(echo $line | awk '{print $2}')
@@ -203,6 +223,8 @@ for line in $nodes; do
  IP=$(echo $line | awk '{print $8}' | cut -d "=" -f2)
  if grep -q $uuid <<< {$controller_uuids}; then
   controller_hn+=("$host")
+elif grep -q $uuid <<< {$networker_uuids}; then
+  networker_hn+=("$host")
  elif grep -q $uuid <<< {$blockstorage_uuids}; then
   blockstorage_hn+=("$host")
  elif grep -q $uuid <<< {$objectstorage_uuids}; then
@@ -228,6 +250,11 @@ done
 # Sort Host Types
 controller_hn=( $(
     for item in "${controller_hn[@]}"
+    do
+        echo "$item"
+    done | sort) )
+networker_hn=( $(
+    for item in "${networker_hn[@]}"
     do
         echo "$item"
     done | sort) )
@@ -283,6 +310,22 @@ if [[ ${#controller_hn} -gt 0 ]]; then
      fi
    done
   echo "${ct} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
+ done
+fi
+echo "" | tee -a ${ansible_inventory_file}
+echo "[networker]" | tee -a ${ansible_inventory_file}
+if [[ ${#networker_hn} -gt 0 ]]; then
+ for networker in ${networker_hn[@]}; do
+  ironic_uuid=''
+  for line in ${ironic_uuids}; do
+   uuid=$(echo $line | awk '{print $2}')
+   host=$(echo $line | awk '{print $6}')
+   if [ "$host" == "$networker" ]; then
+    ironic_uuid=$uuid
+    break
+   fi
+  done
+  echo "${networker} ironic_uuid=${ironic_uuid}" | tee -a ${ansible_inventory_file}
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
@@ -354,6 +397,9 @@ if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#obj
  echo "[overcloud:children]" | tee -a ${ansible_inventory_file}
  if [[ ${#controller_hn} -gt 0 ]]; then
   echo "controller" | tee -a ${ansible_inventory_file}
+ fi
+ if [[ ${#networker_hn} -gt 0 ]]; then
+  echo "networker" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#blockstorage_hn} -gt 0 ]]; then
   echo "blockstorage" | tee -a ${ansible_inventory_file}

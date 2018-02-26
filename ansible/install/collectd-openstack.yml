@@ -8,6 +8,7 @@
 # Or use tags:
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "undercloud"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "controller"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "networker"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "blockstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "objectstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "cephstorage"
@@ -50,6 +51,24 @@
       when: not collectd_controller
       ignore_errors: true
   tags: controller
+  environment: "{{proxy_env}}"
+
+- hosts: networker
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: networker
+  roles:
+    - { role: common, when: collectd_networker }
+    - { role: epel, when: collectd_networker }
+    - { role: repo }
+    - { role: collectd-openstack, when: collectd_networker }
+  tasks:
+    - name: Collectd off if not collectd_networker
+      service: name=collectd state=stopped enabled=false
+      become: true
+      when: not collectd_networker
+      ignore_errors: true
+  tags: networker
   environment: "{{proxy_env}}"
 
 - hosts: blockstorage

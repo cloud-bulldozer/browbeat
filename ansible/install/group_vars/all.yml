@@ -140,6 +140,7 @@ collectd_write_graphite_port: 2003
 # Run collectd on specific openstack nodes:
 collectd_undercloud: true
 collectd_controller: true
+collectd_networker: true
 collectd_blockstorage: true
 collectd_objectstorage: true
 collectd_cephstorage: true
@@ -197,6 +198,7 @@ gnocchi_status_controller_collectd_interval: 10
 # Disk plugin metrics are opt-out, IOStat metrics are opt-in
 disk_undercloud_collectd_plugin: true
 disk_controller_collectd_plugin: true
+disk_networker_collectd_plugin: true
 disk_cephstorage_collectd_plugin: true
 disk_compute_collectd_plugin: true
 disk_blockstorage_collectd_plugin: true
@@ -206,6 +208,8 @@ iostat_undercloud_collectd_plugin: false
 iostat_undercloud_collectd_interval: 10
 iostat_controller_collectd_plugin: false
 iostat_controller_collectd_interval: 10
+iostat_networker_collectd_plugin: false
+iostat_networker_collectd_interval: 10
 iostat_cephstorage_collectd_plugin: false
 iostat_cephstorage_collectd_interval: 10
 iostat_compute_collectd_plugin: false
@@ -257,14 +261,22 @@ controller_monitored_queues:
 ########################
 ovsagent_compute_monitor: false
 ovsagent_controller_monitor: false
+ovsagent_networker_monitor: false
 
 controller_monitored_ints:
+  - "tap"
+
+networker_monitored_ints:
   - "tap"
 
 compute_monitored_ints:
   - "qvo"
 
 controller_monitored_ns:
+  - "qrouter"
+  - "qdhcp"
+
+networker_monitored_ns:
   - "qrouter"
   - "qdhcp"
 
