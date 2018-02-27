@@ -1,0 +1,41 @@
+    - title: Processes
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Processes State
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias($Cloud.$Node.processes.ps_state-running, 'Running')
+            - target: alias($Cloud.$Node.processes.ps_state-stopped, 'Stopped')
+            - target: alias($Cloud.$Node.processes.ps_state-sleeping, 'Sleeping')
+            - target: alias($Cloud.$Node.processes.ps_state-blocked, 'Blocked')
+            - target: alias($Cloud.$Node.processes.ps_state-paging, 'Paging')
+            - target: alias($Cloud.$Node.processes.ps_state-zombies, 'Zombies')
+        - title: $Cloud - $Node - Fork Rate
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.processes.fork_rate, 'Fork Rate')

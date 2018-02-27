@@ -1,0 +1,390 @@
+    - title: Ceph Mon
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Mon Count/Quorum/Elections
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMon, 'Count')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMonQuorum, 'Quorum')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_numElections, 'Elections')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionCall, 'Call')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionLose, 'Lose')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_electionWin, 'Win')
+        - title: Mon Sessions
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Mon_numSessions, 'Open')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionAdd, 'Add')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionRm, 'RM')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_rate-Mon_sessionTrim, 'Trim')
+        - title: OSDs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsd, 'Total OSDs')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsdUp, 'OSDs Up')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numOsdIn, 'OSDs In')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdEpoch, 'Epoch')
+        - title: MDS
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsUp, 'Up')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsIn, 'In')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numMdsFailed, 'Failed')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_mdsEpoch, 'Epoch')
+        - title: Objects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObject, 'Total Objects')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectDegraded, 'Degraded Objects')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectMisplaced, 'Misplaced Objects')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numObjectUnfound, 'Unfound Objects')
+        - title: Placement Groups
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPg, 'Total PGs')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgActive, 'PGs Active')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgActiveClean, 'PGs Active-Clean')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPgPeering, 'PGs Peering')
+        - title: Pools
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numPool, 'Pools')
+        - title: OSD Bytes
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Bytes Available
+              stack: A
+            - alias: Bytes Used
+              stack: A
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytes, 'Total Bytes')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytesUsed, 'Bytes Used')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_osdBytesAvail, 'Bytes Available')
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Size of All Objects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Cluster_numBytes, 'Size of all objects')
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: LevelDB Queue/Operations
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Compact Queue Length
+              steppedLine: true
+              yaxis: 2
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-Leveldb_leveldbCompactQueueLen, 'Compact Queue Length')
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-Leveldb_*, 'ceph_rate-Leveldb_leveldb', ''), 3)
+          yaxes:
+            - format: short
+            - format: short
+              label: Queue Length
+        - title: LevelDB Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          pointradius: 2
+          points: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_latency-Leveldb_*, 'ceph_latency-Leveldb_leveldb', ''), 3)
+          yaxes:
+            - format: s
+            - format: short
+        - title: Finisher Monstore
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 2
+          seriesOverrides:
+            - alias: Queue Length
+              lines: true
+              yaxis: 2
+            - alias: Complete Latency
+              points: true
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_latency-FinisherMonstore_completeLatency, 'Complete Latency')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-FinisherMonstore_queueLen, 'Queue Length')
+          yaxes:
+            - format: s
+            - format: short
+              label: Queue Length
+        - title: Paxos Rate
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-Paxos_*, 'ceph_rate-Paxos_', ''), 3)
+        - title: Paxos Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_latency-Paxos_*, 'ceph_latency-Paxos_', ''), 3)
+          yaxes:
+            - format: µs
+            - format: short
+        - title: Throttle Mon Client
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Bytes Max
+              yaxis: 2
+            - alias: Bytes Current
+              yaxis: 2
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonClientBytes_max, 'Bytes Max')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonClientBytes_val, 'Bytes Current')
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMonClientBytes_*, 'ceph_rate-ThrottleMonClientBytes_', ''), 3)
+          yaxes:
+            - format: Bps
+            - format: short
+        - title: Throttle Mon Daemon
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Bytes Max
+              yaxis: 2
+            - alias: Bytes Current
+              yaxis: 2
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonDaemonBytes_max, 'Bytes Max')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMonDaemonBytes_val, 'Bytes Current')
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMonDaemonBytes_*, 'ceph_rate-ThrottleMonDaemonBytes_', ''), 3)
+          yaxes:
+            - format: Bps
+            - format: bytes
+        - title: Throttle Msgr Dispatch Throttler Mon
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Bytes Max
+              yaxis: 2
+            - alias: Bytes Current
+              yaxis: 2
+          span: 6
+          targets:
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMsgrDispatchThrottlerMon_max, 'Bytes Max')
+            - target: alias($Cloud.$Node.ceph-mon_*.ceph_bytes-ThrottleMsgrDispatchThrottlerMon_val, 'Bytes Current')
+            - target: aliasByNode(aliasSub($Cloud.$Node.ceph-mon_*.ceph_rate-ThrottleMsgrDispatchThrottlerMon_*, 'ceph_rate-ThrottleMsgrDispatchThrottlerMon_', ''), 3)
+          yaxes:
+            - format: ops
+            - format: bytes

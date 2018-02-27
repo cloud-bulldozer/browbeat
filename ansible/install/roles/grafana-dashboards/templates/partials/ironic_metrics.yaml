@@ -1,0 +1,116 @@
+    - title: Ironic StatsD power state
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: "Power State Sync: 90th Percentile Mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.do_sync_power_state.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Change Node Power State: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.change_node_power_state.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Ironic StatsD boot/deployment info
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: "Set boot device: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.set_boot_device.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Do Node Deployment: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.do_node_deploy.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Ironic StatsD API node details/list response time
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: "Get Node Details API response time: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodesController.detail.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Get Node List API response time: 90th Percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodesController.get_all.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Ironic StatsD API power/provision state
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: "Node Power State API response time: 90th Percentile Mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodeStatesController.power.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Ironic Node Provision State API response time: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodeStatesController.provision.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short

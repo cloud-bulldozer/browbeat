@@ -1,0 +1,35 @@
+#jinja2:lstrip_blocks: True
+    - title: {{partial_panel.title}}
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+{% for metrics in per_process_metrics %}
+        - title: {{metrics.name}}
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: '{{metrics.nullPointMode}}'
+          targets:
+  {% for process in partial_panel.processes %}
+    {% for metric in metrics.metrics %}
+      {% if metrics.name|match('Process CPU') %}
+            - target: alias(scale($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, 0.0001), '{{process}} {{metric.name}}')
+      {% else %}
+            - target: alias($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, '{{process}} {{metric.name}}')
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+          yaxes:
+            - format: {{metrics.y1units}}
+            - format: short
+{% endfor %}

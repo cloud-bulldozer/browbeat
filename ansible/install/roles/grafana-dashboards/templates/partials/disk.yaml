@@ -1,0 +1,133 @@
+    - title: Disk
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $Disk iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Disk.disk_ops.read, 'Read')
+            - target: alias($Cloud.$Node.$Disk.disk_ops.write, 'Write')
+          yaxes:
+            - format: iops
+            - format: short
+        - title: $Cloud - $Node - $Disk Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Disk.disk_octets.read, 'Read')
+            - target: alias($Cloud.$Node.$Disk.disk_octets.write, 'Write')
+          yaxes:
+            - format: Bps
+            - format: short
+        - title: $Cloud - $Node - $Disk Merged iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Disk.disk_merged.read, 'Read')
+            - target: alias($Cloud.$Node.$Disk.disk_merged.write, 'Write')
+          yaxes:
+            - format: iops
+            - format: short
+        - title: $Cloud - $Node - $Disk Pending Operations
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.$Disk.pending_operations, 'Pending Ops')
+          yaxes:
+            - format: short
+            - format: short
+        - title: $Cloud - $Node - $Disk Average Time (Estimated)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Disk.disk_time.read, 'Read')
+            - target: alias($Cloud.$Node.$Disk.disk_time.write, 'Write')
+          yaxes:
+            - format: ms
+            - format: short
+        - title: $Cloud - $Node - $Disk IO Time
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Weighted Time
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.$Disk.disk_io_time.io_time, 0.1), 'Time')
+            - target: alias($Cloud.$Node.$Disk.disk_io_time.weighted_io_time, 'Weighted Time')
+          yaxes:
+            - format: percent
+            - format: ms

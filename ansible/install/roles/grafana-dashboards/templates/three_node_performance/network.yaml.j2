@@ -1,0 +1,40 @@
+    - title: Network
+      height: 250px
+      showTitle: true
+      panels:
+{% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - Throughput
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*\\.rx/"
+              transform: negative-Y
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.*.if_octets.tx, 'interface-', ''), 2, 4)
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.*.if_octets.rx, 'interface-', ''), 2, 4)
+          yaxes:
+            - format: Bps
+            - format: short
+{% endfor %}
+{% if enhanced %}
+  {% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - PPS
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "/.*\\.rx/"
+              transform: negative-Y
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.*.if_packets.tx, 'interface-', ''), 2, 4)
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.*.if_packets.rx, 'interface-', ''), 2, 4)
+          yaxes:
+            - format: pps
+            - format: short
+  {% endfor %}
+{% endif %}

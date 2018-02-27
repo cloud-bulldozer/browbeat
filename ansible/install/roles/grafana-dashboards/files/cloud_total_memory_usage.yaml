@@ -1,0 +1,186 @@
+---
+dashboard:
+  title: Cloud Total Memory Usage
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 75px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+    - title: Undercloud Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Undercloud Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias($Cloud.undercloud.memory.memory-slab_unrecl, 'Slab Unrecl')
+            - target: alias($Cloud.undercloud.memory.memory-used, 'Used')
+            - target: alias($Cloud.undercloud.memory.memory-buffered, 'Buffered')
+            - target: alias($Cloud.undercloud.memory.memory-slab_recl, 'Slab Recl')
+            - target: alias($Cloud.undercloud.memory.memory-cached, 'Cached')
+            - target: alias($Cloud.undercloud.memory.memory-free, 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+    - title: Controller Total Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Total Controller Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-controller-*.memory.memory-free), 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+    - title: Networker Total Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Total Networker Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-networker-*.memory.memory-free), 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+    - title: CephStorage Total Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Total CephStorage Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-cephstorage-*.memory.memory-free), 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+    - title: ObjectStorage Total Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Total ObjectStorage Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-objectstorage-*.memory.memory-free), 'Free')
+          yaxes:
+            - format: bits
+            - format: short
+    - title: Compute Total Memory Usage
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Total Compute Memory Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-free), 'Free')
+          yaxes:
+            - format: bits
+            - format: short

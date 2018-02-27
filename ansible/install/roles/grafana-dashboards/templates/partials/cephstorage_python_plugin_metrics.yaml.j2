@@ -1,0 +1,272 @@
+    - title: Ceph Storage Python Plugins
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Mons & Pool Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: false
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.collectd-ceph-storage-mon.*, 'gauge-', ''), 3)
+            - target: alias($Cloud.{{partial_panel.node}}.collectd-ceph-storage-pool.gauge-number, 'Pools')
+        - title: OSDs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: false
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.collectd-ceph-storage-osd.*, 'gauge-', ''), 3)
+        - title: PGs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: false
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.collectd-ceph-storage-pg.*, 'gauge-', ''), 3)
+        - title: Cluster Space
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.collectd-ceph-storage-cluster.gauge-total_*, 'gauge-', ''), 3)
+          yaxes:
+            - format: bits
+            - format: short
+        - title: Cluster Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.{{partial_panel.node}}.collectd-ceph-storage-cluster.gauge-min_latency, 'Min')
+            - target: alias($Cloud.{{partial_panel.node}}.collectd-ceph-storage-cluster.gauge-avg_latency, 'Avg')
+            - target: alias($Cloud.{{partial_panel.node}}.collectd-ceph-storage-cluster.gauge-max_latency, 'Max')
+            - target: alias($Cloud.{{partial_panel.node}}.collectd-ceph-storage-cluster.gauge-stddev_latency, 'stddev')
+          yaxes:
+            - format: ms
+            - format: short
+        - title: Pool Objects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-objects, 'collectd-ceph-storage-pool-', ''), 2)
+        - title: Pool iops
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-read_op_per_sec, 'collectd-ceph-storage-pool-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(scale(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-write_op_per_sec, 'collectd-ceph-storage-pool-', ''), 'gauge-', ''), -1), 2, 3)
+          yaxes:
+            - format: iops
+            - format: short
+        - title: Pool Throughput
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-read_bytes_sec, 'collectd-ceph-storage-pool-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(scale(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-write_bytes_sec,'collectd-ceph-storage-pool-', ''), 'gauge-', ''), -1), 2, 3)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Pool PG/PGP Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-pg_num, 'collectd-ceph-storage-pool-', ''), 'gauge-', ''), '_num', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-pgp_num, 'collectd-ceph-storage-pool-', ''), 'gauge-', ''), '_num', ''), 2, 3)
+        - title: Pool Size
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-size, 'collectd-ceph-storage-pool-', ''), 2)
+        - title: OSD Space
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-kb_total, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-kb_used, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: kbytes
+            - format: short
+        - title: OSD Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 2
+          points: true
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-apply_latency_ms, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-commit_latency_ms, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+          yaxes:
+            - format: ms
+            - format: short
+        - title: OSD Snap Trim
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-num_snap_trimming, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.$OSD.gauge-snap_trim_queue_len, 'collectd-ceph-storage-osd-', ''), 'gauge-', ''), 2, 3)
+        - title: Pool Bytes Used
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.{{partial_panel.node}}.$Pool.gauge-bytes_used, 'collectd-ceph-storage-pool-', ''), 2)
+          yaxes:
+            - format: bytes
+            - format: short

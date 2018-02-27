@@ -1,0 +1,22 @@
+    - title: Gnocchi Backlog
+      collapse: {{partial_panel.collapse}}
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Node Metrics/Measures Backlog
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          steppedLine: true
+          targets:
+            - target: aliasByMetric(aliasSub($Cloud.$Node.gnocchi_status.*, 'gauge-', ''))

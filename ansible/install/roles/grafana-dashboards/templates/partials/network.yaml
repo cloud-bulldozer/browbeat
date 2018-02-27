@@ -1,0 +1,109 @@
+    - title: Network
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $Interface Network IO
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Interface.if_packets.tx, 'TX')
+            - target: alias($Cloud.$Node.$Interface.if_packets.rx, 'RX')
+          yaxes:
+            - format: pps
+            - format: short
+        - title: $Cloud - $Node - $Interface Network Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - target: alias(scale($Cloud.$Node.$Interface.if_octets.tx, 8), 'TX')
+            - target: alias(scale($Cloud.$Node.$Interface.if_octets.rx, 8), 'RX')
+          yaxes:
+            - format: bps
+            - format: short
+        - title: $Cloud - $Node - $Interface Errors
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - target: alias($Cloud.$Node.$Interface.if_errors.tx, 'TX')
+            - target: alias($Cloud.$Node.$Interface.if_errors.rx, 'RX')
+          yaxes:
+            - format: short
+            - format: short
+        - title: $Cloud - $Node - ConnTrack
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: "% Used"
+              yaxis: 2
+          targets:
+            - target: alias($Cloud.$Node.conntrack.conntrack-max, 'Max')
+            - target: alias($Cloud.$Node.conntrack.conntrack, 'Used')
+            - target: alias($Cloud.$Node.conntrack.percent-used, '% Used')
+          yaxes:
+            - format: short
+            - format: percent
+              max: 100
+        - title: Ping- Latency and Jitter
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.ping.*, 3)

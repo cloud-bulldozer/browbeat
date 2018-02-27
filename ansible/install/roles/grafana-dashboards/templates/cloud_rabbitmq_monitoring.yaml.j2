@@ -1,0 +1,52 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: Cloud Rabbitmq Monitoring
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% set partial_panel = {
+        'title': 'Rabbitmq Process Metrics',
+        'processes': ['rabbitmq',],
+      }
+    %}
+    {% include 'partials/per_process_single_row.yaml.j2' %}
+
+    {% set partial_panel = {'node': '$Node'} %}
+    {% include 'partials/rabbitmq_metrics.yaml.j2' %}
+
+    - title: Rabbitmq Log Messages
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Tail
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-rabbitmq.counter-error, 10), 'Error')
+            - target: alias(scale($Cloud.$Node.tail-rabbitmq.counter-warn, 10), 'Warn')
+            - target: alias(scale($Cloud.$Node.tail-rabbitmq.counter-info, 10), 'Info')

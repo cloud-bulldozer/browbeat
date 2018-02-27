@@ -1,0 +1,104 @@
+    - title: Gnocchi API Latency
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Gnocchi API Patch Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-patch-max, 0.000001), 'overcloud-', ''), 'latency-patch-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-patch-99_00, 0.000001), 'overcloud-', ''), 'latency-patch-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-patch-avg, 0.000001), 'overcloud-', ''), 'latency-patch-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-patch-min, 0.000001), 'overcloud-', ''), 'latency-patch-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.counter-patch, 10), 'overcloud-', ''), 'counter-patch', 'Count'), 1, 3)
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Gnocchi API Post Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-post-max, 0.000001), 'overcloud-', ''), 'latency-post-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-post-99_00, 0.000001), 'overcloud-', ''), 'latency-post-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-post-avg, 0.000001), 'overcloud-', ''), 'latency-post-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-post-min, 0.000001), 'overcloud-', ''), 'latency-post-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.counter-post, 10), 'overcloud-', ''), 'counter-post', 'Count'), 1, 3)
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Gnocchi API Get Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-get-max, 0.000001), 'overcloud-', ''), 'latency-get-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-get-99_00, 0.000001), 'overcloud-', ''), 'latency-get-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-get-avg, 0.000001), 'overcloud-', ''), 'latency-get-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.latency-get-min, 0.000001), 'overcloud-', ''), 'latency-get-', ''), 1, 3)
+            - target: aliasByNode(aliasSub(aliasSub(scale($Cloud.overcloud-controller-*.tail-gnocchi-api.counter-get, 10), 'overcloud-', ''), 'counter-get', 'Count'), 1, 3)
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count

@@ -1,0 +1,131 @@
+    - title: {{pp_panel.title}} Process Metrics
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: {{pp_panel.title}} Process Counts (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries(keepLastValue($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_count.processes, 100)), '{{process}}')
+          {% endfor %}
+        - title: {{pp_panel.title}} Thread Counts (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries(keepLastValue($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_count.threads, 100)), '{{process}}')
+          {% endfor %}
+        - title: {{pp_panel.title}} System CPU Usage (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries(scale($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_cputime.syst, 0.0001)), '{{process}}')
+          {% endfor %}
+          yaxes:
+            - format: percent
+            - format: short
+        - title: {{pp_panel.title}} User CPU Usage (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries(scale($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_cputime.user, 0.0001)), '{{process}}')
+          {% endfor %}
+          yaxes:
+            - format: percent
+            - format: short
+        - title: {{pp_panel.title}} RSS Memory (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_rss), '{{process}}')
+          {% endfor %}
+          yaxes:
+            - format: bits
+            - format: short
+        - title: {{pp_panel.title}} Virtual Memory (Sum Across Controllers)
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+          {% for process in pp_panel.processes %}
+            - target: alias(sumSeries($Cloud.{{pp_panel.node}}.processes-{{process}}.ps_vm), '{{process}}')
+          {% endfor %}
+          yaxes:
+            - format: bits
+            - format: short

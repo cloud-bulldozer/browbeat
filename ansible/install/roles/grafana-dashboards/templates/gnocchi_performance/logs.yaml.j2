@@ -1,0 +1,59 @@
+    - title: {{log_panel.title}} Logs
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: {{log_panel.title}} Error Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+          {% for tail in log_panel.tail %}
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.{{log_panel.node}}.tail-{{tail}}*.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)
+          {% endfor %}
+        - title: {{log_panel.title}} Warn Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+          {% for tail in log_panel.tail %}
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.{{log_panel.node}}.tail-{{tail}}*.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)
+          {% endfor %}
+        - title: {{log_panel.title}} Info Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+          {% for tail in log_panel.tail %}
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.{{log_panel.node}}.tail-{{tail}}*.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), 1, 2)
+          {% endfor %}

@@ -1,0 +1,57 @@
+    - title: CPU All
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - All CPUs
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-system), 'System')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-user), 'User')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-nice), 'Nice')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-steal), 'Steal')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-softirq), 'SoftIRQ')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-interrupt), 'Interrupt')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-wait), 'Wait')
+            - target: alias(averageSeries($Cloud.$Node.cpu-*.cpu-idle), 'Idle')
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - All CPUs Sum
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-system), 'System')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-user), 'User')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-nice), 'Nice')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-steal), 'Steal')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-softirq), 'SoftIRQ')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-interrupt), 'Interrupt')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-wait), 'Wait')
+            - target: alias(sumSeries($Cloud.$Node.cpu-*.cpu-idle), 'Idle')
+          yaxes:
+            - format: percent
+            - format: short

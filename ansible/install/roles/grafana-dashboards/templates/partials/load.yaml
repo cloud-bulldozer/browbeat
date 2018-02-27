@@ -1,0 +1,31 @@
+    - title: Load / Uptime
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - All CPUs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: uptime
+              lines: false
+              yaxis: 2
+          targets:
+            - target: alias($Cloud.$Node.load.load.shortterm, '1m avg')
+            - target: alias($Cloud.$Node.load.load.midterm, '5m avg')
+            - target: alias($Cloud.$Node.load.load.longterm, '15m avg')
+            - target: alias($Cloud.$Node.uptime.uptime, 'uptime')
+          yaxes:
+            - format: short
+            - format: s

@@ -1,0 +1,161 @@
+#jinja2:lstrip_blocks: True
+{% set apache_groups = ['undercloud', 'controller', '*'] %}
+{% set cephmon_groups = ['controller', '*'] %}
+{% set gnocchi_groups = ['controller', '*'] %}
+{% set ironic_groups = ['undercloud'] %}
+{% set mariadb_groups = ['undercloud', 'controller', '*'] %}
+{% set odl_groups = ['controller', '*'] %}
+{% set ovsagent_groups = ['controller', 'compute', '*'] %}
+{% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
+{% set swift_stat_groups = ['controller', '*'] %}
+---
+dashboard:
+  title: {{item.process_list_name}} General System Performance
+  links:
+    - title: Openstack General Dashboards
+      type: dashboards
+      asDropdown: true
+      includeVars: true
+      keepTime: true
+      icon: cloud
+      tags:
+        - OSP
+  tags:
+    - OSP
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    # - name: NodeType
+    #   current:
+    #     text: "{{item.template_node_type}}"
+    #   options:
+    #     - undercloud
+    #     - controller
+    #     - networker
+    #     - compute
+    #     - cephstorage
+    #     - objectstorage
+    #     - blockstorage
+    #     - "*"
+    #   type: custom
+    - name: Node
+      query: $Cloud.*
+      # query: $Cloud.*$NodeType*
+      refresh: true
+      type: query
+    - name: Disk
+      query: $Cloud.$Node.disk-*
+      refresh: true
+      type: query
+    - name: Interface
+      query: $Cloud.$Node.interface-*
+      refresh: true
+      type: query
+    - name: OSD
+      includeAll: true
+      multi: true
+      query: "$Cloud.$Node.collectd-ceph-storage-osd-*"
+      refresh: true
+      type: query
+    - name: Pool
+      includeAll: true
+      multi: true
+      query: "$Cloud.$Node.collectd-ceph-storage-pool-*"
+      refresh: true
+      type: query
+    - name: cpus0
+      hide: 1
+      includeAll: true
+      multi: true
+      query: $Cloud.$Node.cpu-[0-9]
+      refresh: true
+      type: query
+    - name: cpus00
+      hide: 1
+      includeAll: true
+      multi: true
+      query: $Cloud.$Node.cpu-[1-9][0-9]
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+{% include 'partials/description.yaml' %}
+
+{% include 'partials/cpu_all.yaml' %}
+
+{% include 'partials/cpu_cores.yaml' %}
+
+{% include 'partials/memory.yaml' %}
+
+{% include 'partials/disk.yaml' %}
+
+{% include 'partials/df.yaml' %}
+
+{% set partial_panel = {'collapse': 'true'} %}
+{% include 'partials/iostat.yaml.j2' %}
+
+{% include 'partials/network.yaml' %}
+
+{% include 'partials/turbostat.yaml' %}
+
+{% include 'partials/numa.yaml' %}
+
+{% include 'partials/irq.yaml' %}
+
+{% include 'partials/load.yaml' %}
+
+{% include 'partials/processes.yaml' %}
+
+{% set per_process_row_title_prefix = 'OSP' %}
+{% include 'partials/per_process_rows.yaml.j2' %}
+
+{% if item.template_node_type in apache_groups %}
+  {% set partial_panel = {'node': '$Node'} %}
+  {% include 'partials/apache_metrics.yaml.j2' %}
+{% endif %}
+
+{% if item.template_node_type in cephmon_groups %}
+  {% set partial_panel = {'node': '$Node'} %}
+  {% include 'partials/cephstorage_python_plugin_metrics.yaml.j2' %}
+
+  {% include 'partials/ceph_mon.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in gnocchi_groups %}
+  {% set partial_panel = {'collapse': 'true'} %}
+  {% include 'partials/gnocchi_backlog.yaml.j2' %}
+{% endif %}
+
+{% if item.template_node_type in mariadb_groups %}
+  {% include 'partials/mariadb.yaml' %}
+
+  {% include 'partials/mysql_innodb.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in rabbitmq_groups %}
+  {% set partial_panel = {'node': '$Node'} %}
+  {% include 'partials/rabbitmq_metrics.yaml.j2' %}
+{% endif %}
+
+{% if item.template_node_type in swift_stat_groups %}
+  {#% if item.template_node_type in swift_stat_groups %#}
+  {% include 'partials/swift_stat_metrics.yaml.j2' %}
+{% endif %}
+
+{% if item.template_node_type in ironic_groups %}
+  {% include 'partials/ironic_metrics.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in odl_groups %}
+  {% include 'partials/opendaylight_metrics.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in ovsagent_groups %}
+  {% include 'partials/neutron_resources.yaml' %}
+{% endif %}
+
+{% include 'partials/tail.yaml' %}

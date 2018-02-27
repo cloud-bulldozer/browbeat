@@ -1,0 +1,107 @@
+    - title: Gnocchi Backlog
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Measures/Metrics Backlog
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          span: 6
+          steppedLine: true
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)
+        - title: Backlog vs Instance Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          seriesOverrides:
+            - alias: measures
+              steppedLine: true
+              yaxis: 2
+            - alias: metrics
+              steppedLine: true
+              yaxis: 2
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)
+            - target: alias(sumSeries(keepLastValue($Cloud.overcloud-compute-*.processes-qemu-kvm.ps_count.processes, 100)), 'Instance Count')
+        - title: Backlog vs Metricd CPU Usage
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          seriesOverrides:
+            - alias: measures
+              steppedLine: true
+              yaxis: 2
+            - alias: metrics
+              steppedLine: true
+              yaxis: 2
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)
+            - target: alias(sumSeries(scale($Cloud.overcloud-controller-0.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con0 Metricd Processing CPU %')
+            - target: alias(sumSeries(scale($Cloud.overcloud-controller-1.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con1 Metricd Processing CPU %')
+            - target: alias(sumSeries(scale($Cloud.overcloud-controller-2.processes-gnocchi-metricd-processing.ps_cputime.*, 0.0001)), 'Con2 Metricd Processing CPU %')
+          yaxes:
+            - format: percent
+            - format: short
+        - title: Backlog vs Metricd RSS Memory
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          seriesOverrides:
+            - alias: measures
+              steppedLine: true
+              yaxis: 2
+            - alias: metrics
+              steppedLine: true
+              yaxis: 2
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)
+            - target: alias(sumSeries($Cloud.overcloud-controller-0.processes-gnocchi-metricd-*.ps_rss), 'Con0 Metricd RSS')
+            - target: alias(sumSeries($Cloud.overcloud-controller-1.processes-gnocchi-metricd-*.ps_rss), 'Con1 Metricd RSS')
+            - target: alias(sumSeries($Cloud.overcloud-controller-2.processes-gnocchi-metricd-*.ps_rss), 'Con2 Metricd RSS')
+          yaxes:
+            - format: bits
+            - format: short

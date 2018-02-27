@@ -1,0 +1,45 @@
+    - title: DF
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Partition % Used
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.df-*.percent_bytes-used, 'df-', ''), 2)
+          yaxes:
+            - format: percent
+              max: 100
+            - format: short
+        - title: $Cloud - $Node - Inodes % Used
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.df-*.percent_inodes-used, 'df-', ''), 2)
+          yaxes:
+            - format: percent
+              max: 100
+            - format: short

@@ -1,0 +1,279 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: Cloud Gnocchi Performance
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: OSD
+      includeAll: true
+      multi: true
+      query: "$Cloud.overcloud-controller-0.collectd-ceph-storage-osd-*"
+      refresh: true
+      type: query
+    - name: Pool
+      includeAll: true
+      multi: true
+      query: "$Cloud.overcloud-controller-0.collectd-ceph-storage-pool-*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    {% include 'partials/description.yaml' %}
+
+    {% include 'gnocchi_performance/backlog.yaml.j2' %}
+
+    {% include 'gnocchi_performance/api_latency.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Gnocchi',
+        'node': 'overcloud-controller-*',
+        'processes': [
+            'gnocchi-metricd-master',
+            'gnocchi-metricd-scheduler',
+            'gnocchi-metricd-processing',
+            'gnocchi-metricd-reporting',
+            'gnocchi-metricd-janitor',
+            'gnocchi-statsd',
+            'gnocchi_wsgi',
+        ],
+      }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Ceilometer (Controllers)',
+        'node': 'overcloud-controller-*',
+        'processes': [
+            'ceilometer-agent-notification',
+            'ceilometer-collector',
+            'ceilometer-polling',
+            'ceilometer_wsgi',
+        ],
+      }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Ceilometer (Computes)',
+        'node': 'overcloud-compute-*',
+        'processes': ['ceilometer-polling',],
+      }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Controller',
+        'node': 'overcloud-controller-*',
+        'processes': ['httpd', 'mongod', 'mysqld', 'rabbitmq', 'redis-server',],
+      }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'CephStorage',
+        'node': 'overcloud-c[oe][np]*',
+        'processes': ['ceph-mon', 'ceph-osd',],
+      }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Swift (Controller)',
+        'node': 'overcloud-controller-*',
+        'processes': [
+            'swift-account-auditor',
+            'swift-account-reaper',
+            'swift-account-replicator',
+            'swift-account-server',
+            'swift-container-auditor',
+            'swift-container-replicator',
+            'swift-container-server',
+            'swift-container-updater',
+            'swift-object-auditor',
+            'swift-object-expirer',
+            'swift-object-replicator',
+            'swift-object-server',
+            'swift-object-updater',
+            'swift-proxy-server',
+          ],
+        }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set pp_panel = {
+        'title': 'Swift (ObjectStorage)',
+        'node': 'overcloud-objectstorage-*',
+        'processes': [
+            'swift-account-auditor',
+            'swift-account-reaper',
+            'swift-account-replicator',
+            'swift-account-server',
+            'swift-container-auditor',
+            'swift-container-replicator',
+            'swift-container-server',
+            'swift-container-updater',
+            'swift-object-auditor',
+            'swift-object-expirer',
+            'swift-object-replicator',
+            'swift-object-server',
+            'swift-object-updater',
+          ],
+        }
+    %}
+    {% include 'gnocchi_performance/per_process_panel.yaml.j2' %}
+
+    {% set partial_panel = {'node': 'overcloud-controller-*'} %}
+    {% include 'partials/apache_metrics.yaml.j2' %}
+
+    {% set partial_panel = {'node': 'overcloud-controller-0'} %}
+    {% include 'partials/rabbitmq_metrics.yaml.j2' %}
+
+    {% set partial_panel = {'node': 'overcloud-controller-0'} %}
+    {% include 'partials/cephstorage_python_plugin_metrics.yaml.j2' %}
+
+    {% set partial_panel = {'node': 'overcloud-controller-0'} %}
+    {% include 'partials/swift_stat_metrics.yaml.j2' %}
+
+    {% set log_panel = {
+        'title': 'Gnocchi',
+        'node': 'overcloud-controller-*',
+        'tail': ['gnocchi',],
+      }
+    %}
+    {% include 'gnocchi_performance/logs.yaml.j2' %}
+
+    {% set log_panel = {
+        'title': 'Ceilometer (Controller)',
+        'node': 'overcloud-controller-*',
+        'tail': ['ceilometer',],
+      }
+    %}
+    {% include 'gnocchi_performance/logs.yaml.j2' %}
+
+    {% set log_panel = {
+        'title': 'Ceilometer (Compute)',
+        'node': 'overcloud-compute-*',
+        'tail': ['ceilometer',],
+      }
+    %}
+    {% include 'gnocchi_performance/logs.yaml.j2' %}
+
+    - title: Swift (Controller) Logs
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Swift Error Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-swift.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-error', ''), 1, 3)
+        - title: Swift Warn Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-swift.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-warn', ''), 1, 3)
+        - title: Swift Info Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-controller-*.tail-swift.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-info', ''), 1, 3)
+    - title: Swift (ObjectStorage) Logs
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Swift Error Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-objectstorage-*.tail-swift.counter-*error, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-error', ''), 1, 3)
+        - title: Swift Warn Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-objectstorage-*.tail-swift.counter-*warn, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-warn', ''), 1, 3)
+        - title: Swift Info Logs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(consolidateBy(scale(aliasSub(aliasSub(aliasSub($Cloud.overcloud-objectstorage-*.tail-swift.counter-*info, 'overcloud-', ''), 'tail-', ''), 'counter-', ''), 10), 'max'), '-info', ''), 1, 3)
+
+    {% set log_panel = {
+        'title': 'Controller',
+        'node': 'overcloud-controller-*',
+        'tail': ['ceph', 'mysqld', 'rabbitmq',],
+      }
+    %}
+    {% include 'gnocchi_performance/logs.yaml.j2' %}

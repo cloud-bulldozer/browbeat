@@ -1,0 +1,114 @@
+#jinja2:lstrip_blocks: True
+    - title: Rabbitmq Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Rabbitmq Object Counts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: alias($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-queues, 'Queues')
+            - target: alias($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-connections, 'Connections')
+            - target: alias($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-consumers, 'Consumers')
+            - target: alias($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-channels, 'Channels')
+            - target: alias($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-exchanges, 'Exchanges')
+        - title: Queue Totals
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          steppedLine: true
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-queue_total-*-count, 'gauge-queue_total-', ''), '-count', ''), 3)
+        - title: Queue Total Rates
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-queue_total-*-rate, 'gauge-queue_total-', ''), '-rate', ''), 3)
+        - title: Message Stats Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-message_total-*-count, 'gauge-message_total-', ''), '-count', ''), 3)
+        - title: Message Stats Rate
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.gauge-message_total-*-rate, 'gauge-message_total-', ''), '-rate', ''), 3)
+        - title: Queue Message Counts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          span: 6
+          steppedLine: true
+          targets:
+            - target: aliasByMetric(aliasSub($Cloud.{{partial_panel.node}}.rabbitmq_monitoring.*-msg_count-*, 'gauge-msg_count-', ''))

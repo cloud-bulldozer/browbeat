@@ -1,0 +1,126 @@
+---
+dashboard:
+  title: OpenStack Ironic Metrics
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+    - title: Row 1
+      height: 250px
+      panels:
+        - title: "Power State Sync: 90th Percentile Mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.do_sync_power_state.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Change Node Power State: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.change_node_power_state.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Row 2
+      height: 250px
+      panels:
+        - title: "Set boot device: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.set_boot_device.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Do Node Deployment: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.conductor.manager.ConductorManager.do_node_deploy.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Row 3
+      height: 250px
+      panels:
+        - title: "Get Node Details API response time: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodesController.detail.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Get Node List API response time: 90th Percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodesController.get_all.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+    - title: Row 4
+      height: 250px
+      panels:
+        - title: "Node Power State API response time: 90th Percentile Mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodeStatesController.power.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short
+        - title: "Ironic Node Provision State API response time: 90th percentile mean"
+          type: graph
+          legend:
+            show: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: stats.timers.$Cloud.ironic.api.controllers.v1.node.NodeStatesController.provision.mean_90
+          yaxes:
+            - format: short
+              label: Milliseconds
+            - format: short

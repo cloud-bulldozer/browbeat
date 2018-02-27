@@ -1,0 +1,66 @@
+    - title: Per CPU Logical CPU Core (0-9)
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $cpus0
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          minSpan: 6
+          nullPointMode: 'null'
+          repeat: cpus0
+          stack: true
+          targets:
+            - target: alias($Cloud.$Node.$cpus0.cpu-system, 'System')
+            - target: alias($Cloud.$Node.$cpus0.cpu-user, 'User')
+            - target: alias($Cloud.$Node.$cpus0.cpu-nice, 'Nice')
+            - target: alias($Cloud.$Node.$cpus0.cpu-steal, 'Steal')
+            - target: alias($Cloud.$Node.$cpus0.cpu-softirq, 'SoftIRQ')
+            - target: alias($Cloud.$Node.$cpus0.cpu-interrupt, 'Interrupt')
+            - target: alias($Cloud.$Node.$cpus0.cpu-wait, 'Wait')
+            - target: alias($Cloud.$Node.$cpus0.cpu-idle, 'Idle')
+          yaxes:
+            - format: percent
+            - format: short
+    - title: Per CPU Logical CPU Core (10-99)
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $cpus00
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          minSpan: 6
+          nullPointMode: 'null'
+          repeat: cpus00
+          stack: true
+          targets:
+            - target: alias($Cloud.$Node.$cpus00.cpu-system, 'System')
+            - target: alias($Cloud.$Node.$cpus00.cpu-user, 'User')
+            - target: alias($Cloud.$Node.$cpus00.cpu-nice, 'Nice')
+            - target: alias($Cloud.$Node.$cpus00.cpu-steal, 'Steal')
+            - target: alias($Cloud.$Node.$cpus00.cpu-softirq, 'SoftIRQ')
+            - target: alias($Cloud.$Node.$cpus00.cpu-interrupt, 'Interrupt')
+            - target: alias($Cloud.$Node.$cpus00.cpu-wait, 'Wait')
+            - target: alias($Cloud.$Node.$cpus00.cpu-idle, 'Idle')
+          yaxes:
+            - format: percent
+            - format: short

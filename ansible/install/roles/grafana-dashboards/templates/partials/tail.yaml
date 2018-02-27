@@ -1,0 +1,50 @@
+    - title: Tail
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Tail Info
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*error, 'tail-', ''), 'counter-', ''), 10), 'max'), 2)
+        - title: $Cloud - $Node - Tail Warn
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*warn, 'tail-', ''), 'counter-', ''), 10), 'max'), 2)
+        - title: $Cloud - $Node - Tail Info
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.tail-*.counter-*info, 'tail-', ''), 'counter-', ''), 10), 'max'), 2)

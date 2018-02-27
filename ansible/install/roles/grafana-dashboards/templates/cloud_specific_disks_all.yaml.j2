@@ -1,0 +1,179 @@
+#jinja2:lstrip_blocks: True
+---
+dashboard:
+  title: {{dashboard_cloud_name}} - Disks - All
+  links:
+    - type: dashboards
+      asDropdown: true
+      icon: external link
+      includeVars: true
+      keepTime: true
+      tags:
+        - {{dashboard_cloud_name}}
+      targetBlank: true
+      title: "{{dashboard_cloud_name}} Dashboards"
+  tags:
+    - {{dashboard_cloud_name}}
+  templating:
+    - name: undercloud_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*undercloud*.disk-*"
+      refresh: true
+      type: query
+    - name: controller_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*controller*.disk-*"
+      refresh: true
+      type: query
+    - name: compute_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*compute*.disk-*"
+      refresh: true
+      type: query
+    - name: cephstorage_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*cephstorage*.disk-*"
+      refresh: true
+      type: query
+    - name: objectstorage_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*objectstorage*.disk-*"
+      refresh: true
+      type: query
+    - name: blockstorage_disk
+      includeAll: true
+      multi: true
+      query: "{{dashboard_cloud_name}}.*blockstorage*.disk-*"
+      refresh: true
+      type: query
+  time:
+   from: now-1h
+   to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} IO Time
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) IO Time
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} - ${{group}}_disk IO Time
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub(scale({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_io_time.io_time, 0.1), 'disk-', ''), 2)
+          yaxes:
+            - format: percent
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} Disk iops
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Disk iops
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} - ${{group}}_disk iops
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: /.*write/
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_ops.read, 'disk-', ''), 2, 4)
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_ops.write, 'disk-', ''), 2, 4)
+          yaxes:
+            - format: iops
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{% for group in dashboard_groups %}
+  {% if group in groups %}
+    {% for batched_hosts in groups[group]|hosts_to_dictionary|dictsort|batch(dashboards_batch) %}
+      {% if 'undercloud' in group %}
+    - title: {{group}} Disk Throughput
+      {% else %}
+    - title: {{group}} ({{batched_hosts[0][0]}} - {{batched_hosts[-1][0]}}) Disk Throughput
+      {% endif %}
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+      {% for index, host in batched_hosts %}
+        - title: {{host}} - ${{group}}_disk Throughput
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: /.*write/
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_octets.read, 'disk-', ''), 2, 4)
+            - target: aliasByNode(aliasSub({{dashboard_cloud_name}}.{{host}}.${{group}}_disk.disk_octets.write, 'disk-', ''), 2, 4)
+          yaxes:
+            - format: Bps
+            - format: short
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}

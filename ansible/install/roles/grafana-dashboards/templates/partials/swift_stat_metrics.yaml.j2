@@ -1,0 +1,58 @@
+    - title: Swift Stat
+      collapse: true
+      height: 250px
+      showTitle: true
+      panels:
+        - title: Byte Total
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.swift_stat.gauge-*-bytes, 'gauge-', ''), '-bytes', ''), 3)
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: Container Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.swift_stat.gauge-*-containers, 'gauge-', ''), '-containers', ''), 3)
+        - title: Object Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'connected'
+          span: 6
+          targets:
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.{{partial_panel.node}}.swift_stat.gauge-*-objects, 'gauge-', ''), '-objects', ''), 3)

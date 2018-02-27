@@ -1,0 +1,42 @@
+---
+dashboard:
+  title: Cloud Keystone Token Count
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+    - title: Token Count
+      height: 250px
+      showTitle: true
+      panels:
+        - title: $Node Keystone Token Count
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          steppedLine: true
+          targets:
+            - target: alias($Cloud.$Node.dbi-keystone.gauge-token, 'Tokens')

@@ -9,65 +9,76 @@
   when: item == dashboard_cloud_name
   with_items: "{{forbidden_cloud_names}}"
 
-# Cloud Specific Dashboards (Generated off Ansible inventory)
-- name: Generate Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
-  vars:
-    ansible_python_interpreter: "/usr/bin/python"
+# Templated Cloud Specific Dashboards
+- name: Generate Cloud Specific CPU/Memory/Disk/Network/Log Dashboards from GrafYaml Templates
   template:
-    src: "cloud_specific_{{item}}.json.j2"
-    dest: "{{role_path}}/files/cloud_specific_{{item}}.json"
+    src: "cloud_specific_{{item}}.yaml.j2"
+    dest: "{{role_path}}/files/cloud_specific_{{item}}.yaml"
   when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
 
-- name: Remove Existing Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{dashboard_cloud_name}}-{{item|replace('_', '-')}}"
-  when: overwrite_existing|bool and upload_cloud_specific|bool
-  with_items: "{{cloud_specific_dashboards}}"
-
-- name: Upload Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/cloud_specific_{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+- name: Upload Cloud Specific CPU/Memory/Disk/Network/Log Dashboards via GrafYaml
+  shell: |
+    . {{browbeat_venv}}/bin/activate
+    grafana-dashboard --grafana-url http://{{grafana_host}}:{{grafana_port}} --grafana-apikey {{grafana_apikey}} update {{role_path}}/files/cloud_specific_{{item}}.yaml
   when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
 
-- name: Remove leftover json file(s) from Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
+- name: Remove leftover yaml file(s) from Cloud Specific CPU/Memory/Disk/Network/Log Dashboards
   file:
-    path: "{{role_path}}/files/cloud_specific_{{item}}.json"
+    path: "{{role_path}}/files/cloud_specific_{{item}}.yaml"
     state: absent
   when: upload_cloud_specific|bool
   with_items: "{{cloud_specific_dashboards}}"
 
-# General Performance Dashboards (Templated from Ansible vars)
-- name: Generate General Dashboards
+# Templated General Performance Dashboards
+- name: Generate General Performance Dashboards
   template:
-    src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.json.j2"
-    dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
+    src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.yaml.j2"
+    dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml"
   when: upload_general|bool
   with_items: "{{general_dashboards}}"
 
-- name: Remove Existing General Dashboards
-  command: "curl -X DELETE -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item.process_list_name|lower}}-general-system-performance"
-  when: overwrite_existing|bool and upload_general|bool
-  with_items: "{{general_dashboards}}"
-
-- name: Upload General Dashboards to Grafana
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+- name: Upload General Performance Dashboards to Grafana
+  shell: |
+    . {{browbeat_venv}}/bin/activate
+    grafana-dashboard --grafana-url http://{{grafana_host}}:{{grafana_port}} --grafana-apikey {{grafana_apikey}} update {{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml
   when: upload_general|bool
   with_items: "{{general_dashboards}}"
 
-- name: Remove leftover json file(s) from Generated General Dashboards
+- name: Remove leftover yaml file(s) from General Performance Dashboards
   file:
-    path: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.json"
+    path: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml"
     state: absent
   when: upload_general|bool
   with_items: "{{general_dashboards}}"
 
 # Static Dashboards:
-- name: Remove Existing Static Dashboard(s)
-  command: "curl -X DELETE  -H 'Content-Type: application/json' http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db/{{item|replace('_', '-')}}"
-  when: overwrite_existing|bool and upload_static|bool
-  with_items: "{{static_dashboards}}"
-
-- name: Upload Static Dashboards to Grafana
-  command: "curl -X POST -H 'Content-Type: application/json' -d @{{role_path}}/files/{{item}}.json http://{{grafana_username}}:{{grafana_password}}@{{grafana_host}}:{{grafana_port}}/api/dashboards/db"
+- name: Upload Static Dashboards to Grafana via GrafYaml
+  shell: |
+    . {{browbeat_venv}}/bin/activate
+    grafana-dashboard --grafana-url http://{{grafana_host}}:{{grafana_port}} --grafana-apikey {{grafana_apikey}} update {{role_path}}/files/{{item}}.yaml
   when: upload_static|bool
   with_items: "{{static_dashboards}}"
+
+# Templated Dashboards
+- name: Generate Templated Dashboards
+  template:
+    src: "{{item}}.yaml.j2"
+    dest: "{{role_path}}/files/{{item}}.yaml"
+  when: upload_templated|bool
+  with_items: "{{templated_dashboards}}"
+
+- name: Upload Generated Templated Dashboards via GrafYaml
+  shell: |
+    . {{browbeat_venv}}/bin/activate
+    grafana-dashboard --grafana-url http://{{grafana_host}}:{{grafana_port}} --grafana-apikey {{grafana_apikey}} update {{role_path}}/files/{{item}}.yaml
+  when: upload_templated|bool
+  with_items: "{{templated_dashboards}}"
+
+- name: Remove leftover yaml file(s) from Generated Templated Dashboards
+  file:
+    path: "{{role_path}}/files/{{item}}.yaml"
+    state: absent
+  when: upload_templated|bool
+  with_items: "{{templated_dashboards}}"

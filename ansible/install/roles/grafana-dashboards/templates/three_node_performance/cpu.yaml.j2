@@ -1,0 +1,24 @@
+    - title: CPU
+      height: 250px
+      showTitle: true
+      panels:
+{% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - All CPUs Sum
+          type: graph
+          legend: {}
+          nullPointMode: 'null'
+          span: 4
+          stack: true
+          targets:
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-system), 'System')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-user), 'User')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-nice), 'Nice')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-steal), 'Steal')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-softirq), 'SoftIRQ')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-interrupt), 'Interrupt')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-wait), 'Wait')
+            - target: alias(sumSeries($Cloud.$Node{{node_index}}.cpu-*.cpu-idle), 'Idle')
+          yaxes:
+            - format: percent
+            - format: short
+{% endfor %}

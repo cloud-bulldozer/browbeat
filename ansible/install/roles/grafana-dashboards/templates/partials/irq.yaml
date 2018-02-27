@@ -1,0 +1,37 @@
+    - title: IRQ
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - IRQ
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.irq.irq-[A-Z]*, 'irq-', ''), 3)
+        - title: $Cloud - $Node - Interrupts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias(sumSeries($Cloud.$Node.irq.irq-[0-9]*), 'Interrupts')

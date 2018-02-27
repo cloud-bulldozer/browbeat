@@ -1,0 +1,331 @@
+---
+dashboard:
+  title: Apache Request Latency
+  templating:
+    - name: Cloud
+      query: "*"
+      refresh: true
+      type: query
+    - name: Node
+      query: "$Cloud.*"
+      refresh: true
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text
+    - title: Gnocchi API Latency
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Gnocchi API Patch Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-max, 0.000001), 'Patch Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-99_00, 0.000001), 'Patch 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-avg, 0.000001), 'Patch Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-patch-min, 0.000001), 'Patch Min Latency')
+            - target: alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-patch, 10)), 'Patch Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Gnocchi API Post Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-max, 0.000001), 'Post Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-99_00, 0.000001), 'Post 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-avg, 0.000001), 'Post Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-post-min, 0.000001), 'Post Min Latency')
+            - target: alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-post, 10)), 'Post Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Gnocchi API Get Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-max, 0.000001), 'Get Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-99_00, 0.000001), 'Get 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-avg, 0.000001), 'Get Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-gnocchi-api.latency-get-min, 0.000001), 'Get Min Latency')
+            - target: alias(sumSeries(scale($Cloud.$Node.tail-gnocchi-api.counter-get, 10)), 'Get Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+    - title: Keystone API Request Latency
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Keystone Admin API Get Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-max, 0.000001), 'Get Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-99_00, 0.000001), 'Get 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-avg, 0.000001), 'Get Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-get-min, 0.000001), 'Get Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-keystone-admin-api.counter-get), 10), 'Get Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Keystone Admin API Post Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-max, 0.000001), 'Post Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-99_00, 0.000001), 'Post 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-avg, 0.000001), 'Post Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-admin-api.latency-post-min, 0.000001), 'Post Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-keystone-admin-api.counter-post), 10), 'Post Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Keystone Main API Get Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-max, 0.000001), 'Get Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-99_00, 0.000001), 'Get 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-avg, 0.000001), 'Get Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-get-min, 0.000001), 'Get Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-keystone-main-api.counter-get), 10), 'Get Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Keystone Main API Post Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-max, 0.000001), 'Post Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-99_00, 0.000001), 'Post 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-avg, 0.000001), 'Post Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-keystone-main-api.latency-post-min, 0.000001), 'Post Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-keystone-main-api.counter-post), 10), 'Post Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+    - title: Nova Placement API Request Latency
+      height: 200px
+      showTitle: true
+      panels:
+        - title: Nova Placement API Put Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-max, 0.000001), 'Put Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-99_00, 0.000001), 'Put 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-avg, 0.000001), 'Put Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-put-min, 0.000001), 'Put Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-nova-placement-api.counter-put), 10), 'Put Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count
+        - title: Nova Placement API Get Latency
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          lines: false
+          nullPointMode: 'null'
+          pointradius: 1
+          points: true
+          seriesOverrides:
+            - alias: "/.*Count.*/"
+              lines: true
+              points: false
+              yaxis: 2
+          targets:
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-max, 0.000001), 'Get Max Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-99_00, 0.000001), 'Get 99th Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-avg, 0.000001), 'Get Avg Latency')
+            - target: alias(scale($Cloud.$Node.tail-nova-placement-api.latency-get-min, 0.000001), 'Get Min Latency')
+            - target: alias(scale(sumSeries($Cloud.$Node.tail-nova-placement-api.counter-get), 10), 'Get Count')
+          yaxes:
+            - format: s
+              label: Latency
+            - format: short
+              label: Count

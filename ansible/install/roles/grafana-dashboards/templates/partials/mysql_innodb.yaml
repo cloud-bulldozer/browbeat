@@ -1,0 +1,101 @@
+    - title: MYSQL INNODB
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: MySQL Innodb Data
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_data-*, 'mysql_innodb_data-', ''), 3)
+        - title: MySQL Innodb Double Write
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_dblwr-*, 'mysql_innodb_dblwr-', ''), 3)
+        - title: MySQL Innodb Log
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_log-*, 'mysql_innodb_log-', ''), 3)
+        - title: MySQL Innodb Pages
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_pages-*, 'mysql_innodb_pages-', ''), 3)
+        - title: MySQL Innodb Row Lock
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_row_lock-*, 'mysql_innodb_row_lock-', ''), 3)
+        - title: MySQL Innodb Rows
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node.mysql-*.mysql_innodb_rows-*, 'mysql_innodb_rows-', ''), 3)

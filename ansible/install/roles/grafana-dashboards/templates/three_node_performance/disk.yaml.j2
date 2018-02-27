@@ -1,0 +1,67 @@
+    - title: Disk
+      height: 250px
+      showTitle: true
+      panels:
+{% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - IO Util
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub(scale($Cloud.$Node{{node_index}}.disk-*.disk_io_time.io_time, 0.1), 'disk-', ''), 2)
+          yaxes:
+            - format: percent
+            - format: short
+{% endfor %}
+{% if enhanced %}
+  {% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - Throughput
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          span: 4
+          seriesOverrides:
+            - alias: "/.*\\.write/"
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.disk-*.disk_octets.read, 'disk-', ''), 2, 4)
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.disk-*.disk_octets.write, 'disk-', ''), 2, 4)
+          yaxes:
+            - format: Bps
+            - format: short
+  {% endfor %}
+  {% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - IOps
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          span: 4
+          seriesOverrides:
+            - alias: "/.*\\.write/"
+              transform: negative-Y
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.disk-*.disk_ops.read, 'disk-', ''), 2, 4)
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.disk-*.disk_ops.write, 'disk-', ''), 2, 4)
+          yaxes:
+            - format: iops
+            - format: short
+  {% endfor %}
+  {% for node_index in range(1,4)  %}
+        - title: $Cloud - $Node{{node_index}} - Partition % Used
+          type: graph
+          fill: 0
+          legend: {}
+          nullPointMode: 'null'
+          span: 4
+          targets:
+            - target: aliasByNode(aliasSub($Cloud.$Node{{node_index}}.df-*.percent_bytes-used, 'df-', ''), 2)
+          yaxes:
+            - format: percent
+              max: 100
+            - format: short
+  {% endfor %}
+{% endif %}
