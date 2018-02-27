@@ -1,0 +1,87 @@
+---
+#
+# Playbook to push new microcode via an rpm.  Please read playbook before running.
+#
+# Examples:
+#
+# Update microcode on Overcloud:
+# ansible-playbook -i hosts browbeat/adjust-microcode-rpm.yml -e 'rpm_url=http://example.com.com/microcode.rpm'
+#
+# Update microcode on Controllers
+# ansible-playbook -i hosts browbeat/adjust-microcode-rpm.yml -e 'target=controller rpm_url=http://example.com.com/microcode.rpm''
+#
+# "target" can be any of the typical groups or a specific host in the hosts file
+# Set rpm_url to the url of a webserver serveing the micrcode rpm
+#
+
+- hosts: "{{target|default('overcloud')}}"
+  gather_facts: true
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    rpm_url: http://example.com.com/microcode.rpm'
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+
+    - name: Get Microcode RPM
+      become: true
+      get_url:
+        url: "{{rpm_url}}"
+        dest: /root/{{rpm_url|basename}}
+        force: true
+
+    - name: Install Microcode RPM
+      become: true
+      yum:
+        name: /root/{{rpm_url|basename}}
+        state: present
+
+    - name: Attempt graceful reboot
+      become: true
+      shell: nohup sh -c '( sleep 5 ; reboot )' &
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    # 8 minute timeout
+    - name: Wait for Machine Ready (1st try)
+      wait_for:
+        host: "{{ansible_default_ipv4.address}}"
+        port: 22
+        delay: 15
+        timeout: 480
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      register: machine_rebooted
+      ignore_errors: true
+
+    # "Rescue" the node
+    - name: Use Ironic to start each machine
+      shell: |
+        . /home/stack/stackrc
+        openstack baremetal node power off {{ironic_uuid}}
+        sleep 30
+        openstack baremetal node power on {{ironic_uuid}}
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      when: machine_rebooted.failed
+
+    - name: Wait for Machine Ready (2nd try)
+      wait_for:
+        host: "{{ansible_default_ipv4.address}}"
+        port: 22
+        delay: 15
+        timeout: 480
+      delegate_to: undercloud
+      remote_user: "{{local_remote_user}}"
+      when: machine_rebooted.failed
+
+    - name: Check if Feat available
+      become: true
+      command: grep "FEATURE" /var/log/dmesg
+      ignore_errors: true
+      register: check_feat
+
+    - name: Debug print results of Feature Grep in dmesg
+      debug:
+        msg: "{{check_feat.stdout_lines}}"
