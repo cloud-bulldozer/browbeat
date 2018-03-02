@@ -21,6 +21,7 @@
   with_items:
     - gcc
     - gcc-c++
+    - git
     - libffi-devel
     - libsemanage-python
     - openssl-devel
