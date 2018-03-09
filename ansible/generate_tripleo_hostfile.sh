@@ -105,11 +105,16 @@ if [ ${#clouds} -gt 0 ]; then
        echo "Info: No CephStorage resources."
     fi
   fi
-  compute_id=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name Compute > >(grep physical_resource_id) 2>/dev/null" | awk '{print $4}')
-  if [ ${#compute_id} -lt 3 ]; then
+  compute_resources=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list $overcloud_name" | awk '{print $2}' | egrep -i 'Compute$|hci$')
+  for resource in $compute_resources; do compute_resources_arr+=($(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show $overcloud_name $resource | grep physical_resource_id")); done
+  compute_resource_ids=$(for id in ${compute_resources_arr[@]}; do echo $id | grep -v '|' | grep -v physical_resource_id; done)
+  if [ ${#compute_resource_ids} -lt 3 ]; then
      echo "Info: No compute resources"
   else
-     compute_ids=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${compute_id} > >(grep -i compute) 2>/dev/null" | awk '{print $2}')
+     for compute_id in $compute_resource_ids; do
+       compute_ids+=($(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource list ${compute_id} > >(grep -i compute) 2>/dev/null" | awk '{print $2}'))
+     done
+     compute_ids=$(for id in ${compute_ids[@]}; do echo $id; done)
      if [ ${#compute_ids} -lt 1 ]; then
        echo "Info: No compute resources"
     fi
@@ -157,8 +162,10 @@ if [ ${#clouds} -gt 0 ]; then
   do
    if [[ ${version_tripleo} -lt 2 ]] ; then
      compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; heat resource-show ${compute_id} ${compute} | grep -i nova_server_resource" | awk '{print $4}')
- else
-     compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${compute_id} ${compute} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+   else
+     for compute_id in $compute_resource_ids; do
+       compute_uuids+=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" stack@${tripleo_ip_address} ". ~/stackrc; openstack stack resource show ${compute_id} ${compute} > >(grep -oP \"'nova_server_resource': u'([a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)'\") 2>/dev/null" | awk '{print $2}' | grep -oP [a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+)
+     done
    fi
   done
 fi
