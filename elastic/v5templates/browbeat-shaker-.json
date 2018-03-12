@@ -1,0 +1,141 @@
+{
+    "aliases": { },
+    "settings": {
+        "index.mapping.total_fields.limit": 5000,
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "template": "browbeat-shaker-*",
+    "mappings": {
+        "result": {
+            "properties": {
+                "browbeat_scenario": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "browbeat_uuid": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "cloud_name": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "grafana_url": {
+                    "properties": {
+                        "openstack-general-system-performance": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "result": {
+                    "properties": {
+                        "metric": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "result_type": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "double"
+                        }
+                    }
+                },
+                "run": {
+                    "type": "long"
+                },
+                "record": {
+                    "properties": {
+                        "agent": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "node": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "scenario": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "test": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "shaker_test_info": {
+                    "properties": {
+                        "deployment": {
+                            "properties": {
+                                "template": {
+                                    "index": "not_analyzed",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "title": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "execution": {
+                            "properties": {
+                                "progression": {
+                                    "index": "not_analyzed",
+                                    "type": "string"
+                                },
+                                "tests": {
+                                    "properties": {
+                                        "class": {
+                                            "index": "not_analyzed",
+                                            "type": "string"
+                                        },
+                                        "method": {
+                                            "index": "not_analyzed",
+                                            "type": "string"
+                                        },
+                                        "time": {
+                                            "index": "not_analyzed",
+                                            "type": "long"
+                                        },
+                                        "title": {
+                                            "index": "not_analyzed",
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "file_name": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "title": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "shaker_uuid": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "template": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "date",
+                    "format": "dateOptionalTime"
+                }
+            }
+        }
+    }
+}

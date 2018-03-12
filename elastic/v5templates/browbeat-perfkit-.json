@@ -1,0 +1,76 @@
+{
+    "template": "browbeat-perfkit-*",
+    "settings": {
+        "index.mapping.total_fields.limit": 5000,
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "result": {
+            "properties": {
+                "browbeat_rerun": {
+                    "type": "long"
+                },
+                "browbeat_scenario": {
+                    "properties": {
+                        "benchmarks": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "browbeat_uuid": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "cloud_name": {
+                    "index": "not_analyzed",
+                    "type": "string"
+                },
+                "grafana_url": {
+                    "properties": {
+                        "openstack-general-system-performance": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "perfkit_setup": {
+                    "properties": {
+                        "cloud": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "image": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "machine_instance": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "machine_type": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "perfkitbenchmarker_version": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        },
+                        "vm_count": {
+                            "type": "string"
+                        },
+                        "zone": {
+                            "index": "not_analyzed",
+                            "type": "string"
+                        }
+                    }
+                },
+                "timestamp": {
+                    "type": "date",
+                    "format": "strict_date_optional_time||epoch_millis"
+                }
+            }
+        }
+    }
+}

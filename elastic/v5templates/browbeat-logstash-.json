@@ -1,0 +1,36 @@
+{
+   "template": "browbeat-logstash-*",
+   "mappings": {
+       "result": {
+           "properties": {
+               "action": {
+                   "index": "not_analyzed",
+                   "type": "string"
+                },
+               "browbeat_cloud_name": {
+                   "index": "not_analyzed",
+                   "type": "string"
+                },
+               "message": {
+                   "properties": {
+                       "openstack-general-system-performance": {
+                           "index": "not_analyzed",
+                           "type": "string"
+                        }
+                    }
+                },
+               "level": {
+                   "type": "string"
+                },
+               "hostname": {
+                   "index": "not_analyzed",
+                   "type": "string"
+                },
+               "timestamp": {
+                   "type": "date",
+                   "format": "strict_date_optional_time||epoch_millis"
+                }
+            }
+        }
+    }
+}
