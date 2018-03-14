@@ -40,8 +40,9 @@ On the Undercloud
   $ ssh undercloud-root
   [root@undercloud ~]# su - stack
   [stack@undercloud ~]$ git clone https://github.com/openstack/browbeat.git
+  [stack@undercloud ~]$ source stackrc
   [stack@undercloud ~]$ cd browbeat/ansible
-  [stack@undercloud ansible]$ ./generate_tripleo_hostfile.sh -t localhost
+  [stack@undercloud ansible]$ ./bootstrap.py tripleo
   [stack@undercloud ansible]$ sudo easy_install pip
   [stack@undercloud ansible]$ sudo pip install ansible
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
