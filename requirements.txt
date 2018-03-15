@@ -4,4 +4,4 @@ grafyaml==0.0.7
 openstacksdk
 python-dateutil==2.4.2
 python-openstackclient==3.11.0
-pykwalify
+pykwalify==1.6.0
