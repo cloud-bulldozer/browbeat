@@ -1,0 +1,14 @@
+- hosts: controller
+  remote_user: "{{host_remote_user}}"
+  vars_files:
+    - ../install/group_vars/all.yml
+  tasks:
+    - name: Get open transactions
+      shell: >
+         sshpass -p {{ karaf_password }} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p 8101 karaf@localhost "trace:transactions" > /tmp/open-transactions.txt
+    - name: Copy the open transactions
+      fetch:
+        src: /tmp/open-transactions.txt
+        dest: "{{home_dir}}/open-transactions-{{ansible_hostname}}.txt"
+
+
