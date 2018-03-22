@@ -76,6 +76,7 @@ echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 --working-dir $WORKSPACE \
 --bootstrap \
 --no-clone \
+--nodes $WORKSPACE/browbeat/ci-scripts/tripleo/config/nodes/1ctlr_1comp.yml \
 -t all \
 -S overcloud-validate \
 -R $RELEASE \

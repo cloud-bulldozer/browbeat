@@ -1,0 +1,13 @@
+# This is a workaround for
+# https://github.com/openstack/tripleo-quickstart/commit/4b5918ced49a4907f299931a7d026137ac0804fb
+# Define a single controller node and a single compute node.
+overcloud_nodes:
+  - name: control_0
+    flavor: control
+    virtualbmc_port: 6230
+
+  - name: compute_0
+    flavor: compute
+    virtualbmc_port: 6231
+
+node_count: 2
