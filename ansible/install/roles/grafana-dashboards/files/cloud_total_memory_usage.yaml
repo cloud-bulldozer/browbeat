@@ -175,12 +175,12 @@ dashboard:
             values: true
           stack: true
           targets:
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_unrecl), 'Slab Unrecl')
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-used), 'Used')
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-buffered), 'Buffered')
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-slab_recl), 'Slab Recl')
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-cached), 'Cached')
-            - target: alias(sumSeries($Cloud.overcloud-compute-*.memory.memory-free), 'Free')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-slab_unrecl), 'Slab Unrecl')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-used), 'Used')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-buffered), 'Buffered')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-slab_recl), 'Slab Recl')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-cached), 'Cached')
+            - target: alias(sumSeries($Cloud.overcloud-*compute*.memory.memory-free), 'Free')
           yaxes:
             - format: bits
             - format: short

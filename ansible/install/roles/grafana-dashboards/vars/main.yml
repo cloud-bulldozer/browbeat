@@ -409,6 +409,9 @@ per_process_panels:
   # Undercloud, Controller, BlockStorage, ObjectStorage, CephStorage, Compute Nodes
   #
   OpenStack:
+    - name: "Ansible"
+      processes:
+        - ansible-playbook
     - name: "Aodh"
       processes:
         - aodh-evaluator

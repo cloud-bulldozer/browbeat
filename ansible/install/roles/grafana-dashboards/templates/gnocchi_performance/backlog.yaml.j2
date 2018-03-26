@@ -44,7 +44,7 @@
           span: 6
           targets:
             - target: aliasByNode(aliasSub($Cloud.overcloud-controller-0.gnocchi_status.gauge-*, 'gauge-', ''), 3)
-            - target: alias(sumSeries(keepLastValue($Cloud.overcloud-compute-*.processes-qemu-kvm.ps_count.processes, 100)), 'Instance Count')
+            - target: alias(sumSeries(keepLastValue($Cloud.*.processes-qemu-kvm.ps_count.processes, 100)), 'Instance Count')
         - title: Backlog vs Metricd CPU Usage
           type: graph
           fill: 0

@@ -60,7 +60,7 @@ dashboard:
 
     {% set pp_panel = {
         'title': 'Ceilometer (Computes)',
-        'node': 'overcloud-compute-*',
+        'node': 'overcloud-compute*',
         'processes': ['ceilometer-polling',],
       }
     %}
@@ -157,7 +157,7 @@ dashboard:
 
     {% set log_panel = {
         'title': 'Ceilometer (Compute)',
-        'node': 'overcloud-compute-*',
+        'node': 'overcloud-*compute*',
         'tail': ['ceilometer',],
       }
     %}
