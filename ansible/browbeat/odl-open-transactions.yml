@@ -10,5 +10,6 @@
       fetch:
         src: /tmp/open-transactions.txt
         dest: "{{home_dir}}/open-transactions-{{ansible_hostname}}.txt"
+        flat: yes
 
 
