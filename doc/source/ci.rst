@@ -31,7 +31,7 @@ job to run on baremetal.
 Browbeat provides two playbooks for use with Quickstart
 ``quickstart-browbeat.yml`` and
 ``baremetal-virt-undercloud-tripleo-browbeat.yml`` the first playbook is for
-deploying an entierly virtual setup on a single baremetal machine. The second
+deploying an entirely virtual setup on a single baremetal machine. The second
 playbook creates a virtual undercloud on a undercloud host machine and deploys a
 baremetal overcloud as configured by the users hardware environment.
 
@@ -43,7 +43,7 @@ Dependencies for this script (at least for Fedora 25) are
 
 To run virtual TripleO Quickstart CI set the following environmental vars and
 run `quickstart-virt.sh` this will create a TripleO environment and run a short
-Browbeat test. Since this is a all virtual setup it is not suggested for
+Browbeat test. Since this is an all virtual setup, it is not suggested for
 serious benchmarking.
 
 ::
@@ -75,6 +75,7 @@ environment.
     export BENCHMARK={benchmark config file ex browbeat-basic.yaml.j2}
     export ELASTIC_HOST={elastic host}
     export VIRTHOST={undercloud-fqdn}
+    export GRAFANA_APIKEY={apikey}
 
     pushd $WORKSPACE/browbeat/ci-scripts/tripleo
 
@@ -88,10 +89,11 @@ results will be placed only in the ``browbeat/results`` folder on the virtual
 undercloud.
 
 If configured to use Elasticsearch metadata and benchmarks results will be
-inserted into Elasticsearch for easier visualization and storage. If Graphana is
+inserted into Elasticsearch for easier visualization and storage. If Grafana is
 enabled performance metrics will be gathered from all cloud nodes and stored
 into the configured graphite instance to be processed by the Grafana dashboards
 created using the given username and password.
 
-If enabled these dashboards will be automatically overwritten each run to reflect
-the number of nodes in your cloud and other changes that may occur between runs.
+If enabled these dashboards will be automatically overwritten after each run to 
+reflect the number of nodes in your cloud and other changes that may occur 
+between runs.
