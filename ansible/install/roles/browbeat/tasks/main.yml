@@ -34,12 +34,14 @@
 
 - name: Update virtualenv and setuptools
   pip:
-    name: "{{item}}"
-    state: latest
+    name: "{{item.name}}"
+    version: "{{item.version}}"
   become: true
   with_items:
-    - virtualenv
-    - setuptools
+    - name: virtualenv
+      version: 15.2.0
+    - name: setuptools
+      version: 38.7.0
 
 - name: Determine if browbeat directory exists already
   stat:
