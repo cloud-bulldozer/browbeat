@@ -51,10 +51,10 @@
         nova_config_file: /etc/nova/nova.conf
       when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-    - name: (Pike) Set Config File based on OpenStack Version
+    - name: (Pike, Queens) Set Config File based on OpenStack Version
       set_fact:
         nova_config_file: /var/lib/config-data/puppet-generated/nova_libvirt/etc/nova/nova.conf
-      when: "'Pike' in osp_version['content'] | b64decode"
+      when: "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode)"
 
     - name: Set default cpu_allocation_ratio/ram_allocation_ratio/disk_allocation_ratio configuration for Nova
       set_fact:
@@ -120,10 +120,10 @@
         - "'controller' in group_names"
         - restart_nova
 
-    - name: (Pike) Restart Nova Compute Container
+    - name: (Pike, Queens) Restart Nova Compute Container
       become: true
       command: docker restart nova_compute
       when:
-        - "'Pike' in osp_version['content'] | b64decode"
+        - "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode)"
         - "'compute' in group_names"
         - restart_nova
