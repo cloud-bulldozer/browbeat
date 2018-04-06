@@ -100,6 +100,7 @@ per_process_panels:
     - name: "Everything Else"
       processes:
         - httpd
+        - iscsid
         - memcached
         - mongod
         - mysqld
@@ -145,12 +146,14 @@ per_process_panels:
     - name: "Neutron"
       processes:
         - neutron-dhcp-agent
+        - neutron-l3-agent
         - neutron-openvswitch-agent
         - neutron-rootwrap-daemon
         - neutron-server
     - name: "Nova"
       processes:
         - nova-api
+        - nova_api_wsgi
         - nova-cert
         - nova-compute
         - nova-conductor
@@ -176,6 +179,7 @@ per_process_panels:
         - swift-container-sync
         - swift-container-updater
         - swift-object-auditor
+        - swift-object-expirer
         - swift-object-reconstructor
         - swift-object-replicator
         - swift-object-server
@@ -225,6 +229,9 @@ per_process_panels:
         - pcsd
         - pengine
         - stonithd
+    - name: "Docker"
+      processes:
+        - dockerd-current
     - name: "Everything Else"
       processes:
         - dnsmasq
@@ -261,6 +268,9 @@ per_process_panels:
         - heat_api_cfn
         - heat_api_cloudwatch
         - heat_api_wsgi
+    - name: "Horizon"
+      processes:
+        - horizon
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -350,9 +360,11 @@ per_process_panels:
         - swift-container-server
         - swift-container-updater
         - swift-object-auditor
+        - swift-object-expirer
         - swift-object-replicator
         - swift-object-server
         - swift-object-updater
+        - rsync
     - name: "Collectd"
       processes:
         - collectd
@@ -448,11 +460,17 @@ per_process_panels:
         - pcsd
         - pengine
         - stonithd
+    - name: "Docker"
+      processes:
+        - docker-registry
+        - dockerd-current
+        - docker-containerd-current
     - name: "Everything Else"
       processes:
         - dnsmasq
         - haproxy
         - httpd
+        - iscsid
         - keepalived
         - memcached
         - mongod
@@ -484,6 +502,9 @@ per_process_panels:
         - heat_api_cfn
         - heat_api_cloudwatch
         - heat_api_wsgi
+    - name: "Horizon"
+      processes:
+        - horizon
     - name: "Ironic"
       processes:
         - ironic-api
@@ -559,6 +580,7 @@ per_process_panels:
         - swift-object-server
         - swift-object-updater
         - swift-proxy-server
+        - rsync
     - name: "Zaqar"
       processes:
         - zaqar-server
