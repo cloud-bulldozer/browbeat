@@ -146,6 +146,7 @@ per_process_panels:
       processes:
         - neutron-dhcp-agent
         - neutron-openvswitch-agent
+        - neutron-rootwrap-daemon
         - neutron-server
     - name: "Nova"
       processes:
@@ -272,6 +273,7 @@ per_process_panels:
         - neutron-metadata-agent
         - neutron-ns-metadata-proxy
         - neutron-openvswitch-agent
+        - neutron-rootwrap-daemon
         - neutron-server
     - name: "Nova"
       processes:
@@ -507,6 +509,7 @@ per_process_panels:
         - neutron-metadata-agent
         - neutron-ns-metadata-proxy
         - neutron-openvswitch-agent
+        - neutron-rootwrap-daemon
         - neutron-server
     - name: "Nova"
       processes:
