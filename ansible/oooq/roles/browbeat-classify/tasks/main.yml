@@ -11,7 +11,7 @@
 
 - name: Clone and Install Browbeat-ML dependencies
   pip:
-    name: "git+https://github.com/redhat-performance/Browbeat-ML#egg=bml"
+    name: "git+https://github.com/aakarshg/Browbeat-ML.git@elastic5#egg=bml"
     virtualenv: "{{ ansible_env.HOME }}/browbeat-venv"
 
 - name: Run Browbeat-ML on uuid
@@ -23,5 +23,5 @@
 - name: Upload timeseries data summaries to cockroach db
   shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-timesummary {{browbeat_uuid.stdout}}"
 
-#- name: Upload log data summaries to cockroach db
-#  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-logsummary {{browbeat_uuid.stdout}}"
+- name: Upload log data summaries to cockroach db
+  shell: "source {{ ansible_env.HOME }}/browbeat-venv/bin/activate; bml --upload-logsummary {{browbeat_uuid.stdout}}"
