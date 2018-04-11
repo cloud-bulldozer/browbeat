@@ -1,0 +1,30 @@
+---
+- name: Check that rabbitmq is installed
+  stat:
+    path: /etc/rabbitmq/rabbitmq.config
+  register: rabbitmq_config
+
+- name: Check if rabbitmq is containerized
+  shell:
+    cmd: docker ps | grep rabbitmq
+  register: rabbitmq_container
+  when: rabbitmq_config.stat.exists
+  ignore_errors: true
+
+- name: Set rabbitmq log location (containerized)
+  set_fact:
+    rabbitmq_logs: /var/log/containers/rabbitmq
+  when: rabbitmq_container.rc == 0 and rabbitmq_config.stat.exists
+
+- name: Check if log folder exists
+  stat:
+    path: "{{rabbitmq_logs}}"
+  register: logs_path
+
+- name: Copy logs to directory on host
+  synchronize:
+    src: "{{rabbitmq_logs}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: rabbitmq_config.stat.exists and logs_path.stat.isdir is defined and logs_path.stat.isdir
+

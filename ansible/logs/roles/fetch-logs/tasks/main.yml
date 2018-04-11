@@ -1,0 +1,18 @@
+---
+- name: Tar the logs directory
+  archive:
+    path: /home/{{host_remote_user}}/{{ansible_hostname}}
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}.gz
+
+- name: Remove logs directory
+  file:
+    path: /home/{{host_remote_user}}/{{ansible_hostname}}
+    state: absent
+
+- name: Fetch logs
+  fetch:
+    src: /home/{{host_remote_user}}/{{ansible_hostname}}.gz
+    dest:
+      /home/{{browbeat_user}}/logs/{{inventory_hostname}}-{{ansible_date_time.epoch}}
+    flat: yes
+

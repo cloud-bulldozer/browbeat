@@ -1,0 +1,88 @@
+- name: Check that service is installed
+  stat:
+    path: /etc/{{item}}/{{item}}.conf
+  register: config
+  with_items: "{{services}}"
+
+- name: Check if service is containerized
+  shell:
+    cmd: docker ps | grep {{item.item}}
+  register: container
+  when: item.stat.exists
+  with_items:
+    - "{{config.results}}"
+  ignore_errors: true
+
+- name: Set log location (containerized)
+  set_fact:
+    log_dir_containerized: /var/log/containers/{{item.0.item}}
+  register: log_result_containerized
+  when: item.1.rc == 0 and item.0.stat.exists
+  with_together:
+    - "{{config.results}}"
+    - "{{container.results}}"
+
+- name: Set log location (non-containerized)
+  set_fact:
+    log_dir_noncontainerized: /var/log/{{item.0.item}}
+  register: log_result_noncontainerized
+  when: item.1.rc != 0 and item.0.stat.exists
+  with_together:
+    - "{{config.results}}"
+    - "{{container.results}}"
+
+-  name: make list of log directories (containerized)
+   set_fact:
+     log_dir_containerized: "{{ log_result_containerized.results | selectattr('ansible_facts','defined') | map(attribute='ansible_facts.log_dir_containerized') | list }}"
+   when: item.1.rc == 0 and item.0.stat.exists
+   with_together:
+     - "{{config.results}}"
+     - "{{container.results}}"
+
+
+- name: make list of log directories (non-containerized)
+  set_fact:
+    log_dir_noncontainerized: "{{ log_result_noncontainerized.results | selectattr('ansible_facts','defined') | map(attribute='ansible_facts.log_dir_noncontainerized') | list }}"
+  when: item.1.rc != 0 and item.0.stat.exists
+  with_together:
+    - "{{config.results}}"
+    - "{{container.results}}"
+
+
+- name: Check if log folder exists (container)
+  stat:
+    path: "{{item}}"
+  register: logs_path_containerized
+  with_items:
+    - "{{log_dir_containerized}}"
+  when: log_dir_containerized is defined
+
+- name: Check if log folder exists (non-container)
+  stat:
+    path: "{{item}}"
+  register: logs_path_noncontainerized
+  with_items:
+    - "{{log_dir_noncontainerized}}"
+  when: log_dir_noncontainerized is defined
+
+- name: Copy container logs to directory on host
+  synchronize:
+    src: "{{item.1.item}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: log_dir_containerized is defined and item.0.stat.exists and item.1.stat is defined and item.1.stat.isdir is defined and item.1.stat.isdir
+  with_together:
+    - "{{config.results}}"
+    - "{{logs_path_containerized.results}}"
+
+- name: Copy non-container logs to directory on host
+  synchronize:
+    src: "{{item.1.item}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: log_dir_noncontainerized is defined and item.0.stat.exists and item.1.stat is defined and item.1.stat.isdir is defined and item.1.stat.isdir
+  with_together:
+    - "{{config.results}}"
+    - "{{logs_path_noncontainerized.results}}"
+
+

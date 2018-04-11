@@ -1,0 +1,35 @@
+---
+- name: Check that glance is installed
+  stat:
+    path: /etc/glance/glance-api.conf
+  register: glance_config
+
+- name: Check if glance is containerized
+  shell:
+    cmd: docker ps | grep glance
+  register: glance_container
+  when: glance_config.stat.exists
+  ignore_errors: true
+
+- name: Set glance log location (containerized)
+  set_fact:
+    glance_logs: /var/log/containers/glance
+  when: glance_container.rc == 0 and glance_config.stat.exists
+
+- name: Set glance log location (non-containerized)
+  set_fact:
+    glance_logs: /var/log/glance
+  when: glance_container.rc != 0 and glance_config.stat.exists
+
+- name: Check if log folder exists
+  stat:
+    path: "{{glance_logs}}"
+  register: logs_path
+
+- name: Copy logs to directory on host
+  synchronize:
+    src: "{{glance_logs}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: glance_config.stat.exists and logs_path.stat.isdir is defined and logs_path.stat.isdir
+

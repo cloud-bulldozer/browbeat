@@ -1,0 +1,28 @@
+---
+- name: Check that httpd is installed
+  stat:
+    path: /etc/httpd/conf/httpd.conf
+  register: httpd_config
+
+- name: Set httpd log location (containerized)
+  set_fact:
+    httpd_logs: /var/log/containers/httpd
+  when: osp_version >= 12  and httpd_config.stat.exists
+
+- name: Set httpd log location (non-containerized)
+  set_fact:
+    httpd_logs: /var/log/httpd
+  when: osp_version < 12 and httpd_config.stat.exists
+
+- name: Check if log folder exists
+  stat:
+    path: "{{httpd_logs}}"
+  register: logs_path
+
+- name: Copy logs to directory on host
+  synchronize:
+    src: "{{httpd_logs}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: httpd_config.stat.exists and logs_path.stat.isdir is defined and logs_path.stat.isdir
+

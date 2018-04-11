@@ -1,0 +1,23 @@
+---
+- name: Check that openvswitch is installed
+  stat:
+    path: /etc/openvswitch/default.conf
+  register: openvswitch_config
+
+- name: Set openvswitch log location (non-containerized)
+  set_fact:
+    openvswitch_logs: /var/log/openvswitch
+  when: openvswitch_config.stat.exists
+
+- name: Check if log folder exists
+  stat:
+    path: "{{openvswitch_logs}}"
+  register: logs_path
+
+- name: Copy logs to directory on host
+  synchronize:
+    src: "{{openvswitch_logs}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: openvswitch_config.stat.exists and logs_path.stat.isdir is defined and logs_path.stat.isdir
+

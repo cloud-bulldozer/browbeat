@@ -1,0 +1,56 @@
+---
+- hosts: controller
+  remote_user: "{{host_remote_user}}"
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    services:
+      - nova
+      - neutron
+      - ceilometer
+      - cinder
+      - gnocchi
+      - keystone
+      - heat
+  become: true
+  tags:
+    - controller
+  pre_tasks:
+  - name: Create logs directory
+    file:
+      path: /home/{{host_remote_user}}/{{ansible_hostname}}
+      state: directory
+  roles:
+    - osp_version
+    - common
+    - glance
+    - mysql
+    - rabbitmq
+    - httpd
+    - openvswitch
+    - common
+    - fetch-logs
+
+- hosts: compute
+  remote_user: "{{host_remote_user}}"
+  vars_files:
+    - ../install/group_vars/all.yml
+  vars:
+    services:
+       - nova
+       - neutron
+       - ceilometer
+       - libvirt
+  become: true
+  tags:
+    - compute
+  pre_tasks:
+  - name: Create logs directory
+    file:
+      path: /home/{{host_remote_user}}/{{ansible_hostname}}
+      state: directory
+  roles:
+    - common
+    - openvswitch
+    - fetch-logs
+
