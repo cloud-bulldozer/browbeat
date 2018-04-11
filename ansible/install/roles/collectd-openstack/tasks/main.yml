@@ -80,6 +80,11 @@
   register: mysql_root_password
   when: "'controller' in group_names"
 
+- name: (Undercloud) Get mysql root password
+  shell: cat /home/stack/undercloud-passwords.conf | grep 'undercloud_db_password=' | sed 's/undercloud_db_password=//g'
+  register: undercloud_mysql_password
+  when: "'undercloud' in group_names"
+
 - name: (Undercloud) Get password
   become: true
   shell: "hiera admin_password | awk '{$0=\"Environment=OS_PASSWORD=\"$0;print }'"
@@ -138,16 +143,17 @@
     backup: true
   when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-- name: (Pike) Deploy Apache httpd.conf for request timings
+- name: (Queens/Pike) Patch Apache httpd.conf for request timings
   become: true
-  copy:
-    src: httpd.conf
-    dest: /var/lib/config-data/puppet-generated/gnocchi/etc/httpd/conf/httpd.conf
-    owner: root
-    group: root
-    mode: 0644
-    backup: true
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Pike' in osp_version['content'] | b64decode)"
+  shell: sed -i 's/LogFormat "%[ah] %l %u %t \\"%r\\" %>s %b \\"%{Referer}i\\" \\"%{User-Agent}i\\"" combined/LogFormat "%h %l %u %t RT:%D \\"%r\\" %>s %b \\"%{Referer}i\\" \\"%{User-Agent}i\\"" combined/g' {{item}}
+  with_items:
+    - /var/lib/config-data/puppet-generated/gnocchi/etc/httpd/conf/httpd.conf
+    - /var/lib/config-data/puppet-generated/keystone/etc/httpd/conf/httpd.conf
+    - /var/lib/config-data/puppet-generated/nova_placement/etc/httpd/conf/httpd.conf
+  when:
+    - "'controller' in group_names"
+    - apache_controller_collectd_request_time
+    - "('Queens' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode)"
 
 - name: (Newton, Ocata) Restart Apache
   become: true
@@ -157,10 +163,17 @@
     enabled: true
   when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-- name: (Pike) Restart Gnocchi API Container
+- name: (Queens/Pike) Restart Gnocchi/Keystone/Nova Placement API Containers
   become: true
-  command: docker restart gnocchi_api
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Pike' in osp_version['content'] | b64decode)"
+  command: docker restart {{item}}
+  with_items:
+    - gnocchi_api
+    - keystone
+    - nova_placement
+  when:
+    - "'controller' in group_names"
+    - apache_controller_collectd_request_time
+    - "('Queens' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode)"
 # End Apache Request Response Timing
 
 # Apache Monitoring

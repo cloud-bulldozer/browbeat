@@ -3,7 +3,7 @@
       height: 200px
       showTitle: true
       panels:
-        - title: $Cloud - $Node - Tail Info
+        - title: $Cloud - $Node - Tail Error
           type: graph
           legend:
             alignAsTable: true

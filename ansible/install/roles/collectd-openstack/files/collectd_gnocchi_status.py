@@ -12,7 +12,6 @@
 #   limitations under the License.
 """Collectd python plugin to read gnocchi status on an OpenStack Controller."""
 from gnocchiclient.v1 import client
-from keystoneauth1.identity import v2
 from keystoneauth1 import session
 import collectd
 import os
@@ -64,21 +63,34 @@ def read(data=None):
 
 
 def create_keystone_session():
-    auth = v2.Password(
-        username=os_username, password=os_password, tenant_name=os_tenant,
-        auth_url=os_auth_url)
+    if int(os_identity_api_version) == 3:
+        from keystoneauth1.identity import v3
+        auth = v3.Password(
+            username=os_username, password=os_password, project_name=os_tenant,
+            user_domain_name=os_user_domain_name, project_domain_name=os_project_domain_name,
+            auth_url=os_auth_url)
+    else:
+        from keystoneauth1.identity import v2
+        auth = v2.Password(
+            username=os_username, password=os_password, tenant_name=os_tenant,
+            auth_url=os_auth_url)
     return session.Session(auth=auth)
 
+os_identity_api_version = os.environ.get('OS_IDENTITY_API_VERSION')
+if os_identity_api_version is None:
+    os_identity_api_version = 2
 os_username = os.environ.get('OS_USERNAME')
 os_password = os.environ.get('OS_PASSWORD')
 os_tenant = os.environ.get('OS_TENANT_NAME')
 if os_tenant is None:
     os_tenant = os.environ.get('OS_PROJECT_NAME')
 os_auth_url = os.environ.get('OS_AUTH_URL')
+os_project_domain_name = os.environ.get('OS_PROJECT_DOMAIN_NAME')
+os_user_domain_name = os.environ.get('OS_USER_DOMAIN_NAME')
 
 collectd.info(
-    'gnocchi_status: Connecting with user={}, password={}, tenant={}, '
-    'auth_url={}'.format(os_username, os_password, os_tenant, os_auth_url))
+    'gnocchi_status: Keystone API: {} Connecting with user={}, password={}, tenant/project={}, '
+    'auth_url={}'.format(os_identity_api_version, os_username, os_password, os_tenant, os_auth_url))
 
 keystone_session = create_keystone_session()
 collectd.register_config(configure)

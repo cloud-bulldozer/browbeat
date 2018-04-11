@@ -109,6 +109,7 @@ PreCacheChain "PreCache"
   FSType sysfs
   FSType tmpfs
   FSType vboxsf
+  MountPoint "/^/var/lib/docker/.*/"
   IgnoreSelected true
   ValuesPercentage true
   ReportInodes true
@@ -144,7 +145,7 @@ PreCacheChain "PreCache"
 # A Minus before the version means the process was not found in that version. (Ex -10)
 <Plugin processes>
   # Ceilometer (OpenStack Installed)
-  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 10,11,12
+  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 10,11,12,13
 
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
@@ -153,24 +154,24 @@ PreCacheChain "PreCache"
   ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # 10 with DVR
   ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # 10 with DVR
   ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # 10 with DVR
-  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12,13
 
   # Nova (OpenStack Installed)
-  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 10,11,12
-  ProcessMatch "privsep-helper" "python.+/bin/privsep-helper"                           # 11,12
+  ProcessMatch "nova-compute" "python.+nova-compute"                                    # 10,11,12,13
+  ProcessMatch "privsep-helper" "python.+/bin/privsep-helper"                           # 11,12,13
 
   # OVS (OpenStack Installed)
-  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12
-  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12
-  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12,13
+  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12,13
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12,13
   ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
   ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
 
   # QEMU / libvirt (OpenStack Installed)
-  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 10,11,12
-  ProcessMatch "libvirtd" "/usr/sbin/libvirtd"                                          # 10,11,12
-  ProcessMatch "virtlockd" "/usr/sbin/virtlockd"                                        # 10,11,-12
-  ProcessMatch "virtlogd" "/usr/sbin/virtlogd"                                          # 10,11,12
+  ProcessMatch "qemu-kvm" "/usr/libexec/qemu-kvm"                                       # 10,11,12,13
+  ProcessMatch "libvirtd" "/usr/sbin/libvirtd"                                          # 10,11,12,13
+  ProcessMatch "virtlockd" "/usr/sbin/virtlockd"                                        # 10,11,-12,-13
+  ProcessMatch "virtlogd" "/usr/sbin/virtlogd"                                          # 10,11,12,13
 </Plugin>
 
 <Plugin swap>
@@ -181,7 +182,7 @@ PreCacheChain "PreCache"
 # Tail plugin configuration
 <Plugin "tail">
 
-  {%if 'Pike' in osp_version['content'] | b64decode %}
+  {%if 'Queens' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode %}
   <File "/var/log/containers/ceilometer/compute.log">
   {% else %}
   <File "/var/log/ceilometer/compute.log">
@@ -261,7 +262,12 @@ PreCacheChain "PreCache"
     </Match>
 {% endif %}
   </File>
+
+  {%if 'Queens' in osp_version['content'] | b64decode %}
+  <File "/var/log/containers/neutron/openvswitch-agent.log">
+  {% else %}
   <File "/var/log/neutron/openvswitch-agent.log">
+  {% endif %}
     Instance "neutron-openvswitch-agent"
     <Match>
       Regex " ERROR "
@@ -287,7 +293,7 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 
-  {%if 'Pike' in osp_version['content'] | b64decode %}
+  {%if 'Queens' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode %}
   <File "/var/log/containers/nova/nova-compute.log">
   {% else %}
   <File "/var/log/nova/nova-compute.log">
