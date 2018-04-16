@@ -23,56 +23,95 @@
   gather_facts: true
   remote_user: "{{ host_remote_user }}"
   vars:
-    ibrs_enabled: 0
-    pti_enabled: 1
-    retp_enabled: 1
+    ibpb_toggle: /sys/kernel/debug/x86/ibpb_enabled
+    ibrs_toggle: /sys/kernel/debug/x86/ibrs_enabled
+    pti_toggle: /sys/kernel/debug/x86/pti_enabled
+    retp_toggle: /sys/kernel/debug/x86/retp_enabled
     security: true
   vars_files:
     - ../install/group_vars/all.yml
   tasks:
-    - name: Check if rhel7
+    - name: Check if RHEL 7
       fail:
         msg: Only run against RHEL7.X
       when:
         - ansible_distribution != "RedHat"
-        - ansible_distribution_major_version < '7'
+        - ansible_distribution_major_version < "7"
+
+    - name: Set default values for security on with RHEL 7.5
+      set_fact:
+        ibrs_enabled: 1
+        pti_enabled: 1
+        retp_enabled: 1
+      when:
+        - security|bool
+        - ansible_distribution_version == "7.5"
+
+    - name: Set default values for security on with RHEL 7.4
+      set_fact:
+        ibpb_enabled: 1
+        ibrs_enabled: 1
+        pti_enabled: 1
+      when:
+        - security|bool
+        - ansible_distribution_version == "7.4"
 
     - name: Check to turn off security
       set_fact:
+        ibpb_enabled: 0
         ibrs_enabled: 0
         pti_enabled: 0
         retp_enabled: 0
       when: not security|bool
 
-    - name: Debug print the new values for security
+    - name: Debug print the new values for security RHEL 7.5
       debug:
         msg: "Setting these: ibrs_enabled- {{ibrs_enabled}} pti_enabled- {{pti_enabled}} retp_enabled - {{retp_enabled}}"
+      when: ansible_distribution_version == "7.5"
+
+    - name: Debug print the new values for security RHEL 7.4
+      debug:
+        msg: "Setting these: ibpb_enabled - {{ibpb_enabled}} ibrs_enabled- {{ibrs_enabled}} pti_enabled- {{pti_enabled}}"
+      when: ansible_distribution_version == "7.4"
 
     - name: Check /sys/kernel for security performance affecting features
       become: true
       shell: |
-        echo "/sys/kernel/debug/x86/ibrs_enabled: $(cat /sys/kernel/debug/x86/ibrs_enabled)"
-        echo "/sys/kernel/debug/x86/pti_enabled: $(cat /sys/kernel/debug/x86/pti_enabled)"
-        echo "/sys/kernel/debug/x86/retp_enabled: $(cat /sys/kernel/debug/x86/retp_enabled)"
+        echo "{{ibpb_toggle}}: $(cat {{ibpb_toggle}})"
+        echo "{{ibrs_toggle}}: $(cat {{ibrs_toggle}})"
+        echo "{{pti_toggle}}: $(cat {{pti_toggle}})"
+        echo "{{retp_toggle}}: $(cat {{retp_toggle}})"
       register: security_vars
 
     - name: Debug print the security_vars before setting
       debug:
         msg: "{{security_vars.stdout_lines}}"
 
-    - name: Turn on/off security
+    - name: Turn on/off security on RHEL 7.5
       become: true
       shell: |
-        echo {{ibrs_enabled}} > /sys/kernel/debug/x86/ibrs_enabled
-        echo {{pti_enabled}} > /sys/kernel/debug/x86/pti_enabled
-        echo {{retp_enabled}} > /sys/kernel/debug/x86/retp_enabled
+        echo {{ibrs_enabled}} > {{ibrs_toggle}}
+        echo {{pti_enabled}} > {{pti_toggle}}
+        echo {{retp_enabled}} > {{retp_toggle}}
+      when:
+        - ansible_distribution_version == "7.5"
+
+    - name: Turn on/off security on RHEL 7.4
+      become: true
+      shell: |
+        echo {{ibpb_enabled}} > {{ibpb_toggle}}
+        echo {{ibrs_enabled}} > {{ibrs_toggle}}
+        echo {{pti_enabled}} > {{pti_toggle}}
+      when:
+        - ansible_distribution_version == "7.4"
 
     - name: Check /sys/kernel for security performance affecting features
       become: true
       shell: |
-        echo "/sys/kernel/debug/x86/ibrs_enabled: $(cat /sys/kernel/debug/x86/ibrs_enabled)"
-        echo "/sys/kernel/debug/x86/pti_enabled: $(cat /sys/kernel/debug/x86/pti_enabled)"
-        echo "/sys/kernel/debug/x86/retp_enabled: $(cat /sys/kernel/debug/x86/retp_enabled)"
+        echo "{{ibpb_toggle}}: $(cat {{ibpb_toggle}})"
+        echo "{{ibrs_toggle}}: $(cat {{ibrs_toggle}})"
+        echo "{{pti_toggle}}: $(cat {{pti_toggle}})"
+        echo "{{retp_toggle}}: $(cat {{retp_toggle}})"
       register: security_vars
 
     - name: Debug print the security_vars after setting
