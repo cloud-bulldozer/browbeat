@@ -49,6 +49,8 @@
   yum:
     name: "{{item}}"
     state: present
+    disablerepo: "*"
+    enablerepo: "CentOS-7-Base"
   become: true
   with_items:
     - rsyslog
