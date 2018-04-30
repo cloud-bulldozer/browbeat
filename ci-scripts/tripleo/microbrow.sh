@@ -68,6 +68,15 @@ pushd $WORKSPACE/tripleo-quickstart
 # Solves Ansible issue 13278
 sed -i '/defaults/a timeout = 60' ansible.cfg
 
+# Temporary fix to place playbooks in the folder
+mkdir -p $WORKSPACE/usr/local/share/ansible/roles/browbeat-metadata
+mkdir -p $WORKSPACE/usr/local/share/ansible/roles/browbeat
+mkdir -p $WORKSPACE/usr/local/share/ansible/roles/browbeat/browbeat/filter_plugins
+cp -r $WORKSPACE/browbeat/ansible/gather/roles/* $WORKSPACE/usr/local/share/ansible/roles/browbeat-metadata
+cp -r $WORKSPACE/browbeat/ansible/install/roles/* $WORKSPACE/usr/local/share/ansible/roles/browbeat
+cp -r $WORKSPACE/browbeat/ansible/oooq/roles/* $WORKSPACE/usr/local/share/ansible/roles/browbeat
+cp -r $WORKSPACE/browbeat/ansible/install/filter_plugins/* $WORKSPACE/usr/local/share/ansible/roles/browbeat/browbeat/filter_plugins
+cp -r $WORKSPACE/browbeat/ansible/oooq/* $WORKSPACE/playbooks
 
 echo "file://$WORKSPACE/browbeat/#egg=browbeat" >> $REQS
 
