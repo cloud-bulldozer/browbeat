@@ -39,6 +39,24 @@
     - collectd-turbostat
     - collectd-ping
 
+# (sai) Since we moved to containers we don't have java installed on the host
+# anymore but it is needed for collectd-java
+- name: Add repository
+  yum_repository:
+    name: CentOS-7-Base
+    description: Core CentOS7 Packages
+    baseurl: http://mirror.centos.org/centos/7/os/$basearch/
+    enabled: yes
+  become: true
+  register: repo_add
+  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
+
+- name: Add key
+  rpm_key:
+    state: present
+    key: https://www.centos.org/keys/RPM-GPG-KEY-CentOS-7
+  become: true
+
 # (sai) Separating out collectd java rpms as they have a lot of dependencies and
 # are only required for ODL monitoring on controllers only
 - name: Install collectd java specific rpms
@@ -47,9 +65,17 @@
     state: present
   become: true
   with_items:
+    - java-1.8.0-openjdk
     - collectd-java
     - collectd-generic-jmx
-  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
+  when: (repo_add is success and 'controller' in group_names and {{opendaylight_java_plugin}} == true)
+
+- name: Remove repository
+  yum_repository:
+    name:  CentOS-7-Base
+    state: absent
+  become: true
+  when: (repo_add is success and 'controller' in group_names and {{opendaylight_java_plugin}} == true)
 
 # Iostat plugin requires sysstat since shelling iostat for stats, Also it is
 # handy to have sysstat.
