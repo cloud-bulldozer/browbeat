@@ -267,6 +267,11 @@ PreCacheChain "PreCache"
   ProcessMatch "aodh-notifier" "aodh-notifier"                                          # 10,11,12,13
   ProcessMatch "aodh_wsgi" "aodh_wsgi.*-DFOREGROUND"                                    # 11,12,13
 
+  # Barbican (OpenStack Installed)
+  ProcessMatch "barbican_wsgi" "barbican_wsgi.*-DFOREGROUND"                           # 13
+  ProcessMatch "barbican-keystone-listener" "python.+barbican-keystone-listener"       # 13
+  ProcessMatch "barbican-worker" "python.+barbican-worker"                             # 13
+
   # Ceilometer (OpenStack Installed)
   ProcessMatch "ceilometer-agent-notification" "ceilometer-agent-notification"          # 10,11,12,13
   ProcessMatch "ceilometer-collector" "ceilometer-collector"                            # 10,11,-12,-13

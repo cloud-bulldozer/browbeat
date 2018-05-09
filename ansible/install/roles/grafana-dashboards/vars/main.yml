@@ -203,6 +203,11 @@ per_process_panels:
         - aodh-listener
         - aodh-notifier
         - aodh_wsgi
+    - name: "Barbican"
+      processes:
+        - barbican_wsgi
+        - barbican-keystone-listener
+        - barbican-worker
     - name: "Ceilometer"
       processes:
         - ceilometer-agent-notification
@@ -438,6 +443,11 @@ per_process_panels:
         - aodh-listener
         - aodh-notifier
         - aodh_wsgi
+    - name: "Barbican"
+      processes:
+        - barbican_wsgi
+        - barbican-keystone-listener
+        - barbican-worker
     - name: "Ceilometer"
       processes:
         - ceilometer-agent-notification
