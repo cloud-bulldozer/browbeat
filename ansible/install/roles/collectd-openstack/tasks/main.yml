@@ -35,9 +35,11 @@
     - collectd
     - collectd-apache
     - collectd-ceph
+    - collectd-disk
     - collectd-mysql
-    - collectd-turbostat
     - collectd-ping
+    - collectd-python
+    - collectd-turbostat
 
 # (sai) Since we moved to containers we don't have java installed on the host
 # anymore but it is needed for collectd-java
