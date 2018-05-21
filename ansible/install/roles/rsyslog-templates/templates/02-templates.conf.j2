@@ -27,8 +27,6 @@ template(name="logstash-index-pattern" type="list") {
     property(name="timereported" dateFormat="rfc3339" position.from="6" position.to="7")
     constant(value=".")
     property(name="timereported" dateFormat="rfc3339" position.from="9" position.to="10")
-    constant(value=".")
-    property(name="timereported" dateFormat="rfc3339" position.from="12" position.to="13")
     }
 # this is for formatting our syslog data in JSON with @timestamp using a "hierarchical" metdata namespace
 template(name="com-redhat-rsyslog-hier"
