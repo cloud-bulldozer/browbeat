@@ -208,6 +208,7 @@ class Elastic(object):
             "key",
             "url",
             "auth_uri",
+            "www_authenticate_uri",
             "coordination_url",
             "swift_authurl",
             "admin_token",
