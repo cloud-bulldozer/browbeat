@@ -190,7 +190,7 @@ percentile for success across at least two stes of hardware. Adjust as required.
 Note that `batch_size` can not produce a batch of unintrospected ndoes if none exist
 so the last batch may be below the maximum size. When nodes in a batch fail the `failure_count`
 is incremented and the nodes are returned to the pool. So it's possible that same node will
-fail again in another batch. There is a saftey mechanism that will kill Yoda if a node exceeds
+fail again in another batch. There is a safety mechanism that will kill Yoda if a node exceeds
 10 retries as that's pretty much garunteed to be misconfigured. For bulk introspection all nodes
 are tried once and what you get is what you get.
 
