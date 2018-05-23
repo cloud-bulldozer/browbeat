@@ -114,8 +114,8 @@ you deploy with aggregation.
 
   [stack@ospd ansible]$ ansible-playbook -i hosts install/dashboards-openstack.yml
 
-Run Overcloud checks
-~~~~~~~~~~~~~~~~~~~~
+Not mantained (Pre-Pike): Run Overcloud checks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 

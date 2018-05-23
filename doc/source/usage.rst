@@ -2,8 +2,8 @@
 Usage
 ========
 
-Run Overcloud checks
---------------------
+- No longer Maintained since Pike -  Run Overcloud checks
+----------------------------------------------------------
 
 ::
 
