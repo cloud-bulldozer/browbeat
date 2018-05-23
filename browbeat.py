@@ -15,9 +15,9 @@ import argparse
 import datetime
 import logging
 import os
+import signal
 import sys
 import time
-
 import browbeat.elastic
 import browbeat.tools
 import browbeat.workloadbase
@@ -28,6 +28,49 @@ _workload_opts = ['perfkit', 'rally', 'shaker', 'yoda']
 _config_file = 'browbeat-config.yaml'
 debug_log_file = 'log/debug.log'
 
+terminate = False
+
+def handle_signal(signum, stack):
+    global terminate
+    terminate = True
+
+signal.signal(signal.SIGINT, handle_signal)
+
+def run_iteration(_config, _cli_args, result_dir_ts, _logger, tools):
+    global terminate
+    for workload in _config["workloads"]:
+        if not workload["enabled"]:
+            _logger.info("{} workload {} disabled in browbeat config".format(workload["type"],
+                         workload["name"]))
+            continue
+        if not workload["type"] in _cli_args.workloads:
+            _logger.info("{} workload {} disabled via cli".format(workload["type"],
+                         workload["name"]))
+            continue
+        _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
+        tools.run_workload(workload, result_dir_ts, 0)
+        browbeat.workloadbase.WorkloadBase.display_summary()
+        if terminate:
+            return
+
+
+def run_complete(_config, _cli_args, result_dir_ts, _logger, tools):
+    global terminate
+    for iteration in range(0, _config["browbeat"]["rerun"]):
+        for workload in _config["workloads"]:
+            if not workload["enabled"]:
+                _logger.info("{} workload {} disabled in browbeat config"
+                             .format(workload["type"], workload["name"]))
+                continue
+            if not workload["type"] in _cli_args.workloads:
+                _logger.info("{} workload {} disabled via cli".format(workload["type"],
+                             workload["name"]))
+                continue
+            _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
+            tools.run_workload(workload, result_dir_ts, iteration)
+            browbeat.workloadbase.WorkloadBase.display_summary()
+            if terminate:
+                return
 
 def main():
     parser = argparse.ArgumentParser(
@@ -114,42 +157,17 @@ def main():
             tools.gather_metadata()
 
     _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
+
     # Iteration rerun_type pushes rerun logic down to the workload itself.  This allows the workload
     # to run multiple times before moving to the next workload
     if _config["browbeat"]["rerun_type"] == "iteration":
-        for workload in _config["workloads"]:
-            if not workload["enabled"]:
-                _logger.info("{} workload {} disabled in browbeat config".format(workload["type"],
-                             workload["name"]))
-                continue
-
-            if not workload["type"] in _cli_args.workloads:
-                _logger.info(
-                    "{} workload {} disabled via cli".format(workload["type"], workload["name"]))
-                continue
-
-            _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
-            tools.run_workload(workload, result_dir_ts, 0)
-            browbeat.workloadbase.WorkloadBase.display_summary()
-
+        run_iteration(_config, _cli_args, result_dir_ts, _logger, tools)
     elif _config["browbeat"]["rerun_type"] == "complete":
         # Complete rerun_type, reruns after all workloads have been run.
-        for run_iteration in range(0, _config["browbeat"]["rerun"]):
-            for workload in _config["workloads"]:
-                if not workload["enabled"]:
-                    _logger.info("{} workload {} disabled in browbeat config"
-                                 .format(workload["type"], workload["name"]))
-                    continue
-
-                if not workload["type"] in _cli_args.workloads:
-                    _logger.info("{} workload {} disabled via cli".format(workload["type"],
-                                 workload["name"]))
-                    continue
-
-                _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
-                tools.run_workload(workload, result_dir_ts, run_iteration)
-                browbeat.workloadbase.WorkloadBase.display_summary()
-
+        run_complete(_config, _cli_args, result_dir_ts, _logger, tools)
+    if terminate:
+        _logger.info("Browbeat execution halting due to user intervention")
+        sys.exit(1)
     browbeat.workloadbase.WorkloadBase.dump_report(results_path, result_dir_ts)
     _logger.info("Saved browbeat result summary to {}"
                  .format(os.path.join(results_path, "{}.report".format(result_dir_ts))))
