@@ -45,7 +45,7 @@
     dest: "{{ rally_venv }}/etc/rally/rally.conf"
 
 - name: Setup rally database
-  shell: . {{ rally_venv }}/bin/activate; rally-manage db recreate
+  shell: . {{ rally_venv }}/bin/activate; rally db recreate
 
 - name: Setup rally deployment
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
