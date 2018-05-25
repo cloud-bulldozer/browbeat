@@ -30,16 +30,17 @@
   yum:
     name: "{{ item }}"
     state: present
+    disablerepo: "*"
+    enablerepo: "epel"
   become: true
   with_items:
     - collectd
     - collectd-apache
     - collectd-ceph
-    - collectd-disk
     - collectd-mysql
     - collectd-ping
-    - collectd-python
     - collectd-turbostat
+  when: collectd_from_epel
 
 # (sai) Since we moved to containers we don't have java installed on the host
 # anymore but it is needed for collectd-java
