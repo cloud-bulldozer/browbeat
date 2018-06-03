@@ -226,14 +226,24 @@ class CollectdCephStorage(object):
                 self.dispatch_value(
                     osd_id, 'num_snap_trimming', osd['num_snap_trimming'],
                     self.ceph_pg_stats_interval)
-                self.dispatch_value(
-                    osd_id, 'apply_latency_ms',
-                    osd['fs_perf_stat']['apply_latency_ms'],
-                    self.ceph_pg_stats_interval)
-                self.dispatch_value(
-                    osd_id, 'commit_latency_ms',
-                    osd['fs_perf_stat']['commit_latency_ms'],
-                    self.ceph_pg_stats_interval)
+                if 'fs_perf_stat' in osd:
+                    self.dispatch_value(
+                        osd_id, 'apply_latency_ms',
+                        osd['fs_perf_stat']['apply_latency_ms'],
+                        self.ceph_pg_stats_interval)
+                    self.dispatch_value(
+                        osd_id, 'commit_latency_ms',
+                        osd['fs_perf_stat']['commit_latency_ms'],
+                        self.ceph_pg_stats_interval)
+                elif 'perf_stat' in osd:
+                    self.dispatch_value(
+                        osd_id, 'apply_latency_ms',
+                        osd['perf_stat']['apply_latency_ms'],
+                        self.ceph_pg_stats_interval)
+                    self.dispatch_value(
+                        osd_id, 'commit_latency_ms',
+                        osd['perf_stat']['commit_latency_ms'],
+                        self.ceph_pg_stats_interval)
 
     def read_ceph_pool(self):
         """Reads stats from "ceph osd pool" and "ceph df" commands."""
