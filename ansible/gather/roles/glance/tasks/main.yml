@@ -8,7 +8,7 @@
   shell: "python /tmp/openstack-config-parser.py glance /tmp/out.yml"
 
 - name: Fetch output
-  fetch: "src=/tmp/out.yml dest=/tmp/out.yml flat=yes"
+  fetch: "src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes"
 
 - name: Load configuration variables
-  include_vars: "/tmp/out.yml"
+  include_vars: /tmp/out-{{ inventory_hostname }}.yml

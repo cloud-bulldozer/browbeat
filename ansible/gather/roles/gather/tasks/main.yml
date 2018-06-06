@@ -54,12 +54,12 @@
   ignore_errors: true
 
 - name: Fetch output
-  fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
   when: hostvars[inventory_hostname]['containers'] is not defined
   ignore_errors: true
 
 - name: Load configuration variables
-  include_vars: /tmp/out.yml
+  include_vars: /tmp/out-{{ inventory_hostname }}.yml
   when: hostvars[inventory_hostname]['containers'] is not defined
   ignore_errors: true
 

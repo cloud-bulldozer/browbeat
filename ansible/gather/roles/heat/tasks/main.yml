@@ -14,9 +14,9 @@
   when: heat_config.stat.exists
 
 - name: Fetch output
-  fetch: src=/tmp/out.yml dest=/tmp/out.yml flat=yes
+  fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
   when: heat_config.stat.exists
 
 - name: Load configuration variables
-  include_vars: /tmp/out.yml
+  include_vars: /tmp/out-{{ inventory_hostname }}.yml
   when: heat_config.stat.exists
