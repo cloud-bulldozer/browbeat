@@ -43,7 +43,13 @@ def main():
         '-p', '--postprocess', dest="path", help="Path to process, ie results/20171130-191420/")
     parser.add_argument(
         '-c', '--compare', help="Compare metadata", dest="compare", choices=['software-metadata'])
+    parser.add_argument(
+        '-q', '--query', help="Query Rally Results", dest="query", action='store_true')
     parser.add_argument('-u', '--uuid', help="UUIDs to pass", dest="uuids", nargs=2)
+    parser.add_argument('-g', '--get_uuid', help="UUIDs to pass", dest="get_uuids",
+                        action='store_true')
+    parser.add_argument('--combined', help="Aggregate over times and \
+                        concurrency, syntax use --combined <anything>", dest="combined")
     _cli_args = parser.parse_args()
 
     _logger = logging.getLogger('browbeat')
@@ -69,10 +75,23 @@ def main():
     _config = load_browbeat_config(_cli_args.setup)
     tools = browbeat.tools.Tools(_config)
 
+    if _cli_args.get_uuids :
+        es = browbeat.elastic.Elastic(_config, "BrowbeatCLI")
+        data = es.get_results("browbeat-*")
+        exit(0)
+
+    # Query Results
+    if _cli_args.query :
+        es = browbeat.elastic.Elastic(_config, "BrowbeatCLI")
+        data,metadata = es.get_result_data("browbeat-rally-*",_cli_args.uuids)
+        summary = es.summarize_results(data,bool(_cli_args.combined))
+        es.compare_rally_results(summary,_cli_args.uuids,bool(_cli_args.combined),metadata)
+        exit(0)
+
     # Browbeat compare
     if _cli_args.compare == "software-metadata":
         es = browbeat.elastic.Elastic(_config, "BrowbeatCLI")
-        es.compare_metadata("_all", 'controller', _cli_args.uuids)
+        es.compare_metadata("browbeat-rally-*", 'controller', _cli_args.uuids)
         exit(0)
 
     if _cli_args.compare:

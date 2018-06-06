@@ -254,13 +254,159 @@ Real world use-case, we had two builds in our CI that used the exact same DLRN h
 same DLRN hash, the only difference could be how things were configured. Using this new code, we could quickly identify
 the difference -- TripleO enabled l3_ha.
 
+Below is an example output of comparing metadata:
+
 ::
 
-    [rocketship:browbeat] jtaleric:browbeat$ python browbeat.py --compare software-metadata --uuid "3fc2f149-7091-4e16-855a-60738849af17" "6738eed7-c8dd-4747-abde-47c996975a57"
-    2017-05-25 02:34:47,230 - browbeat.Tools -    INFO - Validating the configuration file passed by the user
-    2017-05-25 02:34:47,311 - browbeat.Tools -    INFO - Validation successful
-    2017-05-25 02:34:47,311 - browbeat.Elastic -    INFO - Querying Elastic : index [_all] : role [controller] : uuid [3fc2f149-7091-4e16-855a-60738849af17]
-    2017-05-25 02:34:55,684 - browbeat.Elastic -    INFO - Querying Elastic : index [_all] : role [controller] : uuid [6738eed7-c8dd-4747-abde-47c996975a57]
-    2017-05-25 02:35:01,165 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-2] Service [neutron] l3_ha [False]
-    2017-05-25 02:35:01,168 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-1] Service [neutron] l3_ha [False]
-    2017-05-25 02:35:01,172 - browbeat.Elastic -    INFO - Difference found : Host [overcloud-controller-0] Service [neutron] l3_ha [False]
+    +-------------------------------------------------------------------------------------------------------------------------------------+
+    Host                 | Service              | Option               | Key                  | Old Value            | New Value
+    +-------------------------------------------------------------------------------------------------------------------------------------+
+    overcloud-controller-2 | nova                 | conductor            | workers              | 0                    | 12
+    overcloud-controller-2 | nova                 | DEFAULT              | metadata_workers     | 0                    | 12
+    overcloud-controller-2 | nova                 | DEFAULT              | my_ip                | 172.16.0.23          | 172.16.0.16
+    overcloud-controller-2 | nova                 | DEFAULT              | enabled_apis         | osapi_compute,metadata | metadata
+    overcloud-controller-2 | nova                 | DEFAULT              | osapi_compute_workers | 0                    | 12
+    overcloud-controller-2 | nova                 | neutron              | region_name          | RegionOne            | regionOne
+    overcloud-controller-2 | neutron-plugin       | ovs                  | local_ip             | 172.17.0.11          | 172.17.0.16
+    overcloud-controller-2 | neutron-plugin       | securitygroup        | firewall_driver      | openvswitch          | iptables_hybrid
+    overcloud-controller-2 | heat                 | DEFAULT              | num_engine_workers   | 0                    | 16
+    overcloud-controller-2 | keystone             | admin_workers        | processes            | 32                   |
+    overcloud-controller-2 | keystone             | admin_workers        | threads              | 1                    |
+    overcloud-controller-2 | keystone             | eventlet_server      | admin_workers        | 8                    | 12
+    overcloud-controller-2 | keystone             | eventlet_server      | public_workers       | 8                    | 12
+    overcloud-controller-2 | keystone             | oslo_messaging_notifications | driver               | messaging            | messagingv2
+    overcloud-controller-2 | keystone             | main_workers         | processes            | 32                   |
+    overcloud-controller-2 | keystone             | main_workers         | threads              | 1                    |
+    overcloud-controller-2 | keystone             | token                | provider             | uuid                 | fernet
+    overcloud-controller-2 | rabbitmq             | DEFAULT              | file                 | 65436                |
+    overcloud-controller-2 | mysql                | DEFAULT              | max                  | 4096                 |
+    overcloud-controller-2 | cinder               | DEFAULT              | exec_dirs            | /sbin,/usr/sbin,/bin,/usr/bin | /sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin,/usr/lpp/mmfs/bin
+    overcloud-controller-2 | cinder               | DEFAULT              | osapi_volume_workers | 32                   | 12
+    overcloud-controller-2 | glance               | DEFAULT              | bind_port            | 9191                 | 9292
+    overcloud-controller-2 | glance               | DEFAULT              | workers              | 32                   | 12
+    overcloud-controller-2 | glance               | DEFAULT              | log_file             | /var/log/glance/registry.log | /var/log/glance/cache.log
+    overcloud-controller-2 | glance               | ref1                 | auth_version         | 2                    | 3
+    overcloud-controller-2 | glance               | glance_store         | stores               | glance.store.http.Store,glance.store.swift.Store | http,swift
+    overcloud-controller-2 | glance               | glance_store         | os_region_name       | RegionOne            | regionOne
+    overcloud-controller-2 | gnocchi              | metricd              | workers              | 8                    | 12
+    overcloud-controller-2 | gnocchi              | storage              | swift_auth_version   | 2                    | 3
+    overcloud-controller-2 | neutron              | DEFAULT              | global_physnet_mtu   | 1496                 | 1500
+    overcloud-controller-2 | neutron              | DEFAULT              | rpc_workers          | 32                   | 12
+    overcloud-controller-2 | neutron              | DEFAULT              | api_workers          | 32                   | 12
+    overcloud-controller-1 | nova                 | conductor            | workers              | 0                    | 12
+    overcloud-controller-1 | nova                 | DEFAULT              | metadata_workers     | 0                    | 12
+    overcloud-controller-1 | nova                 | DEFAULT              | my_ip                | 172.16.0.11          | 172.16.0.23
+    overcloud-controller-1 | nova                 | DEFAULT              | enabled_apis         | osapi_compute,metadata | metadata
+    overcloud-controller-1 | nova                 | DEFAULT              | osapi_compute_workers | 0                    | 12
+    overcloud-controller-1 | nova                 | neutron              | region_name          | RegionOne            | regionOne
+    overcloud-controller-1 | neutron-plugin       | ovs                  | local_ip             | 172.17.0.15          | 172.17.0.11
+    overcloud-controller-1 | neutron-plugin       | securitygroup        | firewall_driver      | openvswitch          | iptables_hybrid
+    overcloud-controller-1 | heat                 | DEFAULT              | num_engine_workers   | 0                    | 16
+    overcloud-controller-1 | keystone             | admin_workers        | processes            | 32                   |
+    overcloud-controller-1 | keystone             | admin_workers        | threads              | 1                    |
+    overcloud-controller-1 | keystone             | eventlet_server      | admin_workers        | 8                    | 12
+    overcloud-controller-1 | keystone             | eventlet_server      | public_workers       | 8                    | 12
+    overcloud-controller-1 | keystone             | oslo_messaging_notifications | driver               | messaging            | messagingv2
+    overcloud-controller-1 | keystone             | main_workers         | processes            | 32                   |
+    overcloud-controller-1 | keystone             | main_workers         | threads              | 1                    |
+    overcloud-controller-1 | keystone             | token                | provider             | uuid                 | fernet
+    overcloud-controller-1 | rabbitmq             | DEFAULT              | file                 | 65436                |
+    overcloud-controller-1 | mysql                | DEFAULT              | max                  | 4096                 |
+    overcloud-controller-1 | cinder               | DEFAULT              | exec_dirs            | /sbin,/usr/sbin,/bin,/usr/bin | /sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin,/usr/lpp/mmfs/bin
+    overcloud-controller-1 | cinder               | DEFAULT              | osapi_volume_workers | 32                   | 12
+    overcloud-controller-1 | glance               | DEFAULT              | bind_port            | 9191                 | 9292
+    overcloud-controller-1 | glance               | DEFAULT              | workers              | 32                   | 12
+    overcloud-controller-1 | glance               | DEFAULT              | log_file             | /var/log/glance/registry.log | /var/log/glance/cache.log
+    overcloud-controller-1 | glance               | ref1                 | auth_version         | 2                    | 3
+    overcloud-controller-1 | glance               | glance_store         | stores               | glance.store.http.Store,glance.store.swift.Store | http,swift
+    overcloud-controller-1 | glance               | glance_store         | os_region_name       | RegionOne            | regionOne
+    overcloud-controller-1 | gnocchi              | metricd              | workers              | 8                    | 12
+    overcloud-controller-1 | gnocchi              | storage              | swift_auth_version   | 2                    | 3
+    overcloud-controller-1 | neutron              | DEFAULT              | global_physnet_mtu   | 1496                 | 1500
+    overcloud-controller-1 | neutron              | DEFAULT              | rpc_workers          | 32                   | 12
+    overcloud-controller-1 | neutron              | DEFAULT              | api_workers          | 32                   | 12
+    overcloud-controller-0 | nova                 | conductor            | workers              | 0                    | 12
+    overcloud-controller-0 | nova                 | DEFAULT              | metadata_workers     | 0                    | 12
+    overcloud-controller-0 | nova                 | DEFAULT              | my_ip                | 172.16.0.15          | 172.16.0.10
+    overcloud-controller-0 | nova                 | DEFAULT              | enabled_apis         | osapi_compute,metadata | metadata
+    overcloud-controller-0 | nova                 | DEFAULT              | osapi_compute_workers | 0                    | 12
+    overcloud-controller-0 | nova                 | neutron              | region_name          | RegionOne            | regionOne
+    overcloud-controller-0 | neutron-plugin       | ovs                  | local_ip             | 172.17.0.10          | 172.17.0.18
+    overcloud-controller-0 | neutron-plugin       | securitygroup        | firewall_driver      | openvswitch          | iptables_hybrid
+    overcloud-controller-0 | heat                 | DEFAULT              | num_engine_workers   | 0                    | 16
+    overcloud-controller-0 | keystone             | admin_workers        | processes            | 32                   |
+    overcloud-controller-0 | keystone             | admin_workers        | threads              | 1                    |
+    overcloud-controller-0 | keystone             | eventlet_server      | admin_workers        | 8                    | 12
+    overcloud-controller-0 | keystone             | eventlet_server      | public_workers       | 8                    | 12
+    overcloud-controller-0 | keystone             | oslo_messaging_notifications | driver               | messaging            | messagingv2
+    overcloud-controller-0 | keystone             | main_workers         | processes            | 32                   |
+    overcloud-controller-0 | keystone             | main_workers         | threads              | 1                    |
+    overcloud-controller-0 | keystone             | token                | provider             | uuid                 | fernet
+    overcloud-controller-0 | rabbitmq             | DEFAULT              | file                 | 65436                |
+    overcloud-controller-0 | mysql                | DEFAULT              | max                  | 4096                 |
+    overcloud-controller-0 | cinder               | DEFAULT              | exec_dirs            | /sbin,/usr/sbin,/bin,/usr/bin | /sbin,/usr/sbin,/bin,/usr/bin,/usr/local/bin,/usr/local/sbin,/usr/lpp/mmfs/bin
+    overcloud-controller-0 | cinder               | DEFAULT              | osapi_volume_workers | 32                   | 12
+    overcloud-controller-0 | glance               | DEFAULT              | bind_port            | 9191                 | 9292
+    overcloud-controller-0 | glance               | DEFAULT              | workers              | 32                   | 12
+    overcloud-controller-0 | glance               | DEFAULT              | log_file             | /var/log/glance/registry.log | /var/log/glance/cache.log
+    overcloud-controller-0 | glance               | ref1                 | auth_version         | 2                    | 3
+    overcloud-controller-0 | glance               | glance_store         | stores               | glance.store.http.Store,glance.store.swift.Store | http,swift
+    overcloud-controller-0 | glance               | glance_store         | os_region_name       | RegionOne            | regionOne
+    overcloud-controller-0 | gnocchi              | metricd              | workers              | 8                    | 12
+    overcloud-controller-0 | gnocchi              | storage              | swift_auth_version   | 2                    | 3
+    overcloud-controller-0 | neutron              | DEFAULT              | global_physnet_mtu   | 1496                 | 1500
+    overcloud-controller-0 | neutron              | DEFAULT              | rpc_workers          | 32                   | 12
+    overcloud-controller-0 | neutron              | DEFAULT              | api_workers          | 32                   | 12
+    +-------------------------------------------------------------------------------------------------------------------------------------+
+
+Compare performance of two different runs
+------------------------------------------
+Using the CLI the user can determine, run to run performance differences. This is a good tool for spot checking performance of an OpenStack
+release.
+
+To use :
+
+::
+
+    $ python browbeat.py -q -u browbeat_uuid1 browbeat_uuid2
+
+Example output from running this CLI command
+
+::
+
+    python browbeat.py -q -u 6b50b6f7-acae-445a-ac53-78200b5ba58c 938dc451-d881-4f28-a6cb-ad502b177f3b
+    2018-07-13 14:38:49,516 - browbeat.config -    INFO - Config bs.yaml validated
+    2018-07-13 14:38:49,646 - browbeat.elastic -    INFO - Making query against browbeat-rally-*
+    2018-07-13 14:38:54,292 - browbeat.elastic -    INFO - Searching through ES for uuid: 6b50b6f7-acae-445a-ac53-78200b5ba58c
+    2018-07-13 14:38:54,293 - browbeat.elastic -    INFO - Scrolling through Browbeat 336 documents...
+    2018-07-13 14:38:54,432 - browbeat.elastic -    INFO - Making query against browbeat-rally-*
+    2018-07-13 14:38:54,983 - browbeat.elastic -    INFO - Searching through ES for uuid: 938dc451-d881-4f28-a6cb-ad502b177f3b
+    2018-07-13 14:38:54,983 - browbeat.elastic -    INFO - Scrolling through Browbeat 22 documents...
+    +---------------------------------------------------------------------------------------------------------------------------------------------------------+
+    Scenario                          | Action                                   | concurrency     | times           | 0b5ba58c   | 2b177f3b   | % Difference
+    +---------------------------------------------------------------------------------------------------------------------------------------------------------+
+    create-list-router                | neutron.create_router                    |             500 |              32 |     19.940 |     15.656 |       -21.483
+    create-list-router                | neutron.list_routers                     |             500 |              32 |      2.588 |      2.086 |       -19.410
+    create-list-router                | neutron.create_network                   |             500 |              32 |      3.294 |      2.366 |       -28.177
+    create-list-router                | neutron.create_subnet                    |             500 |              32 |      4.282 |      2.866 |       -33.075
+    create-list-router                | neutron.add_interface_router             |             500 |              32 |     12.741 |     10.324 |       -18.973
+    create-list-port                  | neutron.list_ports                       |             500 |              32 |     52.627 |     43.448 |       -17.442
+    create-list-port                  | neutron.create_network                   |             500 |              32 |      4.025 |      2.771 |       -31.165
+    create-list-port                  | neutron.create_port                      |             500 |              32 |     19.458 |      5.412 |       -72.189
+    create-list-security-group        | neutron.create_security_group            |             500 |              32 |      3.244 |      2.708 |       -16.514
+    create-list-security-group        | neutron.list_security_groups             |             500 |              32 |      6.837 |      5.720 |       -16.339
+    create-list-subnet                | neutron.create_subnet                    |             500 |              32 |     11.366 |      4.809 |       -57.689
+    create-list-subnet                | neutron.create_network                   |             500 |              32 |      6.432 |      4.286 |       -33.368
+    create-list-subnet                | neutron.list_subnets                     |             500 |              32 |     10.627 |      7.522 |       -29.221
+    create-list-network               | neutron.list_networks                    |             500 |              32 |     15.154 |     13.073 |       -13.736
+    create-list-network               | neutron.create_network                   |             500 |              32 |     10.200 |      6.595 |       -35.347
+    +---------------------------------------------------------------------------------------------------------------------------------------------------------+
+    +-----------------------------------------------------------------------------------------------------------------+
+    UUID                                     | Version              | Build                | Number of runs
+    +-----------------------------------------------------------------------------------------------------------------+
+    938dc451-d881-4f28-a6cb-ad502b177f3b     | queens               | 2018-03-20.2         |                    1
+    6b50b6f7-acae-445a-ac53-78200b5ba58c     | ocata                | 2017-XX-XX.X         |                    3
+    +-----------------------------------------------------------------------------------------------------------------+
+
+We can see from the output above that we also provide the user with some metadata regarding the two runs, like the amount version and the number of runs each UUID
+contained.
