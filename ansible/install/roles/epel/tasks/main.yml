@@ -7,7 +7,7 @@
   yum: name=epel-release state=absent
   become: true
 
-# The fedoraproject CDN has problems somtimes, this will keep trying
+# The fedoraproject CDN has problems sometimes, this will keep trying
 #  for up to 10 minutes before failing.
 - name: Import EPEL GPG Key
   shell: rpm --import {{ epel7_rpmkey }}

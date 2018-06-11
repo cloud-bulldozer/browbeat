@@ -11,7 +11,7 @@ free, Open Source software.
 Documentation
 =============
 
-Browbeat documentation is available at http://browbeat.readthedocs.io/
+Browbeat documentation is available at https://browbeat.readthedocs.io/
 
 Resources
 =========
