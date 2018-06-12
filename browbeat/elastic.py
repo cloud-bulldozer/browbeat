@@ -84,7 +84,7 @@ class Elastic(object):
                     sys.exit(1)
         return result
 
-    # Used to transform the cache dict into a elastic insertable iterable
+    # Used to transform the cache dict into an elastic insertable iterable
     def cache_insertable_iterable(self):
         output = deque()
         for item in self.cache:
