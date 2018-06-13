@@ -15,18 +15,10 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
-- name: Install rally into rally-venv
+- name: Install Rally with OpenStack plugins into rally-venv
   pip:
-    name: rally
+    name: rally-openstack
     version: "{{ rally_version }}"
-    virtualenv: "{{ rally_venv }}"
-
-# (akrzos) Rally 0.10.1 installs a version (4.0.0) of gnocchiclient which deprecated service_type
-# session option.
-- name: Downgrade gnocchiclient in Rally venv
-  pip:
-    name: gnocchiclient
-    version: 3.3.1
     virtualenv: "{{ rally_venv }}"
 
 - name: Install elasticsearch into rally-venv

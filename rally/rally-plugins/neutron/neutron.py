@@ -11,9 +11,9 @@
 #    under the License.
 
 from rally.common import logging
-from rally.plugins.openstack.context.network import networks
+from rally_openstack import consts
+from rally_openstack.context.network import networks
 from rally.task import context
-from rally import consts
 
 LOG = logging.getLogger(__name__)
 
