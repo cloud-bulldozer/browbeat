@@ -22,6 +22,11 @@
   retries: 10
   with_items: "{{ workload_ids.results }}"
 
+- name: Clean up glance
+  shell: source {{ overcloudrc }} ; openstack image delete {{ browbeat_workloads[item].name }}
+  with_items: "{{ browbeat_workloads }}"
+  ignore_errors: true
+
 - name: Copy prepared workload guest into Glance
   shell: source {{ overcloudrc }} ; openstack server image create --wait --name {{ browbeat_workloads[item].name }} {{ browbeat_workloads[item].name }}
   with_items: "{{ browbeat_workloads }}"
