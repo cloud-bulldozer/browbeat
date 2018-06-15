@@ -1,0 +1,46 @@
+#!/bin/bash
+sudo echo "nameserver {{ dns_server }}" > /etc/resolv.conf
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+sudo yum install -y wget libtool.x86_64 openssl-devel.x86_64 openssl-static.x86_64
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+
+# When wget is performed, special characters appear in stdout which cause encoding errors.
+# So the output is redirected to a temporary text file.
+
+wget {{ sysbench_url }} >> /opt/temp.txt 2>&1
+sudo tar -xvzf {{ sysbench_url | basename }} >> /opt/temp.txt 2>&1
+sudo rm -rf /opt/temp.txt
+
+sudo mkdir /opt/sysbench
+sudo cp -r {{ sysbench_url | basename | replace(".tar.gz", "") }}/* /opt/sysbench/
+
+pushd /opt/sysbench/
+sudo libtoolize --force --copy
+sudo ./autogen.sh
+sudo ./configure --without-mysql
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+sudo make
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+sudo make install
+
+# Allow for root access
+sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
+cat /etc/cloud/cloud.cfg | grep disable_root
+if [ $? -gt 0 ]
+then
+  exit 1
+fi
+
+echo "Browbeat workload installed"
