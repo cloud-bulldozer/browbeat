@@ -64,6 +64,8 @@ class tripleo(object):
         os_username = os.environ["OS_USERNAME"]
         os_password = os.environ["OS_PASSWORD"]
         os_auth_url = os.environ["OS_AUTH_URL"]
+        os_user_domain_name = os.environ["OS_USER_DOMAIN_NAME"]
+        os_project_domain_name = os.environ["OS_PROJECT_DOMAIN_NAME"]
 
         if "OS_PROJECT_NAME" in os.environ:
             project_name = os.environ["OS_PROJECT_NAME"]
@@ -77,6 +79,8 @@ class tripleo(object):
         LOG.debug("os_password: {}".format(os_password))
         LOG.debug("os_auth_url: {}".format(os_auth_url))
         LOG.debug("project_name: {}".format(project_name))
+        LOG.debug("os_user_domain_name: {}".format(os_user_domain_name))
+        LOG.debug("os_project_domain_name: {}".format(os_project_domain_name))
 
         # Lazy import due to pluggable bootstrapping
         from openstack import connection
@@ -86,6 +90,8 @@ class tripleo(object):
             username=os_username,
             password=os_password,
             project_name=project_name,
+            os_user_domain_name=os_user_domain_name,
+            os_project_domain_name=os_project_domain_name,
             compute_api_version="2",
             identity_interface="internal")
 
