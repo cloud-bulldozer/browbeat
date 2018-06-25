@@ -141,7 +141,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
 
         # Check status of guest
         ready = False
-        retry = 10
+        retry = 50
         while (not ready):
             for sip in _servers + _clients:
                 cmd = "ssh -o StrictHostKeyChecking=no {}@{} /bin/true".format(
@@ -150,6 +150,8 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                 if retry < 1:
                     LOG.error(
                         "Error : Issue reaching {} the guests through the Jump host".format(sip))
+                    LOG.error(
+                        "Console : stdout:{} stderr:{}".format(s1_stdout,s1_stderr))
                     return False
                 if s1_exitcode is 0:
                     LOG.info("Server: {} ready".format(sip))
@@ -209,7 +211,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
         # Execute pbench-uperf
         # execute returns, exitcode,stdout,stderr
         LOG.info("Starting Rally - PBench UPerf")
-        uperf_exitcode, stdout_uperf, stderr = jump_ssh.execute(uperf)
+        uperf_exitcode, stdout_uperf, stderr = jump_ssh.execute(uperf,timeout=0)
 
         # Prepare results
         cmd = "cat {}/uperf_{}*/result.csv".format(pbench_results, test_name)
@@ -247,7 +249,12 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
             creader = csv.reader(result)
             report = []
             for row in creader:
-                if len(row) >= 1:
+                LOG.info("Row: {}".format(row))
+                if len(row) < 1 :
+                    continue
+                if row[2] is '' or row[3] is '' :
+                    continue
+                if len(row) >= 3:
                     report.append(
                         ["aggregate.{}".format(row[1]), float(row[2])])
                     report.append(["single.{}".format(row[1]), float(row[3])])
@@ -263,4 +270,4 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
             cmd = "echo nameserver {}".format(dns_ip)
             self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})
         cmd = "{}/util-scripts/pbench-move-results".format(pbench_path)
-        self._run_command_over_ssh(jump_ssh, {"remote_path": cmd})
+        exitcode, stdout, stderr = jump_ssh.execute(cmd)
