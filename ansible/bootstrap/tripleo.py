@@ -64,8 +64,12 @@ class tripleo(object):
         os_username = os.environ["OS_USERNAME"]
         os_password = os.environ["OS_PASSWORD"]
         os_auth_url = os.environ["OS_AUTH_URL"]
-        os_user_domain_name = os.environ["OS_USER_DOMAIN_NAME"]
-        os_project_domain_name = os.environ["OS_PROJECT_DOMAIN_NAME"]
+        os_user_domain_name = None
+        os_project_domain_name = None
+        if "OS_USER_DOMAIN_NAME" in os.environ:
+            os_user_domain_name = os.environ["OS_USER_DOMAIN_NAME"]
+        if "OS_PROJECT_DOMAIN_NAME" in os.environ:
+            os_project_domain_name = os.environ["OS_PROJECT_DOMAIN_NAME"]
 
         if "OS_PROJECT_NAME" in os.environ:
             project_name = os.environ["OS_PROJECT_NAME"]
