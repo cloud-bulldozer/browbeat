@@ -40,7 +40,8 @@ class Metadata(object):
                 hard_dict['hardware_details'] = []
             hardware_dict = {}
             hardware_dict['label'] = item['inventory_hostname']
-            hardware_dict['kernel'] = item['ansible_kernel']
+            hardware_dict['virtualization_role'] = item['ansible_virtualization_role']
+            hardware_dict['virtualization_type'] = item['ansible_virtualization_type']
             hardware_dict['total_mem'] = item[
                 'ansible_memory_mb']['real']['total']
             hardware_dict['total_logical_cores'] = item[
@@ -101,6 +102,12 @@ class Metadata(object):
                             software_dict[service_name]['node_name'] = node
                             software_dict[service_name][section] = {}
                             software_dict[service_name][section][key] = item[soft]
+
+                    node = item['inventory_hostname']
+                    software_dict['kernel'] = {}
+                    software_dict['kernel']['version'] = item['ansible_kernel']
+                    software_dict['kernel']['architecture'] = item['ansible_architecture']
+                    software_dict['kernel']['node_name'] = node
 
                 soft_all_dict.append(software_dict)
         return soft_all_dict
