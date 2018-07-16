@@ -113,7 +113,7 @@ you deploy with aggregation.
 
 ::
 
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/dashboards-openstack.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
 
 Not mantained (Pre-Pike): Run Overcloud checks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +148,7 @@ From your local machine
    underlay/overlay network setup. In such cases, user needs to create
    appropriate networks for instances to allow them to reach the
    internet. Some useful documentation can be found at:
-   https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
+   https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/13/html/networking_guide/
 
 (Optional) Install collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
