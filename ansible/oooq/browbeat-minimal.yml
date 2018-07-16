@@ -1,0 +1,13 @@
+---
+# Browbeat integration test
+
+- include: configure-browbeat.yml
+
+- include: install-browbeat.yml
+
+- include: disable-ssh-dns.yml
+
+- name: Run Browbeat
+  hosts: undercloud
+  roles:
+    - browbeat/browbeat-run
