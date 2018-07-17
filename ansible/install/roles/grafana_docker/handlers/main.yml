@@ -1,3 +1,0 @@
-- name: restart systemd-grafana
-  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable grafana-server && /usr/bin/systemctl restart grafana-server
-  become: true

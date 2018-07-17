@@ -1,3 +1,0 @@
-- name: restart systemd-graphite
-  shell: /usr/bin/systemctl daemon-reload && /usr/bin/systemctl enable graphite-web && /usr/bin/systemctl restart graphite-web
-  become: true
