@@ -70,17 +70,6 @@ workloads:
         enabled: true
         file: rally/authenticate/keystone-cc.yml
 
-  - name: cinder
-    enabled: true
-    type: rally
-    concurrency:
-      - 1
-    times: 1
-    scenarios:
-      - name: create-attach-volume-centos
-        enabled: true
-        file: rally/cinder/cinder-create-and-attach-volume-cc.yml
-
   - name: keystonebasic
     enabled: true
     type: rally

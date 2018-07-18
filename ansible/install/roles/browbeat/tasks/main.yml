@@ -42,6 +42,16 @@
       version: 15.2.0
     - name: setuptools
       version: 38.7.0
+  when:  ansible_user != "zuul"
+
+- name: Install virtualenv and setuptools- zuul user
+  pip:
+    name: "{{ item }}"
+  become: true
+  with_items:
+    - virtualenv
+    - setuptools
+  when: ansible_user == "zuul"
 
 - name: Determine if browbeat directory exists already
   stat:
@@ -75,9 +85,13 @@
 - debug: msg="Hosts file is already generated."
   when: hosts_file_exists.stat.exists and hosts_file_exists.stat.isreg
 
-- name: Generate hosts and ssh-config on Browbeat Machine
-  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost
-  when: "(tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false))"
+- name: Generate hosts and ssh-config on Browbeat Machine - Default(stack)
+  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost --user stack
+  when: tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false) and ansible_user!= "zuul"
+
+- name: Generate hosts and ssh-config on Browbeat Machine - Zuul
+  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost --user zuul
+  when: tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false) and ansible_user== "zuul"
 
 - name: Move files to correct location
   command: mv {{ home_dir }}/{{item}} {{ browbeat_path }}/ansible/{{item}}

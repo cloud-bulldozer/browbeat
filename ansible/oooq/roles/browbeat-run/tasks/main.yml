@@ -4,4 +4,4 @@
   shell:
     "source {{ ansible_env.HOME }}/browbeat/.browbeat-venv/bin/activate; \
      cd {{ ansible_env.HOME }}/browbeat/; \
-     python browbeat.py all"
+     python browbeat.py all | tee {{ ansible_env.HOME }}/browbeat/log/stdout-ci-run.log"

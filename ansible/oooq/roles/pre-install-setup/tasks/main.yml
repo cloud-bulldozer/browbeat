@@ -1,12 +1,26 @@
 ---
 
-- name: Make sure dependencies ar installed
+- name: Make sure dependencies are installed
   package: name={{item}} state=present
   become: true
   with_items: "{{ browbeat_dependencies }}"
 
 - name: Copy browbeat to the undercloud
   synchronize: "src={{ local_working_dir }}/browbeat dest={{ ansible_env.HOME }}/ use_ssh_args=yes"
+  when: ansible_user != "zuul"
+
+- name: Register the working directory to copy from
+  stat:
+    path: "/home/zuul/workspace/"
+  register: zuul_workspace
+
+- name: Copy browbeat to the undercloud - zuul user
+  synchronize: "src=/home/zuul/workspace/openstack/browbeat dest={{ ansible_env.HOME }}/"
+  when: ansible_user == "zuul" and zuul_workspace.stat.exists
+
+- name: Copy browbeat to the undercloud - zuul user reproducer
+  synchronize: "src=/opt/stack/browbeat dest={{ ansible_env.HOME }}/"
+  when: ansible_user == "zuul" and not zuul_workspace.stat.exists
 
 - name: Set hosts gen as executable
   shell: "chmod +x {{ ansible_env.HOME }}/browbeat/ansible/generate_tripleo_hostfile.sh"
