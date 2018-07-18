@@ -2,12 +2,16 @@
 # Browbeat integration test
 
 - include: configure-browbeat.yml
+  when: enable_minimal_browbeat|default(false)|bool
 
 - include: install-browbeat.yml
+  when: enable_minimal_browbeat|default(false)|bool
 
 - include: disable-ssh-dns.yml
+  when: enable_minimal_browbeat|default(false)|bool
 
 - name: Run Browbeat
   hosts: undercloud
   roles:
     - browbeat/browbeat-run
+  when: enable_minimal_browbeat|default(false)|bool
