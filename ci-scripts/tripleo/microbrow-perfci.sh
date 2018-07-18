@@ -52,7 +52,10 @@ if [ ! -z ${current_build+x} ]
     export RELEASE="$RELEASE" #no mutations needed after latest changes
     export VARS="$VARS --extra-vars current_build=$current_build"
   else
-    export RELEASE="$RELEASE-rhel"
+    #implies this is a upstream job
+    #export RELEASE="$RELEASE-rhel"
+    echo "current_build is '$current_build'"
+    echo "hash is '$hash'"
     export VARS="$VARS --extra-vars current_build=$hash"
   fi
 fi
