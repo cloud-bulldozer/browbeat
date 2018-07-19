@@ -37,7 +37,7 @@ def load_browbeat_config(path):
     # Validate per-workloads
     for workload in browbeat_config["workloads"]:
         _validate_yaml(workload["type"], workload)
-        _logger.info("Workload {} validated as {}".format(workload["name"], workload["type"]))
+        _logger.debug("Workload {} validated as {}".format(workload["name"], workload["type"]))
 
     return browbeat_config
 
