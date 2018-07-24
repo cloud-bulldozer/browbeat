@@ -3,6 +3,12 @@
 # Generate & Upload Browbeat OpenStack Grafana Dashboards
 #
 
+# check that grafana_apikey is entered prior to playbook run
+- name: Check Grafana API key
+  fail:
+    msg="** Edit grafana_apikey in ../install/group_vars/all.yml before running **"
+  when: grafana_apikey is none
+
 - name: Check Cloud Name
   fail:
     msg: "The Cloud name {{dashboard_cloud_name}} is reserved for a service, please use a different one"
