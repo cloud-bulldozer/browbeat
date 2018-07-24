@@ -73,6 +73,18 @@ workloads:
         net_id:
         file: rally/rally-plugins/workloads/linpack.yml
 
+      - name: sysbench
+        enabled: true
+        user: root
+        image_name: browbeat-sysbench
+        flavor_name: m1.small
+        external_network:
+        net_id:
+        # test_name: Type of Sysbench Benchmark to be run. Example: cpu
+        test_name: cpu
+        cpu_max_prime:
+        file: rally/rally-plugins/workloads/sysbench.yml
+
       - name: browbeat-pbench-uperf
         enabled: true
         user: root

@@ -68,9 +68,15 @@ pbench_internal_url:
 # linpack url
 linpack_url: http://registrationcenter-download.intel.com/akdlm/irc_nas/9752/l_mklb_p_2018.3.011.tgz
 linpack_path: /benchmarks_2018/linux/mkl/benchmarks/linpack/
+sysbench_url : http://pkgs.fedoraproject.org/repo/pkgs/sysbench/sysbench-0.4.12.tar.gz/3a6d54fdd3fe002328e4458206392b9d/sysbench-0.4.12.tar.gz
 
 # Browbeat Rally workloads
 browbeat_workloads:
+  sysbench:
+    name: browbeat-sysbench
+    src: sysbench-user.file
+    dest: "{{ browbeat_path }}/sysbench-user.file"
+    image: centos7
   linpack:
     name: browbeat-linpack
     src: linpack-user.file
