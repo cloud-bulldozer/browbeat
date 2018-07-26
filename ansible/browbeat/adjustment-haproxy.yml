@@ -27,5 +27,6 @@
         backup: true
 
     - name: Reload haproxy
-      become: true
-      command: systemctl reload haproxy
+      systemd:
+        name: haproxy
+        state: reloaded

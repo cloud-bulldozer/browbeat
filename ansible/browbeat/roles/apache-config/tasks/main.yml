@@ -14,5 +14,6 @@
     backup: true
 
 - name: Restart httpd
-  become: true
-  command: systemctl restart httpd
+  systemd:
+    name: httpd
+    state: restarted

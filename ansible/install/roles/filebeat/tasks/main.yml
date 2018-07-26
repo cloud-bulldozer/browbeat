@@ -52,9 +52,9 @@
   when: ((elk_client_ssl_cert_exists != 0) and (logging_backend != 'fluentd'))
 
 - name: Start filebeat service
-  command: systemctl start filebeat.service
-  ignore_errors: true
-  become: true
+  systemd:
+    name: filebeat.service
+    state: started
   when: ((filebeat_needs_restart != 0) and (logging_backend != 'fluentd'))
 
 - name: Setup filebeat service
@@ -88,7 +88,7 @@
   when: (logging_backend == 'fluentd')
 
 - name: Restarting rsyslog for fluentd
-  become: true
-  command: systemctl restart rsyslog.service
-  ignore_errors: true
+  systemd:
+    name: rsyslog.service
+    state: restarted
   when: rsyslog_updated != 0

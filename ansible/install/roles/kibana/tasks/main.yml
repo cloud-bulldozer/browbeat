@@ -41,7 +41,9 @@
   register: rsyslog_updated
 
 - name: Populate elasticsearch index with local logs via fluentd
-  command: systemctl restart rsyslog.service
+  systemd:
+    name: rsyslog.service
+    state: restarted
   ignore_errors: true
   when: rsyslog_updated != 0
 
@@ -125,13 +127,16 @@
   when: filebeat_forwarder_ssl_client_copy_exists != 0
 
 - name: Refresh logstash service
-  command: systemctl restart logstash.service
+  systemd:
+    name: logstash.service
+    state: restarted
   ignore_errors: true
   when: (logging_backend != 'fluentd')
-  become: true
 
 - name: Refresh fluentd service
-  command: systemctl restart td-agent.service
+  systemd:
+    name: td-agent.service
+    state: restarted
   when: (logging_backend == 'fluentd')
   become: true
 

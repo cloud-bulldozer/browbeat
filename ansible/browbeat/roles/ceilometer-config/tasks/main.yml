@@ -18,13 +18,15 @@
     - "{{ceilometer_configuration}}"
 
 - name: (Newton, Ocata) Restart Ceilometer Agent Notification
-  become: true
-  command: systemctl restart openstack-ceilometer-notification
+  systemd:
+    name: openstack-ceilometer-notification
+    state: restarted
   when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and (restart_notification)"
 
 - name: (Newton, Ocata) Restart Ceilometer Collector
-  become: true
-  command: systemctl restart openstack-ceilometer-collector
+  systemd:
+    name: openstack-ceilometer-collector
+    state: restarted
   when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and (restart_collector)"
 
 - name: (Pike) Restart Ceilometer Agent Notification

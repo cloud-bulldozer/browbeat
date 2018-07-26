@@ -18,8 +18,9 @@
     - "{{gnocchi_configuration}}"
 
 - name: (Newton, Ocata) Restart Gnocchi Metricd
-  become: true
-  command: systemctl restart openstack-gnocchi-metricd
+  systemd:
+    name: openstack-gnocchi-metricd
+    state: restarted
   when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
 - name: (Pike) Restart Gnocchi Metricd

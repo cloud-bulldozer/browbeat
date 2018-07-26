@@ -82,14 +82,16 @@
       when: "'controller' in group_names"
 
     - name: Stopping Telemetry Controller Services
-      become: true
-      command: "systemctl stop {{item}}"
+      systemd:
+        name: "{{ item }}"
+        state: stopped
       with_items: "{{controller_services}}"
       when: "'controller' in group_names"
 
     - name: Stopping Telemetry Compute Services
-      become: true
-      command: "systemctl stop {{item}}"
+      systemd:
+        name: "{{ item }}"
+        state: stopped
       with_items: "{{compute_services}}"
       when: "'compute' in group_names"
 
@@ -131,8 +133,9 @@
       when: "'controller' in group_names"
 
     - name: Restart Controller Services to disable notifications
-      become: true
-      command: "systemctl restart {{item}}"
+      systemd:
+        name: "{{ item }}"
+        state: restarted
       with_items:
         - openstack-cinder-scheduler.service
         - openstack-glance-api.service
@@ -145,6 +148,7 @@
       when: "'controller' in group_names"
 
     - name: Restart Nova Compute Service to disable notifications
-      become: true
-      command: "systemctl restart openstack-nova-compute.service"
+      systemd:
+        name: openstack-nova-compute.service
+        state: restarted
       when: "'compute' in group_names"

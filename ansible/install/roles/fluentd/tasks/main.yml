@@ -194,7 +194,9 @@
   become: true
 
 - name: Start fluentd service
-  command: systemctl start td-agent.service
+  systemd:
+    name: td-agent.service
+    state: started
   ignore_errors: true
   when: fluentd_needs_restart != 0
 

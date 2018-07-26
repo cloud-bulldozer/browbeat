@@ -20,8 +20,9 @@
     backup: true
 
 - name: (Newton, Ocata) Restart Gnocchi API (httpd)
-  become: true
-  command: systemctl restart httpd
+  systemd:
+    name: httpd
+    state: restarted
   when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
 - name: (Pike) Restart Gnocchi API (httpd)
