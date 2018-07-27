@@ -1,0 +1,33 @@
+---
+- name: Check that opendaylight is installed
+  stat:
+    path: /opt/opendaylight
+  register: opendaylight_baremetal
+
+- name: Check if opendaylight is containerized
+  stat:
+    path: /var/lib/config-data/puppet-generated/opendaylight
+  register: opendaylight_container
+
+- name: Set opendaylight log location (containerized)
+  set_fact:
+    opendaylight_logs: /var/log/containers/opendaylight
+  when: opendaylight_container.stat.isdir is defined and opendaylight_container.stat.isdir
+
+- name: Set  opendaylight location (non-containerized)
+  set_fact:
+    opendaylight_logs: /opt/opendaylight/data/logs
+  when: opendaylight_baremetal.stat.isdir is defined and opendaylight_baremetal.stat.isdir
+
+- name: Check if log folder exists
+  stat:
+    path: "{{opendaylight_logs}}"
+  register: logs_path
+
+- name: Copy logs to directory on host
+  synchronize:
+    src: "{{opendaylight_logs}}"
+    dest: /home/{{host_remote_user}}/{{ansible_hostname}}
+  delegate_to: "{{ inventory_hostname }}"
+  when: (opendaylight_baremetal or opendaylight_container) and logs_path.stat.isdir is defined and logs_path.stat.isdir
+

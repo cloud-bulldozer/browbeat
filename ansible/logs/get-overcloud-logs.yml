@@ -28,6 +28,7 @@
     - rabbitmq
     - httpd
     - openvswitch
+    - opendaylight
     - common
     - fetch-logs
 
