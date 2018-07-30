@@ -13,6 +13,6 @@
   fetch:
     src: /home/{{host_remote_user}}/{{ansible_hostname}}.gz
     dest:
-      /home/{{browbeat_user}}/logs/{{inventory_hostname}}-{{ansible_date_time.epoch}}
+      /home/{{browbeat_user}}/logs/{{inventory_hostname}}-{{ansible_date_time.epoch}}.gz
     flat: yes
 
