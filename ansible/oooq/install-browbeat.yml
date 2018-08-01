@@ -13,5 +13,4 @@
     - browbeat/shaker
     - browbeat/flavors
     - browbeat/images
-    - browbeat/ci-network
     - browbeat/template-configs

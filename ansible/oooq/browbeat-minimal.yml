@@ -1,5 +1,6 @@
 ---
 # Browbeat integration test
+# Check CI
 
 - include: configure-browbeat.yml
   when: enable_minimal_browbeat|default(false)|bool
@@ -13,5 +14,5 @@
 - name: Run Browbeat
   hosts: undercloud
   roles:
-    - browbeat/browbeat-run
-  when: enable_minimal_browbeat|default(false)|bool
+    - { role: browbeat/browbeat-run,
+        when: enable_minimal_browbeat|default(false)|bool }
