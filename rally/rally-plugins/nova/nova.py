@@ -10,13 +10,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.plugins.openstack.scenarios.cinder import utils as cinder_utils
-from rally.plugins.openstack.scenarios.nova import utils as nova_utils
-from rally.plugins.openstack.scenarios.vm import utils as vm_utils
+from rally_openstack import consts
+from rally_openstack.scenarios.cinder import utils as cinder_utils
+from rally_openstack.scenarios.nova import utils as nova_utils
+from rally_openstack.scenarios.vm import utils as vm_utils
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation
-from rally import consts
 
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})

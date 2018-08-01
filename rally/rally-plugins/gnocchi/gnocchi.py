@@ -12,13 +12,13 @@
 
 import uuid
 
-from rally.plugins.openstack import osclients
-from rally.plugins.openstack import scenario
 from rally.common import logging
+from rally_openstack import consts
+from rally_openstack import osclients
+from rally_openstack import scenario
 from rally.task import atomic
 from rally.task import context
 from rally.task import validation
-from rally import consts
 
 
 LOG = logging.getLogger(__name__)

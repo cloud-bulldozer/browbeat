@@ -10,13 +10,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally.plugins.openstack.scenarios.glance.images import GlanceBasic
-from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
-from rally.plugins.openstack.scenarios.nova import utils as nova_utils
+from rally_openstack import consts
+from rally_openstack.scenarios.glance.images import GlanceBasic
+from rally_openstack.scenarios.neutron import utils as neutron_utils
+from rally_openstack.scenarios.nova import utils as nova_utils
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation
-from rally import consts
 
 
 @types.convert(flavor={"type": "nova_flavor"}, image_location={"type": "path_or_url"})
