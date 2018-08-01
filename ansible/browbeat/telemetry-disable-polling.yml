@@ -38,7 +38,8 @@
       when: "('Pike' in osp_version['content'] | b64decode) and ('compute' in group_names)"
 
     - name: Stopping Ceilometer Polling Daemon
-      become: true
-      command: "systemctl stop {{item}}"
+      systemd:
+          name: "{{ item }}"
+          state: stopped
       with_items:
         - "{{polling_daemon}}"

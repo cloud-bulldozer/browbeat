@@ -43,5 +43,6 @@
       command: systemctl daemon-reload
 
     - name: Restart virtlogd
-      become: true
-      command: systemctl restart virtlogd
+      systemd:
+        name: virtlogd
+        state: restarted

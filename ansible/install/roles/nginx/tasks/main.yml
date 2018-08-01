@@ -46,7 +46,9 @@
 
 # start nginx service
 - name: Start nginx service
-  command: systemctl restart nginx.service
+  systemd:
+    name: nginx.service
+    state: restarted
   ignore_errors: true
   when: nginx_needs_restart != 0
 
@@ -60,8 +62,9 @@
     - skip_ansible_lint
 
 - name: Set nginx to start on boot
-  command: systemctl enable nginx.service
-  ignore_errors: true
+  systemd:
+    name: nginx.service
+    enabled: yes
   when: nginx_in_use.rc != 0
 
 # we need TCP/80 and TCP/8080 open

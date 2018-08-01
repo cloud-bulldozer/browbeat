@@ -117,7 +117,9 @@
   become: true
 
 - name: Start elasticsearch service
-  command: systemctl start elasticsearch.service
+  systemd:
+    name: elasticsearch.service
+    state: started
   ignore_errors: true
   when: elasticsearch_updated != 0
 

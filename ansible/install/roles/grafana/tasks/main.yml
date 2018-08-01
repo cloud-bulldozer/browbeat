@@ -120,7 +120,9 @@
   register: iptables_needs_restart
 
 - name: (grafana) Restart iptables-services for TCP/{{grafana_port}} (iptables-services)
-  command: systemctl restart iptables.service
+  systemd:
+    name: iptables.service
+    state: restarted
   ignore_errors: true
   when: iptables_needs_restart != 0 and firewalld_in_use.rc != 0 and firewalld_is_active.rc != 0
 
