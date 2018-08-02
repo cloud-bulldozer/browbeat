@@ -4,7 +4,7 @@
 #
 
 - name: Get httpd configuration files
-  shell: 'ls /etc/httpd/conf.d/'
+  command: 'ls /etc/httpd/conf.d/'
   register: httpd_confd_files
 
 - name: Gnocchi API httpd process count

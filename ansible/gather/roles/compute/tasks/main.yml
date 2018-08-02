@@ -11,7 +11,7 @@
     openstack_ovs_version: "{{ ovs_version.stdout }}"
 
 - name: Get neutron ovs agent ovsdb setting
-  shell: crudini --get /etc/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
+  command: crudini --get /etc/neutron/plugins/ml2/openvswitch_agent.ini ovs ovsdb_interface
   register: ovsdb_status
   ignore_errors: true
 

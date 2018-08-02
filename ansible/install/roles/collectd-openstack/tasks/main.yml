@@ -216,12 +216,12 @@
   when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
 
 - name: (Undercloud) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
-  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
+  command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
   become: true
   when: "('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true)"
 
 - name: (Controller) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
-  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
+  command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
   become: true
   when: "(ansible_selinux['status'] == 'enabled') and ('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
 

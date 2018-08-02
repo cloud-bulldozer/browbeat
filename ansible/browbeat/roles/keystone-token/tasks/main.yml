@@ -112,5 +112,5 @@
 
 - name: Install keystone selinux policy
   become: true
-  shell: semodule -i /root/my-keystone.pp
+  command: semodule -i /root/my-keystone.pp
   when: "'{{ token_provider }}' == 'fernet'"

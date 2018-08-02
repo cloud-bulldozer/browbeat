@@ -15,7 +15,7 @@
   when: not rsyslog_aggregator
 
 - name: Gather info about services
-  shell: "python /tmp/openstack-log-locator.py {{item}}"
+  command: "python /tmp/openstack-log-locator.py {{item}}"
   with_items: "{{openstack_services}}"
   register: log_config_lines
   become: true
@@ -115,7 +115,7 @@
 
 # cool feature, exits 1 on invalid configs
 - name: Validate rsyslog config
-  shell: "rsyslogd -nN 1"
+  command: "rsyslogd -nN 1"
   become: true
 
 - name: restart rsyslog

@@ -49,7 +49,7 @@
 # https://github.com/ansible/ansible-modules-extras/pull/2694
 # This is not in upstream Ansible releases as of 2.1.1.0
 - name: Allow httpd to listen to port ({{browbeat_results_port}})
-  shell: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{browbeat_results_port}}"
+  command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{browbeat_results_port}}"
   become: true
   register: seport_modified
   when: "ansible_selinux['status'] == 'enabled'"
@@ -57,7 +57,7 @@
 
 # If port can not be modified, it likely has to be added (Ex. Port 9002)
 - name: Allow httpd to listen to port ({{browbeat_results_port}}) via add
-  shell: "/usr/sbin/semanage port -a -t http_port_t -p tcp {{browbeat_results_port}}"
+  command: "/usr/sbin/semanage port -a -t http_port_t -p tcp {{browbeat_results_port}}"
   become: true
   when: "(ansible_selinux['status'] == 'enabled') and (seport_modified.rc != 0)"
 

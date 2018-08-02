@@ -14,7 +14,7 @@
     - expect
 
 - name: Check for graphite.db sqlite
-  shell: ls /var/lib/graphite-web/graphite.db
+  command: ls /var/lib/graphite-web/graphite.db
   ignore_errors: true
   register: graphite_db_installed
 

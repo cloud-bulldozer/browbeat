@@ -10,7 +10,7 @@
 
 - name: Parse Keystone config
   become: true
-  shell: python /tmp/openstack-config-parser.py keystone /tmp/out.yml
+  command: python /tmp/openstack-config-parser.py keystone /tmp/out.yml
   when: keystone_config.stat.exists
 
 - name: Fetch output

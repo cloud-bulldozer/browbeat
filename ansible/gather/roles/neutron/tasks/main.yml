@@ -10,7 +10,7 @@
 
 - name: Parse Neutron config
   become: true
-  shell: python /tmp/openstack-config-parser.py neutron /tmp/out.yml
+  command: python /tmp/openstack-config-parser.py neutron /tmp/out.yml
   when: neutron_config.stat.exists
 
 - name: Fetch output

@@ -5,7 +5,7 @@
 
 - name: Parse Glance config files
   become: true
-  shell: "python /tmp/openstack-config-parser.py glance /tmp/out.yml"
+  command: "python /tmp/openstack-config-parser.py glance /tmp/out.yml"
 
 - name: Fetch output
   fetch: "src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes"

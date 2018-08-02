@@ -7,7 +7,7 @@
   remote_user: "{{ browbeat_user }}"
   tasks:
     - name: Check external connectivity
-      shell: ping -c 1 google.com
+      command: ping -c 1 google.com
       register: ping
       ignore_errors: true
 

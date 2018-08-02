@@ -3,7 +3,7 @@
 # Tests common to Director/Controller/Compute/Ceph
 #
 - name: Ensure crudini
-  shell: which crudini
+  command: which crudini
   changed_when: no
   register: crudini
   ignore_errors: True

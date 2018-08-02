@@ -11,7 +11,7 @@
 
   - name: Undercloud.conf
     become: true
-    shell: python /tmp/openstack-config-parser.py undercloud /tmp/out.yml
+    command: python /tmp/openstack-config-parser.py undercloud /tmp/out.yml
     when: undercloud_conf.stat.exists
 
   - name: Fetch output

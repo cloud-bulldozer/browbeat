@@ -10,7 +10,7 @@
 
 - name: Parse Gnocchi config
   become: true
-  shell: python /tmp/openstack-config-parser.py gnocchi /tmp/out.yml
+  command: python /tmp/openstack-config-parser.py gnocchi /tmp/out.yml
   when: gnocchi_config.stat.exists
 
 - name: Fetch output
