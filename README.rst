@@ -19,5 +19,5 @@ Resources
 * `Blog <https://browbeatproject.org>`_
 * `Twitter <https://twitter.com/browbeatproject>`_
 * `Code Review <https://review.openstack.org/#/q/project:openstack/browbeat>`_
-* `Git Web <https://review.openstack.org/gitweb?p=openstack/browbeat.git;a=summary>`_
+* `Git Web <https://git.openstack.org/cgit/openstack/browbeat>`_
 * `IRC <http://webchat.freenode.net/?nick=browbeat_user&channels=openstack-browbeat>`_ -- **#openstack-browbeat** (irc.freenode.net)
