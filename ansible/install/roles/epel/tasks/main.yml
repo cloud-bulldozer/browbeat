@@ -10,8 +10,9 @@
 # The fedoraproject CDN has problems sometimes, this will keep trying
 #  for up to 10 minutes before failing.
 - name: Import EPEL GPG Key
-  shell: rpm --import {{ epel7_rpmkey }}
-  become: true
+  rpm_key:
+    state: present
+    key: "{{ epel7_rpmkey }}"
   register: import_result
   until: "import_result.rc==0"
   retries: 10
