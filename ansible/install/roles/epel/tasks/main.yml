@@ -13,8 +13,9 @@
   rpm_key:
     state: present
     key: "{{ epel7_rpmkey }}"
+  become: true
   register: import_result
-  until: "import_result.rc==0"
+  until: import_result is success
   retries: 10
   delay: 10
 
@@ -23,7 +24,7 @@
   yum: "name={{ epel7_rpm }} state=present"
   become: true
   register: install_result
-  until: install_result|success
+  until: install_result is success
   retries: 10
   delay: 10
   notify: remove_epel
