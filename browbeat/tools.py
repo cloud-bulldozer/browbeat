@@ -60,18 +60,6 @@ class Tools(object):
             self.logger.error("stderr: {}".format(stderr))
         return output_dict
 
-    # Find Command on host
-    def find_cmd(self, cmd):
-        _cmd = "which %s" % cmd
-        self.logger.debug('Find Command : Command : %s' % _cmd)
-        command = self.run_cmd(_cmd)['stdout']
-        if command is None:
-            self.logger.error("Unable to find %s" % cmd)
-            raise Exception("Unable to find command : '%s'" % cmd)
-            return False
-        else:
-            return command.strip()
-
     # Create directory for results
     def create_results_dir(self, *args):
         the_directory = '/'.join(args)
