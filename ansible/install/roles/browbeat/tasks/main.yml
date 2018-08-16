@@ -7,12 +7,6 @@
   fail: msg="**Unsupported Linux distribution! Please use CentOS 7+, RHEL 7+, or add support for your distribution**"
   when: not supported_distro
 
-- name: Install python development tools
-  yum:
-    name: python-devel
-    state: present
-  become: true
-
 - name: Install dependencies for CentOS
   yum:
     name: "{{ item }}"
@@ -26,6 +20,7 @@
     - libsemanage-python
     - openssl-devel
     - policycoreutils-python
+    - python-devel
 
 - name: Install pip
   easy_install:
