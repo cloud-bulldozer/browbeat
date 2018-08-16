@@ -30,6 +30,7 @@ BrowbeatPlugin.create_network_nova_boot_ping:
           port: -1
           router: -1
           subnet: -1
+          floatingip: -1
         nova:
           instances: -1
           cores: -1
