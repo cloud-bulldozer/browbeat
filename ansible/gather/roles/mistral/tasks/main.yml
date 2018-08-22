@@ -1,0 +1,22 @@
+---
+#
+# Tasks to get mistral facts
+#
+
+- name: Check that mistral is installed
+  become: true
+  stat: path=/etc/mistral/mistral.conf
+  register: mistral_config
+
+- name: Parse Mistral config
+  become: true
+  command: python /tmp/openstack-config-parser.py mistral /tmp/out.yml
+  when: mistral_config.stat.exists
+
+- name: Fetch output
+  fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
+  when: mistral_config.stat.exists
+
+- name: Load configuration variables
+  include_vars: /tmp/out-{{ inventory_hostname }}.yml
+  when: mistral_config.stat.exists
