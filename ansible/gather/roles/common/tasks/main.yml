@@ -12,7 +12,7 @@
 - name: Set var for container deployment
   set_fact:
     containers: True
-    config_path: /var/lib/config-data/
+    config_path: /var/lib/config-data/puppet-generated/
   when: docker_ps.stdout|int > 1
 
 - name: Set fact for non-container deployment

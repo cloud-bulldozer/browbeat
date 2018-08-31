@@ -125,8 +125,8 @@ def main():
     if 'undercloud' in service_name:
         cfg_path = "/home/stack"
     elif in_container and service_name not in pattern_exceptions:
-        cfg_path = "/var/lib/config-data/{}/etc/{}".format(service_name,
-                                                           service_name)
+        cfg_path = "/var/lib/config-data/puppet-generated/{}/etc/{}".format(
+            service_name, service_name)
     # Glance has all configs in a folder named glance_api, ps shows no
     # processes outside of the container, so I assume those are the right
     # configs, even though the container is also named glance-api
