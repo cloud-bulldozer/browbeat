@@ -28,6 +28,7 @@
   roles:
     - browbeat-metadata/common
     - browbeat-metadata/undercloud
+    - browbeat-metadata/mistral
 
 - name: Dump metadata to files
   hosts: undercloud

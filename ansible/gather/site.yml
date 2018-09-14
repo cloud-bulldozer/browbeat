@@ -28,6 +28,7 @@
   roles:
     - common
     - undercloud
+    - mistral
 
 - hosts: browbeat
   remote_user: "{{ browbeat_user }}"
