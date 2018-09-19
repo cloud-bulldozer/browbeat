@@ -1,6 +1,6 @@
 ---
 # Browbeat integration test
-# Check CI
+# Check upstream CI
 
 - include: configure-browbeat.yml
   when: enable_minimal_browbeat|default(false)|bool

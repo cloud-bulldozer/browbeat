@@ -30,6 +30,14 @@
     "src={{ ansible_env.HOME }}/browbeat/ansible/install/group_vars/all.yml \
      dest=/tmp/all.yml \
      flat=yes"
+  when: ansible_user != "zuul"
+
+- name: Fetch Browbeat vars file - zuul
+  fetch:
+    "src={{ ansible_env.HOME }}/browbeat/ansible/install/group_vars/zuul_all.yml \
+     dest=/tmp/all.yml \
+     flat=yes"
+  when: ansible_user == "zuul"
 
 - name: Load Browbeat vars
   include_vars: /tmp/all.yml
