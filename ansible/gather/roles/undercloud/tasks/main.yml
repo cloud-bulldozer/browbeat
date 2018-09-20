@@ -55,7 +55,7 @@
     when: undercloud_conf.stat.exists
 
   - name: Get Controller Nodes number
-    shell: source ~/stackrc; nova list | grep controller | grep ACTIVE | wc -l
+    shell: source {{ ansible_env.HOME }}/stackrc; nova list | grep controller | grep ACTIVE | wc -l
     register: controller_count
     when: undercloud_conf.stat.exists
 
@@ -65,7 +65,7 @@
     when: undercloud_conf.stat.exists
 
   - name: Get Compute Nodes number
-    shell: source ~/stackrc; nova list | grep compute | grep ACTIVE | wc -l
+    shell: source {{ ansible_env.HOME }}/stackrc; nova list | grep compute | grep ACTIVE | wc -l
     register: compute_count
     when: undercloud_conf.stat.exists
 

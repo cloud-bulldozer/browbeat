@@ -3,20 +3,16 @@
 # Tasks to get gnocchi config data
 #
 
-- name: Check that Gnocchi is installed
-  become: true
-  stat: path=/etc/gnocchi/gnocchi.conf
-  register: gnocchi_config
-
 - name: Parse Gnocchi config
   become: true
   command: python /tmp/openstack-config-parser.py gnocchi /tmp/out.yml
-  when: gnocchi_config.stat.exists
+  register: gnocchi_parsed
+  ignore_errors: true
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
-  when: gnocchi_config.stat.exists
+  when: gnocchi_parsed is succeeded
 
 - name: Load configuration variables
   include_vars: /tmp/out-{{ inventory_hostname }}.yml
-  when: gnocchi_config.stat.exists
+  when: gnocchi_parsed is succeeded

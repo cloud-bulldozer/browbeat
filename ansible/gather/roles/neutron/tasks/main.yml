@@ -3,21 +3,16 @@
 # Tasks to get neutron facts
 #
 
-- name: Check that Neutron is installed
-  become: true
-  stat: path=/etc/neutron/neutron.conf
-  register: neutron_config
-
 - name: Parse Neutron config
   become: true
   command: python /tmp/openstack-config-parser.py neutron /tmp/out.yml
-  when: neutron_config.stat.exists
+  register: neutron_parsed
+  ignore_errors: true
 
 - name: Fetch output
   fetch: src=/tmp/out.yml dest=/tmp/out-{{ inventory_hostname }}.yml flat=yes
-  when: neutron_config.stat.exists
+  when: neutron_parsed is succeeded
 
 - name: Load configuration variables
   include_vars: /tmp/out-{{ inventory_hostname }}.yml
-  when: neutron_config.stat.exists
-
+  when: neutron_parsed is succeeded
