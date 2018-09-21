@@ -114,7 +114,6 @@ class Tools(object):
 
     def gather_metadata(self):
         os.putenv("ANSIBLE_SSH_ARGS", " -F {}".format(self.config['ansible']['ssh_config']))
-
         ansible_cmd = \
             'ansible-playbook -i {} {}' \
             .format(self.config['ansible']['hosts'], self.config['ansible']['metadata_playbook'])

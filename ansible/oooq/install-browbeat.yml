@@ -6,6 +6,7 @@
     statsd_host: "{{ graphite_host }}"
   roles:
     - browbeat/common
+    - browbeat/stockpile
     - browbeat/browbeat
     - browbeat/firewall
     - browbeat/perfkitbenchmarker

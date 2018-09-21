@@ -6,7 +6,7 @@ browbeat:
   rerun_type: iteration
 ansible:
   hosts: ansible/hosts
-  metadata_playbook: ansible/gather/site.yml
+  metadata_playbook: ansible/gather/stockpile.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: {{ elastic_enabled }}

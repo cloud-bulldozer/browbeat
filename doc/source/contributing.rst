@@ -142,3 +142,10 @@ If you are adding new functionality to Browbeat please add testing for that func
     $ ci-scripts/install-and-check.sh
 
 See the README.rst in the ci-scripts folder for more details on the structure of the script and how to add additional tests.
+
+Contributing to stockpile
+-------------------------
+
+We currently use `stockpile <https://github.com/redhat-performance/stockpile>`_
+to gather config. Please follow `instructions <https://github.com/redhat-performance/stockpile#contributing>`_
+to contribute to stockpile.

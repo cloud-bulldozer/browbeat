@@ -1,0 +1,8 @@
+---
+
+- name: Clone stockpile
+  git:
+    repo: 'http://github.com/redhat-performance/stockpile.git'
+    dest: "{{ browbeat_path }}/ansible/gather/stockpile"
+    version: master
+    force: yes
