@@ -2,7 +2,7 @@
 
 - name: Check browbeat_network
   fail: msg="browbeat_network needs to be set"
-  when: browbeat_network is not defined
+  when: browbeat_network is not defined or browbeat_network is none
 
 - name: Copy userdata files
   template:
