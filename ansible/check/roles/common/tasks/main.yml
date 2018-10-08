@@ -9,7 +9,9 @@
   ignore_errors: True
 
 - name: Install Crudini if it is not there
-  yum: name=crudini state=present
+  package:
+    name: crudini
+    state: present
   when: crudini.rc == 1
 
 - name: Get selinux mode

@@ -2,7 +2,7 @@
 # Installs rsyslog packages, used with other rsyslog roles
 
 - name: Install rsyslog and rsyslog-elasticsearch
-  yum:
+  package:
     name: "{{item}}"
     state: present
   become: true
@@ -19,7 +19,7 @@
 # We can't just add the repo and do an upgrade do to irresolvable
 # deps involving some rsyslog components have other package names
 - name: Remove 7.x rsyslog packages
-  yum:
+  package:
     name: "{{item}}"
     state: absent
   become: true
@@ -46,7 +46,7 @@
   when: install_rsyslog|failed
 
 - name: Install rsyslog 8 from external repo
-  yum:
+  package:
     name: "{{item}}"
     state: present
     disablerepo: "*"

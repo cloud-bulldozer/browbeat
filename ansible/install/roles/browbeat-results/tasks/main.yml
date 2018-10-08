@@ -4,7 +4,7 @@
 #
 
 - name: Install httpd
-  yum:
+  package:
     name: httpd
     state: present
   become: true

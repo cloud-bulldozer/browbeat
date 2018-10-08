@@ -28,7 +28,9 @@
   no_log: true
 
 - name: Install local rsyslogd for fluentd
-  yum: name={{ item }} state=present
+  package:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - rsyslog
@@ -48,7 +50,9 @@
   when: rsyslog_updated != 0
 
 - name: Install kibana rpms
-  yum: name={{ item }} state=present
+  package:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - kibana

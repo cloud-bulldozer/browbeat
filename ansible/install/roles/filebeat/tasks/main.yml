@@ -20,7 +20,9 @@
   when: (logging_backend != 'fluentd')
 
 - name: Install filebeat rpms
-  yum: name={{ item }} state=present
+  package:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - filebeat
@@ -63,7 +65,9 @@
   when: (logging_backend != 'fluentd')
 
 - name: Install rsyslogd for fluentd
-  yum: name={{ item }} state=present
+  package:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - rsyslog

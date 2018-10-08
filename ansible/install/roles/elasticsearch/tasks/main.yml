@@ -13,7 +13,9 @@
   become: true
 
 - name: Install elasticsearch and openjdk
-  yum: name={{ item }} state=present
+  package:
+    name: "{{ item }}"
+    state: present
   become: true
   with_items:
     - elasticsearch

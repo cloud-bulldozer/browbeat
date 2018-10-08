@@ -1,6 +1,8 @@
 ---
 - name: Install StatsD
-  yum: name=statsd state=present
+  package:
+    name: statsd
+    state: present
   become: True
 
 - name: Create StatsD configuration folder

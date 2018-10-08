@@ -4,7 +4,9 @@
 #
 
 - name: Remove old EPEL
-  yum: name=epel-release state=absent
+  package:
+    name: epel-release
+    state: absent
   become: true
 
 # The fedoraproject CDN has problems sometimes, this will keep trying
@@ -21,7 +23,9 @@
 
 # Same as above but with the Centos CDN
 - name: Check for EPEL repo
-  yum: "name={{ epel7_rpm }} state=present"
+  package:
+    name: "{{ epel7_rpm }}"
+    state: present
   become: true
   register: install_result
   until: install_result is success

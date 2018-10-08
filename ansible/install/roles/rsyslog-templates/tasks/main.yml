@@ -90,7 +90,7 @@
   become: true
 
 - name: Install selinux utils
-  yum:
+  package:
     name: policycoreutils-python
     state: present
   become: true

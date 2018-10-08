@@ -18,7 +18,7 @@
     - repo
   tasks:
     - name: Install at
-      yum:
+      package:
         name: at
       become: true
 

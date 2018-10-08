@@ -4,14 +4,14 @@
 #
 
 - name: Install collectd rpms
-  yum:
+  package:
     name: "{{ item }}"
     state: present
   become: true
   with_items: "{{collectd_packages[config_type]}}"
 
 - name: Install package that provides semanage
-  yum:
+  package:
     name: policycoreutils-python
     state: present
   become: true

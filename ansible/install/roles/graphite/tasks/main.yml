@@ -4,7 +4,7 @@
 #
 
 - name: Install graphite rpms
-  yum:
+  package:
     name: "{{ item }}"
     state: present
   become: true

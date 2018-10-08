@@ -3,7 +3,7 @@
 # Handler to clean up EPEL whenever it is used
 #
 - name: remove_epel
-  yum:
+  package:
     name: epel-release
     state: absent
   ignore_errors: true
