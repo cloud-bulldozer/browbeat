@@ -111,6 +111,11 @@ you deploy with aggregation.
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Browbeat uses Grafyaml to upload dashboards to Grafana. Grafyaml is installed by browbeat
+at the location pointed to by the variable `browbeat_venv` in `ansible/install/group_vars/all.yml`.
+So, you need to first run the browbeat install playbook `ansible/install/browbeat.yml` before running
+the below playbook.
+
 ::
 
   [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
@@ -159,6 +164,10 @@ From your local machine
 
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Browbeat uses Grafyaml to upload dashboards to Grafana. Grafyaml is installed by browbeat
+at the location pointed to by the variable `browbeat_venv` in `ansible/install/group_vars/all.yml`.
+So, you need to first run the browbeat install playbook `ansible/install/browbeat.yml` before running
+the below playbook.
 
 ::
 
@@ -397,6 +406,10 @@ environment is different and thus your configuration options will vary.
 
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Browbeat uses Grafyaml to upload dashboards to Grafana. Grafyaml is installed by browbeat
+at the location pointed to by the variable `browbeat_venv` in `ansible/install/group_vars/all.yml`.
+So, you need to first run the browbeat install playbook `ansible/install/browbeat.yml` before running
+the below playbook.
 
 ::
 
