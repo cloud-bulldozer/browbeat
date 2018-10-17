@@ -95,6 +95,16 @@
     - heat-admin-id_rsa
   when: "(tripleo == true and (hosts_file_exists.stat.exists == false or hosts_file_exists.stat.isreg == false))"
 
+# Temporary fix until
+# https://github.com/requests/requests/issues/4830
+# is fixed upstream
+
+- name: Install urllib3
+  pip:
+    name: urllib3
+    version: 1.23
+    virtualenv: "{{ browbeat_venv }}"
+
 - name: Install requirements.txt into browbeat-venv
   pip:
     requirements: "{{ browbeat_path }}/requirements.txt"
