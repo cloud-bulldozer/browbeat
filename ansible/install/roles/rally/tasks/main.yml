@@ -15,16 +15,6 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
-# Temporary fix until
-# https://github.com/requests/requests/issues/4830
-# is fixed upstream
-
-- name: Install urllib3
-  pip:
-    name: urllib3
-    version: 1.23
-    virtualenv: "{{ rally_venv }}"
-
 - name: Install Rally with OpenStack plugins into rally-venv
   pip:
     name: rally-openstack
