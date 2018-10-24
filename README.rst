@@ -21,3 +21,5 @@ Resources
 * `Code Review <https://review.openstack.org/#/q/project:openstack/browbeat>`_
 * `Git Web <https://git.openstack.org/cgit/openstack/browbeat>`_
 * `IRC <http://webchat.freenode.net/?nick=browbeat_user&channels=openstack-browbeat>`_ -- **#openstack-browbeat** (irc.freenode.net)
+* `Issue tracker <https://bugs.launchpad.net/openstack-browbeat>`
+* `Browse code <https://github.com/openstack/browbeat>`
