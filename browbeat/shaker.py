@@ -383,8 +383,7 @@ class Shaker(workloadbase.WorkloadBase):
         test_time = workload.get("time", 60)
         for interval in range(0, test_time + 9):
             es_list.append(
-                datetime.datetime.utcnow() +
-                datetime.timedelta(0, interval))
+                datetime.datetime.utcnow() + datetime.timedelta(0, interval))
 
         rerun_range = range(self.config["browbeat"]["rerun"])
         if self.config["browbeat"]["rerun_type"] == "complete":

@@ -34,6 +34,7 @@ def handle_signal(signum, stack):
     global terminate
     terminate = True
 
+
 signal.signal(signal.SIGINT, handle_signal)
 
 def run_iteration(_config, _cli_args, result_dir_ts, _logger, tools):
@@ -203,6 +204,7 @@ def main():
 
     _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat.elastic.browbeat_uuid))
     sys.exit(0)
+
 
 if __name__ == '__main__':
     sys.exit(main())

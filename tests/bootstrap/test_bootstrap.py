@@ -12,11 +12,10 @@
 
 import os
 import sys
-sys.path.append(os.path.abspath('ansible'))
-
 import pytest
+sys.path.append(os.path.abspath('ansible'))
+import bootstrap  # noqa
 
-import bootstrap
 
 def test_bootstrap_help(capsys):
     """Tests to see if bootstrap.py help text is correct and that it loads sample/tripleo plugins"""
