@@ -1,0 +1,16 @@
+---
+- project:
+    templates:
+      - docs-on-readthedocs
+      - openstack-python37-jobs-nonvoting
+      - openstack-python36-jobs
+    vars:
+      rtd_webhook_id: '51626'
+    check:
+      jobs:
+        - openstack-tox-linters
+        - openstack-tox-py27
+    gate:
+      jobs:
+        - openstack-tox-linters
+        - openstack-tox-py27
