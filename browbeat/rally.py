@@ -73,7 +73,7 @@ class Rally(workloadbase.WorkloadBase):
         return (from_time, to_time)
 
     def get_task_id(self, test_name):
-        cmd = "grep \"rally task report [a-z0-9\-]* --out\" {}.log | awk '{{print $4}}'".format(
+        cmd = "grep \"rally task report [a-z0-9\\-]* --out\" {}.log | awk '{{print $4}}'".format(
             test_name)
         return self.tools.run_cmd(cmd)['stdout']
 
@@ -147,7 +147,7 @@ class Rally(workloadbase.WorkloadBase):
                 iteration = 1
                 workload_name = value
                 if value.find('(') is not -1:
-                    iteration = re.findall('\d+', value)[0]
+                    iteration = re.findall(r'\d+', value)[0]
                     workload_name = value.split('(')[0]
                 error = {'action': workload_name.strip(),
                          'iteration': iteration,
@@ -164,7 +164,7 @@ class Rally(workloadbase.WorkloadBase):
                 iteration = 1
                 workload_name = workload
                 if workload.find('(') is not -1:
-                    iteration = re.findall('\d+', workload)[0]
+                    iteration = re.findall(r'\d+', workload)[0]
                     workload_name = workload.split('(')[0]
                 rally_stats = {'action': workload_name.strip(),
                                'iteration': iteration,

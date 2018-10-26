@@ -135,5 +135,6 @@ def main():
     metadata.write_metadata_file(
         software_data, os.path.join(args.path, 'software-metadata.json'))
 
+
 if __name__ == '__main__':
     sys.exit(main())

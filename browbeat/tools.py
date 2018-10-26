@@ -143,7 +143,7 @@ class Tools(object):
 
         """ Capture per-workload results """
         workload_results = {}
-        json = re.compile("\.json")
+        json = re.compile(r"\.json")
         if len(results) > 0:
             for path in results:
                 for regex in workloads:

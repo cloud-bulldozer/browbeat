@@ -244,9 +244,9 @@ class Yoda(workloadbase.WorkloadBase):
                 time.sleep(10)
                 continue
             if node_obj is None:
-                self.logger.error("Can't find node " + node +
-                                  " Which existed at the start of introspection \
-                                 did you delete it manually?")
+                self.logger.error(
+                    "Can't find node %s which existed at the start of "
+                    "introspection did you delete it manually?", node)
                 continue
 
             # == works here for string comparison because they are in fact
@@ -266,8 +266,7 @@ class Yoda(workloadbase.WorkloadBase):
                     node_obj.provision_state, results['nodes'][node_obj.id]["state_list"])
 
                 times.append(
-                    (datetime.datetime.utcnow() -
-                     start_time).total_seconds())
+                    (datetime.datetime.utcnow() - start_time).total_seconds())
 
             elif (datetime.datetime.utcnow() - start_time) > timeout:
                 # return currently active node to the deque to be failed
@@ -533,8 +532,7 @@ class Yoda(workloadbase.WorkloadBase):
                 benchmark['timeout'], env_setup, conn)
         else:
             self.logger.error(
-                "Malformed YODA configuration for " +
-                benchmark['name'])
+                "Malformed YODA configuration for " + benchmark['name'])
             exit(1)
 
         self.get_stats()
@@ -607,8 +605,7 @@ class Yoda(workloadbase.WorkloadBase):
                                             benchmark)
 
             results['total_time'] = (
-                datetime.datetime.utcnow() -
-                start_time).total_seconds()
+                datetime.datetime.utcnow() - start_time).total_seconds()
             try:
                 stack_status = conn.orchestration.find_stack("overcloud")
             except exceptions.SDKException:

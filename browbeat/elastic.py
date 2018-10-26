@@ -179,6 +179,7 @@ class Elastic(object):
     this function will iterate through all the data points, combining the iteration
     and rerun data points into a single 95%tile.
     """
+
     def summarize_results(self, data, combined):
         summary = {}
         if combined:
@@ -240,6 +241,7 @@ class Elastic(object):
 
     """
     """
+
     def compare_rally_results(self, data, uuids, combined, metadata=None):
         missing = []
         if len(data) < 2:
@@ -249,13 +251,13 @@ class Elastic(object):
             self.logger.error("Not able to find UUID in data set")
             return False
         if combined:
-            print "+{}+".format("-" * (33 + 44 + 10 + 10 + 23))
-            print "{0:33} | {1:40} | {2:10} | {3:10} | {4:13} ".format("Scenario",
+            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 23)))
+            print("{0:33} | {1:40} | {2:10} | {3:10} | {4:13} ".format("Scenario",
                                                                        "Action",
                                                                        uuids[0][-8:],
                                                                        uuids[1][-8:],
-                                                                       "% Difference")
-            print "+{}+".format("-" * (33 + 44 + 10 + 10 + 23))
+                                                                       "% Difference"))
+            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 23)))
             for scenario in data[uuids[0]]:
                 if scenario not in data[uuids[1]]:
                     missing.append(scenario)
@@ -268,23 +270,23 @@ class Elastic(object):
                         perf1 = data[uuids[1]][scenario][action]
                         diff = numpy.diff(dset)[0] / numpy.abs(dset[:-1])[0] * 100
 
-                        print "{0:33} | {1:40} | {2:10.3f} | {3:10.3f} | {4:13.3f}".format(scenario,
+                        print("{0:33} | {1:40} | {2:10.3f} | {3:10.3f} | {4:13.3f}".format(scenario,
                                                                                            action,
                                                                                            perf0,
                                                                                            perf1,
-                                                                                           diff)
-            print "+{}+".format("-" * (33 + 44 + 10 + 10 + 26))
+                                                                                           diff))
+            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 26)))
         else:
-            print "+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26))
-            print "{0:33} | {1:40} | {2:15} | {3:15} | {4:10} | {5:10} | {6:23}".format(
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
+            print("{0:33} | {1:40} | {2:15} | {3:15} | {4:10} | {5:10} | {6:23}".format(
                   "Scenario",
                   "Action",
                   "times",
                   "concurrency",
                   uuids[0][-8:],
                   uuids[1][-8:],
-                  "% Difference")
-            print "+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26))
+                  "% Difference"))
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
             for scenario in data[uuids[0]]:
                 if scenario not in data[uuids[1]]:
                     missing.append(scenario)
@@ -314,38 +316,39 @@ class Elastic(object):
                                         diff = numpy.diff(dset)[0] / numpy.abs(dset[:-1])[0] * 100
                                         output = "{0:33} | {1:40} | {2:15} | {3:15} "
                                         output += "| {4:10.3f} | {5:10.3f} | {6:13.3f}"
-                                        print output.format(scenario,
+                                        print(output.format(scenario,
                                                             action,
                                                             times,
                                                             concurrency,
                                                             perf0,
                                                             perf1,
-                                                            diff)
-            print "+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26))
+                                                            diff))
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
         if metadata:
-            print "+{}+".format("-" * (40 + 20 + 20 + 33))
-            print "{0:40} | {1:20} | {2:20} | {3:20}".format("UUID", "Version", "Build",
-                                                             "Number of runs")
-            print "+{}+".format("-" * (40 + 20 + 20 + 33))
+            print("+{}+".format("-" * (40 + 20 + 20 + 33)))
+            print("{0:40} | {1:20} | {2:20} | {3:20}".format("UUID", "Version", "Build",
+                                                             "Number of runs"))
+            print("+{}+".format("-" * (40 + 20 + 20 + 33)))
             for uuids in metadata:
-                print "{0:40} | {1:20} | {2:20} | {3:20}".format(uuids,
+                print("{0:40} | {1:20} | {2:20} | {3:20}".format(uuids,
                                                                  metadata[uuids][
                                                                      'version'],
                                                                  metadata[uuids][
                                                                      'build'],
-                                                                 metadata[uuids]['rerun'])
+                                                                 metadata[uuids]['rerun']))
 
-            print "+{}+".format("-" * (40 + 20 + 20 + 33))
+            print("+{}+".format("-" * (40 + 20 + 20 + 33)))
         if len(missing) > 0:
-            print "+-------------------------------------+"
-            print "Missing Scenarios to compare results:"
-            print "+-------------------------------------+"
+            print("+-------------------------------------+")
+            print("Missing Scenarios to compare results:")
+            print("+-------------------------------------+")
             for scenario in missing:
-                print " - {}".format(scenario)
+                print(" - {}".format(scenario))
 
     """
     returns a list of dicts that contain 95%tile performance data.
     """
+
     def get_result_data(self, index, browbeat_uuid):
         results = []
         data = []
@@ -395,6 +398,7 @@ class Elastic(object):
     Currently this function will only compare two uuids. I (rook) am not convinced it is worth
     the effort to engineer anything > 2.
     """
+
     def compare_metadata(self, index, role, uuids):
         meta = []
         for browbeat_uuid in uuids:
@@ -490,24 +494,24 @@ class Elastic(object):
                                         "Host [{}] Service [{}] {} [{}]".format(
                                             uuids[1], host, service, options, key))
 
-        print "+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6))
-        print "{0:25} | {1:15} | {2:30} | {3:23} | {4:40} | {5:40} ".format(
+        print("+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6)))
+        print("{0:25} | {1:15} | {2:30} | {3:23} | {4:40} | {5:40} ".format(
               "Host",
               "Service",
               "Option",
               "Key",
               "Old Value",
-              "New Value")
-        print "+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6))
-        for difference in differences :
+              "New Value"))
+        print("+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6)))
+        for difference in differences:
             value = difference.split("|")
-            print "{0:25} | {1:15} | {2:30} | {3:23} | {4:40} | {5:40} ".format(value[0],
+            print("{0:25} | {1:15} | {2:30} | {3:23} | {4:40} | {5:40} ".format(value[0],
                                                                                 value[1],
                                                                                 value[2],
                                                                                 value[3],
                                                                                 value[4],
-                                                                                value[5])
-        print "+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6))
+                                                                                value[5]))
+        print("+{}+".format("-" * (33 + 44 + 15 + 15 + 30 + 10 + 6)))
 
     def scroll(self, search, sid, scroll_size):
         data = []
@@ -528,6 +532,7 @@ class Elastic(object):
     index, however, this is quite expensive, and it might be quicker to
     only look for errors for specific browbeat_uuids
     """
+
     def get_errors(self, index, browbeat_id):
         self.logger.info("Making query against {}".format(index))
         page = self.es.search(
