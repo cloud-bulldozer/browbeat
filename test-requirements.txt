@@ -19,3 +19,4 @@ testrepository>=0.0.18
 testscenarios>=0.4
 testtools>=1.4.0
 twine
+wheel
