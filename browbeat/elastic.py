@@ -464,6 +464,13 @@ class Elastic(object):
                                   "Host [{}] missing ".format(host))
                 continue
             for service in meta[0][host]:
+                if service not in meta[1][host].keys():
+                    self.logger.debug(
+                        "UUID {} "
+                        "- Missing Service : "
+                        "Host [{}] Service [{}]".format(
+                            uuids[1], host, service))
+                    continue
                 for options in meta[0][host][service].keys():
                     if options not in meta[1][host][service]:
                         self.logger.debug(
