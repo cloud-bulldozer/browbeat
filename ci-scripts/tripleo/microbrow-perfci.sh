@@ -60,6 +60,20 @@ if [ ! -z ${current_build+x} ]
   fi
 fi
 
+# For queens onwards we need a containerized_overcloud
+if [[ $RELEASE == "queens" ]]
+ then
+  export VARS="$VARS --extra-vars containerized_overcloud=true"
+fi
+
+# For rocky we need a containerized_overcloud and undercloud
+if [[ $RELEASE == "rocky" ]]
+ then
+  export VARS="$VARS --extra-vars containerized_overcloud=true \
+  --extra-vars containerized_undercloud=true \
+  --extra-vars undercloud_ntp_servers=clock.corp.redhat.com"
+fi
+
 #Adding extra vars to deploy cloud with ovn
 #if the job is an ovn job
 if [[ $TOOL == ovn ]]

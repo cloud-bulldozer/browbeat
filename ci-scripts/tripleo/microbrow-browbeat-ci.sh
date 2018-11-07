@@ -57,6 +57,11 @@ if [ ! -z ${current_build+x} ]
   fi
 fi
 
+# For queens onwards we need a containerized_overcloud
+if [[ $RELEASE == "queens" ]]
+ then
+  export VARS="$VARS --extra-vars containerized_overcloud=true"
+fi
 
 #used to ensure concurrent jobs on the same executor work
 socketdir=$(mktemp -d /tmp/sockXXXXXX)
