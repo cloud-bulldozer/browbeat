@@ -2,6 +2,8 @@
 
 # Distribution / packaging
 *.egg*
+build/
+dist/
 
 # Testing
 .cache
