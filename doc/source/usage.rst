@@ -364,6 +364,16 @@ Compare performance of two different runs
 Using the CLI the user can determine, run to run performance differences. This is a good tool for spot checking performance of an OpenStack
 release.
 
+You'll need to install extra dependencies for browbeat insights, which will
+provide additional modules needed for providing insights.
+
+To install :
+
+::
+
+    $ source browbeat/.browbeat-venv/bin/activate
+    $ pip install .[insights]
+
 To use :
 
 ::

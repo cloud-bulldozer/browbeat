@@ -14,7 +14,6 @@ from collections import deque
 import datetime
 import json
 import logging
-import numpy
 import os
 import re
 import sys
@@ -181,6 +180,7 @@ class Elastic(object):
     """
 
     def summarize_results(self, data, combined):
+        import numpy
         summary = {}
         if combined:
             if len(data) > 1:
@@ -243,6 +243,7 @@ class Elastic(object):
     """
 
     def compare_rally_results(self, data, uuids, combined, metadata=None):
+        import numpy
         missing = []
         if len(data) < 2:
             self.logger.error("Not enough data to compare")
@@ -350,6 +351,7 @@ class Elastic(object):
     """
 
     def get_result_data(self, index, browbeat_uuid):
+        import numpy
         results = []
         data = []
         metadata = {}

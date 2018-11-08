@@ -1,7 +1,6 @@
 # to avoid dependency conflicts, try to use ranges, eventually banning a
 # buggy minor version (!=) or capping (<) once you have proof it breaks.
 ansible>=2.4.1
-numpy
 elasticsearch
 grafyaml>=0.0.7
 openstacksdk
