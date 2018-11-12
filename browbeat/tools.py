@@ -16,10 +16,10 @@ import os
 import re
 import subprocess
 
-import perfkit
-import rally
-import shaker
-import yoda
+from browbeat import perfkit
+from browbeat import rally
+from browbeat import shaker
+from browbeat import yoda
 
 
 class Tools(object):
@@ -51,7 +51,7 @@ class Tools(object):
                                    stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         output_dict = {}
-        output_dict['stdout'] = stdout.strip()
+        output_dict['stdout'] = stdout.strip().decode()
         output_dict['stderr'] = stderr.strip()
         output_dict['rc'] = process.returncode
         if process.returncode > 0:

@@ -19,13 +19,13 @@ import shutil
 import subprocess
 import time
 
-import elastic
-import grafana
-from path import get_overcloudrc
-from path import get_workload_venv
-from path import results_path
-import tools
-import workloadbase
+import browbeat.tools
+from browbeat import elastic
+from browbeat import grafana
+from browbeat import workloadbase
+from browbeat.path import get_overcloudrc
+from browbeat.path import get_workload_venv
+from browbeat.path import results_path
 
 class PerfKit(workloadbase.WorkloadBase):
 
@@ -34,7 +34,7 @@ class PerfKit(workloadbase.WorkloadBase):
         self.overcloudrc = get_overcloudrc()
         self.config = config
         self.result_dir_ts = result_dir_ts
-        self.tools = tools.Tools(self.config)
+        self.tools = browbeat.tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
 

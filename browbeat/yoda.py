@@ -28,11 +28,11 @@ except ImportError:
     ostag = None
 import requests
 
-import elastic
-import grafana
-from path import results_path
-import workloadbase
-import tools
+import browbeat.tools
+from browbeat import elastic
+from browbeat import grafana
+from browbeat import workloadbase
+from browbeat.path import results_path
 
 
 class Yoda(workloadbase.WorkloadBase):
@@ -41,7 +41,7 @@ class Yoda(workloadbase.WorkloadBase):
         self.logger = logging.getLogger('browbeat.yoda')
         self.config = config
         self.result_dir_ts = result_dir_ts
-        self.tools = tools.Tools(self.config)
+        self.tools = browbeat.tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
         self.error_count = 0
