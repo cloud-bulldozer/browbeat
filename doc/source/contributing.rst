@@ -3,7 +3,7 @@ Contributing
 ============
 
 Contributions are most welcome!  You must first create a
-Launchpad account and `follow the instructions here <http://docs.openstack.org/infra/manual/developers.html#account-setup>`_
+Launchpad account and `follow the instructions here <https://docs.openstack.org/infra/manual/developers.html#account-setup>`_
 to get started as a new OpenStack contributor.
 
 Once you've signed the contributor license agreement and read through
