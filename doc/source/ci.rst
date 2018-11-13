@@ -13,7 +13,7 @@ Browbeat as a Quickstart Extra
 ------------------------------
 
 `TripleO Quickstart <https://github.com/openstack/tripleo-quickstart>`_ provides
-an extensible interface to allow "Extras" to add to to its core functionality
+an extensible interface to allow "Extras" to add to its core functionality
 of generating an entirely virtual Openstack Deployment using TripleO. The focus
 of this script is to deploy baremetal clouds in continuous integration (CI) for
 effective and extensible automated benchmarking.
