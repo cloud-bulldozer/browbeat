@@ -9,6 +9,7 @@ browbeat:
   rerun_type: iteration
 ansible:
   hosts: ansible/hosts
+  # can use ansible/gather/stockpile.yml to stockpile's roles
   metadata_playbook: ansible/gather/site.yml
   ssh_config: ansible/ssh-config
 elasticsearch:

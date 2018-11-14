@@ -304,11 +304,11 @@ if [ "${uncomment_localhost}" = true ]; then
   echo "#undercloud" | tee -a ${ansible_inventory_file}
 else
   echo "#localhost" | tee -a ${ansible_inventory_file}
-  echo "undercloud" | tee -a ${ansible_inventory_file}
+  echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 fi
 echo ""  | tee -a ${ansible_inventory_file}
 echo "[undercloud]" | tee -a ${ansible_inventory_file}
-echo "undercloud" | tee -a ${ansible_inventory_file}
+echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 echo "" | tee -a ${ansible_inventory_file}
 echo "[controller]" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
@@ -426,6 +426,9 @@ if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#obj
  if [[ ${#compute_hn} -gt 0 ]]; then
   echo "compute" | tee -a ${ansible_inventory_file}
  fi
+ echo "" | tee -a ${ansible_inventory_file}
+ echo "[overcloud:vars]" | tee -a ${ansible_inventory_file}
+ echo "ansible_user=heat-admin" | tee -a ${ansible_inventory_file}
 fi
 echo "" | tee -a ${ansible_inventory_file}
 echo "[other]" | tee -a ${ansible_inventory_file}
@@ -456,6 +459,9 @@ echo "" | tee -a ${ansible_inventory_file}
 echo "[elk-client]" | tee -a ${ansible_inventory_file}
 echo "## example host entry." | tee -a ${ansible_inventory_file}
 echo "#host-02" | tee -a ${ansible_inventory_file}
+echo "" | tee -a ${ansible_inventory_file}
+echo "[stockpile]" | tee -a ${ansible_inventory_file}
+echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 
 echo "---------------------------"
 echo "IMPORTANT: If you plan on deploying ELK and ELK clients, update hosts and make sure"

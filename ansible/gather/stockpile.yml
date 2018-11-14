@@ -1,0 +1,16 @@
+---
+
+- hosts: stockpile
+  tasks:
+    - name: setting fact for metadata folder
+      set_fact:
+        md_output_path: "{{ browbeat_path }}/metadata/machine_facts.json"
+
+- import_playbook: stockpile/stockpile.yml
+  vars:
+    stockpile_output_path: "{{ md_output_path }}"
+
+- hosts: stockpile
+  tasks:
+    - name: run prescribe
+      command: python {{ browbeat_path }}/browbeat/prescribe.py {{ browbeat_path }}/metadata

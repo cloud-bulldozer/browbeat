@@ -7,6 +7,7 @@
   remote_user: "{{ browbeat_user }}"
   roles:
     - common
+    - stockpile
     - browbeat
     - { role: browbeat-results, when: browbeat_results_in_httpd}
     - firewall
