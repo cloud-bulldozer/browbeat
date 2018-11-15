@@ -19,13 +19,13 @@ import time
 import uuid
 import yaml
 
-import elastic
-import grafana
-from path import get_overcloudrc
-from path import get_workload_venv
-from path import results_path
-import workloadbase
-import tools
+import browbeat.tools
+from browbeat import elastic
+from browbeat import grafana
+from browbeat import workloadbase
+from browbeat.path import get_overcloudrc
+from browbeat.path import get_workload_venv
+from browbeat.path import results_path
 
 
 class Shaker(workloadbase.WorkloadBase):
@@ -35,7 +35,7 @@ class Shaker(workloadbase.WorkloadBase):
         self.overcloudrc = get_overcloudrc()
         self.config = config
         self.result_dir_ts = result_dir_ts
-        self.tools = tools.Tools(self.config)
+        self.tools = browbeat.tools.Tools(self.config)
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
 

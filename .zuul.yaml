@@ -2,7 +2,7 @@
 - project:
     templates:
       - docs-on-readthedocs
-      - openstack-python37-jobs-nonvoting
+      - openstack-python37-jobs
       - openstack-python36-jobs
     vars:
       rtd_webhook_id: '51626'
