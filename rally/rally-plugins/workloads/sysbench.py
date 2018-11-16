@@ -12,13 +12,13 @@
 
 import logging
 
-from rally.plugins.openstack.scenarios.neutron import utils as neutron_utils
-from rally.plugins.openstack.scenarios.vm import utils as vm_utils
+from rally_openstack.scenarios.neutron import utils as neutron_utils
+from rally_openstack.scenarios.vm import utils as vm_utils
 from rally.common import sshutils
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation
-from rally import consts
+from rally_openstack import consts
 
 LOG = logging.getLogger(__name__)
 

@@ -12,7 +12,7 @@
 
 from rally.common import logging
 from rally_openstack import consts
-from rally_openstack.context.network import networks
+from rally_openstack.contexts.network import networks
 from rally.task import context
 
 LOG = logging.getLogger(__name__)
