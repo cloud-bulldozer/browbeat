@@ -110,6 +110,7 @@ class Metadata(object):
                                 key_name = service[1]
                                 if service_name not in software_dict.keys():
                                     software_dict[service_name] = {}
+                                    software_dict[service_name]['node_name'] = node
                                 if key_name not in software_dict[service_name].keys():
                                     software_dict[service_name][key_name] = {}
                                 for obj, value in output.iteritems():

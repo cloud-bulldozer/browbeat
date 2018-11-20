@@ -2,11 +2,24 @@
 
 - hosts: stockpile
   tasks:
-    - name: setting fact for metadata folder
+    - name: setting facts needed
       set_fact:
         md_output_path: "{{ browbeat_path }}/metadata/machine_facts.json"
+        stockpile_user: "{{ browbeat_user }}"
 
-- import_playbook: stockpile/stockpile.yml
+- hosts: overcloud
+  tasks:
+    - name: setting facts
+      set_fact:
+        overcloud_user: "{{ host_remote_user }}"
+
+- hosts: undercloud
+  tasks:
+    - name: setting facts
+      set_fact:
+        undercloud_user: "{{ local_remote_user }}"
+
+- import_playbook: stockpile/config/featureset001.yml
   vars:
     stockpile_output_path: "{{ md_output_path }}"
 
@@ -14,3 +27,4 @@
   tasks:
     - name: run prescribe
       command: python {{ browbeat_path }}/browbeat/prescribe.py {{ browbeat_path }}/metadata
+

@@ -146,6 +146,7 @@ See the README.rst in the ci-scripts folder for more details on the structure of
 Contributing to stockpile
 -------------------------
 
-We currently use `stockpile <https://github.com/redhat-performance/stockpile>`_
+We currently use `featureset001 <https://github.com/redhat-performance/stockpile/blob/master/config/featureset001.yml>`_ of
+`stockpile <https://github.com/redhat-performance/stockpile>`_
 to gather config. Please follow `instructions <https://github.com/redhat-performance/stockpile#contributing>`_
 to contribute to stockpile.
