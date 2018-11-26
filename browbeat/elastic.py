@@ -293,6 +293,8 @@ class Elastic(object):
                     continue
                 else:
                     for action in data[uuids[0]][scenario]:
+                        if action not in data[uuids[1]][scenario]:
+                            continue
                         dset = [data[uuids[0]][scenario][action],
                                 data[uuids[1]][scenario][action]]
                         err0 = 0
