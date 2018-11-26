@@ -252,13 +252,41 @@ class Elastic(object):
             self.logger.error("Not able to find UUID in data set")
             return False
         if combined:
-            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 23)))
-            print("{0:33} | {1:40} | {2:10} | {3:10} | {4:13} ".format("Scenario",
-                                                                       "Action",
-                                                                       uuids[0][-8:],
-                                                                       uuids[1][-8:],
-                                                                       "% Difference"))
-            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 23)))
+            errors = {}
+            errors[uuids[0]] = {}
+            errors[uuids[1]] = {}
+            for error in self.get_errors("browbeat-rally-*", uuids[0]):
+                action = error['_source']['action']
+                scenario = error['_source']['scenario']
+                if scenario not in errors[uuids[0]]:
+                    errors[uuids[0]][scenario] = {}
+                if action not in errors[uuids[0]][scenario]:
+                    errors[uuids[0]][scenario][action] = []
+                errors[uuids[0]][scenario][action].append(error['_source'][
+                    'result'])
+
+            for error in self.get_errors("browbeat-rally-*", uuids[1]):
+                action = error['_source']['action']
+                scenario = error['_source']['scenario']
+                if scenario not in errors[uuids[1]]:
+                    errors[uuids[1]][scenario] = {}
+                if action not in errors[uuids[1]][scenario]:
+                    errors[uuids[1]][scenario][action] = []
+                errors[uuids[1]][scenario][action].append(error[
+                    '_source']['result'])
+
+            print("+{}+".format("-" * (33 + 44 + 20 + 30 + 35)))
+            err_uuid1 = " errors-%s " % uuids[0][-8:],
+            err_uuid2 = " errors-%s " % uuids[1][-8:],
+            print("{0:34}|{1:40}|{2:20}|{3:20}|{4:10}|{5:10}|{6:13}".format(
+                " Scenario ",
+                " Action ",
+                " %s " % err_uuid1,
+                " %s " % err_uuid2,
+                " %s " % uuids[0][-8:],
+                " %s " % uuids[1][-8:],
+                "% Difference"))
+            print("+{}+".format("-" * (33 + 44 + 20 + 30 + 35)))
             for scenario in data[uuids[0]]:
                 if scenario not in data[uuids[1]]:
                     missing.append(scenario)
@@ -267,27 +295,88 @@ class Elastic(object):
                     for action in data[uuids[0]][scenario]:
                         dset = [data[uuids[0]][scenario][action],
                                 data[uuids[1]][scenario][action]]
+                        err0 = 0
+                        if uuids[0] in errors :
+                            if scenario in errors[uuids[0]] :
+                                if action in errors[uuids[0]][scenario]:
+                                    err0 = len(errors[uuids[0]][scenario][action])
+                        err1 = 0
+                        if uuids[1] in errors :
+                            if scenario in errors[uuids[1]] :
+                                if action in errors[uuids[1]][scenario]:
+                                    err1 = len(errors[uuids[1]][scenario][action])
                         perf0 = data[uuids[0]][scenario][action]
                         perf1 = data[uuids[1]][scenario][action]
                         diff = numpy.diff(dset)[0] / numpy.abs(dset[:-1])[0] * 100
 
-                        print("{0:33} | {1:40} | {2:10.3f} | {3:10.3f} | {4:13.3f}".format(scenario,
-                                                                                           action,
-                                                                                           perf0,
-                                                                                           perf1,
-                                                                                           diff))
-            print("+{}+".format("-" * (33 + 44 + 10 + 10 + 26)))
+                        output = "{0:34}|{1:40}|{2:20}".format(
+                                 scenario,
+                                 action,
+                                 err0)
+                        output += "|{0:20}|{1:10.3f}|{2:10.3f}|{3:13.3f}".format(
+                                  err1,
+                                  perf0,
+                                  perf1,
+                                  diff)
+                        print(output)
+            print("+{}+".format("-" * (33 + 44 + 20 + 30 + 35)))
         else:
-            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
-            print("{0:33} | {1:40} | {2:15} | {3:15} | {4:10} | {5:10} | {6:23}".format(
-                  "Scenario",
-                  "Action",
-                  "times",
-                  "concurrency",
-                  uuids[0][-8:],
-                  uuids[1][-8:],
-                  "% Difference"))
-            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
+            errors = {}
+            errors[uuids[0]] = {}
+            errors[uuids[1]] = {}
+            for error in self.get_errors("browbeat-rally-*", uuids[0]):
+                concurrency = error['_source']['rally_setup']['kw']['runner']['concurrency']
+                times = error['_source']['rally_setup']['kw']['runner']['times']
+                action = error['_source']['action']
+                scenario = error['_source']['scenario']
+
+                if scenario not in errors[uuids[0]]:
+                    errors[uuids[0]][scenario] = {}
+
+                if times not in errors[uuids[0]][scenario]:
+                    errors[uuids[0]][scenario][times] = {}
+
+                if concurrency not in errors[uuids[0]][scenario][times]:
+                    errors[uuids[0]][scenario][times][concurrency] = {}
+
+                if action not in errors[uuids[0]][scenario][times][concurrency]:
+                    errors[uuids[0]][scenario][times][concurrency][action] = []
+
+                errors[uuids[0]][scenario][times][concurrency][action].append(error['_source'][
+                    'result'])
+            for error in self.get_errors("browbeat-rally-*", uuids[1]):
+                concurrency = error['_source']['rally_setup']['kw']['runner']['concurrency']
+                times = error['_source']['rally_setup']['kw']['runner']['times']
+                action = error['_source']['action']
+                scenario = error['_source']['scenario']
+
+                if scenario not in errors[uuids[1]]:
+                    errors[uuids[1]][scenario] = {}
+
+                if times not in errors[uuids[1]][scenario]:
+                    errors[uuids[1]][scenario][times] = {}
+
+                if concurrency not in errors[uuids[1]][scenario][times]:
+                    errors[uuids[1]][scenario][times][concurrency] = {}
+
+                if action not in errors[uuids[1]][scenario][times][concurrency]:
+                    errors[uuids[1]][scenario][times][concurrency][action] = []
+
+                errors[uuids[1]][scenario][times][concurrency][action].append(error[
+                    '_source']['result'])
+
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 50 + 10 + 26)))
+            print("{0:30}|{1:35}|{2:18}|{3:19}|{4:25}|{5:20}|{6:10}|{7:10}|{8:13}".format(
+                  " Scenario ",
+                  " Action ",
+                  " times ",
+                  " concurrency ",
+                  " errors-%s " % uuids[0][-8:],
+                  " errors-%s " % uuids[1][-8:],
+                  " %s " % uuids[0][-8:],
+                  " %s " % uuids[1][-8:],
+                  " % Difference "))
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 50 + 10 + 26)))
             for scenario in data[uuids[0]]:
                 if scenario not in data[uuids[1]]:
                     missing.append(scenario)
@@ -314,17 +403,44 @@ class Elastic(object):
                                             concurrency][action]
                                         perf1 = data[uuids[1]][scenario][times][
                                             concurrency][action]
+
+                                        err0 = 0
+                                        err1 = 0
+                                        if uuids[0] in errors:
+                                            if scenario in errors[uuids[0]] :
+                                                if times in errors[uuids[0]][scenario] :
+                                                    if concurrency in errors[uuids[0]][
+                                                            scenario][times] :
+                                                        if action in errors[uuids[0]][
+                                                                scenario][times][concurrency] :
+                                                            err0 = len(errors[uuids[0]][
+                                                                scenario][times][concurrency][
+                                                                    action])
+                                        if uuids[1] in errors:
+                                            if scenario in errors[uuids[1]] :
+                                                if times in errors[uuids[1]][scenario] :
+                                                    if concurrency in errors[uuids[1]][
+                                                            scenario][times] :
+                                                        if action in errors[uuids[1]][
+                                                                scenario][times][concurrency] :
+                                                            err1 = len(errors[uuids[1]][
+                                                                scenario][times][concurrency][
+                                                                    action])
+
                                         diff = numpy.diff(dset)[0] / numpy.abs(dset[:-1])[0] * 100
-                                        output = "{0:33} | {1:40} | {2:15} | {3:15} "
-                                        output += "| {4:10.3f} | {5:10.3f} | {6:13.3f}"
+                                        output = "{0:30}|{1:35}|{2:18}|{3:19}"
+                                        output += "|{4:25}|{5:20}"
+                                        output += "|{6:10.3f}|{7:10.3f}|{8:13.3f}"
                                         print(output.format(scenario,
                                                             action,
                                                             times,
                                                             concurrency,
+                                                            err0,
+                                                            err1,
                                                             perf0,
                                                             perf1,
                                                             diff))
-            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 10 + 10 + 26)))
+            print("+{}+".format("-" * (33 + 44 + 15 + 15 + 50 + 10 + 26)))
         if metadata:
             print("+{}+".format("-" * (40 + 20 + 20 + 33)))
             print("{0:40} | {1:20} | {2:20} | {3:20}".format("UUID", "Version", "Build",
@@ -542,17 +658,33 @@ class Elastic(object):
     only look for errors for specific browbeat_uuids
     """
 
-    def get_errors(self, index, browbeat_id):
+    def get_errors(self, index, browbeat_id, action=None, times=None, concurrency=None):
         self.logger.info("Making query against {}".format(index))
+        body = {"query": {
+                "bool": {"must": [
+                    {"term": {"browbeat_uuid": browbeat_id}},
+                ]}
+                }}
+        """
+        body = {"query": {
+                "bool": { "must": [
+                         {"term": {"browbeat_uuid": browbeat_id}},
+                         {"term": {"action": "{}".format(action)}},
+                         {"term": {"rally_setup.kw.runner.times": times}},
+                         {"term": {"rally_setup.kw.runner.concurrency": concurrency}}]
+                        }}}
+        """
         page = self.es.search(
             index=index,
             doc_type='error',
-            scroll='2m',
-            size=5000,
-            body={"query": {"browbeat_uuid": browbeat_id}})
+            scroll='1m',
+            size=1000,
+            body=body,
+            request_timeout=240)
         sid = page['_scroll_id']
         scroll_size = page['hits']['total']
-        return self.scroll(sid,scroll_size)
+        self.logger.info("Searching through ES for uuid: {}".format(browbeat_id))
+        return self.scroll(page,sid,scroll_size)
 
     def get_results(self, index, browbeat_uuid):
         body = {
