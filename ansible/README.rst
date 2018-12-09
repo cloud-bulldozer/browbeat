@@ -15,7 +15,7 @@ Ansible for Browbeat
 Currently we support Ansible 1.9.4 within browbeat-venv and Ansible 2.0+ for installation.
 
 Playbooks for:
-  * Installing Browbeat, collectd, ELK stack and clients, graphite, grafana, and grafana dashboards
+  * Installing Browbeat, collectd, elk clients, graphite, grafana, and grafana dashboards
   * Check overcloud for performance issues
   * Tune overcloud for performance (Experimental)
   * Adjust number of workers for cinder/keystone/neutron/nova
@@ -90,38 +90,6 @@ To Install Kibana Visuals
 
     # ansible-playbook -i hosts install/kibana-visuals.yml
 
-Install Generic ELK Stack
-'''''''''''''''''''''''''
-Listening ports and other options can be changed in ``install/group_vars/all.yml``
-as needed.  You can also change the logging backend to use fluentd via the
-``logging_backend:`` variable.  For most uses leaving the defaults in place is
-accceptable.  If left unchanged the default is to use logstash.
-
-You can also install the optional `curator <https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html>`_ tool for managing
-elasticsearch indexes.  Set ``install_curator_tool: true`` to enable this optional tool installation.
-
-If all the variables look ok in ``install/group_vars/all.yml`` you can proceed with deployment.
-
-::
-
-    ansible-playbook -i hosts install/elk.yml
-
-Install ELK Stack (on an OpenStack Undercloud)
-''''''''''''''''''''''''''''''''''''''''''''''
-Triple-O based OpenStack deployments have a lot of ports already listening on
-the Undercloud node.  You'll need to change the default listening ports for ELK
-to be deployed without conflict.
-
-::
-
-    sed -i 's/nginx_kibana_port: 80/nginx_kibana_port: 8888/' install/group_vars/all.yml
-    sed -i 's/elk_server_ssl_cert_port: 8080/elk_server_ssl_cert_port: 9999/' install/group_vars/all.yml
-
-Now you can proceed with deployment.
-
-::
-
-    ansible-playbook -i hosts install/elk.yml
 
 Install Generic ELK Clients
 '''''''''''''''''''''''''''

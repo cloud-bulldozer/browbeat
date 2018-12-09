@@ -603,110 +603,11 @@ monitoring host such that you can see if you hit resource issues with your
 monitoring host.
 
 
-Install ELK Host (ElasticSearch/LogStash/Kibana)
--------------------------------------------------
+Install Kibana Visualizations
+-------------------------------
 
-An ELK server allows you to publish resulting benchmark data into ElasticSearch
-which allows you to build querys and dashboards to examine your benchmarking
-result data over various metadata points.
-
-Prerequisites
-~~~~~~~~~~~~~
-
-Hardware
-
-* Baremetal or Virtual Machine
-
-Operating System
-
-* RHEL 7
-* CentOS 7
-
-Repos
-
-* Red Hat Enterprise Linux 7Server - x86_64 - Server
-* Red Hat Enterprise Linux 7Server - x86_64 - Server Optional
-
-RPM
-
-* epel-release
-* ansible
-* git
-
-Installation
-~~~~~~~~~~~~
-
-1. Deploy machine (RHEL7 is used in this example)
-2. Install RPMS
-
-::
-
-  [root@dhcp23-93 ~]# yum install -y https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  ...
-  [root@dhcp23-93 ~]# yum install -y ansible git
-
-3. Clone Browbeat
-
-::
-
-  [root@dhcp23-93 ~]# git clone https://github.com/openstack/browbeat.git
-  Cloning into 'browbeat'...
-  remote: Counting objects: 7533, done.
-  remote: Compressing objects: 100% (38/38), done.
-  remote: Total 7533 (delta 30), reused 36 (delta 23), pack-reused 7469
-  Receiving objects: 100% (7533/7533), 5.26 MiB | 5.79 MiB/s, done.
-  Resolving deltas: 100% (4330/4330), done.
-
-4. Add a hosts file into ansible directory
-
-::
-
-  [root@dhcp23-93 ~]# cd browbeat/ansible/
-  [root@dhcp23-93 ansible]# vi hosts
-
-Content of hosts file should be following
-
-::
-
-  [elk]
-  localhost
-
-
-5. Setup SSH config, SSH key and exchange for Ansible
-
-::
-
-  [root@dhcp23-93 ansible]# touch ssh-config
-  [root@dhcp23-93 ansible]# ssh-keygen
-  Generating public/private rsa key pair.
-  ...
-  [root@dhcp23-93 ansible]# ssh-copy-id root@localhost
-  ...
-
-6. Edit install variables
-
-::
-
-  [root@dhcp23-93 ansible]# vi install/group_vars/all.yml
-
-Depending on the environment you may need to edit more than just the following
-variables - es_ip
-
-If you are deploying using a machine that is not an OSP undercloud, be sure to edit
-the home_dir/browbeat_path to match its actual path.
-
-.. note::  If you require a proxy to get outside your network, you must
-  configure http_proxy, https_proxy, no_proxy variables in the proxy_env
-  dictionary in install/group_vars/all.yml
-
-7. Install ELK via Ansible playbook
-
-::
-
-  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/elk.yml
-  ...
-
-8. Install Kibana Visualizations via Ansible playbook
+1. Update install/group_vars/all.yml (es_ip) to identify your ELK host.
+2. Install Kibana Visualizations via Ansible playbook
 
 ::
 
