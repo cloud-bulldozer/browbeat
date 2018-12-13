@@ -19,6 +19,9 @@ import sys
 class Metadata(object):
 
     def __init__(self):
+        # These are the only groups from the ansible inventory, that we are
+        # Interested in
+        self._supported_node_types = ['overcloud', 'undercloud']
         pass
 
     def load_file(self, filename):
@@ -33,23 +36,25 @@ class Metadata(object):
     def get_hardware_metadata(self, sys_data):
         hard_dict = {}
         for item, dictionary in sys_data.iteritems():
-            if 'hardware_details' not in hard_dict:
-                hard_dict['hardware_details'] = []
-            hardware_dict = {}
-            hardware_dict['label'] = sys_data[item]['inventory_hostname']
-            hardware_dict['virtualization_role'] = sys_data[item]['ansible_virtualization_role']
-            hardware_dict['virtualization_type'] = sys_data[item]['ansible_virtualization_type']
-            hardware_dict['total_mem'] = sys_data[item][
-                'ansible_memory_mb']['real']['total']
-            hardware_dict['total_logical_cores'] = sys_data[item][
-                'facter_processorcount']
-            hardware_dict['os_name'] = sys_data[item]['ansible_distribution'] + \
-                sys_data[item]['ansible_distribution_version']
-            hardware_dict['ip'] = sys_data[item]['ansible_default_ipv4']['address']
-            hardware_dict['num_interface'] = len(sys_data[item]['ansible_interfaces'])
-            hardware_dict['machine_make'] = sys_data[item]['ansible_product_name']
-            hardware_dict['processor_type'] = ' '.join(sys_data[item]['facter_processor0'].split())
-            hard_dict['hardware_details'].append(hardware_dict)
+            if any(node in sys_data[item]['group_names'] for node in self._supported_node_types):
+                if 'hardware_details' not in hard_dict:
+                    hard_dict['hardware_details'] = []
+                hardware_dict = {}
+                hardware_dict['label'] = sys_data[item]['inventory_hostname']
+                hardware_dict['virtualization_role'] = sys_data[item]['ansible_virtualization_role']
+                hardware_dict['virtualization_type'] = sys_data[item]['ansible_virtualization_type']
+                hardware_dict['total_mem'] = sys_data[item][
+                    'ansible_memory_mb']['real']['total']
+                hardware_dict['total_logical_cores'] = sys_data[item][
+                    'facter_processorcount']
+                hardware_dict['os_name'] = sys_data[item]['ansible_distribution'] + \
+                    sys_data[item]['ansible_distribution_version']
+                hardware_dict['ip'] = sys_data[item]['ansible_default_ipv4']['address']
+                hardware_dict['num_interface'] = len(sys_data[item]['ansible_interfaces'])
+                hardware_dict['machine_make'] = sys_data[item]['ansible_product_name']
+                hardware_dict['processor_type'] = ' '.join(sys_data[item][
+                    'facter_processor0'].split())
+                hard_dict['hardware_details'].append(hardware_dict)
         return hard_dict
 
     def get_environment_metadata(self, sys_data):
@@ -67,8 +72,7 @@ class Metadata(object):
         soft_all_dict = []
         bad_output_list = [{},[],""]
         for item, dictionary in sys_data.iteritems():
-            nodes = ['controller', 'undercloud', 'compute']
-            if any(node in sys_data[item]['group_names'] for node in nodes):
+            if any(node in sys_data[item]['group_names'] for node in self._supported_node_types):
                 software_dict = {}
                 sample_vuln_dict = {}
                 node = sys_data[item]['inventory_hostname']
