@@ -15,12 +15,6 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
-- name: Temporary workaround to avoid conflicts with dogpile.cache
-  pip:
-    name: dogpile.cache
-    version: 0.6.8
-    virtualenv: "{{ rally_venv }}"
-
 - name: Install Rally with OpenStack plugins into rally-venv
   pip:
     name: rally-openstack
