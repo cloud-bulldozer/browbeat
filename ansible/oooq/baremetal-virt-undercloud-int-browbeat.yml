@@ -1,20 +1,20 @@
 ---
 # Browbeat integration test
 
-- include: baremetal-prep-virthost.yml
+- import_playbook: baremetal-prep-virthost.yml
 
-- include: configure-browbeat.yml
+- import_playbook: configure-browbeat.yml
 
-- include: baremetal-quickstart-extras.yml
+- import_playbook: baremetal-quickstart-extras.yml
 
-- include: install-browbeat.yml
+- import_playbook: install-browbeat.yml
 
-- include: disable-ssh-dns.yml
+- import_playbook: disable-ssh-dns.yml
 
-- include: undercloud-metrics.yml
-- include: overcloud-metrics.yml
+- import_playbook: undercloud-metrics.yml
+- import_playbook: overcloud-metrics.yml
 
-- include: gather-metadata.yml
+- import_playbook: gather-metadata.yml
 
 - name: Run Browbeat
   hosts: undercloud

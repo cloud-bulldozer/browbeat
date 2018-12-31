@@ -2,13 +2,13 @@
 # Browbeat integration test
 # Check upstream zuul CI
 
-- include: configure-browbeat.yml
+- import_playbook: configure-browbeat.yml
   when: enable_minimal_browbeat|default(false)|bool
 
-- include: install-browbeat.yml
+- import_playbook: install-browbeat.yml
   when: enable_minimal_browbeat|default(false)|bool
 
-- include: disable-ssh-dns.yml
+- import_playbook: disable-ssh-dns.yml
   when: enable_minimal_browbeat|default(false)|bool
 
 - name: Run Browbeat

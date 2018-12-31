@@ -1,5 +1,5 @@
 ---
-- include: baremetal-prep-virthost.yml
+- import_playbook: baremetal-prep-virthost.yml
 
 
 - name: Validate IPMI and instackenv.json
@@ -14,7 +14,7 @@
   roles:
     - undercloud-deploy
 
-- include: undercloud-metrics.yml
+- import_playbook: undercloud-metrics.yml
 
 - name:  copy over config files
   hosts: undercloud

@@ -1,16 +1,16 @@
 # This is the playbook used by the `quickstart.sh` script.
 
-- include: quickstart-extras.yml
+- import_playbook: quickstart-extras.yml
 
-- include: configure-browbeat.yml
+- import_playbook: configure-browbeat.yml
 
-- include: undercloud-metrics.yml
+- import_playbook: undercloud-metrics.yml
 
-- include: overcloud-metrics.yml
+- import_playbook: overcloud-metrics.yml
 
-- include: install-browbeat.yml
+- import_playbook: install-browbeat.yml
 
-- include: gather-metadata.yml
+- import_playbook: gather-metadata.yml
 
 - name: Run Browbeat
   hosts: undercloud
