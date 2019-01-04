@@ -163,10 +163,10 @@ class Elastic(object):
             for result in results:
                 for metadata in result['_source']['software-metadata']:
                     for service in metadata:
-                        if pattern.match(metadata[service]['node_name']):
-                            if metadata[service]['node_name'] not in nodes:
-                                nodes[metadata[service][
-                                    'node_name']] = metadata
+                        if 'node_name' in metadata[service]:
+                            if pattern.match(metadata[service]['node_name']):
+                                if metadata[service]['node_name'] not in nodes:
+                                    nodes[metadata[service]['node_name']] = metadata
             return nodes
         else:
             self.logger.error("UUID {} wasn't found".format(browbeat_uuid))
@@ -535,6 +535,8 @@ class Elastic(object):
         ignore = [
             "connection",
             "admin_url",
+            "my_ip",
+            "local_ip",
             "bind_host",
             "rabbit_hosts",
             "auth_url",
