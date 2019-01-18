@@ -18,6 +18,9 @@ You can view your public key using:
 
     $ cat ~/.ssh/id_*.pub
 
+Setup
+`````
+
 Set your username and email for review.openstack.org:
 
 ::
@@ -25,6 +28,7 @@ Set your username and email for review.openstack.org:
     $ git config --global user.email "example@example.com"
     $ git config --global user.name "example"
     $ git config --global --add gitreview.username "example"
+
 
 Next, Clone the github repository:
 
@@ -45,6 +49,10 @@ To set up your cloned repository to work with OpenStack Gerrit
 
     $ git review -s
 
+
+Making changes
+``````````````
+
 It's useful to create a branch to do your work, name it something
 related to the change you'd like to introduce.
 
@@ -54,8 +62,7 @@ related to the change you'd like to introduce.
     $ git branch my_special_enhancement
     $ git checkout !$
 
-Make your changes and then commit them using the instructions
-below.
+Now you can make your changes and then commit.
 
 ::
 
@@ -65,6 +72,43 @@ below.
 Use a descriptive commit title followed by an empty space.
 You should type a small justification of what you are
 changing and why.
+
+Local testing
+`````````````
+
+Before submitting code to Gerrit you *should* do at least some minimal local
+testing, like running ``tox -e linters``. This could be automated if you
+activate `pre-commit <https://pre-commit.com/>`__ hooks::
+
+    pip install --user pre-commit
+    # to enable automatic run on commit:
+    pre-commit install --install-hooks
+    # to uninstall hooks
+    pre-commit uninstall
+
+Please note that the pre-commit feature is available only on repositories that
+do have `.pre-commit-config.yaml <https://github.com/openstack/browbeat/blob/master/.pre-commit-config.yaml>`__ file.
+
+Running ``tox -e linters`` is recommended as it may include additional linting
+commands than just pre-commit. So, if you run tox you don't need to run
+pre-commit manually.
+
+Implementation of pre-commit is very fast and saves a lot of disk space
+because internally it does cache any linter-version and reuses it between
+repositories, as opposed to tox which uses environments unique to each
+repository (usually more than one). Also by design pre-commit always pins
+linters, making less like to break code because linter released new version.
+
+Another reason why pre-commit is very fast is because it runs only
+on modified files. You can force it to run on the entire repository via
+`pre-commit run -a` command.
+
+Upgrading linters is done via ``pre-commit autoupdate`` but this should be
+done only as a separate change request.
+
+
+Submit Changes
+``````````````
 
 Now you're ready to submit your changes for review:
 
@@ -81,6 +125,9 @@ use the amend feature after further modification and saving.
     $ git add /path/to/files/changed
     $ git commit --amend
     $ git review
+
+Changes to a review
+```````````````````
 
 If you want to submit a new patchset from a different location
 (perhaps on a different machine or computer for example) you can
