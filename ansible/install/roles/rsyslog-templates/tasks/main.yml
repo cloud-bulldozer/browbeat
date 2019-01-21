@@ -140,7 +140,7 @@
   when: rsyslog_aggregator or rsyslog_forwarding
 
 # syslog as a system process lives under some very restrictive selinux rules, this is the best
-# way I've found to get to to work reliably. On a prod system you would probably want to manually
+# way I've found to get to work reliably. On a prod system you would probably want to manually
 # validate that the .te file produced makes sense.
 - name: Generate and install syslog policy file
   shell: "grep syslog /var/log/audit/audit.log  | audit2allow -M syslogd_t; semodule -i syslogd_t.pp"
