@@ -77,7 +77,7 @@ class IOStat(object):
         """
         Parse iostat -d and -dx output.If there are more
         than one series of statistics, get the last one.
-        By default parse statistics for all avaliable block devices.
+        By default parse statistics for all available block devices.
 
         @type input: C{string}
         @param input: iostat output
@@ -152,7 +152,7 @@ class IOStat(object):
     @staticmethod
     def _get_childs_data(child):
         """
-        Return child's data when avaliable.
+        Return child's data when available.
         """
         (stdout, stderr) = child.communicate()
         ecode = child.poll()
@@ -164,7 +164,7 @@ class IOStat(object):
 
     def get_diskstats(self):
         """
-        Get all avaliable disks statistics that we can get.
+        Get all available disks statistics that we can get.
         iostat -kNd
          tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
         iostat -kNdx
