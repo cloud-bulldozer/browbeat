@@ -36,7 +36,7 @@
         dest: "/usr/lib/systemd/system/virtlogd.service"
         line: "LimitNOFILE={{max_open_files}}"
         insertafter: "OOMScoreAdjust=-900"
-      when: replace_output.changed != true
+      when: not replace_output.changed
 
     - name: Issue daemon-reload
       become: true

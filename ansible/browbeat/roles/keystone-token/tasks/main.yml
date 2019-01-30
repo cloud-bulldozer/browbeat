@@ -31,15 +31,15 @@
 
 - name: Set current_token_provider variable/fact to uuid
   set_fact: current_token_provider='uuid'
-  when: "'uuid' in '{{ keystone_token_provider.stdout }}'"
+  when: "'uuid' in keystone_token_provider.stdout"
 
 - name: Set current_token_provider variable/fact to fernet
   set_fact: current_token_provider='fernet'
-  when: "'fernet' in '{{ keystone_token_provider.stdout }}'"
+  when: "'fernet' in keystone_token_provider.stdout"
 
 - name: Set current_token_provider variable/fact to pkiz
   set_fact: current_token_provider='pkiz'
-  when: "'pkiz' in '{{ keystone_token_provider.stdout }}'"
+  when: "'pkiz' in keystone_token_provider.stdout"
 
 #
 # Tasks to change token provider if necessary:
@@ -48,7 +48,7 @@
 - name: Change token provider
   become: true
   command: crudini --set /etc/keystone/keystone.conf token provider "keystone.token.providers.{{ token_provider }}.Provider"
-  when: "'{{ current_token_provider }}' != '{{ token_provider }}'"
+  when: "current_token_provider != token_provider"
   notify:
     - pacemaker default unmanaged
     - stop keystone service
@@ -69,12 +69,12 @@
     owner=keystone
     group=keystone
     mode=0700
-  when: "'{{ token_provider }}' == 'fernet'"
+  when: "token_provider == 'fernet'"
 
 - name: Setup fernet keys
   become: true
   command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
-  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname == groups['controller'][0])
 
 - name: Get fernet keys
   become: true
@@ -82,7 +82,7 @@
   with_items:
     - 0
     - 1
-  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname == groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname == groups['controller'][0])
   changed_when: false
 
 - name: Copy fernet keys
@@ -91,26 +91,26 @@
   with_items:
     - "0"
     - "1"
-  when: ('{{ token_provider }}' == 'fernet') and (inventory_hostname != groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname != groups['controller'][0])
 
 - name: Copy keystone type enforcement file
   become: true
   copy:
     src: my-keystone.te
     dest: /root/my-keystone.te
-  when: "'{{ token_provider }}' == 'fernet'"
+  when: "token_provider == 'fernet'"
 
 - name: Create keystone.mod file
   become: true
   command: checkmodule -M -m -o /root/my-keystone.mod /root/my-keystone.te
-  when: "'{{ token_provider }}' == 'fernet'"
+  when: "token_provider == 'fernet'"
 
 - name: Create keystone.pp file
   become: true
   command: semodule_package -o /root/my-keystone.pp -m /root/my-keystone.mod
-  when: "'{{ token_provider }}' == 'fernet'"
+  when: "token_provider == 'fernet'"
 
 - name: Install keystone selinux policy
   become: true
   command: semodule -i /root/my-keystone.pp
-  when: "'{{ token_provider }}' == 'fernet'"
+  when: "token_provider == 'fernet'"

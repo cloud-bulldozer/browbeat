@@ -9,7 +9,7 @@
   with_fileglob:
   - "{{ browbeat_path }}/elastic/templates/browbeat*"
   ignore_errors: true
-  when: elastic5 == false
+  when: not elastic5
 
 
 - name: Upload templates
@@ -21,4 +21,4 @@
   with_fileglob:
   - "{{ browbeat_path }}/elastic/v5templates/browbeat*"
   ignore_errors: true
-  when: elastic5 == true
+  when: elastic5

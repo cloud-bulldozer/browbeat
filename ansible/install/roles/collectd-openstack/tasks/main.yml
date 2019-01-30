@@ -52,7 +52,7 @@
     enabled: yes
   become: true
   register: repo_add
-  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
+  when: ('controller' in group_names and opendaylight_java_plugin)
 
 - name: Add key
   rpm_key:
@@ -71,14 +71,14 @@
     - java-1.8.0-openjdk
     - collectd-java
     - collectd-generic-jmx
-  when: (repo_add is success and 'controller' in group_names and {{opendaylight_java_plugin}} == true)
+  when: (repo_add is success and 'controller' in group_names and opendaylight_java_plugin)
 
 - name: Remove repository
   yum_repository:
     name:  CentOS-7-Base
     state: absent
   become: true
-  when: (repo_add is success and 'controller' in group_names and {{opendaylight_java_plugin}} == true)
+  when: (repo_add is success and 'controller' in group_names and opendaylight_java_plugin)
 
 # Iostat plugin requires sysstat since shelling iostat for stats, Also it is
 # handy to have sysstat.
@@ -96,7 +96,7 @@
     name: "{{item}}"
     state: present
   become: true
-  when: "(('controller' in group_names and {{keystone_overcloud_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{keystone_undercloud_collectd_plugin}} == true))"
+  when: "(('controller' in group_names and keystone_overcloud_collectd_plugin and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and keystone_undercloud_collectd_plugin))"
   with_items:
     - libdbi-dbd-mysql
     - collectd-dbi
@@ -118,13 +118,13 @@
   become: true
   shell: "hiera admin_password | awk '{$0=\"Environment=OS_PASSWORD=\"$0;print }'"
   register: undercloud_password
-  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin)"
 
 - name: (Undercloud) Get stackrc
   remote_user: "{{local_remote_user}}"
   shell: "cat /home/stack/stackrc | egrep '^OS_[AUT]|^OS_PRO' | awk '{$0=\"Environment=\"$0;print }'"
   register: stackrc_file
-  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin)"
 
 - name: (Undercloud) Add environment variables to collectd.service systemd file
   become: true
@@ -133,7 +133,7 @@
     insertafter: '\[Service\]'
     line: "{{item}}"
   with_items: "{{stackrc_file.stdout_lines | default(omit)}}"
-  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin)"
 
 - name: (Undercloud) Add environment variables to collectd.service systemd file
   become: true
@@ -142,14 +142,14 @@
     insertafter: '\[Service\]'
     line: "{{item}}"
   with_items: "{{undercloud_password.stdout_lines | default(omit)}}"
-  when: "('undercloud' in group_names and {{gnocchi_status_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin)"
 
 - name: (Controller, delegated to UC) Get overcloudrc
   remote_user: "{{local_remote_user}}"
   shell: "cat /home/stack/overcloudrc | grep 'export OS' | awk '{gsub(/export /,\"Environment=\");print }'"
   delegate_to: "{{groups['undercloud'][0]}}"
   register: overcloudrc_file
-  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 - name: (Controller) Add environment variables to collectd.service systemd file
   become: true
@@ -158,7 +158,7 @@
     insertafter: '\[Service\]'
     line: "{{item}}"
   with_items: "{{overcloudrc_file.stdout_lines | default(omit)}}"
-  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and gnocchi_status_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 # Apache Request Response Timing
 - name: (Newton, Ocata) Deploy Apache httpd.conf for request timings
@@ -170,7 +170,7 @@
     group: root
     mode: 0644
     backup: true
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+  when: "('controller' in group_names and apache_controller_collectd_request_time) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
 - name: (Queens/Pike) Patch Apache httpd.conf for request timings
   become: true
@@ -190,7 +190,7 @@
     name: httpd
     state: restarted
     enabled: true
-  when: "('controller' in group_names and {{apache_controller_collectd_request_time}} == true) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
+  when: "('controller' in group_names and apache_controller_collectd_request_time) and ('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
 - name: (Queens/Pike) Restart Gnocchi/Keystone/Nova Placement API Containers
   become: true
@@ -213,17 +213,17 @@
     owner: root
     group: root
   become: true
-  when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
+  when: "(('controller' in group_names and apache_controller_collectd_plugin) or ('undercloud' in group_names and apache_undercloud_collectd_plugin))"
 
 - name: (Undercloud) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
   command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
   become: true
-  when: "('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and apache_undercloud_collectd_plugin)"
 
 - name: (Controller) Allow httpd to listen to port ({{apache_controller_mod_status_port}})
   command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_controller_mod_status_port}}"
   become: true
-  when: "(ansible_selinux['status'] == 'enabled') and ('controller' in group_names and {{apache_controller_collectd_plugin}} == true)"
+  when: "(ansible_selinux['status'] == 'enabled') and ('controller' in group_names and apache_controller_collectd_plugin)"
 
 - name: Restart Apache
   service:
@@ -231,13 +231,13 @@
     state: restarted
     enabled: true
   become: true
-  when: "(('controller' in group_names and {{apache_controller_collectd_plugin}} == true) or ('undercloud' in group_names and {{apache_undercloud_collectd_plugin}} == true))"
+  when: "(('controller' in group_names and apache_controller_collectd_plugin) or ('undercloud' in group_names and apache_undercloud_collectd_plugin))"
 # End Apache Monitoring
 
 - name: Reload systemd units
   command: systemctl daemon-reload
   become: true
-  when: "('controller' in group_names and gnocchi_status_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin == true)"
+  when: "('controller' in group_names and gnocchi_status_controller_collectd_plugin and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and gnocchi_status_undercloud_collectd_plugin)"
 
 - name: (All Nodes) Copy python plugins
   copy:
@@ -288,42 +288,42 @@
   easy_install:
     name: pyrabbit
   become: true
-  when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
+  when: "(('controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin))"
 
 - name: Enable Rabbitmq management plugin
   command: /sbin/rabbitmq-plugins enable rabbitmq_management
   become: true
-  when: "(('controller' in group_names and {{rabbitmq_controller_collectd_plugin}} == true and '{{inventory_hostname}}' == groups['controller'][0]) or ('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true))"
+  when: "(('controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]) or ('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin))"
 
 - name: (Undercloud) Get ctlplane ip address
   shell: ip r | egrep 'br-ctlplane\s*proto kernel' | awk '{print $NF}'
   register: undercloud_ctlplane_ip_address
   become: true
-  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
 - name: (Undercloud) Get Rabbitmq username
   shell: cat undercloud-passwords.conf | grep undercloud_rabbit_username | awk -F '=' '{print $2}'
   register: undercloud_rabbitmq_username
-  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
 - name: (Undercloud) Get Rabbitmq password
   shell: cat undercloud-passwords.conf | grep undercloud_rabbit_password | awk -F '=' '{print $2}'
   register: undercloud_rabbitmq_password
-  when: "('undercloud' in group_names and {{rabbitmq_undercloud_collectd_plugin}} == true)"
+  when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
 # Works with: Newton, Ocata
 - name: (Controller) Get Rabbitmq username
   command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
   register: controller0_rabbitmq_username
   become: true
-  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 # Works with: Newton, Ocata
 - name: (Controller) Get Rabbitmq password
   command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
   register: controller0_rabbitmq_password
   become: true
-  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 # End Rabbitmq monitoring
 
 # Gnocchi Swift Stat Service monitoring
@@ -331,25 +331,25 @@
   command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_authurl
   register: controller0_gnocchi_swift_authurl
   become: true
-  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 - name: Get Gnocchi Swift Auth Version
   command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_auth_version
   register: controller0_gnocchi_swift_authversion
   become: true
-  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 - name: Get Gnocchi Swift User
   shell: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_user | sed 's/service://'
   register: controller0_gnocchi_swift_user
   become: true
-  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 
 - name: Get Gnocchi Swift Key
   command: hiera -c /etc/puppet/hiera.yaml gnocchi::storage::swift::swift_key
   register: controller0_gnocchi_swift_auth_key
   become: true
-  when: "'controller' in group_names and swift_stat_controller_collectd_plugin == true and inventory_hostname == groups['controller'][0]"
+  when: "'controller' in group_names and swift_stat_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
 # End Swift Stat Service monitoring
 
 # CephStorage OSD monitoring
@@ -358,7 +358,7 @@
   shell: ls /var/run/ceph/ceph-osd.*.asok | head -n 1 | egrep -o '[0-9]+'
   register: cephstorage_osd_socket
   become: true
-  when: "('cephstorage' in group_names and {{ceph_storage_collectd_plugin}} == true)"
+  when: "('cephstorage' in group_names and ceph_storage_collectd_plugin)"
 # End CephStorage OSD monitoring
 
 - name: Configure collectd.conf
@@ -377,7 +377,7 @@
     dest: /usr/lib64/libjvm.so
     state: link
   become: true
-  when: ('controller' in group_names and {{opendaylight_java_plugin}} == true)
+  when: ('controller' in group_names and opendaylight_java_plugin)
 
 #
 # Configure selinux bits

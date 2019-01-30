@@ -12,7 +12,7 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: "{{reduced_metrics}} == false and ('Newton' in osp_version['content'] | b64decode)"
+  when: "not reduced_metrics and ('Newton' in osp_version['content'] | b64decode)"
 
 - name: (Newton) Deploy the reduced metrics pipeline.yaml file
   become: true
@@ -23,7 +23,7 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: "{{reduced_metrics}} == true and ('Newton' in osp_version['content'] | b64decode)"
+  when: "reduced_metrics and ('Newton' in osp_version['content'] | b64decode)"
 
 - name: (Ocata) Deploy polling.yaml file
   become: true
@@ -34,7 +34,7 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: "{{reduced_metrics}} == false and ('Ocata' in osp_version['content'] | b64decode)"
+  when: "not reduced_metrics and ('Ocata' in osp_version['content'] | b64decode)"
 
 - name: (Ocata) Deploy the reduced metrics polling.yaml file
   become: true
@@ -45,7 +45,7 @@
     group: ceilometer
     mode: 0640
     backup: true
-  when: "{{reduced_metrics}} == true and ('Ocata' in osp_version['content'] | b64decode or 'Pike')"
+  when: "reduced_metrics and ('Ocata' in osp_version['content'] | b64decode or 'Pike')"
 
 - name: (Containerized Pike) Deploy the polling.yaml
   become: true

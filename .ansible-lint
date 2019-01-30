@@ -1,13 +1,11 @@
 ---
 parseable: true
 skip_list:
-  - '102'  # [E102] No Jinja2 in when
   - '204'  # [E204] Lines should be no longer than 120 chars
   - '206'  # [E206] Variables should have spaces before and after: {{ var_name }}
   - '405'
   - '503'  # [E503] Tasks that run when changed should likely be handlers
   - '504'
-  - '601'  # [E601] Don't compare to literal True/False
   - '602'  # [E602] Don't compare to empty string
   - ANSIBLE0006
   - ANSIBLE0007
