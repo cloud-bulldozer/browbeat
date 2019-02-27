@@ -452,10 +452,6 @@ echo "           the [graphite] and [grafana] hosts entries are updated with val
 echo "           You will need to have passwordless access to root on these hosts."
 echo "---------------------------"
 echo "" | tee -a ${ansible_inventory_file}
-echo "[elk]" | tee -a ${ansible_inventory_file}
-echo "## example host entry." | tee -a ${ansible_inventory_file}
-echo "#host-01" | tee -a ${ansible_inventory_file}
-echo "" | tee -a ${ansible_inventory_file}
 echo "[elk-client]" | tee -a ${ansible_inventory_file}
 echo "## example host entry." | tee -a ${ansible_inventory_file}
 echo "#host-02" | tee -a ${ansible_inventory_file}
@@ -464,8 +460,8 @@ echo "[stockpile]" | tee -a ${ansible_inventory_file}
 echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 
 echo "---------------------------"
-echo "IMPORTANT: If you plan on deploying ELK and ELK clients, update hosts and make sure"
-echo "           the [elk] and [elk-client] hosts entries are updated with valid hosts."
+echo "IMPORTANT: If you plan on deploying ELK clients, update hosts and make sure"
+echo "           the [elk-client] hosts entries are updated with valid hosts."
 echo "           You will need to have passwordless access to root on these hosts."
 echo "---------------------------"
 
