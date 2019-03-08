@@ -64,24 +64,3 @@ shaker:
       progression: linear
       time: 60
       opps_file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-yoda:
-  - valid: true
-    data:
-      name: valid-test-yoda-introspection
-      enabled: false
-      type: yoda
-      yoda_type: introspection
-      method: individual
-      times: 3
-      timeout: 900
-      batch_size: 2
-  - valid: false
-    data:
-      name: invalid-test-yoda-introspection
-      enabled: false
-      type: yoda
-      fake_yoda_type: introspection
-      method: individual
-      times: 3
-      timeout: 900
-      batch_size: 2

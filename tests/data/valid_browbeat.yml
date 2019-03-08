@@ -51,9 +51,6 @@ shaker:
   sleep_after: 0
   shaker_region: regionOne
   external_host: 2.2.2.2
-yoda:
-  instackenv: "/home/stack/instackenv.json"
-  stackrc: "/home/stack/stackrc"
 
 workloads:
   - name: browbeat-test-perfkit-ping
@@ -78,11 +75,3 @@ workloads:
     progression: linear
     time: 60
     file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
-  - name: browbeat-test-introspect-batch
-    enabled: false
-    type: yoda
-    yoda_type: introspection
-    method: individual
-    times: 3
-    timeout: 900
-    batch_size: 2

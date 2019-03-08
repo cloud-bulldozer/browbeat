@@ -19,7 +19,6 @@ import subprocess
 from browbeat import perfkit
 from browbeat import rally
 from browbeat import shaker
-from browbeat import yoda
 
 
 class Tools(object):
@@ -85,8 +84,6 @@ class Tools(object):
             workloads = rally.Rally(self.config, result_dir_ts)
         elif workload["type"] == "shaker":
             workloads = shaker.Shaker(self.config, result_dir_ts)
-        elif workload["type"] == "yoda":
-            workloads = yoda.Yoda(self.config, result_dir_ts)
         else:
             self.logger.error("Unknown workload provider: {}".format(workload["type"]))
         workloads.run_workload(copy.deepcopy(workload), run_iteration)

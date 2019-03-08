@@ -59,9 +59,6 @@ shaker:
   sleep_after: 0
   shaker_region: regionOne
   external_host: 2.2.2.2
-yoda:
-  instackenv: "/home/stack/instackenv.json"
-  stackrc: "/home/stack/stackrc"
 
 workloads:
   # Boots a total of 1000 instances, 100 at a time with 30minutes between booting storms

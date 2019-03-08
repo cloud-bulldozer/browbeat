@@ -164,16 +164,6 @@ mapping:
         type: str
         required: False
         pattern: ^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$
-  yoda:
-    type: map
-    required: True
-    mapping:
-      instackenv:
-        type: str
-        required: True
-      stackrc:
-        type: str
-        required: True
   workloads:
     required: True
     type: seq
@@ -191,4 +181,4 @@ mapping:
           type:
             type: str
             required: True
-            enum: ['perfkit', 'rally', 'shaker', 'yoda']
+            enum: ['perfkit', 'rally', 'shaker']

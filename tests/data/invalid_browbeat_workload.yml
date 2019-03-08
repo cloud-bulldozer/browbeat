@@ -51,9 +51,6 @@ shaker:
   sleep_after: 0
   shaker_region: regionOne
   external_host: 2.2.2.2
-yoda:
-  instackenv: "/home/stack/instackenv.json"
-  stackrc: "/home/stack/stackrc"
 
 workloads:
   # Missing name
