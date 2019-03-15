@@ -18,7 +18,7 @@
 - name: Install Rally with OpenStack plugins into rally-venv
   pip:
     name: rally-openstack
-    version: "{{ rally_version }}"
+    version: "{{ rally_openstack_version }}"
     virtualenv: "{{ rally_venv }}"
 
 - name: Install elasticsearch into rally-venv
