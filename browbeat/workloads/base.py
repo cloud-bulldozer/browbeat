@@ -20,7 +20,7 @@ from browbeat.path import results_path
 
 class WorkloadBase(object):
     __metaclass__ = abc.ABCMeta
-    logger = logging.getLogger('browbeat.workloadbase')
+    logger = logging.getLogger('browbeat.base.workloadbase')
     success = 0
     failure = 0
     total_tests = 0

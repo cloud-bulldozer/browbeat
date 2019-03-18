@@ -20,7 +20,7 @@ import sys
 import time
 import browbeat.elastic
 import browbeat.tools
-import browbeat.workloadbase
+from browbeat.workloads import base
 from browbeat.config import load_browbeat_config
 from browbeat.path import results_path
 
@@ -50,7 +50,7 @@ def run_iteration(_config, _cli_args, result_dir_ts, _logger, tools):
             continue
         _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
         tools.run_workload(workload, result_dir_ts, 0)
-        browbeat.workloadbase.WorkloadBase.display_summary()
+        base.WorkloadBase.display_summary()
         if terminate:
             return
 
@@ -69,7 +69,7 @@ def run_complete(_config, _cli_args, result_dir_ts, _logger, tools):
                 continue
             _logger.info("{} workload {} is enabled".format(workload["type"], workload["name"]))
             tools.run_workload(workload, result_dir_ts, iteration)
-            browbeat.workloadbase.WorkloadBase.display_summary()
+            base.WorkloadBase.display_summary()
             if terminate:
                 return
 
@@ -188,16 +188,16 @@ def main():
     if terminate:
         _logger.info("Browbeat execution halting due to user intervention")
         sys.exit(1)
-    browbeat.workloadbase.WorkloadBase.dump_report(results_path, result_dir_ts)
+    base.WorkloadBase.dump_report(results_path, result_dir_ts)
     _logger.info("Saved browbeat result summary to {}"
                  .format(os.path.join(results_path, "{}.report".format(result_dir_ts))))
 
-    if browbeat.workloadbase.WorkloadBase.failure > 0:
+    if base.WorkloadBase.failure > 0:
         _logger.info(
             "Browbeat finished with test failures, UUID: {}".format(browbeat.elastic.browbeat_uuid))
         sys.exit(1)
 
-    if browbeat.workloadbase.WorkloadBase.index_failures > 0:
+    if base.WorkloadBase.index_failures > 0:
         _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
                      .format(browbeat.elastic.browbeat_uuid))
         sys.exit(2)

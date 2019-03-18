@@ -23,11 +23,11 @@ import time
 import browbeat.tools
 from browbeat import elastic
 from browbeat import grafana
-from browbeat import workloadbase
 from browbeat.path import get_workload_venv
 from browbeat.path import results_path
+from browbeat.workloads import base
 
-class Rally(workloadbase.WorkloadBase):
+class Rally(base.WorkloadBase):
 
     def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.rally')

@@ -22,13 +22,13 @@ import yaml
 import browbeat.tools
 from browbeat import elastic
 from browbeat import grafana
-from browbeat import workloadbase
 from browbeat.path import get_overcloudrc
 from browbeat.path import get_workload_venv
 from browbeat.path import results_path
+from browbeat.workloads import base
 
 
-class Shaker(workloadbase.WorkloadBase):
+class Shaker(base.WorkloadBase):
 
     def __init__(self, config, result_dir_ts):
         self.logger = logging.getLogger('browbeat.shaker')

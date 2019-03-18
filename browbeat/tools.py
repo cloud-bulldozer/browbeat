@@ -16,9 +16,9 @@ import os
 import re
 import subprocess
 
-from browbeat import perfkit
-from browbeat import rally
-from browbeat import shaker
+from browbeat.workloads import perfkit
+from browbeat.workloads import rally
+from browbeat.workloads import shaker
 
 
 class Tools(object):
@@ -35,13 +35,6 @@ class Tools(object):
             return True
         else:
             return False
-
-    # Run command async from the python main thread, return Popen handle
-    def run_async_cmd(self, cmd):
-        FNULL = open(os.devnull, 'w')
-        self.logger.debug("Running command : %s" % cmd)
-        process = subprocess.Popen(cmd, shell=True, stdout=FNULL)
-        return process
 
     # Run command, return stdout as result
     def run_cmd(self, cmd):
