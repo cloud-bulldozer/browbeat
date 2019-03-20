@@ -160,6 +160,29 @@ workloads:
       - name: create-list-subnet
         enabled: true
         file: rally/neutron/neutron-create-list-subnet-cc.yml
+      - name: create-list-trunks
+        enabled: true
+        subport_count: 10
+        file: rally/neutron/neutron-create-list-trunks.yml
+      - name: boot-server-with-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subport_count: 10
+        file: rally/neutron/neutron-boot-server-with-subports.yml
+      - name: boot-server-and-add-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subport_count: 10
+        file: rally/neutron/neutron-boot-server-and-add-subports.yml
+      - name: boot-server-and-batch-add-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subports_per_batch: 10
+        batches: 5
+        file: rally/neutron/neutron-boot-server-and-batch-add-subports.yml
 
   - name: nova
     enabled: true

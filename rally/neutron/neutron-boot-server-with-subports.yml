@@ -1,11 +1,17 @@
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set image_name = image_name or "centos7" %}
 {% set subport_count = subport_count or 10 %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
-  NeutronTrunks.create_and_list_trunks:
+  NeutronTrunks.boot_server_with_subports:
     -
       args:
+        flavor:
+            name: "{{flavor_name}}"
+        image:
+            name: "{{image_name}}"
         network_create_args: {}
         subport_count: {{subport_count}}
       runner:
@@ -19,11 +25,15 @@
         quotas:
           neutron:
             network: -1
+            subnet: -1
             port: -1
             trunk: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
       sla:
         max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}
         failure_rate:
           max: {{sla_max_failure}}
-
