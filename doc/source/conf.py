@@ -25,7 +25,7 @@ extensions = []
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 if not on_rtd:
-    extensions.append("oslosphinx")
+    extensions.append("openstackdocstheme")
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
