@@ -15,7 +15,7 @@
   register: zuul_workspace
 
 - name: Copy browbeat to the undercloud - zuul v3
-  synchronize: "src={{ ansible_user_dir }}/{{ zuul.projects['git.openstack.org/openstack/browbeat'].src_dir }} dest={{ ansible_env.HOME }}/"
+  synchronize: "src={{ ansible_user_dir }}/{{ zuul.projects['opendev.org/x/browbeat'].src_dir }} dest={{ ansible_env.HOME }}/"
   when: ansible_user == "zuul" and zuul_workspace.stat.exists and zuul is defined and zuul.projects is defined
 
 - name: Copy browbeat to the undercloud - zuul legacy
