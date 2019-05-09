@@ -209,6 +209,11 @@ workloads:
         image_name: cirros
         file: rally/nova/nova-lock-unlock-cc.yml
         flavor_name: m1.xtiny
+      - name: boot_server_from_volume_and_resize
+        enabled: true
+        image_name: cirros
+        file: rally/nova/nova-boot-from-volume-and-resize.yml
+        flavor_name: m1.xtiny
   - name: glance
     enabled: true
     type: rally
