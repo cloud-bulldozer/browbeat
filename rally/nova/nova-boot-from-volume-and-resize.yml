@@ -1,0 +1,47 @@
+{% set image_name = image_name or "centos7" %}
+{% set flavor = initial_flavor_name or "m1.tiny" %}
+{% set final_flavor_name = final_flavor_name or "m1.small" %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  NovaServers.boot_server_from_volume_and_resize:
+    -
+      args:
+        flavor:
+            name: "{{initial_flavor_name}}"
+        image:
+            name: "{{image_name}}"
+        to_flavor:
+            name: "{{final_flavor_name}}"
+        confirm: true
+        volume_size: 1
+        force_delete: false
+        do_delete: true
+        boot_server_kwargs: {}
+        create_volume_kwargs: {}
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        network:
+          start_cidr: "10.0.0.0/16"
+          networks_per_tenant: 1
+        users:
+          tenants: 3
+          users_per_tenant: 2
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}
+
