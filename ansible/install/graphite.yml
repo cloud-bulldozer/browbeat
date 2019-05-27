@@ -6,6 +6,6 @@
 - hosts: graphite
   remote_user: root
   roles:
-    - epel
+    - {role: epel, when: ansible_distribution_major_version == '7'}
     - graphite
   environment: "{{proxy_env}}"
