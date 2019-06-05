@@ -10,4 +10,6 @@ skip_list:
   - ANSIBLE0006
   - ANSIBLE0007
   - ANSIBLE0012
+exclude_paths:
+  - .zuul.yaml
 use_default_rules: true

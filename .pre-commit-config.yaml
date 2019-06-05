@@ -13,5 +13,5 @@ repos:
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
-        exclude: ^rally/
+        exclude: ^(rally/|\.zuul\.yaml)
         entry: ansible-lint --force-color -v
