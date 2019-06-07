@@ -221,6 +221,13 @@ workloads:
         image_name: cirros
         flavor_name: m1.tiny
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+      - name: netcreate-boot-one-network
+        enabled: true
+        enable_dhcp: true
+        num_vms: 4
+        image_name: cirros
+        flavor_name: m1.tiny
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_vms_on_single_network.yml
       - name: netcreate-boot-ping
         enabled: true
         image_name: cirros

@@ -1,0 +1,42 @@
+{% set image_name = image_name or 'cirros' %}
+{% set flavor_name = flavor_name or 'm1.xtiny' %}
+{% set enable_dhcp = enable_dhcp or true %}
+{% set num_vms = num_vms or 1 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatPlugin.create_vms_on_network:
+  -
+    args:
+      flavor:
+        name: '{{flavor_name}}'
+      image:
+        name: '{{image_name}}'
+      network_create_args: {}
+      subnet_create_args: {'enable_dhcp': '{{enable_dhcp}}'}
+      port_create_args: {}
+      num_vms: {{num_vms}}
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: 'constant'
+    context:
+      users:
+        tenants: 1
+        users_per_tenant: 8
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
