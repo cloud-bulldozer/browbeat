@@ -1,0 +1,21 @@
+{% set sla_max_failure = sla_max_failure or 0 %}
+---
+  Octavia.create_and_update_pools:
+    -
+      args:
+        protocol: "HTTP"
+        lb_algorithm: "ROUND_ROBIN"
+      runner:
+        type: "constant"
+        times: {{ times }}
+        concurrency: {{ concurrency }}
+      context:
+        users:
+          tenants: 2
+          users_per_tenant: 2
+        roles:
+        - load-balancer_member
+        network: {}
+      sla:
+        failure_rate:
+          max: {{ sla_max_failure }} 

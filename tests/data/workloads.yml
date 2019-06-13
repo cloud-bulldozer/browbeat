@@ -28,6 +28,9 @@ rally:
         - name: valid-test-authentic-neutron
           enabled: false
           file: rally/authenticate/validate_neutron-cc.yml
+        - name: valid-test-authentic-octavia
+          enabled: true
+          file: rally/authenticate/validate_octavia-cc.yml
   - valid: false
     data:
       name: invalid-test-authenticate-01

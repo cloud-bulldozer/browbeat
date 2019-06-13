@@ -208,6 +208,50 @@ workloads:
         disk_format: qcow2
         file: rally/glance/create-and-delete-image-cc.yml
 
+  - name: octavia
+    enabled: true
+    type: rally
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: create-and-list-loadbalancers
+        enabled: true
+        sla_max_failure: 0
+        file: rally/octavia/octavia-create-list-loadbalancers.yml
+      - name: create-and-stats-show-loadbalancers
+        enabled: true
+        file: rally/octavia/octavia-create-stats-show-loadbalancers.yml
+        sla_max_failure: 0
+      - name: create-and-show-loadbalancers
+        enabled: true
+        file: rally/octavia/octavia-create-show-loadbalancers.yml
+        sla_max_failure: 0
+      - name: create-and-update-loadbalancers
+        enabled: true
+        file: rally/octavia/octavia-create-update-loadbalancers.yml
+        sla_max_failure: 0
+      - name: create-and-delete-loadbalancers
+        enabled: true
+        file: rally/octavia/octavia-create-delete-loadbalancers.yml
+        sla_max_failure: 0
+      - name: create-and-list-pools
+        enabled: true
+        sla_max_failure: 0
+        file: rally/octavia/octavia-create-list-pools.yml
+      - name: create-and-show-pools
+        enabled: true
+        file: rally/octavia/octavia-create-show-pools.yml
+        sla_max_failure: 0
+      - name: create-and-update-pools
+        enabled: true
+        file: rally/octavia/octavia-create-update-pools.yml
+        sla_max_failure: 0
+      - name: create-and-delete-pools
+        enabled: true
+        file: rally/octavia/octavia-create-delete-pools.yml
+        sla_max_failure: 0
+
   - name: simple-plugins
     enabled: true
     type: rally
