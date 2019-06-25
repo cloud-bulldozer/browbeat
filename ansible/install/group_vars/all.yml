@@ -87,6 +87,11 @@ browbeat_workloads:
     src: pbench-uperf-user.file
     dest: "{{ browbeat_path }}/pbench-uperf-user.file"
     image: centos7
+  abench:
+    name: browbeat-abench
+    src: abench-user.file
+    dest: "{{ browbeat_path }}/abench-user.file"
+    image: centos7
 
 ########################################
 # Other Install Configuration Items

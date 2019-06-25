@@ -1,0 +1,56 @@
+{% set image_name = image_name or 'browbeat-abench' %}
+{% set flavor_name = flavor_name or 'm1.small' %}
+{% set num_clients = num_clients or 2 %}
+{% set password = password or 'None' %}
+{% set protocol = protocol or 'HTTP' %}
+{% set lb_algorithm = lb_algorithm or 'ROUND_ROBIN' %}
+{% set protocol_port = protocol_port or 80 %}
+{% set subnet_id = subnet_id or 'None' %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatPlugin.abench:
+  -
+    args:
+      image:
+        name: '{{image_name}}'
+      flavor:
+        name: '{{flavor_name}}'
+      external:
+        name: '{{external_network}}'
+      user: '{{user}}'
+      password: '{{password}}'
+      num_clients: {{num_clients}}
+      network_id: '{{net_id}}'
+      subnet_id: '{{subnet_id}}'
+      protocol: '{{protocol}}'
+      lb_algorithm: '{{lb_algorithm}}'
+      protocol_port: '{{protocol_port}}'
+      ext_net_id: '{{ext_net_id}}'
+      total_requests: {{total_requests}}
+      concurrency_level: {{concurrency_level}}
+      send_results: {{send_results}}
+    runner:
+      concurrency: 1
+      times: 1
+      type: "constant"
+    context:
+      users:
+        tenants: 1
+        users_per_tenant: 1
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
