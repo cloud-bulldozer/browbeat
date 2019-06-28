@@ -26,8 +26,8 @@ from rally.task import validation
 @scenario.configure(context={"cleanup@openstack": ["neutron", "nova"], "keypair@openstack": {},
                              "allow_ssh@openstack": None},
                     name="BrowbeatPlugin.create_network_nova_boot_ping", platform="openstack")
-class CreateNetworkNovaBootPing(neutron_utils.NeutronScenario,
-                                vm_utils.VMScenario):
+class CreateNetworkNovaBootPing(vm_utils.VMScenario,
+                                neutron_utils.NeutronScenario):
 
     def run(self, image, flavor, ext_net_id, router_create_args=None,
             network_create_args=None, subnet_create_args=None, **kwargs):
