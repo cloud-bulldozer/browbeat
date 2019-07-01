@@ -18,8 +18,8 @@
         type: "constant"
       context:
         users:
-          tenants: 8
-          users_per_tenant: 8
+          tenants: 50
+          users_per_tenant: 50
         quotas:
           neutron:
             network: -1
