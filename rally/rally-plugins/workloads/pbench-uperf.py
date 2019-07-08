@@ -14,10 +14,10 @@ import csv
 import datetime
 import json
 import logging
-import StringIO
 import time
 
 import browbeat.elastic
+import six
 
 from rally.common import sshutils
 from rally_openstack import consts
@@ -237,7 +237,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                         'timestamp': es_ts,
                         'num_pairs': num_pairs}}
                 elastic = browbeat.elastic.Elastic(config, 'pbench')
-                json_result = StringIO.StringIO(stdout_json)
+                json_result = six.StringIO(stdout_json)
                 json_data = json.load(json_result)
                 for iteration in json_data:
                     elastic.index_result(iteration, test_name, 'results/')
@@ -245,7 +245,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                 LOG.error("Error with PBench Results")
 
             # Parse results
-            result = StringIO.StringIO('\n'.join(stdout.split('\n')[1:]))
+            result = six.StringIO('\n'.join(stdout.split('\n')[1:]))
             creader = csv.reader(result)
             report = []
             for row in creader:

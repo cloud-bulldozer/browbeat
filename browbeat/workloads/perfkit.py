@@ -27,6 +27,9 @@ from browbeat.path import get_workload_venv
 from browbeat.path import results_path
 from browbeat.workloads import base
 
+import six
+
+
 class PerfKit(base.WorkloadBase):
 
     def __init__(self, config, result_dir_ts):
@@ -41,7 +44,7 @@ class PerfKit(base.WorkloadBase):
     def string_to_dict(self, string):
         """Function for converting "|" quoted hash data into python dictionary."""
         dict_data = {}
-        split_data = string.split('|,|')
+        split_data = '|,|'.split()
         split_data[0] = split_data[0][1:]
         split_data[-1] = split_data[-1][:-1]
         for item in split_data:
@@ -110,7 +113,7 @@ class PerfKit(base.WorkloadBase):
                    get_workload_venv('perfkit', True),
                    self.overcloudrc,
                    get_workload_venv('perfkit', False), cloud_type))
-        for parameter, value in benchmark_config.iteritems():
+        for parameter, value in six.iteritems(benchmark_config):
             if not parameter == 'name':
                 self.logger.debug(
                     "Parameter: {}, Value: {}".format(parameter, value))
@@ -168,7 +171,7 @@ class PerfKit(base.WorkloadBase):
         self.logger.info("Benchmark: {}".format(workload['name']))
         self.update_total_scenarios()
         # Add default parameters as necessary
-        for default_item, value in self.config['perfkit']['default'].iteritems():
+        for default_item, value in six.iteritems(self.config['perfkit']['default']):
             if default_item not in workload:
                 workload[default_item] = value
 
