@@ -21,10 +21,10 @@
   vars:
     config_type: undercloud
   roles:
-    - { role: common, when: collectd_undercloud }
-    - { role: epel, when: collectd_undercloud and ansible_distribution_major_version == '7'}
+    - { role: common, when: collectd_undercloud|bool }
+    - { role: epel, when: collectd_undercloud|bool and ansible_distribution_major_version == '7'}
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_undercloud }
+    - { role: collectd-openstack, when: collectd_undercloud|bool }
   tasks:
     - name: Collectd off if not collectd_undercloud
       service: name=collectd state=stopped enabled=false
@@ -40,10 +40,10 @@
     config_type: controller
   roles:
     - { role: osp_version }
-    - { role: common, when: collectd_controller }
-    - { role: epel, when: collectd_controller and ansible_distribution_major_version == '7'}
+    - { role: common, when: collectd_controller|bool }
+    - { role: epel, when: collectd_controller|bool and ansible_distribution_major_version == '7'}
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_controller }
+    - { role: collectd-openstack, when: collectd_controller|bool }
   tasks:
     - name: Collectd off if not collectd_controller
       service: name=collectd state=stopped enabled=false
@@ -58,10 +58,10 @@
   vars:
     config_type: networker
   roles:
-    - { role: common, when: collectd_networker }
-    - { role: epel, when: collectd_networker and ansible_distribution_major_version == '7'}
+    - { role: common, when: collectd_networker|bool }
+    - { role: epel, when: collectd_networker|bool and ansible_distribution_major_version == '7'}
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_networker }
+    - { role: collectd-openstack, when: collectd_networker|bool }
   tasks:
     - name: Collectd off if not collectd_networker
       service: name=collectd state=stopped enabled=false
@@ -76,10 +76,10 @@
   vars:
     config_type: blockstorage
   roles:
-    - { role: common, when: collectd_blockstorage }
-    - { role: epel, when: collectd_blockstorage ansible_distribution_major_version == '7' }
+    - { role: common, when: collectd_blockstorage|bool }
+    - { role: epel, when: collectd_blockstorage|bool and ansible_distribution_major_version == '7' }
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_blockstorage }
+    - { role: collectd-openstack, when: collectd_blockstorage|bool }
   tasks:
     - name: Collectd off if not collectd_blockstorage
       service: name=collectd state=stopped enabled=false
@@ -94,10 +94,10 @@
   vars:
     config_type: objectstorage
   roles:
-    - { role: common, when: collectd_objectstorage }
-    - { role: epel, when: collectd_objectstorage ansible_distribution_major_version == '7' }
+    - { role: common, when: collectd_objectstorage|bool }
+    - { role: epel, when: collectd_objectstorage and ansible_distribution_major_version == '7' }
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_objectstorage }
+    - { role: collectd-openstack, when: collectd_objectstorage|bool }
   tasks:
     - name: Collectd off if not collectd_objectstorage
       service: name=collectd state=stopped enabled=false
@@ -112,10 +112,10 @@
   vars:
     config_type: cephstorage
   roles:
-    - { role: common, when: collectd_cephstorage }
-    - { role: epel, when: collectd_cephstorage and ansible_distribution_major_version == '7'}
+    - { role: common, when: collectd_cephstorage|bool }
+    - { role: epel, when: collectd_cephstorage|bool and ansible_distribution_major_version == '7'}
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_cephstorage }
+    - { role: collectd-openstack, when: collectd_cephstorage|bool }
   tasks:
     - name: Collectd off if not collectd_cephstorage
       service: name=collectd state=stopped enabled=false
@@ -131,10 +131,10 @@
     config_type: compute
   roles:
     - { role: osp_version }
-    - { role: common, when: collectd_compute }
-    - { role: epel, when: collectd_compute and ansible_distribution_major_version == '7'}
+    - { role: common, when: collectd_compute|bool }
+    - { role: epel, when: collectd_compute|bool and ansible_distribution_major_version == '7'}
     - { role: repo }
-    - { role: collectd-openstack, when: collectd_compute }
+    - { role: collectd-openstack, when: collectd_compute|bool }
   tasks:
     - name: Collectd off if not collectd_compute
       service: name=collectd state=stopped enabled=false
