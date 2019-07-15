@@ -7,8 +7,8 @@
   remote_user: "{{ browbeat_user }}"
   roles:
     - common
-    - stockpile
     - browbeat
+    - stockpile
     - { role: browbeat-results, when: browbeat_results_in_httpd}
     - firewall
     - perfkitbenchmarker
