@@ -32,6 +32,9 @@ mapping:
       ssh_config:
         type: str
         required: True
+      container_cli:
+        type: str
+        required: True
   elasticsearch:
     required: True
     type: map
