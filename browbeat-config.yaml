@@ -238,7 +238,7 @@ workloads:
         file: rally/glance/create-and-delete-image-cc.yml
 
   - name: octavia
-    enabled: true
+    enabled: false
     type: rally
     concurrency:
       - 2
