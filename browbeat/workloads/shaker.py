@@ -28,6 +28,9 @@ from browbeat.path import results_path
 from browbeat.workloads import base
 
 
+import six
+
+
 class Shaker(base.WorkloadBase):
 
     def __init__(self, config, result_dir_ts):
@@ -59,7 +62,7 @@ class Shaker(base.WorkloadBase):
 
     def accommodation_to_list(self, accommodation):
         accommodation_list = []
-        for key, value in accommodation.iteritems():
+        for key, value in six.iteritems(accommodation):
             if value is True:
                 accommodation_list.append(key)
             else:
@@ -100,7 +103,7 @@ class Shaker(base.WorkloadBase):
                 return True
         # Dictionary to capture common test data
         shaker_test_meta = {}
-        for scenario in data['scenarios'].iterkeys():
+        for scenario in data['scenarios']:
             # Populating common test data
             if 'shaker_test_info' not in shaker_test_meta:
                 shaker_test_meta['shaker_test_info'] = data[
@@ -135,7 +138,7 @@ class Shaker(base.WorkloadBase):
                 shaker_test_meta['deployment']['template'] = data[
                     'scenarios'][scenario]['deployment']['template']
         # Iterating through each record to get result values
-        for record in data['records'].iterkeys():
+        for record in data['records']:
             if data['records'][record]['status'] == "ok" and data[
                     'records'][record]['executor'] != "shell":
                 if 'stdout' in data['records'][record]:
@@ -148,7 +151,7 @@ class Shaker(base.WorkloadBase):
                     outputs[metric[0]] = metric[1]
                 # Iterate over each result type for each sample in record and
                 # get associated value
-                for key in outputs.iterkeys():
+                for key in outputs:
                     if key == "time":
                         continue
                     # Iterate in step lock over each list of samples in the
@@ -259,7 +262,7 @@ class Shaker(base.WorkloadBase):
 
     def get_uuidlist(self, data):
         uuidlist = []
-        for key in data['records'].iterkeys():
+        for key in data['records']:
             uuidlist.append(key)
         return uuidlist
 

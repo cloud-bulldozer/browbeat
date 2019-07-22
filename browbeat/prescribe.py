@@ -16,6 +16,9 @@ import os
 import sys
 
 
+import six
+
+
 class Metadata(object):
 
     def __init__(self):
@@ -35,7 +38,7 @@ class Metadata(object):
 
     def get_hardware_metadata(self, sys_data):
         hard_dict = {}
-        for item, dictionary in sys_data.iteritems():
+        for item, dictionary in six.iteritems(sys_data):
             if any(node in sys_data[item]['group_names'] for node in self._supported_node_types):
                 if 'hardware_details' not in hard_dict:
                     hard_dict['hardware_details'] = []
@@ -59,24 +62,24 @@ class Metadata(object):
 
     def get_environment_metadata(self, sys_data):
         env_dict = {}
-        for item, dictionary in sys_data.iteritems():
+        for item, dictionary in six.iteritems(sys_data):
             if 'environment_setup' not in env_dict:
                 env_dict['environment_setup'] = {}
-            for key, value in sys_data[item].iteritems():
+            for key, value in six.iteritems(sys_data[item]):
                 if 'stockpile_osp_env' in key:
-                    for nodes, number in value.iteritems():
+                    for nodes, number in six.iteritems(value):
                         env_dict['environment_setup'][nodes] = number
         return env_dict
 
     def get_software_metadata(self, sys_data):
         soft_all_dict = []
         bad_output_list = [{},[],""]
-        for item, dictionary in sys_data.iteritems():
+        for item, dictionary in six.iteritems(sys_data):
             if any(node in sys_data[item]['group_names'] for node in self._supported_node_types):
                 software_dict = {}
                 sample_vuln_dict = {}
                 node = sys_data[item]['inventory_hostname']
-                for key, output in sys_data[item].iteritems():
+                for key, output in six.iteritems(sys_data[item]):
                     if 'stockpile_yum' in key and output not in bad_output_list:
                         software_dict['repos_enabled'] = {}
                         software_dict['repos_enabled']['repos'] = []
@@ -113,10 +116,10 @@ class Metadata(object):
                                     software_dict[service_name]['node_name'] = node
                                 if key_name not in software_dict[service_name].keys():
                                     software_dict[service_name][key_name] = {}
-                                for obj, value in output.iteritems():
+                                for obj, value in six.iteritems(output):
                                     software_dict[service_name][key_name][obj] = value
                             else:
-                                for obj, value in output.iteritems():
+                                for obj, value in six.iteritems(output):
                                     if obj not in software_dict.keys():
                                         software_dict[obj] = value
                                         software_dict[obj]['node_name'] = node
