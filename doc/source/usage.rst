@@ -28,6 +28,9 @@ Run Browbeat performance tests from Undercloud
 Running PerfKitBenchmarker
 ---------------------------
 
+Note: PerfKitBenchmarker is disabled for Stein+ due to the lack of python3
+      support.
+
 Many benchmarks work out of the box with Browbeat. You must ensure that your
 network is setup correctly to run those benchmarks. Currently tested benchmarks
 include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio,

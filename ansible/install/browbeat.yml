@@ -11,7 +11,7 @@
     - stockpile
     - { role: browbeat-results, when: browbeat_results_in_httpd}
     - firewall
-    - perfkitbenchmarker
+    - { role: perfkitbenchmarker, when: ansible_distribution_major_version < '8'}
     - rally
     - shaker
     - { role: flavors, when: browbeat_create_flavors}
