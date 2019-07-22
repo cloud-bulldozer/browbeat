@@ -1,4 +1,7 @@
 ---
+#
+# For podman containers change "container_cli" configuration to podman
+#
 
 - hosts: stockpile
   tasks:
