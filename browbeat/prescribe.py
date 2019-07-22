@@ -48,15 +48,24 @@ class Metadata(object):
                 hardware_dict['virtualization_type'] = sys_data[item]['ansible_virtualization_type']
                 hardware_dict['total_mem'] = sys_data[item][
                     'ansible_memory_mb']['real']['total']
-                hardware_dict['total_logical_cores'] = sys_data[item][
-                    'facter_processorcount']
+                if 'facter_processorcount' in sys_data[item]:
+                    hardware_dict['total_logical_cores'] = sys_data[item][
+                        'facter_processorcount']
+                else:
+                    hardware_dict['total_logical_cores'] = sys_data[item][
+                        'facter_processors']['count']
                 hardware_dict['os_name'] = sys_data[item]['ansible_distribution'] + \
                     sys_data[item]['ansible_distribution_version']
                 hardware_dict['ip'] = sys_data[item]['ansible_default_ipv4']['address']
                 hardware_dict['num_interface'] = len(sys_data[item]['ansible_interfaces'])
                 hardware_dict['machine_make'] = sys_data[item]['ansible_product_name']
-                hardware_dict['processor_type'] = ' '.join(sys_data[item][
-                    'facter_processor0'].split())
+                # facter_processor0 is gone in ansible 2.8
+                if 'facter_processor0' in sys_data[item]:
+                    hardware_dict['processor_type'] = ' '.join(sys_data[item][
+                        'facter_processor0'].split())
+                else:
+                    hardware_dict['processtor_type'] = sys_data[item][
+                        'facter_processors']['models'][0]
                 hard_dict['hardware_details'].append(hardware_dict)
         return hard_dict
 
