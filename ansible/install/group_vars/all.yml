@@ -152,6 +152,12 @@ collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
 
+#######################################
+# OSP15 Collectd Configuration
+######################################
+rhos_release_rpm:
+osp_release: 15
+
 # Opt-In Collectd plugins configuration:
 ########################
 # Apache plugin
