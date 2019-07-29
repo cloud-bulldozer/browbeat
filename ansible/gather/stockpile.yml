@@ -15,12 +15,14 @@
     - name: setting facts
       set_fact:
         overcloud_user: "{{ host_remote_user }}"
+        container_cli: "{{ container_cli }}"
 
 - hosts: undercloud
   tasks:
     - name: setting facts
       set_fact:
         undercloud_user: "{{ local_remote_user }}"
+        container_cli: "{{ container_cli }}"
 
 - import_playbook: stockpile/config/featureset001.yml
   vars:

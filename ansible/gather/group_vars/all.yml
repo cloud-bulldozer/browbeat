@@ -9,3 +9,4 @@ host_remote_user: heat-admin
 
 home_dir: "/home/{{ browbeat_user }}"
 browbeat_path: "{{ home_dir }}/browbeat"
+container_cli: docker
