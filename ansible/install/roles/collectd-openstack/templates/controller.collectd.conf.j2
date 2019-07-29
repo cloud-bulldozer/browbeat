@@ -358,6 +358,7 @@ PreCacheChain "PreCache"
   ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12,13
   ProcessMatch "neutron-rootwrap-daemon" "python.+neutron-rootwrap-daemon"              # 10,11,12,13
   ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11,12,13
+  ProcessMatch "neutron-keepalived-state-change" "python.+neutron-keepalived-state-change" #For HA router
 
   # Nova (OpenStack Installed)
   ProcessMatch "nova-api" "python.+nova-api$"                                           # 10,11,-12,-13

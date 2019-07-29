@@ -290,6 +290,7 @@ per_process_panels:
         - neutron-openvswitch-agent
         - neutron-rootwrap-daemon
         - neutron-server
+        - neutron-keepalived-state-change
     - name: "Nova"
       processes:
         - nova-api
@@ -548,6 +549,7 @@ per_process_panels:
         - neutron-openvswitch-agent
         - neutron-rootwrap-daemon
         - neutron-server
+        - neutron-keepalived-state-change
     - name: "Nova"
       processes:
         - nova-api
