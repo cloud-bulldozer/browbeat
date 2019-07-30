@@ -44,7 +44,7 @@ class PerfKit(base.WorkloadBase):
     def string_to_dict(self, string):
         """Function for converting "|" quoted hash data into python dictionary."""
         dict_data = {}
-        split_data = '|,|'.split()
+        split_data = string.split('|,|')
         split_data[0] = split_data[0][1:]
         split_data[-1] = split_data[-1][:-1]
         for item in split_data:
