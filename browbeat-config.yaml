@@ -338,6 +338,7 @@ workloads:
 
       - name: sysbench
         enabled: true
+        user: root
         image_name: browbeat-sysbench
         flavor_name: m1.small
         external_network:
