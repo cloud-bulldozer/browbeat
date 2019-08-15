@@ -102,18 +102,18 @@
 
 - name: Generate hosts and ssh-config on Browbeat Machine - Default(stack)
   shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost --user stack
-  when: tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg) and ansible_user!= "zuul" and ansible_distribution_major_version < '8'
+  when: tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg) and ansible_user!= "zuul"
 
 - name: Generate hosts and ssh-config on Browbeat Machine - Zuul
   shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_hostfile.sh -t localhost --user zuul
-  when: tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg) and ansible_user== "zuul" and ansible_distribution_major_version < '8'
+  when: tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg) and ansible_user== "zuul"
 
 - name: Move files to correct location
   command: mv {{ home_dir }}/{{item}} {{ browbeat_path }}/ansible/{{item}}
   with_items:
     - hosts
     - heat-admin-id_rsa
-  when: "(tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg)) and ansible_distribution_major_version < '8'"
+  when: "(tripleo and (not hosts_file_exists.stat.exists or not hosts_file_exists.stat.isreg))"
 
 - name: Install requirements.txt into browbeat-venv
   pip:
