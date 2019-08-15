@@ -29,7 +29,8 @@ LOG = logging.getLogger(__name__)
 @scenario.configure(context={"cleanup@openstack": ["neutron", "nova"],
                              "keypair@openstack": {}, "allow_ssh@openstack": None},
                     name="BrowbeatPlugin.sysbench", platform="openstack")
-class BrowbeatSysbench(neutron_utils.NeutronScenario,vm_utils.VMScenario):
+class BrowbeatSysbench(vm_utils.VMScenario,
+                       neutron_utils.NeutronScenario):
     def build_host(self, external, image, flavor, user, password=None, **kwargs):
         keyname = self.context["user"]["keypair"]["name"]
         host, host_ip = self._boot_server_with_fip(image,
