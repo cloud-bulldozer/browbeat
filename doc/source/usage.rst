@@ -2,17 +2,6 @@
 Usage
 ========
 
-- No longer Maintained since Pike -  Run Overcloud checks
-----------------------------------------------------------
-
-::
-
-    $ ansible-playbook -i hosts check/site.yml
-
-Your Overcloud check output is located in results/bug_report.log
-
-NOTE: It is strongly advised to not run the ansible playbooks in a virtual environment.
-
 Run Browbeat performance tests from Undercloud
 ----------------------------------------------
 
