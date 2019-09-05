@@ -298,6 +298,8 @@ PreCacheChain "PreCache"
   ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11,12,13
   ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11,12,13
   ProcessMatch "nova_api_wsgi" "nova_api_wsgi.*-DFOREGROUND"                            # 13
+  ProcessMatch "novajoin-server" "python.+novajoin-server"                              # TLS
+
 
   # OVS (OpenStack Installed)
   ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12,13
