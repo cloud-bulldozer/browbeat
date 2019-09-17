@@ -369,3 +369,21 @@ workloads:
         elastic_host:
         elastic_port: 9200
         file: rally/rally-plugins/workloads/pbench-uperf.yml
+
+      - name: browbeat-abench
+        enabled: true
+        user: centos
+        image_name: browbeat-abench
+        flavor_name: m1.small
+        external_network: public
+        net_id:
+        ext_net_id:
+        subnet_id:
+        protocol: HTTP
+        lb_algorithm: ROUND_ROBIN
+        protocol_port: 80
+        num_clients: 2
+        total_requests: 1000
+        concurrency_level: 10
+        send_results: true
+        file: rally/rally-plugins/workloads/abench.yml

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sudo yum -y update
+sudo yum install -y httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd
+sudo cp /usr/share/httpd/noindex/index.html /var/www/html/.
+sudo chown apache:apache /var/www/html
+
+sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
+echo "Browbeat workload installed"
