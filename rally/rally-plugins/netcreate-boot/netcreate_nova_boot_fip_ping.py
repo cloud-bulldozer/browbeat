@@ -31,7 +31,12 @@ class CreateNetworkNovaBootPing(vm_utils.VMScenario,
 
     def run(self, image, flavor, ext_net_id, router_create_args=None,
             network_create_args=None, subnet_create_args=None, **kwargs):
+        ext_net_name = None
+        if ext_net_id:
+            ext_net_name = self.clients("neutron").show_network(
+                ext_net_id)["network"]["name"]
         router_create_args["name"] = self.generate_random_name()
+        router_create_args["tenant_id"] = self.context["tenant"]["id"]
         router_create_args.setdefault("external_gateway_info",
                                       {"network_id": ext_net_id, "enable_snat": True})
         router = self._create_router(router_create_args)
@@ -40,8 +45,8 @@ class CreateNetworkNovaBootPing(vm_utils.VMScenario,
         subnet = self._create_subnet(network, subnet_create_args or {})
         self._add_interface_router(subnet['subnet'], router['router'])
         kwargs["nics"] = [{'net-id': network['network']['id']}]
-        guest = self._boot_server_with_fip(image, flavor, True, None, **kwargs)
-
+        guest = self._boot_server_with_fip(image, flavor, True,
+                                           ext_net_name, **kwargs)
         self._wait_for_ping(guest[1]['ip'])
 
     @atomic.action_timer("neutron.create_router")
@@ -51,4 +56,4 @@ class CreateNetworkNovaBootPing(vm_utils.VMScenario,
         :param router_create_args: POST /v2.0/routers request options
         :returns: neutron router dict
         """
-        return self.clients("neutron").create_router({"router": router_create_args})
+        return self.admin_clients("neutron").create_router({"router": router_create_args})
