@@ -129,10 +129,6 @@ proxy_env: {}
 # Disables dns lookup by overcloud sshd process
 disable_ssh_dns: false
 
-# epel7 rpm for collectd packages
-epel7_rpm: https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-epel7_rpmkey: https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-
 # Extra Repos to add during collectd install
 repos: {}
 # repos:
@@ -142,6 +138,9 @@ repos: {}
 ########################################
 # Collectd Configuration
 ########################################
+# Install release specific templates
+# Set collectd_container true for OSP >= 15
+collectd_container: true
 # Install collectd from EPEL
 collectd_from_epel: true
 # Interval in seconds
@@ -157,12 +156,7 @@ collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
 
-#######################################
-# OSP15 Collectd Configuration
-######################################
-rhos_release_rpm:
-osp_release: 15
-
+########################
 # Opt-In Collectd plugins configuration:
 ########################
 # Apache plugin
@@ -319,15 +313,6 @@ regex_info: false
 ping_plugin: false
 ping_interval: 1
 
-############################
-# OpenDaylight JAVA Plugin
-###########################
-
-# Plugin assumes that JAVA is already installed on the host
-opendaylight_java_plugin: false
-karaf_user: karaf
-karaf_password: karaf
-
 ########################################
 # Carbon/Graphite Configuration
 ########################################
@@ -337,7 +322,7 @@ graphite_host:
 graphite_port: 80
 carbon_cache_port: 2003
 # Graphite prefix / Cloud name used both with graphite and grafana dashboards
-graphite_prefix: openstack
+graphite_prefix:
 # Graphite username and password for login on the dashboard
 # credential aren't created when you deploy graphite, use manage.py
 graphite_username: root

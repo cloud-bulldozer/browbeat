@@ -150,10 +150,6 @@ dashboard:
   {% include 'partials/ironic_metrics.yaml' %}
 {% endif %}
 
-{% if item.template_node_type in odl_groups %}
-  {% include 'partials/opendaylight_metrics.yaml' %}
-{% endif %}
-
 {% if item.template_node_type in ovsagent_groups %}
   {% include 'partials/neutron_resources.yaml' %}
 {% endif %}

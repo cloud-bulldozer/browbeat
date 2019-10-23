@@ -76,16 +76,18 @@ has been installed. To skip directly to this task execute:
 ::
 
     $ ansible-playbook -i hosts install/browbeat.yml --start-at-task "Check browbeat_network"
-    ...
 
 
 
 (Optional) Install Collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Set ``collectd_container`` to true in ``ansible/install/group_vars/all.yml`` if running on OpenStack version Stein or later. The containerized collectd work
+can also work with Queens release but it is not recommended.
+
 ::
 
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
 
 (Optional) Install Rsyslogd logging with aggregation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

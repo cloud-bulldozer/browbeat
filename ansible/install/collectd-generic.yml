@@ -15,7 +15,7 @@
   vars:
     config_type: baremetal
   roles:
-    - {role: epel, when: ansible_distribution_major_version == '7'}
+    - {role: epel }
     - collectd-generic
   tags: baremetal
   environment: "{{proxy_env}}"
@@ -25,7 +25,7 @@
   vars:
     config_type: guest
   roles:
-    - {role: epel, when: ansible_distribution_major_version == '7'}
+    - {role: epel }
     - collectd-generic
   tags: guest
   environment: "{{proxy_env}}"
@@ -35,7 +35,7 @@
   vars:
     config_type: graphite
   roles:
-    - {role: epel, when: ansible_distribution_major_version == '7'}
+    - {role: epel }
     - collectd-generic
   tags: graphite
   environment: "{{proxy_env}}"

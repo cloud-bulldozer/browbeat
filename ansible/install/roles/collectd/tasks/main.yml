@@ -1,0 +1,105 @@
+---
+- name: Fetch log file paths
+  include_vars:
+    file: "vars/{{ rhosp_major }}.yml"
+
+- name: (Undercloud) Get ctlplane ip address
+  shell: ip r | egrep 'br-ctlplane\s*proto kernel' | awk '{print $NF}'
+  register: undercloud_ctlplane_ip_address
+  when: "'undercloud' in group_names"
+
+- name: Configure mysql for collectd.conf
+  block:
+    - name: (Controller) Get mysql root password
+      command: hiera -c /etc/puppet/hiera.yaml mysql::server::root_password
+      become: true
+      register: mysql_root_password
+      when: "'controller' in group_names"
+
+    - name: (Undercloud) Get mysql root password
+      shell: |
+        grep undercloud_mysql_root_password: undercloud-passwords.conf | sed 's/undercloud_mysql_root_password: //g'
+      register: undercloud_mysql_password
+      when: "'undercloud' in group_names"
+
+- name: Configure rabbitmq monitoring
+  block:
+    - name: (Undercloud) Get Rabbitmq username
+      command:  hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
+      become: true
+      register: undercloud_rabbitmq_username
+      when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
+
+    - name: (Undercloud) Get Rabbitmq password
+      shell: |
+        grep undercloud_rabbit_password /home/stack/undercloud-passwords.conf | sed 's/undercloud_rabbit_password: //g'
+      register: undercloud_rabbitmq_password
+      when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
+
+    - name: (Controller) Get Rabbitmq username
+      command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
+      register: controller0_rabbitmq_username
+      become: true
+      when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
+
+    - name: (Controller) Get Rabbitmq password
+      command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
+      register: controller0_rabbitmq_password
+      become: true
+      when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
+
+- name: Check if Container Files Directory exists
+  stat:
+    path: "{{ ansible_user_dir }}/browbeat/browbeat-containers/collectd-openstack"
+  register: directory_exists
+
+- name: Copy browbeat-containers directory if it doesn't exist
+  copy:
+    src: "{{ browbeat_path }}/browbeat-containers/collectd-openstack"
+    dest: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
+  when: not (directory_exists.stat.isdir is defined and directory_exists.stat.isdir)
+
+- name: Set browbeat_contianers_path
+  set_fact:
+    browbeat_containers_path: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
+
+- name: Create configuration directory
+  file:
+    path: "{{ browbeat_containers_path }}/collectd-openstack/config"
+    state: directory
+
+- name: Configure collectd.conf
+  template:
+    src:  "{{ config_type }}.collectd.conf.j2"
+    dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
+
+- name: Build and Run container using Docker (OSP < 15)
+  block:
+    - name: Set container_cli (OSP < 15)
+      set_fact:
+          container_cli: docker
+      when: rhosp_version is version('15.0', '<') and osp_version is version('12.0', '>=')
+
+    - name: Set container_cli (OSP > 15)
+      set_fact:
+          container_cli: podman
+      when: rhosp_version is version('15.0', '>=')
+
+    - name: Build collectd-openstack container (Docker)
+      shell: |
+        {{ container_cli }}  build -t collectd-openstack {{ browbeat_containers_path }}/collectd-openstack/
+      become: true
+    - name: Run collectd-openstack container (Docker)
+      shell: |
+        {{ container_cli }} rm -f collectd-{{ config_type }}
+        {{ container_cli }} run --name collectd-{{ config_type }} \
+          --network host --pid host \
+          --privileged -d \
+          -v /var/log/containers:/var/log/containers \
+          -v /dev:/dev \
+          {% if config_type == 'controller' %}
+          -v /var/lib/mysql/mysql.sock:/var/lib/mysql/mysql.sock \
+          {% endif %}
+          collectd-openstack
+      become: yes
+

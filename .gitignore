@@ -42,3 +42,7 @@ log/*
 
 # Swap files
 *.sw[po]
+
+# Containers
+browbeat-containers/collectd-openstack/config/*
+ansible-errors.json

@@ -23,3 +23,15 @@
     osp_version:
       content: "{{'Pike' | b64encode}}"
   when: not rhosp_release_stat.stat.exists
+
+- name: set numeric version for release
+  set_fact:
+    version: "{{ osp_version.content | b64decode }}"
+
+- name: set rhosp version (downstream)
+  set_fact:
+    rhosp_version: "{{ version.split()[5] }}"
+
+- name: set rhosp major version (downstream)
+  set_fact:
+    rhosp_major: "{{ osp_version.content | b64decode  | regex_replace('^Red Hat OpenStack Platform release ([0-9]+)\\.\\d+.*\n', '\\1') }}"

@@ -68,7 +68,7 @@ file to ensure the correct parameters are passed.
 
 ::
 
-    # ansible-playbook -i hosts install/collectd-openstack.yml
+    # ansible-playbook -i hosts install/collectd.yml
 
 To install collectd on everything other than Openstack machines, view
 the `README for collectd-generic <README.collectd-generic.md>`__.

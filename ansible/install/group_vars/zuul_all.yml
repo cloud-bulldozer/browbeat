@@ -124,10 +124,6 @@ proxy_env: {}
 # Disables dns lookup by overcloud sshd process
 disable_ssh_dns: false
 
-# epel7 rpm for collectd packages
-epel7_rpm: https://download.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-epel7_rpmkey: https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
-
 # Extra Repos to add during collectd install
 repos: {}
 # repos:
@@ -151,12 +147,6 @@ collectd_blockstorage: true
 collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
-
-#######################################
-# OSP15 Collectd Configuration
-#######################################
-rhos_release_rpm:
-osp_release: 15
 
 # Opt-In Collectd plugins configuration:
 ########################
@@ -313,15 +303,6 @@ regex_info: false
 # Might result in more network traffic
 ping_plugin: false
 ping_interval: 1
-
-############################
-# OpenDaylight JAVA Plugin
-###########################
-
-# Plugin assumes that JAVA is already installed on the host
-opendaylight_java_plugin: false
-karaf_user: karaf
-karaf_password: karaf
 
 ########################################
 # Carbon/Graphite Configuration

@@ -1,0 +1,83 @@
+---
+#
+# Generic Playbook to install collectd,  use tags to separate machine type:
+#
+# Examples:
+#
+# ansible-playbook -i hosts install/collectd.yml --tags="undercloud"
+# ansible-playbook -i hosts install/collectd.yml --tags="controller"
+# ansible-playbook -i hosts install/collectd.yml --tags="compute"
+
+
+- hosts: undercloud
+  remote_user: "{{ local_remote_user }}"
+  vars:
+    config_type: undercloud
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_undercloud|bool }
+    - { role: collectd, when: collectd_undercloud|bool }
+  tags: undercloud
+  environment: "{{proxy_env}}"
+
+- hosts: controller
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: controller
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_controller|bool }
+    - { role: collectd, when: collectd_controller|bool }
+  tags: controller
+
+- hosts: compute
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: compute
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_compute|bool }
+    - { role: collectd, when: collectd_compute|bool }
+  tags: compute
+
+- hosts: networker
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: networker
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_networker|bool }
+    - { role: collectd, when: collectd_networker|bool }
+  tags: networker
+
+- hosts: blockstroage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: blockstorage
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_blockstoarge|bool }
+    - { role: collectd, when: collectd_blockstorage|bool }
+  tags: blockstorage
+
+- hosts: objectstorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: objectstorage
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_objectstorage|bool }
+    - { role: collectd, when: collectd_objectstorage|bool }
+  tags: objectstorage
+
+- hosts: cephstorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: cephstorage
+  roles:
+    - { role: osp_version }
+    - { role: common, when: collectd_cephstorage|bool }
+    - { role: collectd, when: collectd_cephstorage|bool }
+  tags: cephstorage
+
+

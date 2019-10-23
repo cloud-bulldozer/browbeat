@@ -22,7 +22,7 @@
     config_type: undercloud
   roles:
     - { role: common, when: collectd_undercloud|bool }
-    - { role: epel, when: collectd_undercloud|bool and ansible_distribution_major_version == '7'}
+    - { role: epel, when: collectd_undercloud|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_undercloud|bool }
   tasks:
@@ -41,7 +41,7 @@
   roles:
     - { role: osp_version }
     - { role: common, when: collectd_controller|bool }
-    - { role: epel, when: collectd_controller|bool and ansible_distribution_major_version == '7'}
+    - { role: epel, when: collectd_controller|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_controller|bool }
   tasks:
@@ -59,7 +59,7 @@
     config_type: networker
   roles:
     - { role: common, when: collectd_networker|bool }
-    - { role: epel, when: collectd_networker|bool and ansible_distribution_major_version == '7'}
+    - { role: epel, when: collectd_networker|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_networker|bool }
   tasks:
@@ -77,7 +77,7 @@
     config_type: blockstorage
   roles:
     - { role: common, when: collectd_blockstorage|bool }
-    - { role: epel, when: collectd_blockstorage|bool and ansible_distribution_major_version == '7' }
+    - { role: epel, when: collectd_blockstorage|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_blockstorage|bool }
   tasks:
@@ -95,7 +95,7 @@
     config_type: objectstorage
   roles:
     - { role: common, when: collectd_objectstorage|bool }
-    - { role: epel, when: collectd_objectstorage and ansible_distribution_major_version == '7' }
+    - { role: epel, when: collectd_objectstorage|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_objectstorage|bool }
   tasks:
@@ -113,7 +113,7 @@
     config_type: cephstorage
   roles:
     - { role: common, when: collectd_cephstorage|bool }
-    - { role: epel, when: collectd_cephstorage|bool and ansible_distribution_major_version == '7'}
+    - { role: epel, when: collectd_cephstorage|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_cephstorage|bool }
   tasks:
@@ -132,7 +132,7 @@
   roles:
     - { role: osp_version }
     - { role: common, when: collectd_compute|bool }
-    - { role: epel, when: collectd_compute|bool and ansible_distribution_major_version == '7'}
+    - { role: epel, when: collectd_compute|bool }
     - { role: repo }
     - { role: collectd-openstack, when: collectd_compute|bool }
   tasks:

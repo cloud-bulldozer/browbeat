@@ -14,7 +14,7 @@
 - name: Import EPEL GPG Key
   rpm_key:
     state: present
-    key: "{{ epel7_rpmkey }}"
+    key: "{{ epel_rpmkey }}"
   become: true
   register: import_result
   until: import_result is success
@@ -24,7 +24,7 @@
 # Same as above but with the Centos CDN
 - name: Check for EPEL repo
   package:
-    name: "{{ epel7_rpm }}"
+    name: "{{ epel_rpm }}"
     state: present
   become: true
   register: install_result

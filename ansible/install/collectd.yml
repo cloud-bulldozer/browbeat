@@ -1,0 +1,9 @@
+---
+- name: Run containerized collectd (Stein and greater recommended)
+  import_playbook: collectd-container.yml
+  when: collectd_container
+
+- name: Run collectd installed through RPMs
+  import_playbook: collectd-baremetal.yml
+  when: not collectd_container
+

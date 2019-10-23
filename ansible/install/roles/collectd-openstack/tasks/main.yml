@@ -15,19 +15,12 @@
     - collectd-ceph
     - collectd-mysql
     - collectd-turbostat
-  when: collectd_from_epel and ansible_distribution_major_version < '8'
+  when: collectd_from_epel
 
 - name: Clean Non-EPEL collectd configuration
   shell: "rm -rf /etc/collectd.d/*.conf"
   become: true
-  when: collectd_from_epel and ansible_distribution_major_version < '8'
-
-- name: Enable OSP repos for controller, compute
-  shell: |
-    dnf install -y {{ rhos_release_rpm }}
-    rhos-release {{ osp_release }}
-  when: ('controller' in group_names or 'compute' in group_names) and ansible_distribution_major_version == '8'
-  become: yes
+  when: collectd_from_epel
 
 #
 # (akrzos) yum module works at this point due to the fact the EPEL repo now exists.  EPEL rpm is
@@ -47,66 +40,7 @@
     - collectd-mysql
     - collectd-ping
     - collectd-turbostat
-  when: collectd_from_epel and ansible_distribution_major_version < '8'
-
-#
-# (zul) Remove rhelosp15-0-brew when EPEL 8 exists
-#
-- name: Install collectd rpms for centos
-  dnf:
-    name: "{{ item }}"
-    state: present
-    enablerepo: "rhelosp-15.0-brew, rhelosp-15.0-trunk-brew"
-  become: true
-  with_items:
-    - collectd
-    - collectd-apache
-    - collectd-ceph
-    - collectd-mysql
-    - collectd-ping
-    - collectd-turbostat
-    - collectd-disk
-    - collectd-python
-  when: ansible_distribution_major_version == '8'
-
-# (sai) Since we moved to containers we don't have java installed on the host
-# anymore but it is needed for collectd-java
-- name: Add repository
-  yum_repository:
-    name: CentOS-7-Base
-    description: Core CentOS7 Packages
-    baseurl: http://mirror.centos.org/centos/7/os/$basearch/
-    enabled: yes
-  become: true
-  register: repo_add
-  when: ('controller' in group_names and opendaylight_java_plugin and ansible_distribution_major_version < '8')
-
-- name: Add key
-  rpm_key:
-    state: present
-    key: https://www.centos.org/keys/RPM-GPG-KEY-CentOS-7
-  become: true
-  when: ansible_distribution_major_version < '8'
-
-# (sai) Separating out collectd java rpms as they have a lot of dependencies and
-# are only required for ODL monitoring on controllers only
-- name: Install collectd java specific rpms
-  yum:
-    name: "{{ item }}"
-    state: present
-  become: true
-  with_items:
-    - java-1.8.0-openjdk
-    - collectd-java
-    - collectd-generic-jmx
-  when: (repo_add is success and 'controller' in group_names and opendaylight_java_plugin and ansible_distribution_major_version < '8')
-
-- name: Remove repository
-  yum_repository:
-    name:  CentOS-7-Base
-    state: absent
-  become: true
-  when: (repo_add is success and 'controller' in group_names and opendaylight_java_plugin and ansible_distribution_major_version < '8')
+  when: collectd_from_epel
 
 # Iostat plugin requires sysstat since shelling iostat for stats, Also it is
 # handy to have sysstat.
@@ -397,15 +331,6 @@
     group: root
     mode: 0644
   become: true
-
-# OpenDaylight Monitoring
-- name: Symlink libjvm
-  file:
-    src: /usr/lib/jvm/jre/lib/amd64/server/libjvm.so
-    dest: /usr/lib64/libjvm.so
-    state: link
-  become: true
-  when: ('controller' in group_names and opendaylight_java_plugin)
 
 #
 # Configure selinux bits
