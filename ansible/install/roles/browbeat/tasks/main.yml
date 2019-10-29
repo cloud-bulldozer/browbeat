@@ -9,36 +9,34 @@
 
 - name: Install dependencies for CentOS
   yum:
-    name: "{{ item }}"
+    name:
+      - gcc
+      - gcc-c++
+      - git
+      - libffi-devel
+      - libsemanage-python
+      - openssl-devel
+      - policycoreutils-python
+      - python-devel
     state: present
   become: true
-  with_items:
-    - gcc
-    - gcc-c++
-    - git
-    - libffi-devel
-    - libsemanage-python
-    - openssl-devel
-    - policycoreutils-python
-    - python-devel
   when: ansible_distribution_major_version < '8'
 
 - name: Install dependencies for RHEL8
   yum:
-    name: "{{ item }}"
+    name:
+      - gcc
+      - gcc-c++
+      - git
+      - libffi-devel
+      - python3-libsemanage
+      - openssl-devel
+      - python3-policycoreutils
+      - python3-devel
+      - python3-pip
+      - python3-virtualenv
     state: present
   become: true
-  with_items:
-    - gcc
-    - gcc-c++
-    - git
-    - libffi-devel
-    - python3-libsemanage
-    - openssl-devel
-    - python3-policycoreutils
-    - python3-devel
-    - python3-pip
-    - python3-virtualenv
   when: ansible_distribution_major_version == '8'
 
 - name: Install pip
@@ -61,11 +59,10 @@
 
 - name: Install virtualenv and setuptools- zuul user
   pip:
-    name: "{{ item }}"
+    name:
+      - virtualenv
+      - setuptools
   become: true
-  with_items:
-    - virtualenv
-    - setuptools
   when: ansible_user == "zuul" and ansible_distribution_major_version < '8'
 
 - name: Determine if browbeat directory exists already
