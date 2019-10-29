@@ -3,6 +3,7 @@ parseable: true
 skip_list:
   - '204'  # [E204] Lines should be no longer than 120 chars
   - '206'  # [E206] Variables should have spaces before and after: {{ var_name }}
+  - '306'
   - '405'
   - '503'  # [E503] Tasks that run when changed should likely be handlers
   - '504'

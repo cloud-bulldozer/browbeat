@@ -9,7 +9,7 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
   - repo: https://github.com/ansible/ansible-lint
-    rev: v4.0.1
+    rev: 49372c5c3822567f36a809b20e0273020f024ed7
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
