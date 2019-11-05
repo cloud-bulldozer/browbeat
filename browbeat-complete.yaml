@@ -7,7 +7,6 @@ ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml
   ssh_config: ansible/ssh-config
-  container_cli: docker
 elasticsearch:
   enabled: true
   host: 1.1.1.1

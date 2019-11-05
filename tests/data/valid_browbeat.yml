@@ -7,7 +7,6 @@ ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/site.yml
   ssh_config: ansible/ssh-config
-  container_cli: docker
 elasticsearch:
   enabled: false
   host: browbeat.test.com

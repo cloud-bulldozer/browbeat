@@ -93,9 +93,8 @@ class Tools(object):
     def gather_metadata(self):
         os.putenv("ANSIBLE_SSH_ARGS", " -F {}".format(self.config['ansible']['ssh_config']))
         ansible_cmd = \
-            'ansible-playbook -e container_cli={} -i {} {}' \
-            .format(self.config['ansible']['container_cli'],
-                    self.config['ansible']['hosts'],
+            'ansible-playbook -i {} {}' \
+            .format(self.config['ansible']['hosts'],
                     self.config['ansible']['metadata_playbook'])
         self.run_cmd(ansible_cmd)
         if not self.check_metadata():
