@@ -1,6 +1,0 @@
----
-- name: Dump all vars
-  template: src=dump_facts.j2 dest={{ browbeat_path }}/metadata/machine_facts.json
-
-- name: Generate metadata jsons
-  command: python {{ browbeat_path }}/browbeat/metadata.py {{ browbeat_path }}/metadata
