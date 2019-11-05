@@ -31,5 +31,5 @@
 - hosts: stockpile
   tasks:
     - name: run prescribe
-      command: python {{ browbeat_path }}/browbeat/prescribe.py {{ browbeat_path }}/metadata
+      command: '"{{ ansible_python.executable }}" {{ browbeat_path }}/browbeat/prescribe.py {{ browbeat_path }}/metadata'
 
