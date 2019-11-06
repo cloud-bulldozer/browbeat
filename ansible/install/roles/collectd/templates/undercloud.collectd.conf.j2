@@ -190,7 +190,7 @@ PreCacheChain "PreCache"
 {% endif %}
 <Plugin mysql>
   <Database "undercloud">
-    Host  "{{undercloud_ctlplane_ip_address.stdout}}"
+    Host  "localhost"
     User "root"
     Password "{{undercloud_mysql_password.stdout}}"
     InnodbStats true
