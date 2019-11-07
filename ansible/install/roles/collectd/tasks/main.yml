@@ -73,7 +73,7 @@
     src:  "{{ config_type }}.collectd.conf.j2"
     dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
 
-- name: Build and Run container using Docker (OSP < 15)
+- name: Build and Run container
   block:
     - name: Set container_cli (OSP < 15)
       set_fact:
@@ -85,11 +85,11 @@
           container_cli: podman
       when: rhosp_version is version('15.0', '>=')
 
-    - name: Build collectd-openstack container (Docker)
+    - name: Build collectd-openstack container
       shell: |
         {{ container_cli }}  build -t collectd-openstack {{ browbeat_containers_path }}/collectd-openstack/
       become: true
-    - name: Run collectd-openstack container (Docker)
+    - name: Run collectd-openstack container
       shell: |
         {{ container_cli }} rm -f collectd-{{ config_type }}
         {{ container_cli }} run --name collectd-{{ config_type }} \
@@ -97,9 +97,8 @@
           --privileged -d \
           -v /var/log/containers:/var/log/containers \
           -v /dev:/dev \
-          {% if config_type == 'controller' %}
+          {% if config_type == 'controller' or config_type == 'undercloud' %}
           -v /var/lib/mysql/mysql.sock:/var/lib/mysql/mysql.sock \
           {% endif %}
           collectd-openstack
       become: yes
-

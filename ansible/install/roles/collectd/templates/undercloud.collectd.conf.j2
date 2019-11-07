@@ -108,9 +108,8 @@ PreCacheChain "PreCache"
   <Database "keystone">
     Driver "mysql"
     DriverOption "host" "{{undercloud_ctlplane_ip_address.stdout}}"
-    DriverOption "user" "root"
-    DriverOption "password" "{{undercloud_mysql_password.stdout}}"
     DriverOption "dbname" "keystone"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
     Query token_count
   </Database>
 </Plugin>
