@@ -277,6 +277,7 @@ workloads:
         browbeat_ssh_config: ansible/ssh-config
         username: heat-admin
 
+# file for shaker should be one of https://opendev.org/performa/shaker/src/branch/master/shaker/scenarios/openstack
 # Shaker scenarios require atleast 2 compute nodes
   - name: l2-4-1
     enabled: true
@@ -285,7 +286,7 @@ workloads:
     compute: 1
     progression: linear
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    file: dense_l2.yaml
   - name:  l2-8-1
     enabled: true
     type: shaker
@@ -293,7 +294,7 @@ workloads:
     compute: 1
     progression: linear
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    file: dense_l2.yaml
   - name: l2-4-2
     enabled: true
     type: shaker
@@ -301,7 +302,7 @@ workloads:
     compute: 2
     progression: linear
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    file: dense_l2.yaml
   - name: l2-8-2
     enabled: true
     type: shaker
@@ -309,7 +310,7 @@ workloads:
     compute: 2
     progression: linear
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    file: dense_l2.yaml
   - name: l3-north-south-4-1
     enabled: true
     type: shaker
@@ -317,7 +318,7 @@ workloads:
     density: 4
     compute: 1
     progression: null
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    file: dense_l3_north_south.yaml
   - name: l3-north-south-8-1
     enabled: false
     type: shaker
@@ -326,7 +327,7 @@ workloads:
     compute: 1
     progression: null
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    file: dense_l3_north_south.yaml
   - name: l3-north-south-4-2
     enabled: true
     type: shaker
@@ -335,7 +336,7 @@ workloads:
     compute: 2
     progression: null
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    file: dense_l3_north_south.yaml
   - name: l3-north-south-8-2
     enabled: true
     type: shaker
@@ -344,7 +345,7 @@ workloads:
     compute: 2
     progression: null
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_north_south.yaml
+    file: dense_l3_north_south.yaml
   - name: l3-east-west-4-1
     enabled: true
     type: shaker
@@ -352,7 +353,7 @@ workloads:
     compute: 1
     placement: single_room
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    file: dense_l3_east_west.yaml
   - name: l3-east-west-8-1
     enabled: true
     type: shaker
@@ -360,7 +361,7 @@ workloads:
     compute: 1
     placement: single_room
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    file: dense_l3_east_west.yaml
   - name: l3-east-west-4-2
     enabled: true
     type: shaker
@@ -368,7 +369,7 @@ workloads:
     compute: 2
     placement: single_room
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    file: dense_l3_east_west.yaml
   - name: l3-east-west-8-2
     enabled: true
     type: shaker
@@ -376,4 +377,4 @@ workloads:
     compute: 2
     time: 60
     placement: single_room
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l3_east_west.yaml
+    file: dense_l3_east_west.yaml

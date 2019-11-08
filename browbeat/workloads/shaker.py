@@ -23,6 +23,7 @@ import browbeat.tools
 from browbeat import elastic
 from browbeat import grafana
 from browbeat.path import get_overcloudrc
+from browbeat.path import get_python_site_package
 from browbeat.path import get_workload_venv
 from browbeat.path import results_path
 from browbeat.workloads import base
@@ -374,10 +375,7 @@ class Shaker(base.WorkloadBase):
         self.logger.info("Starting Shaker workloads")
         time_stamp = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
         self.logger.debug("Time Stamp (Prefix): {}".format(time_stamp))
-
-        venv = get_workload_venv('shaker', False)
         self.shaker_checks()
-
         self.update_total_scenarios()
         shaker_uuid = uuid.uuid4()
         es_ts = datetime.datetime.utcnow()
@@ -396,7 +394,8 @@ class Shaker(base.WorkloadBase):
         for run in rerun_range:
             self.logger.info("Scenario: {}".format(workload['name']))
             self.logger.info("Run: {}".format(run))
-            fname = os.path.join(venv, workload['file'])
+            shaker_package_path = get_python_site_package('shaker')
+            fname = os.path.join(shaker_package_path, "scenarios/openstack", workload['file'])
             self.set_scenario(workload, fname, 60)
             self.logger.debug("Set Scenario File: {}".format(fname))
             result_dir = self.tools.create_results_dir(

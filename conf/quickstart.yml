@@ -53,6 +53,7 @@ shaker:
   shaker_region: regionOne
   external_host: 2.2.2.2
 
+# file for shaker should be one of https://opendev.org/performa/shaker/src/branch/master/shaker/scenarios/openstack
 workloads:
   - name: ping-m1-tiny-centos
     enabled: true
@@ -65,7 +66,7 @@ workloads:
     compute: 1
     progression: linear
     time: 60
-    file: lib/python2.7/site-packages/shaker/scenarios/openstack/dense_l2.yaml
+    file: dense_l2.yaml
   - name: quickstart-rally
     enabled: true
     type: rally
