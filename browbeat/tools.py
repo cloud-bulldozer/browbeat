@@ -27,15 +27,6 @@ class Tools(object):
         self.logger = logging.getLogger('browbeat.tools')
         self.config = config
 
-    # Returns true if ping successful, false otherwise
-    def is_pingable(self, ip):
-        cmd = "ping -c1 " + ip
-        result = self.run_cmd(cmd)
-        if result['rc'] == 0:
-            return True
-        else:
-            return False
-
     # Run command, return stdout as result
     def run_cmd(self, cmd):
         self.logger.debug("Running command : %s" % cmd)
@@ -150,25 +141,3 @@ class Tools(object):
                 if workload is "perfkit":
                     # Stub for PerfKit.
                     continue
-
-    def load_stackrc(self, filepath):
-        values = {}
-        with open(filepath) as stackrc:
-            for line in stackrc:
-                pair = line.split('=')
-                if 'export' in line:
-                    continue
-                elif '#' in line:
-                    continue
-                elif 'if' in line or 'fi' in line:
-                    continue
-                elif line == '\n':
-                    continue
-
-                if '$(' not in line:
-                    values[pair[0].strip()] = pair[1].strip()
-                elif '$(' in line and 'for key' not in line:
-                    values[pair[0].strip()] = \
-                        self.run_cmd(
-                        "echo " + pair[1].strip())['stdout'].strip()
-        return values
