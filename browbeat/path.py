@@ -18,7 +18,6 @@ _logger = logging.getLogger('browbeat.path')
 
 # Browbeat's project modules path, typically /home/stack/browbeat/browbeat
 browbeat_project_path = os.path.dirname(os.path.realpath(__file__))
-
 # Path to Browbeat, typically /home/stack/browbeat
 browbeat_path = os.path.abspath(os.path.join(browbeat_project_path, os.pardir))
 
@@ -69,3 +68,10 @@ def get_workload_venv(workload, path_activate):
         else:
             _logger.debug("{} not installed in {}".format(workload, workload_venv_path))
     _logger.error('{} does not appear to be installed correctly'.format(workload))
+
+def get_python_site_package(workload):
+    venv = get_workload_venv(workload, False)
+    for root, dirs, files in os.walk(venv):
+        for dir in dirs:
+            if workload in dir:
+                return(os.path.abspath(os.path.join(root,dir)))
