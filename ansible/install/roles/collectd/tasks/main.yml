@@ -59,10 +59,6 @@
     dest: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
   when: not (directory_exists.stat.isdir is defined and directory_exists.stat.isdir)
 
-- name: Set browbeat_contianers_path
-  set_fact:
-    browbeat_containers_path: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
-
 - name: Create configuration directory
   file:
     path: "{{ browbeat_containers_path }}/collectd-openstack/config"
@@ -75,16 +71,6 @@
 
 - name: Build and Run container
   block:
-    - name: Set container_cli (OSP < 15)
-      set_fact:
-          container_cli: docker
-      when: rhosp_version is version('15.0', '<') and osp_version is version('12.0', '>=')
-
-    - name: Set container_cli (OSP > 15)
-      set_fact:
-          container_cli: podman
-      when: rhosp_version is version('15.0', '>=')
-
     - name: Build collectd-openstack container
       shell: |
         {{ container_cli }}  build -t collectd-openstack {{ browbeat_containers_path }}/collectd-openstack/

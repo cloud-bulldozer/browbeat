@@ -15,6 +15,7 @@
     config_type: undercloud
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_undercloud|bool }
     - { role: collectd, when: collectd_undercloud|bool }
   tags: undercloud
@@ -26,6 +27,7 @@
     config_type: controller
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_controller|bool }
     - { role: collectd, when: collectd_controller|bool }
   tags: controller
@@ -36,6 +38,7 @@
     config_type: compute
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_compute|bool }
     - { role: collectd, when: collectd_compute|bool }
   tags: compute
@@ -46,6 +49,7 @@
     config_type: networker
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_networker|bool }
     - { role: collectd, when: collectd_networker|bool }
   tags: networker
@@ -56,6 +60,7 @@
     config_type: blockstorage
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_blockstoarge|bool }
     - { role: collectd, when: collectd_blockstorage|bool }
   tags: blockstorage
@@ -66,6 +71,7 @@
     config_type: objectstorage
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_objectstorage|bool }
     - { role: collectd, when: collectd_objectstorage|bool }
   tags: objectstorage
@@ -76,6 +82,7 @@
     config_type: cephstorage
   roles:
     - { role: osp_version }
+    - { role: containers }
     - { role: common, when: collectd_cephstorage|bool }
     - { role: collectd, when: collectd_cephstorage|bool }
   tags: cephstorage

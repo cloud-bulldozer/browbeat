@@ -1,0 +1,15 @@
+---
+- name: Set browbeat_contianers_path
+  set_fact:
+    browbeat_containers_path: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
+
+- name: Set container_cli (OSP < 15)
+  set_fact:
+    container_cli: docker
+  when: rhosp_version is version('15.0', '<') and osp_version is version('12.0', '>=')
+
+- name: Set container_cli (OSP > 15)
+  set_fact:
+    container_cli: podman
+  when: rhosp_version is version('15.0', '>=')
+
