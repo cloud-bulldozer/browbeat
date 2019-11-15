@@ -473,7 +473,7 @@ PreCacheChain "PreCache"
 
 # Tail httpd request time
 {%if apache_controller_collectd_request_time %}
-  {% if osp_version | version_compare('12.0.0', '>=') and osp_version | version_compare('14.0.0', '<') %}
+  {% if osp_version is version ('12.0.0', '>=') and osp_version is version ('14.0.0', '<') %}
   <File "/var/log/containers/httpd/gnocchi-api/gnocchi_wsgi_access.log">
   {% else %}
   <File "/var/log/httpd/gnocchi_wsgi_access.log">
