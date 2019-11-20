@@ -27,18 +27,6 @@ grafana:
   port: 3000
   dashboards:
     - openstack-general-system-performance
-perfkit:
-  sleep_before: 0
-  sleep_after: 0
-  default:
-    image: centos7
-    machine_type: m1.small
-    os_type: rhel
-    openstack_image_username: centos
-    openstack_floating_ip_pool: browbeat_public
-    openstack_network: browbeat_private
-    timing_measurements: runtimes
-    ignore_package_requirements: true
 rally:
   sleep_before: 0
   sleep_after: 0
@@ -53,10 +41,6 @@ shaker:
   external_host: 2.2.2.2
 
 workloads:
-  - name: browbeat-test-perfkit-ping
-    enabled: false
-    type: perfkit
-    benchmarks: ping
   - name: browbeat-test-authenticate
     enabled: false
     type: rally

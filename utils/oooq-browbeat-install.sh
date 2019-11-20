@@ -41,7 +41,7 @@ echo "${install_host}" >> ansible/hosts
 
 if [ "$install_host" == "localhost" ]; then
   # Clean local environment
-  rm -rf .browbeat-venv/ .perfkit-venv/ .rally-venv/ .shaker-venv/
+  rm -rf .browbeat-venv/ .rally-venv/ .shaker-venv/
   rm -rf stackrc overcloudrc
 
   # Make sure brovc.10 is up

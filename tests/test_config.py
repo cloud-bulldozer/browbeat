@@ -37,7 +37,7 @@ def test_load_browbeat_config(config):
         assert "SchemaError" in str(exception_data)
 
 
-@pytest.mark.parametrize("schema", ["perfkit", "rally", "shaker"])
+@pytest.mark.parametrize("schema", ["rally", "shaker"])
 def test__validate_yaml(schema):
     """Tests valid and invalid Browbeat workload configurations."""
     with open("tests/data/workloads.yml", "r") as config_file:

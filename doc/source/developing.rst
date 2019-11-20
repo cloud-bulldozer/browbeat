@@ -350,13 +350,11 @@ to install Browbeat for usage on the new Tripleo Quickstart cloud.
   [akrzos@bithead browbeat]$ . .browbeat-venv/bin/activate
   (.browbeat-venv) [akrzos@bithead browbeat]$ ./browbeat.py -s conf/quickstart.yml rally
   2017-12-13 15:46:34,648 - browbeat.config -    INFO - Config conf/quickstart.yml validated
-  2017-12-13 15:46:34,655 - browbeat.config -    INFO - Workload ping-m1-tiny-centos validated as perfkit
   2017-12-13 15:46:34,657 - browbeat.config -    INFO - Workload quickstart-shaker-l2 validated as shaker
   2017-12-13 15:46:34,665 - browbeat.config -    INFO - Workload quickstart-rally validated as rally
   2017-12-13 15:46:34,665 - browbeat -    INFO - Browbeat test suite kicked off
   2017-12-13 15:46:34,665 - browbeat -    INFO - Browbeat UUID: 8e869626-a596-4ec7-b0b1-ac7f2bf915a7
   2017-12-13 15:46:34,666 - browbeat -    INFO - Running workload(s): rally
-  2017-12-13 15:46:34,666 - browbeat -    INFO - perfkit workload ping-m1-tiny-centos disabled via cli
   2017-12-13 15:46:34,666 - browbeat -    INFO - shaker workload quickstart-shaker-l2 disabled via cli
   2017-12-13 15:46:34,666 - browbeat -    INFO - rally workload quickstart-rally is enabled
   2017-12-13 15:46:34,666 - browbeat.rally -    INFO - Running Rally workload: quickstart-rally

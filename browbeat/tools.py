@@ -16,7 +16,6 @@ import os
 import re
 import subprocess
 
-from browbeat.workloads import perfkit
 from browbeat.workloads import rally
 from browbeat.workloads import shaker
 
@@ -62,9 +61,7 @@ class Tools(object):
         :param result_dir_ts: Result directory timestamp
         :param run_iteration: Iteration for a specific run
         """
-        if workload["type"] == "perfkit":
-            workloads = perfkit.PerfKit(self.config, result_dir_ts)
-        elif workload["type"] == "rally":
+        if workload["type"] == "rally":
             workloads = rally.Rally(self.config, result_dir_ts)
         elif workload["type"] == "shaker":
             workloads = shaker.Shaker(self.config, result_dir_ts)
@@ -98,8 +95,7 @@ class Tools(object):
     def post_process(self, cli):
         workloads = {}
         workloads['shaker'] = re.compile("shaker")
-        workloads['perfkit'] = re.compile("perfkit")
-        workloads['rally'] = re.compile("(?!perfkit)|(?!shaker)")
+        workloads['rally'] = re.compile("(?!shaker)")
         """ Iterate through dir structure """
         results = {}
         if os.path.isdir(cli.path):
@@ -137,7 +133,4 @@ class Tools(object):
                         errors, results = rally_workload.file_to_json(file)
                 if workload is "shaker":
                     # Stub for Shaker.
-                    continue
-                if workload is "perfkit":
-                    # Stub for PerfKit.
                     continue

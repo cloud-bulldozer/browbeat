@@ -44,7 +44,7 @@ def load_browbeat_config(path):
 def _validate_yaml(schema, config):
     """Raises exception if config is invalid.
 
-    :param schema: The schema to validate with (browbeat, perfkit, rally...)
+    :param schema: The schema to validate with (browbeat, rally...)
     :param config: Loaded yaml to validate
     """
     check = pykwalify_core.Core(

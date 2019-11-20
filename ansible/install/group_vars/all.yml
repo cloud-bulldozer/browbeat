@@ -39,10 +39,6 @@ shaker_venv: "{{browbeat_path}}/.shaker-venv"
 # Shaker version to Install
 shaker_version: 1.3.1
 
-# PerfKitBenchmarker Settings
-perfkit_venv: "{{browbeat_path}}/.perfkit-venv"
-perfkit_version: v1.13.0
-
 # Configuration items to adjust browbeat results served through httpd
 browbeat_results_port: 9001
 browbeat_results_in_httpd: true

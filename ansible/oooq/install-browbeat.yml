@@ -9,7 +9,6 @@
     - browbeat/stockpile
     - browbeat/browbeat
     - browbeat/firewall
-    - browbeat/perfkitbenchmarker
     - browbeat/rally
     - browbeat/shaker
     - browbeat/flavors

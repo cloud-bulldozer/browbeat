@@ -12,37 +12,7 @@ Run Browbeat performance tests from Undercloud
     [stack@ospd ~]$ cd browbeat/
     [stack@ospd browbeat]$ . .browbeat-venv/bin/activate
     (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
-    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #perfkit, rally, shaker or "all"
-
-Running PerfKitBenchmarker
----------------------------
-
-Note: PerfKitBenchmarker is disabled for Stein+ due to the lack of python3
-      support.
-
-Many benchmarks work out of the box with Browbeat. You must ensure that your
-network is setup correctly to run those benchmarks. Currently tested benchmarks
-include: aerospike, bonnie++, cluster_boot, copy_throughput(cp,dd,scp), fio,
-iperf, mesh_network, mongodb_ycsb, netperf, object_storage_service, ping,
-scimark2, and sysbench_oltp.
-
-To run Browbeat's PerfKit Benchmarks, you can start by viewing the
-tested benchmark's configuration in conf/browbeat-perfkit-complete.yaml.
-You must add them to your specific Browbeat config yaml file or
-enable/disable the benchmarks you wish to run in the default config file
-(browbeat-config.yaml). There are many flags exposed in the
-configuration files to tune how those benchmarks run. Additional flags
-are exposed in the source code of PerfKitBenchmarker available on the
-Google Cloud Github_.
-
-.. _Github: https://github.com/GoogleCloudPlatform/PerfKitBenchmarker
-
-Example running only PerfKitBenchmarker benchmarks with Browbeat from
-browbeat-config.yaml:
-
-::
-
-    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py perfkit -s browbeat-config.yaml
+    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #rally, shaker or "all"
 
 Running Shaker
 ---------------

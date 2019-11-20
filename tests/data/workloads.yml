@@ -1,17 +1,4 @@
 # Valid and invalid workload schemas for testing per workload
-perfkit:
-  - valid: true
-    data:
-      name: valid-test-perfkit-ping
-      enabled: false
-      type: perfkit
-      benchmarks: ping
-  - valid: false
-    data:
-      opps_name: invalid-test-perfkit-ping
-      enabled: false
-      type: perfkit
-      benchmarks: ping
 rally:
   - valid: true
     data:
