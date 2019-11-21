@@ -2,7 +2,7 @@
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
 
-hacking<0.11,>=0.10.0
+hacking>=1.1.0,<1.2.0 # Apache-2.0
 
 pykwalify
 coverage>=3.6
@@ -21,3 +21,6 @@ testscenarios>=0.4
 testtools>=1.4.0
 twine
 wheel
+docker<3 # Apache-2.0
+molecule<3 # MIT
+selinux>=0.1.5rc1

@@ -46,3 +46,11 @@ log/*
 # Containers
 browbeat-containers/collectd-openstack/config/*
 ansible-errors.json
+
+# Molecule
+.molecule/
+
+# Pytest
+.cache/
+.pytest_cache/
+.pytestdebug.log
