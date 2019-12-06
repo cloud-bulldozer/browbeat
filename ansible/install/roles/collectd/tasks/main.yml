@@ -53,10 +53,11 @@
     path: "{{ ansible_user_dir }}/browbeat/browbeat-containers/collectd-openstack"
   register: directory_exists
 
-- name: Copy browbeat-containers directory if it doesn't exist
-  copy:
-    src: "{{ browbeat_path }}/browbeat-containers/collectd-openstack"
-    dest: "{{ ansible_user_dir }}/browbeat/browbeat-containers"
+- name: Clone browbeat if it doesn't exists on host
+  git:
+    repo: https://github.com/openstack/browbeat.git
+    dest: "{{ ansible_user_dir }}/browbeat"
+    version: master
   when: not (directory_exists.stat.isdir is defined and directory_exists.stat.isdir)
 
 - name: Create configuration directory
