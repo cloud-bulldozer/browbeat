@@ -1,0 +1,55 @@
+    - title: DF
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Partition % Used
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: '100 * (sum(collectd_df_df_complex{df ="boot", exported_instance=~"[[Cloud]]_[[Node]]", type="used"}) / sum(collectd_df_df_complex{df="boot", exported_instance=~"[[Cloud]]_[[Node]]"}))'
+              legendFormat: Boot
+              refId: A
+            - expr: '100 * (sum(collectd_df_df_complex{df ="root", exported_instance=~"[[Cloud]]_[[Node]]", type="used"}) / sum(collectd_df_df_complex{df="root", exported_instance=~"[[Cloud]]_[[Node]]"}))'
+              legendFormat: Root
+              refId: B
+          yaxes:
+            - format: percent
+              max: 100
+            - format: short
+        - title: $Cloud - $Node - Inodes % Used
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_df_percent_inodes{df="boot",exported_instance="[[Cloud]]_[[Node]]", type="used"}'
+              legendFormat: Boot
+              refId: A
+            - expr: 'collectd_df_percent_inodes{df="root",exported_instance="[[Cloud]]_[[Node]]", type="used"}'
+              legendFormat: Root
+              refId: B
+          yaxes:
+            - format: percent
+              max: 100
+            - format: short

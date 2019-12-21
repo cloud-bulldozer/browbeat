@@ -1,0 +1,155 @@
+    - title: Disk
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $Disk iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_disk_disk_ops_0_total{exported_instance=~"[[Cloud]]_[[Node]]", disk=~"$Disk"}[5m])'
+              legendFormat: Read
+              refId: A
+            - expr: 'irate(collectd_disk_disk_ops_1_total{exported_instance=~"[[Cloud]]_[[Node]]", disk=~"$Disk"}[5m])'
+              legendFormat: Write
+              refId: B
+          yaxes:
+            - format: iops
+            - format: short
+        - title: $Cloud - $Node - $Disk Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_disk_disk_octets_0_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Read
+              refId: A
+            - expr: 'irate(collectd_disk_disk_octets_1_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Write
+              refId: B
+          yaxes:
+            - format: Bps
+            - format: short
+        - title: $Cloud - $Node - $Disk Merged iops
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_disk_disk_merged_0_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Read
+              refId: A
+            - expr: 'irate(collectd_disk_disk_merged_1_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Write
+              refId: B
+          yaxes:
+            - format: iops
+            - format: short
+        - title: $Cloud - $Node - $Disk Pending Operations
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_disk_pending_operations{disk=~"$Disk",exported_instance="[[Cloud]]_[[Node]]"}'
+              legendFormat: Pending Operations
+              refId: A
+          yaxes:
+            - format: short
+            - format: short
+        - title: $Cloud - $Node - $Disk Average Time (Estimated)
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Write
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_disk_disk_time_0_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Read
+              refId: A
+            - expr: 'irate(collectd_disk_disk_time_1_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Write
+              refId: B
+          yaxes:
+            - format: ms
+            - format: short
+        - title: $Cloud - $Node - $Disk IO Time
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Weighted Time
+              yaxis: 2
+          targets:
+            - expr: 'irate(collectd_disk_disk_io_time_0_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Time
+              refId: A
+            - expr: 'irate(collectd_disk_disk_io_time_1_total{disk=~"$Disk",exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Weighted Time
+              refId: B
+          yaxes:
+            - format: percent
+            - format: ms

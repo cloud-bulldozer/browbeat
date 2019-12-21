@@ -5,7 +5,13 @@
 Interval {{collectd_interval}}
 
 # Hostname for this machine, if not defined, use gethostname(2) system call
+{% if not collectd_prometheus %}
 Hostname "{{inventory_hostname}}"
+{% endif %}
+
+{% if collectd_prometheus %}
+Hostname "{{prometheus_prefix}}_{{inventory_hostname}}"
+{% endif %}
 
 # Loaded Plugins:
 LoadPlugin "logfile"
@@ -18,7 +24,12 @@ LoadPlugin "logfile"
 
 LoadPlugin write_graphite
 LoadPlugin cpu
+{% if not collectd_prometheus %}
 LoadPlugin conntrack
+{% endif %}
+{% if collectd_prometheus %}
+LoadPlugin network
+{% endif %}
 LoadPlugin df
 LoadPlugin disk
 LoadPlugin exec
@@ -66,6 +77,7 @@ PreCacheChain "PreCache"
 </Chain>
 
 # Graphite Host Configuration
+{% if collectd_graphite %}
 <Plugin write_graphite>
   <Carbon>
     Host "{{graphite_host}}"
@@ -78,6 +90,14 @@ PreCacheChain "PreCache"
     EscapeCharacter "_"
   </Carbon>
 </Plugin>
+{% endif %}
+
+# Prometheus Host Configuration
+{% if collectd_prometheus %}
+<Plugin network>
+  Server "{{prometheus_host}}" "{{prometheus_port}}"
+</Plugin>
+{% endif %}
 
 <Plugin df>
   FSType anon_inodefs

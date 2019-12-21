@@ -1,0 +1,59 @@
+    - title: Turbostat
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Gauge TSC & SMI Count
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: SMI Count
+              yaxis: 2
+          targets:
+            - expr: 'collectd_turbostat_gauge{exported_instance=~"[[Cloud]]_[[Node]]", turbostat=~".*",type="TSC"}'
+              legendFormat: tsc-{{'{{'}}turbostat{{'}}'}}
+              refId: A
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat Freq Avg
+          type: graph
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - expr: '1000000 * collectd_turbostat_frequency{exported_instance=~"[[Cloud]]_[[Node]]", turbostat=~".*", type="average"}'
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat Freq Busy
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - expr: '1000000 * collectd_turbostat_frequency{exported_instance=~"[[Cloud]]_[[Node]]", turbostat=~".*", type="busy"}'
+          yaxes:
+            - format: hertz
+            - format: short
+        - title: $Cloud - $Node - turbostat c0%
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_turbostat_percent{exported_instance=~"[[Cloud]]_[[Node]]", turbostat=~".*", type="c0"}'
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - turbostat c1%
+          type: graph
+          decimals: 2
+          fill: 0
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_turbostat_percent{exported_instance=~"[[Cloud]]_[[Node]]", turbostat=~".*", type="c1"}'
+          yaxes:
+            - format: percent
+            - format: short

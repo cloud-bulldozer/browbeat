@@ -1,0 +1,56 @@
+    - title: Tail
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Tail Error
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_tail_counter_total{exported_instance="[[Cloud]]_[[Node]]",tail=~"[[Tail]]",type="error"}'
+              legendFormat: "[[Tail]]"
+              refId: A
+        - title: $Cloud - $Node - Tail Warn
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: 'collectd_tail_counter_total{exported_instance="[[Cloud]]_[[Node]]",tail=~"[[Tail]]",type="warn"}'
+              legendFormat: "[[Tail]]"
+              refId: A
+        - title: $Cloud - $Node - Tail Info
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: 'collectd_tail_counter_total{exported_instance="[[Cloud]]_[[Node]]",tail=~"[[Tail]]",type="info"}'
+              legendFormat: "[[Tail]]"
+              refId: A

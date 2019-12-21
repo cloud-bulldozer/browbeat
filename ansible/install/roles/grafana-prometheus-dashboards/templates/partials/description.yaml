@@ -1,0 +1,6 @@
+    - title: description row
+      height: 50px
+      panels:
+        - title: Browbeat provided Dashboard
+          content: "**This dashboard is provided by Browbeat and managed via Grafyaml**"
+          type: text

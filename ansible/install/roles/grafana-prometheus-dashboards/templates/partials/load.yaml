@@ -1,0 +1,39 @@
+    - title: Load / Uptime
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - All CPUs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: Uptime
+              lines: false
+              yaxis: 2
+          targets:
+            - expr: 'collectd_load_0{exported_instance=~"[[Cloud]]_[[Node]]"}'
+              legendFormat: 1m avg
+              refId: A
+            - expr: 'collectd_load_1{exported_instance=~"[[Cloud]]_[[Node]]"}'
+              legendFormat: 5m avg
+              refId: B
+            - expr: 'collectd_load_2{exported_instance=~"[[Cloud]]_[[Node]]"}'
+              legendFormat: 15m avg
+              refId: C
+            - expr: 'collectd_uptime{exported_instance=~"[[Cloud]]_[[Node]]"}'
+              legendFormat: Uptime
+              refId: D
+          yaxes:
+            - format: short
+            - format: s

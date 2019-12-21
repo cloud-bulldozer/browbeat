@@ -1,0 +1,16 @@
+---
+# Builds and Uploads Dashboards for Browbeat analysis of System Performance Metrics
+# Templated General Dashboards (Ex. OpenStack General System Performance)
+
+- hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_connection: local
+    upload_general: true
+    general_dashboards:
+      - template_name: openstack
+        template_node_type: "*"
+        process_list_name: OpenStack
+  roles:
+    - grafana-prometheus-dashboards
+  environment: "{{proxy_env}}"

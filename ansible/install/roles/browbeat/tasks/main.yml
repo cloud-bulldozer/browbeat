@@ -115,3 +115,31 @@
   pip:
     requirements: "{{ browbeat_path }}/requirements.txt"
     virtualenv: "{{ browbeat_venv }}"
+
+- block:
+    - name: Uninstall old grafyaml version
+      pip:
+        name: grafyaml==0.0.7
+        virtualenv: "{{ browbeat_venv }}"
+        state: absent
+
+    - name: Install grafyaml version 0.0.8 for Prometheus-Grafana
+      pip:
+        name: git+https://opendev.org/opendev/grafyaml.git
+        virtualenv: "{{ browbeat_venv }}"
+
+    - name: Get the python version installed
+      command: echo "{{ ansible_python_version }}"
+      register: installed_python_version
+
+    - name: Set fact for installed python version
+      set_fact:
+        installed_python_version: "{{installed_python_version.stdout[0:3]}}"
+
+    - name: Add regex option in grafyaml
+      lineinfile:
+        path: "{{ browbeat_path }}/.browbeat-venv/lib/python{{installed_python_version}}/site-packages/grafana_dashboards/schema/template/query.py"
+        insertafter: "self.validate_refresh"
+        line: "            v.Optional('regex',default=''): v.All(str),"
+
+  when: collectd_prometheus

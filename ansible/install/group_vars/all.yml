@@ -160,6 +160,8 @@ collectd_blockstorage: true
 collectd_objectstorage: true
 collectd_cephstorage: true
 collectd_compute: false
+collectd_graphite: true
+collectd_prometheus: false
 
 ########################
 # Opt-In Collectd plugins configuration:
@@ -318,6 +320,16 @@ regex_info: false
 # Might result in more network traffic
 ping_plugin: false
 ping_interval: 1
+
+############################################
+# Prometheus/Collectd-Exporter Configuration
+############################################
+prometheus_host:
+#Avoid using underscore for prometheus_prefix
+prometheus_prefix:
+prometheus_port: 25826
+#collectd_exporter_port: 9103
+
 
 ########################################
 # Carbon/Graphite Configuration

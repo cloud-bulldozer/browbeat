@@ -1,0 +1,258 @@
+---
+#
+# Vars for Dashboard Generation
+#
+
+dashboard_groups:
+  - undercloud
+  - controller
+  - networker
+  - blockstorage
+  - objectstorage
+  - cephstorage
+  - compute
+
+per_process_metrics:
+  - name: "Process/Thread Counts"
+    y1units: "short"
+    metrics:
+      - name: "Processes"
+        expr: "collectd_processes_ps_count_0"
+      - name: "Threads"
+        expr: "collectd_processes_ps_count_1"
+    nullPointMode: "null"
+  - name: "Process CPU"
+    y1units: "percent"
+    metrics:
+      - name: "System"
+        expr: "collectd_processes_ps_cputime_0_total"
+      - name: "User"
+        expr: "collectd_processes_ps_cputime_1_total"
+    nullPointMode: "null"
+  - name: "Process Memory"
+    y1units: "bits"
+    metrics:
+      - name: "RSS"
+        expr: "collectd_processes_ps_rss"
+      - name: "Virtual"
+        expr: "collectd_processes_ps_vm"
+    nullPointMode: "connected"
+  - name: "Process Page Faults"
+    y1units: "short"
+    metrics:
+      - name: "Majflt"
+        expr: "collectd_processes_ps_pagefaults_0_total"
+      - name: "Minflt"
+        expr: "collectd_processes_ps_pagefaults_1_total"
+    nullPointMode: "null"
+  - name: "Process IOPs(Estimated via SYSCALLS)"
+    y1units: "iops"
+    metrics:
+      - name: "Read"
+        expr: "collectd_processes_io_ops_0_total"
+      - name: "Write"
+        expr: "collectd_processes_io_ops_1_total"
+    nullPointMode: "null"
+  - name: "Process IO Throughput(Estimated via SYSCALLS)"
+    y1units: "bytes"
+    metrics:
+      - name: "Rx"
+        expr: "collectd_processes_io_octets_0_total"
+      - name: "Tx"
+        expr: "collectd_processes_io_octets_1_total"
+    nullPointMode: "null"
+  - name: "Process Disk IO Throughput(Estimated via SYSCALLS)"
+    y1units: "bytes"
+    metrics:
+      - name: "Read"
+        expr: "collectd_processes_disk_octets_0_total"
+      - name: "Write"
+        expr: "collectd_processes_disk_octets_1_total"
+    nullPointMode: "null"
+
+per_process_panels:
+
+#
+  # This dashboard "OpenStack" aims to be comprehensive with all processes across:
+  # Undercloud, Controller, BlockStorage, ObjectStorage, CephStorage, Compute Nodes
+  #
+  OpenStack:
+    - name: "Ansible"
+      processes:
+        - ansible
+    - name: "Aodh"
+      processes:
+        - aodh-evaluator
+        - aodh-listener
+        - aodh-notifier
+        - aodh_wsgi
+    - name: "Barbican"
+      processes:
+        - barbican_wsgi
+        - barbican-keystone-listener
+        - barbican-worker
+    - name: "Ceilometer"
+      processes:
+        - ceilometer-agent-notification
+        - ceilometer-api
+        - ceilometer-collector
+        - ceilometer-polling
+        - ceilometer_wsgi
+    - name: "Ceph"
+      processes:
+        - ceph-mon
+        - ceph-osd
+    - name: "Cinder"
+      processes:
+        - cinder-api
+        - cinder-scheduler
+        - cinder-volume
+        - cinder_wsgi
+    - name: "Corosync/Pacemaker"
+      processes:
+        - attrd
+        - cib
+        - corosync
+        - crmd
+        - lrmd
+        - pacemakerd
+        - pcsd
+        - pengine
+        - stonithd
+    - name: "Docker"
+      processes:
+        - docker-registry
+        - dockerd-current
+        - docker-containerd-current
+    - name: "Everything Else"
+      processes:
+        - dnsmasq
+        - haproxy
+        - httpd
+        - iscsid
+        - keepalived
+        - memcached
+        - mongod
+        - mysqld
+        - rabbitmq
+        - redis-server
+        - karaf
+    - name: "Glance"
+      processes:
+        - glance-api
+        - glance-registry
+    - name: "Gnocchi"
+      processes:
+        - gnocchi-metricd-master
+        - gnocchi-metricd-scheduler
+        - gnocchi-metricd-processing
+        - gnocchi-metricd-reporting
+        - gnocchi-metricd-janitor
+        - gnocchi-statsd
+        - gnocchi_wsgi
+        # Old "proctitle" of metricd (osp_version =< Newton)
+        - gnocchi-metricd
+    - name: "Heat"
+      processes:
+        - heat-api
+        - heat-api-cfn
+        - heat-api-cloudwatch
+        - heat-engine
+        - heat_api_cfn
+        - heat_api_cloudwatch
+        - heat_api_wsgi
+    - name: "Horizon"
+      processes:
+        - horizon
+    - name: "Ironic"
+      processes:
+        - ironic-api
+        - ironic-conductor
+        - ironic-inspector
+        - dnsmasq-ironic
+        - dnsmasq-ironicinspector
+        - ironic_wsgi
+    - name: "Keystone"
+      processes:
+        - keystone-admin
+        - keystone-main
+        - keystone-token-flush
+    - name: "Mistral"
+      processes:
+        - mistral-server-api
+        - mistral-server-engine
+        - mistral-server-executor
+    - name: "Neutron"
+      processes:
+        - neutron-dhcp-agent
+        - neutron-l3-agent
+        - neutron-metadata-agent
+        - neutron-ns-metadata-proxy
+        - neutron-openvswitch-agent
+        - neutron-rootwrap-daemon
+        - neutron-server
+        - neutron-keepalived-state-change
+    - name: "Nova"
+      processes:
+        - nova-api
+        - nova-api-metadata
+        - nova_api_wsgi
+        - nova-cert
+        - nova-compute
+        - nova-conductor
+        - nova-consoleauth
+        - nova-novncproxy
+        - nova-scheduler
+        - novajoin-server
+        - placement_wsgi
+        - privsep-helper
+    - name: "Octavia"
+      processes:
+        - octavia-worker
+        - octavia-housekeeping
+        - octavia-health-manager
+        - octavia-api
+
+    - name: "Open vSwitch"
+      processes:
+        - ovs-vswitchd
+        - ovsdb-client
+        - ovsdb-server
+        - ovn-northd
+        - ovn-controller
+        - ovn-controller-vtep
+    - name: "Panko"
+      processes:
+        - panko_wsgi
+    - name: "QEMU-KVM / Libvirt"
+      processes:
+        - qemu-kvm
+        - libvirtd
+        - virtlockd
+        - virtlogd
+    - name: "Swift"
+      processes:
+        - swift-account-auditor
+        - swift-account-reaper
+        - swift-account-replicator
+        - swift-account-server
+        - swift-container-auditor
+        - swift-container-replicator
+        - swift-container-server
+        - swift-container-sync
+        - swift-container-updater
+        - swift-object-auditor
+        - swift-object-expirer
+        - swift-object-reconstructor
+        - swift-object-replicator
+        - swift-object-server
+        - swift-object-updater
+        - swift-proxy-server
+        - rsync
+    - name: "Zaqar"
+      processes:
+        - zaqar-server
+        - zaqar_wsgi
+    - name: "Collectd"
+      processes:
+        - collectd

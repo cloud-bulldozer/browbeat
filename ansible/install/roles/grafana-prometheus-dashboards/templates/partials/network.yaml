@@ -1,0 +1,83 @@
+    - title: Network
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - $Interface Network IO
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_interface_if_packets_1_total{exported_instance=~"[[Cloud]]_[[Node]]", interface=~"$Interface"}[5m])'
+              legendFormat: TX
+              refId: A
+            - expr: 'irate(collectd_interface_if_packets_0_total{exported_instance=~"[[Cloud]]_[[Node]]", interface=~"$Interface"}[5m])'
+              legendFormat: RX
+              refId: B
+          yaxes:
+            - format: pps
+            - format: short
+        - title: $Cloud - $Node - $Interface Network Throughput
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - expr: '8 * irate(collectd_interface_if_octets_1_total{exported_instance=~"[[Cloud]]_[[Node]]",interface=~"$Interface"}[5m])'
+              legendFormat: TX
+              refId: A
+            - expr: '8 * irate(collectd_interface_if_octets_0_total{exported_instance=~"[[Cloud]]_[[Node]]",interface=~"$Interface"}[5m])'
+              legendFormat: RX
+              refId: B
+          yaxes:
+            - format: bps
+            - format: short
+        - title: $Cloud - $Node - $Interface Errors
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          seriesOverrides:
+            - alias: RX
+              transform: negative-Y
+          targets:
+            - expr: 'irate(collectd_interface_if_errors_1_total{exported_instance=~"[[Cloud]]_[[Node]]", interface=~"$Interface"}[5m])'
+              legendFormat: TX
+              refId: A
+            - expr: 'irate(collectd_interface_if_errors_0_total{exported_instance=~"[[Cloud]]_[[Node]]", interface=~"$Interface"}[5m])'
+              legendFormat: RX
+              refId: B
+          yaxes:
+            - format: short
+            - format: short

@@ -1,0 +1,38 @@
+---
+#
+# Generate & Upload Browbeat OpenStack Grafana Dashboards
+#
+
+# check that grafana_apikey is entered prior to playbook run
+- name: Check Grafana API key
+  fail:
+    msg="** Edit grafana_apikey in ../install/group_vars/all.yml before running **"
+  when: grafana_apikey is none
+
+- name: Check Cloud Name
+  fail:
+    msg: "The Cloud name {{dashboard_cloud_name}} is reserved for a service, please use a different one"
+  when: item == dashboard_cloud_name
+  with_items: "{{forbidden_cloud_names}}"
+
+# Templated General Performance Dashboards
+- name: Generate General Performance Dashboards
+  template:
+    src: "{{role_path}}/templates/{{item.template_name}}_general_system_performance.yaml.j2"
+    dest: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml"
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+- name: Upload General Performance Dashboards to Grafana
+  shell: |
+    . {{browbeat_venv}}/bin/activate
+    grafana-dashboard --grafana-url http://{{grafana_host}}:{{grafana_port}} --grafana-apikey {{grafana_apikey}} update {{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"
+
+- name: Remove leftover yaml file(s) from General Performance Dashboards
+  file:
+    path: "{{role_path}}/files/{{item.process_list_name}}_general_system_performance.yaml"
+    state: absent
+  when: upload_general|bool
+  with_items: "{{general_dashboards}}"

@@ -1,0 +1,55 @@
+    - title: Processes
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Processes State
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="running"}'
+              legendFormat: Running
+              refId: A
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="stopped"}'
+              legendFormat: Stopped
+              refId: B
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="sleeping"}'
+              legendFormat: Sleeping
+              refId: C
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="blocked"}'
+              legendFormat: Blocked
+              refId: D
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="paging"}'
+              legendFormat: Paging
+              refId: E
+            - expr: 'collectd_processes_ps_state{exported_instance=~"[[Cloud]]_[[Node]]",processes="zombies"}'
+              legendFormat: Zombies
+              refId: F
+        - title: $Cloud - $Node - Fork Rate
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_processes_fork_rate_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])'
+              legendFormat: Fork Rate
+              refId: A

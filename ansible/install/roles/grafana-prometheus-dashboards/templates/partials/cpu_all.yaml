@@ -1,0 +1,89 @@
+    - title: CPU All
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - All CPUs
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="idle"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Idle
+              refId: A
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="user"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: User
+              refId: B
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="system"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: System
+              refId: C
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="interrupt"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Interrupt
+              refId: D
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="softirq"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Softirq
+              refId: E
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="wait"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Wait
+              refId: F
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="nice"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Nice
+              refId: G
+            - expr: '100 * (sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="steal"}[5m])) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])))'
+              legendFormat: Steal
+              refId: H
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - All CPUs Sum
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="idle"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Idle
+              redfId: A
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="interrupt"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Interrupt
+              redfId: B
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="system"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: System
+              redfId: C
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="nice"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Nice
+              redfId: D
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="steal"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Steal
+              redfId: E
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="user"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: User
+              redfId: F
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="softirq"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Softirq
+              redfId: G
+            - expr: '100 * sum(sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]",type="wait"}[5m])) by (cpu) / sum(irate(collectd_cpu_total{exported_instance=~"[[Cloud]]_[[Node]]"}[5m])) by (cpu))'
+              legendFormat: Wait
+              redfId: H
+          yaxes:
+            - format: percent
+            - format: short

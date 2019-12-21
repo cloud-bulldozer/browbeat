@@ -1,0 +1,38 @@
+    - title: Numa
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Numastat
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="interleave_hit"}[5m])'
+              legendFormat: $Numa.interleave_hit
+              refId: A
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="local_node"}[5m])'
+              legendFormat: $Numa.local_node
+              refId: B
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="numa_foreign"}[5m])'
+              legendFormat: $Numa.numa_foreign
+              refId: C
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="numa_hit"}[5m])'
+              legendFormat: $Numa.numa_hit
+              refId: D
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="numa_miss"}[5m])'
+              legendFormat: $Numa.numa_miss
+              refId: E
+            - expr: 'irate(collectd_numa_vmpage_action_total{exported_instance=~"[[Cloud]]_[[Node]]", numa=~"$Numa", type="other_node"}[5m])'
+              legendFormat: $Numa.other_node
+              refId: F

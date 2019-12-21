@@ -1,0 +1,127 @@
+    - title: Memory & Swap
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Memory in Bytes
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="buffered"})'
+              legendFormat: Buffered
+              refId: A
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="cached"})'
+              legendFormat: Cached
+              refId: B
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="free"})'
+              legendFormat: Free
+              refId: C
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="slab_recl"})'
+              legendFormat: Slab_recl
+              refId: D
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="slab_unrecl"})'
+              legendFormat: Slab_unrecl
+              refId: E
+            - expr: 'sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="used"})'
+              legendFormat: Used
+              refId: F
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: $Cloud - $Node - Memory in Percentage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="buffered"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Buffered
+              refId: A
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]",memory="cached"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Cached
+              refId: B
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="free"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Free
+              refId: C
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="slab_recl"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Slab_recl
+              refId: D
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]", memory="slab_unrecl"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Slab_unrecl
+              refId: E
+            - expr: '100 * sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]",memory="used"}) / sum(collectd_memory{exported_instance="[[Cloud]]_[[Node]]"})'
+              legendFormat: Used
+              refId: F
+          yaxes:
+            - format: percent
+            - format: short
+        - title: $Cloud - $Node - Swap Usage
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          stack: true
+          targets:
+            - expr: 'collectd_swap{exported_instance="[[Cloud]]_[[Node]]", swap="cached"}'
+              legendFormat: Cached
+              refId: A
+            - expr: 'collectd_swap{exported_instance="[[Cloud]]_[[Node]]", swap="free"}'
+              legendFormat: Free
+              refId: B
+            - expr: 'collectd_swap{exported_instance="[[Cloud]]_[[Node]]", swap="used"}'
+              legendFormat: Used
+              refId: C
+          yaxes:
+            - format: bits
+            - format: short
+        - title: $Cloud - $Node - Swap IO
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_swap_swap_io_total{exported_instance=~"[[Cloud]]_[[Node]]", swap="in"}[5m])'
+              legendFormat: In
+              refId: A
+            - expr: 'irate(collectd_swap_swap_io_total{exported_instance="[[Cloud]]_[[Node]]", swap="in"}[5m])'
+              legendFormat: Out
+              refId: B
+          yaxes:
+            - format: bytes
+            - format: short

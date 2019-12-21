@@ -125,6 +125,14 @@ http://docs.grafana.org/http_api/auth/#create-api-token
   [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml # if not run before.
   [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
 
+(Optional) Install Browbeat Prometheus/Grafana/Collectd
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+  [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-prometheus-dashboards.yml
+
+Make sure grafana-api-key is added in the `install/group_vars/all.yml`
+
 (Optional) Install Browbeat Common Logging through filebeat
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

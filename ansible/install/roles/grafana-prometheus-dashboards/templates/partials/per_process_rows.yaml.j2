@@ -1,0 +1,34 @@
+#jinja2:lstrip_blocks: True
+{% for metrics in per_process_metrics %}
+    - title: {{per_process_row_title_prefix}} {{metrics.name}}
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+  {% for panel in per_process_panels[item.process_list_name] %}
+        - title: {{panel.name}}
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: '{{metrics.nullPointMode}}'
+          targets:
+    {% for process in panel.processes %}
+      {% for metric in metrics.metrics %}
+            - expr: {{metric.expr}}{exported_instance=~"[[Cloud]]_[[Node]]", processes="{{process}}"}
+              legendFormat: {{process}}
+      {% endfor %}
+    {% endfor %}
+          yaxes:
+            - format: {{metrics.y1units}}
+            - format: short
+  {% endfor %}
+{% endfor %}

@@ -1,0 +1,233 @@
+    - title: MariaDB
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: MySQL Threads
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_mysql_threads{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]", type="cached"}'
+              legendFormat: Cached
+              refId: A
+            - expr: 'collectd_mysql_threads{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]", type="connected"}'
+              legendFormat: Connected
+              refId: B
+            - expr: 'collectd_mysql_threads{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]", type="running"}'
+              legendFormat: Running
+              refId: C
+        - title: MySQL Traffic
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_octets_0_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]"}[5m])'
+              legendFormat: RX
+              refId: A
+            - expr: 'irate(collectd_mysql_mysql_octets_1_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]"}[5m])'
+              legendFormat: TX
+              refId: B
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Query Cache
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_mysql_cache_result_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="qcache-hits"}'
+              legendFormat: hits
+              refId: A
+            - expr: 'collectd_mysql_cache_result_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="qcache-inserts"}'
+              legendFormat: inserts
+              refId: B
+            - expr: 'collectd_mysql_cache_result_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="qcache-not_cached"}'
+              legendFormat: not_cached
+              refId: C
+            - expr: 'collectd_mysql_cache_result_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="qcache-prunes"}'
+              legendFormat: prunes
+              refId: D
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Query Cache Size
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_mysql_cache_size{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="qcache"}'
+              legendFormat: qcache
+              refId: A
+        - title: MySQL Buffer Pool Data
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'collectd_mysql_mysql_bpool_bytes{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="data"}'
+              legendFormat: Data
+              refId: A
+            - expr: 'collectd_mysql_mysql_bpool_bytes{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type="dirty"}'
+              legendFormat: Dirty
+              refId: B
+          yaxes:
+            - format: bytes
+            - format: short
+        - title: MySQL Buffer Pool Counters
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_bpool_counters_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A
+        - title: MySQL Commands
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_commands_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A
+        - title: MySQL Handler
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_handler_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A
+        - title: MySQL Locks
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_locks_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A
+        - title: MySQL Select
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_select_total{exported_instance=~"[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A
+        - title: MySQL Sort
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'irate(collectd_mysql_mysql_sort_total{exported_instance="[[Cloud]]_[[Node]]",mysql=~"[[Node]]",type=~".*"}[5m])'
+              legendFormat: mysql-{{'{{'}} type {{'}}'}}
+              refId: A

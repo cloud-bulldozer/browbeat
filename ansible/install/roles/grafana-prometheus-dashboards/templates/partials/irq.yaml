@@ -1,0 +1,95 @@
+    - title: IRQ
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - IRQ
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="CAL"}[5m]))'
+              legendFormat: CAL
+              refId: A
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="DFR"}[5m]))'
+              legendFormat: DFR
+              refId: B
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="ERR"}[5m]))'
+              legendFormat: ERR
+              refId: C
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="IWI"}[5m]))'
+              legendFormat: IWI
+              refId: D
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="LOC"}[5m]))'
+              legendFormat: LOC
+              refId: E
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="MCE"}[5m]))'
+              legendFormat: MCE
+              refId: F
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="MCP"}[5m]))'
+              legendFormat: MCP
+              refId: G
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="MIS"}[5m]))'
+              legendFormat: MIS
+              refId: H
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="NIMI"}[5m]))'
+              legendFormat: NIMI
+              refId: I
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="NPI"}[5m]))'
+              legendFormat: NPI
+              refId: J
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="PIN"}[5m]))'
+              legendFormat: PIN
+              refId: K
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="PIW"}[5m]))'
+              legendFormat: PIW
+              refId: L
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="PMI"}[5m]))'
+              legendFormat: PMI
+              refId: M
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="RES"}[5m]))'
+              legendFormat: RES
+              refId: N
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="RTR"}[5m]))'
+              legendFormat: RTR
+              refId: O
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="SPU"}[5m]))'
+              legendFormat: SPU
+              refId: P
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="THR"}[5m]))'
+              legendFormat: THR
+              refId: Q
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="TLB"}[5m]))'
+              legendFormat: TLB
+              refId: R
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq="TRM"}[5m]))'
+              legendFormat: TRM
+              refId: S
+        - title: $Cloud - $Node - Interrupts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: 'sum(irate(collectd_irq_total{exported_instance=~"[[Cloud]]_[[Node]]", irq=~"[0-9]*"}[5m]))'
+              legendFormat: Interrupt
+              refId: A

@@ -1,0 +1,108 @@
+#jinja2:lstrip_blocks: True
+{% set apache_groups = ['undercloud', 'controller', '*'] %}
+{% set cephmon_groups = ['controller', '*'] %}
+{% set gnocchi_groups = ['controller', '*'] %}
+{% set ironic_groups = ['undercloud'] %}
+{% set mariadb_groups = ['undercloud', 'controller', '*'] %}
+{% set odl_groups = ['controller', '*'] %}
+{% set ovsagent_groups = ['controller', 'compute', '*'] %}
+{% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
+{% set swift_stat_groups = ['controller', '*'] %}
+---
+dashboard:
+  title: {{item.process_list_name}} General System Performance Browbeat
+  links:
+    - title: Openstack General Dashboards
+      type: dashboards
+      asDropdown: true
+      includeVars: true
+      keepTime: true
+      icon: cloud
+      tags:
+        - OSP
+  tags:
+    - OSP
+  templating:
+    - name: Cloud
+      datasource: Prometheus
+      query: label_values(exported_instance)
+      regex: /^(.+?)_/g
+      refresh: 1
+      type: query
+    - name: Node
+      datasource: Prometheus
+      query: label_values(exported_instance)
+      regex: /[^_]*_(.+)/
+      refresh: 1
+      type: query
+    - name: Disk
+      datasource: Prometheus
+      query: label_values(disk)
+      refresh: 1
+      type: query
+    - name: CPU
+      datasource: Prometheus
+      query: label_values(cpu)
+      refresh: 1
+      type: query
+    - name: Interface
+      datasource: Prometheus
+      query: label_values(interface)
+      refresh: 1
+      type: query
+    - name: Host
+      datasource: Prometheus
+      query: label_values(instance)
+      refresh: 1
+      type: query
+    - name: Numa
+      datasource: Prometheus
+      query: label_values(numa)
+      refresh: 1
+      type: query
+    - name: Process
+      datasource: Prometheus
+      query: label_values(processes)
+      refresh: 1
+      type: query
+    - name: Tail
+      datasource: Prometheus
+      query: label_values(tail)
+      refresh: 1
+      type: query
+  time:
+    from: now-1h
+    to: now
+  rows:
+{% include 'partials/description.yaml' %}
+
+{% include 'partials/cpu_all.yaml' %}
+
+{% include 'partials/cpu_cores.yaml' %}
+
+{% include 'partials/memory.yaml' %}
+
+{% include 'partials/disk.yaml' %}
+
+{% include 'partials/df.yaml' %}
+
+{% include 'partials/network.yaml' %}
+
+{% include 'partials/turbostat.yaml' %}
+
+{% include 'partials/numa.yaml' %}
+
+{% include 'partials/irq.yaml' %}
+
+{% include 'partials/load.yaml' %}
+
+{% include 'partials/processes.yaml' %}
+
+{% set per_process_row_title_prefix = 'OSP' %}
+{% include 'partials/per_process_rows.yaml.j2' %}
+
+{% if item.template_node_type in mariadb_groups %}
+  {% include 'partials/mariadb.yaml' %}
+{% endif %}
+
+{% include 'partials/tail.yaml' %}
