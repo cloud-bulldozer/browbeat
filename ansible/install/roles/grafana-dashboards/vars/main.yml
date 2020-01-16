@@ -137,6 +137,7 @@ per_process_panels:
       processes:
         - keystone-admin
         - keystone-main
+        - keystone
         - keystone-token-flush
     - name: "Mistral"
       processes:
@@ -281,6 +282,7 @@ per_process_panels:
       processes:
         - keystone-admin
         - keystone-main
+        - keystone
         - keystone-token-flush
     - name: "Neutron"
       processes:
@@ -535,6 +537,7 @@ per_process_panels:
       processes:
         - keystone-admin
         - keystone-main
+        - keystone
         - keystone-token-flush
     - name: "Mistral"
       processes:
