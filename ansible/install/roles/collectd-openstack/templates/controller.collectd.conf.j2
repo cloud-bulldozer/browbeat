@@ -344,6 +344,7 @@ PreCacheChain "PreCache"
   # Keystone (OpenStack Installed)
   ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11,12,13
   ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11,12,13
+  ProcessMatch "keystone" "keystone.*-DFOREGROUND"                                      # 16
   # Starting Pike, fernet tokens are default thus token_flush not needed
   ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11,-12,-13
 
