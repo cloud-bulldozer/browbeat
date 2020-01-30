@@ -38,6 +38,7 @@ rally:
     - glance: rally/rally-plugins/glance
     - neutron: rally/rally-plugins/neutron
     - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - cinder: rally/rally-plugins/cinder
     - workloads: rally/rally-plugins/workloads
 shaker:
   server: 1.1.1.1
@@ -302,6 +303,11 @@ workloads:
       - name: neutron-securitygroup-port
         enabled: true
         file: rally/rally-plugins/neutron/securitygroup_port.yml
+      - name: create-vm-with-volume-list
+        enabled: true
+        image_name: centos7
+        flavor_name: m1.small
+        file: rally/rally-plugins/cinder/boot_vm_attach_volume_list.yml
 
   - name: plugin-workloads
     enabled: false
