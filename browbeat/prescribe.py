@@ -96,6 +96,13 @@ class Metadata(object):
                             if repo['state'] in 'enabled':
                                 software_dict['repos_enabled']['repos'].append(repo['repoid'])
                         software_dict['repos_enabled']['node_name'] = node
+                    if 'stockpile_yum_packages' in key and output not in bad_output_list:
+                        software_dict['packages'] = {}
+                        software_dict['packages']['installed'] = []
+                        for package in output:
+                            software_dict['packages']['installed'].append(
+                                {'name': package['name'], 'version': package['version']})
+                        software_dict['packages']['node_name'] = node
                     if 'stockpile_cpu_vuln' in key and output not in bad_output_list:
                         if 'vulnerability' not in sample_vuln_dict.keys():
                             sample_vuln_dict['vulnerability'] = {}
