@@ -89,7 +89,7 @@ class Metadata(object):
                 sample_vuln_dict = {}
                 node = sys_data[item]['inventory_hostname']
                 for key, output in six.iteritems(sys_data[item]):
-                    if 'stockpile_yum' in key and output not in bad_output_list:
+                    if 'stockpile_yum_repos' in key and output not in bad_output_list:
                         software_dict['repos_enabled'] = {}
                         software_dict['repos_enabled']['repos'] = []
                         for repo in output:
