@@ -73,7 +73,7 @@ class Tools(object):
         meta = self.config['elasticsearch']['metadata_files']
         for _meta in meta:
             if not os.path.isfile(_meta['file']):
-                self.logger.error(
+                self.logger.info(
                     "Metadata file {} is not present".format(_meta['file']))
                 return False
         return True
