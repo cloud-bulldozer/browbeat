@@ -104,6 +104,28 @@ workloads:
         flavor_name: m1.tiny
         sla_max_seconds: 30
         sla_max_failure: 0
+
+      - name: create-and-list-snapshots
+        enabled: true
+        size: 1
+        file: rally/cinder/cinder-create-and-list-snapshots.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+
+      - name: create-and-list-volume
+        enabled: true
+        size: 1
+        file: rally/cinder/cinder-create-and-list-volume.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+
+      - name: create-and-update-volume
+        enabled: true
+        size: 1
+        file: rally/cinder/cinder-create-and-update-volume.yml
+        sla_max_seconds: 30
+        sla_max_failure: 0
+
   - name: keystonebasic
     enabled: true
     type: rally

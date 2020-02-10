@@ -1,0 +1,23 @@
+{% set size = size or 1 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  CinderVolumes.create_and_list_volume:
+    -
+      args:
+        size: {{ size }}
+        detailed: True
+      runner:
+        type: "constant"
+        times: {{ times }}
+        concurrency: {{ concurrency }}
+      context:
+        users:
+          tenants: 10
+          users_per_tenant: 20
+      sla:
+        max_avg_duration: {{ sla_max_avg_duration }}
+        max_seconds_per_iteration: {{ sla_max_seconds }}
+        failure_rate:
+          max: {{ sla_max_failure }}
