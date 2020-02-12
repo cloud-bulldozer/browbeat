@@ -21,6 +21,9 @@ mapping:
     type: str
     required: True
     enum: ["rally"]
+  rally_deployment:
+    type: str
+    required: False
   scenarios:
     type: seq
     sequence:

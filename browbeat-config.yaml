@@ -81,6 +81,7 @@ workloads:
   - name: authenticate
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 8
     times: 100
@@ -98,6 +99,7 @@ workloads:
   - name: cinder
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 2
     times: 10
@@ -111,6 +113,7 @@ workloads:
   - name: keystonebasic
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 8
     times: 100
@@ -125,6 +128,7 @@ workloads:
   - name: neutron
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 2
     times: 10
@@ -171,6 +175,7 @@ workloads:
   - name: nova
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 2
     times: 10
@@ -210,6 +215,7 @@ workloads:
   - name: glance
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 2
     times: 10
@@ -224,6 +230,7 @@ workloads:
   - name: octavia
     enabled: false
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 2
     times: 10
@@ -268,6 +275,7 @@ workloads:
   - name: simple-plugins
     enabled: true
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 8
     times: 10
@@ -312,6 +320,7 @@ workloads:
   - name: plugin-workloads
     enabled: false
     type: rally
+    rally_deployment: overcloud
     concurrency:
       - 1
     times: 1

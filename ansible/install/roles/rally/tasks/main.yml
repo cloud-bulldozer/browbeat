@@ -39,14 +39,45 @@
 - name: Setup rally database
   shell: . {{ rally_venv }}/bin/activate; rally db recreate
 
-- name: Setup rally deployment
+- block:
+    - name: copy of stackrc
+      copy:
+        src: "{{ stackrc }}"
+        dest: "{{home_dir}}/undercloudrc"
+
+    - name: Get the OS_AUTH_URL value in stackrc
+      shell: cat undercloudrc | grep OS_AUTH_URL=
+      register: os_auth_url
+
+    - name: Add v3 to OS_AUTH_URL in stackrc
+      replace:
+        path: "{{home_dir}}/undercloudrc"
+        regexp: "{{ os_auth_url.stdout }}"
+        replace: '{{ os_auth_url.stdout }}/v3'
+
+    - name: Setup rally deployment for undercloud
+      shell: . {{ rally_venv }}/bin/activate; . "{{home_dir}}/undercloudrc"; rally deployment create --fromenv --name undercloud
+
+    - name: Check Rally deployment for undercloud
+      shell: . {{ rally_venv }}/bin/activate; . "{{home_dir}}/undercloudrc"; rally deployment check
+      register: rally_deployment_check_undercloud
+
+    - name: Fail if Rally deployment cannot be verfied on undercloud
+      fail:
+        msg: "Failed to verify that your deployment is ready to benchmark"
+      when: rally_deployment_check_undercloud.rc != 0
+
+  when: rally_undercloud_enabled
+
+- name: Setup rally deployment for overcloud
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
 
-- name: Check Rally deployment
+- name: Check Rally deployment for overcloud
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment check
-  register: rally_deployment_check
+  register: rally_deployment_check_overcloud
 
-- name: Fail if Rally deployment cannot be verfied
+- name: Fail if Rally deployment cannot be verfied for overcloud
   fail:
     msg: "Failed to verify that your deployment is ready to benchmark"
-  when: rally_deployment_check.rc != 0
+  when: rally_deployment_check_overcloud.rc != 0
+

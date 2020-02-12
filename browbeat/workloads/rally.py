@@ -216,6 +216,7 @@ class Rally(base.WorkloadBase):
             self.update_total_scenarios()
             scenario_name = scenario["name"]
             scenario_file = scenario["file"]
+
             del scenario["enabled"]
             del scenario["file"]
             del scenario["name"]
@@ -237,8 +238,30 @@ class Rally(base.WorkloadBase):
                 del scenario["concurrency"]
             else:
                 concurrencies = def_concurrencies
+
             if "times" not in scenario:
                 scenario["times"] = def_times
+
+            if "rally_deployment" in scenario:
+                _rally_deployment = scenario["rally_deployment"]
+            elif "rally_deployment" in workload:
+                scenario["rally_deployment"] = workload["rally_deployment"]
+                _rally_deployment = scenario["rally_deployment"]
+            else:
+                _rally_deployment = 'overcloud'
+                self.logger.info("Default rally deployment {} in use.".format(_rally_deployment))
+
+            rally_deployments = ['undercloud', 'overcloud']
+            if _rally_deployment in rally_deployments:
+                cmd = "source {}; ".format(get_workload_venv('rally', True))
+                cmd += "rally deployment use {}".format(_rally_deployment)
+                cmd_stdout = self.tools.run_cmd(cmd)['stdout']
+                if cmd_stdout == "Deployment {} is not found.".format(_rally_deployment):
+                    self.logger.error("Rally deployment {} is not found.".format(_rally_deployment))
+                    exit(1)
+            else:
+                self.logger.error("Wrong rally benchmark name specified.")
+                continue
 
             concurrency_count_dict = collections.Counter()
             for concurrency in concurrencies:
