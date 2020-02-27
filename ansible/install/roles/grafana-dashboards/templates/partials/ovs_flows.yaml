@@ -1,0 +1,23 @@
+    - title: OVS Flows
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: OVS Flows
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: true
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovs-flows.gauge-ovs_flows, 'br-int flows')
+          yaxes:
+            - format: short
+            - format: short

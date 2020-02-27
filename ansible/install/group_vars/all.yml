@@ -275,6 +275,7 @@ controller_monitored_queues:
 ovsagent_compute_monitor: false
 ovsagent_controller_monitor: false
 ovsagent_networker_monitor: false
+ovs_flows_monitoring: false
 
 controller_monitored_ints:
   - "tap"

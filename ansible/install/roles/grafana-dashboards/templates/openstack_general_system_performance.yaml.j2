@@ -5,6 +5,7 @@
 {% set ironic_groups = ['undercloud'] %}
 {% set mariadb_groups = ['undercloud', 'controller', '*'] %}
 {% set odl_groups = ['controller', '*'] %}
+{% set ovsflows_groups = ['controller', 'compute', '*'] %}
 {% set ovsagent_groups = ['controller', 'compute', '*'] %}
 {% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {% set swift_stat_groups = ['controller', '*'] %}
@@ -148,6 +149,10 @@ dashboard:
 
 {% if item.template_node_type in ironic_groups %}
   {% include 'partials/ironic_metrics.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in ovsflows_groups %}
+  {% include 'partials/ovs_flows.yaml' %}
 {% endif %}
 
 {% if item.template_node_type in ovsagent_groups %}

@@ -87,5 +87,10 @@
           {% if config_type == 'controller' or config_type == 'undercloud' %}
           -v /var/lib/mysql/mysql.sock:/var/lib/mysql/mysql.sock \
           {% endif %}
+          {% if config_type == 'controller' or config_type == 'compute' %}
+          {% if ovs_flows_monitoring %}
+          -v /etc/openvswitch/:/etc/openvswitch/ -v /var/run/openvswitch/:/var/run/openvswitch/ \
+          {% endif %}
+          {% endif %}
           collectd-openstack
       become: yes
