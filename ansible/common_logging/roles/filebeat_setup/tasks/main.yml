@@ -1,0 +1,27 @@
+- name: Install filebeat RPM
+  yum:
+    name: "{{ filebeat_url }}"
+    state: present
+  become: true
+
+- name: include vars
+  include_vars:
+    file: vars/{{rhosp_major}}.yml
+
+- name: Template the filebeat configuration file
+  template:
+    src: filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: Start and enable filebeat
+  service:
+    name: filebeat
+    state: stopped
+    enabled: no
+  become: true
+  when: start_filebeat is defined and start_filebeat|bool
+

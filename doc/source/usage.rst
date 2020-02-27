@@ -87,6 +87,24 @@ using some simple searches such as:
    shaker_uuid: 97092334-34e8-446c-87d6-6a0f361b9aa8 AND record.concurrency: 1 AND result.result_type: bandwidth
    shaker_uuid: c918a263-3b0b-409b-8cf8-22dfaeeaf33e AND record.concurrency:1 AND record.test:Bi-Directional
 
+Correlating test run with logs
+------------------------------
+
+If filebeat is enabled in the browbeat configuration file and filebeat was previously installed by running:
+
+::
+
+    $ ansible-playbook -i hosts common_logging/install_logging.yml
+
+as explained in the installation documentation, then
+
+By enabling filebeat logging within the browbeat configuration file, a playbook `ansible/common_logging/browbeat_logging.yml`
+is run which appends browbeat_uuid to log messages and starts filebeat pre-browbeat workload run so that log messages have
+browbeat uuid appended and clears the uuid from the configuration file and stops filebeat from sending more logs post-browbeat
+workload run
+
+
+
 Interpreting Browbeat Results
 -----------------------------
 

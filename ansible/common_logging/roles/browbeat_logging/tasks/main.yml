@@ -1,0 +1,15 @@
+- name: check if filebeat config is present
+  stat:
+    path: /etc/filebeat/filebeat.yml
+  register: filebeat_config
+
+- name: insert browbeat uuid
+  lineinfile:
+    path: /etc/filebeat/filebeat.yml
+    regexp: '^\s+browbeat_uuid'
+    line: '    browbeat_uuid: "{{browbeat_uuid}}"'
+  become: true
+  when: filebeat_config.stat.exists
+  notify:
+    - restart filebeat
+    - stop filebeat

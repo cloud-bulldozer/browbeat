@@ -6,6 +6,7 @@ browbeat:
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/site.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
