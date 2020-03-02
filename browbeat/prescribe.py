@@ -80,6 +80,19 @@ class Metadata(object):
                         env_dict['environment_setup'][nodes] = number
         return env_dict
 
+    def get_version_metadata(self, sys_data):
+        version = {}
+        for item, dictionary in six.iteritems(sys_data):
+            if 'undercloud' in sys_data[item]['group_names']:
+                if 'stockpile_rhosp_version' in dictionary:
+                    version['rhosp_version'] = dictionary['stockpile_rhosp_version']
+                if 'stockpile_rhosp_major' in dictionary:
+                    version['rhosp_major'] = dictionary['stockpile_rhosp_major']
+                if 'stockpile_rhosp_puddle' in dictionary:
+                    version['rhosp_puddle'] = dictionary['stockpile_rhosp_puddle']
+                break
+        return version
+
     def get_software_metadata(self, sys_data):
         soft_all_dict = []
         bad_output_list = [{},[],""]
@@ -182,6 +195,9 @@ def main():
     hardware_data = metadata.get_hardware_metadata(sysdata)
     metadata.write_metadata_file(
         hardware_data, os.path.join(args.path, 'hardware-metadata.json'))
+    version_data = metadata.get_version_metadata(sysdata)
+    metadata.write_metadata_file(
+        version_data, os.path.join(args.path, 'version.json'))
     software_data = metadata.get_software_metadata(sysdata)
     # Just a simple check to ensure that stockpile was able to collect osp data
     check = False
