@@ -29,7 +29,7 @@ from rally.task import validation
 class CreateNetworkNovaBootPing(vm_utils.VMScenario,
                                 neutron_utils.NeutronScenario):
 
-    def run(self, image, flavor, ext_net_id, router_create_args=None,
+    def run(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
             network_create_args=None, subnet_create_args=None, **kwargs):
         ext_net_name = None
         if ext_net_id:
@@ -44,10 +44,11 @@ class CreateNetworkNovaBootPing(vm_utils.VMScenario,
         network = self._create_network(network_create_args or {})
         subnet = self._create_subnet(network, subnet_create_args or {})
         self._add_interface_router(subnet['subnet'], router['router'])
-        kwargs["nics"] = [{'net-id': network['network']['id']}]
-        guest = self._boot_server_with_fip(image, flavor, True,
-                                           ext_net_name, **kwargs)
-        self._wait_for_ping(guest[1]['ip'])
+        for i in range(num_vms):
+            kwargs["nics"] = [{'net-id': network['network']['id']}]
+            guest = self._boot_server_with_fip(image, flavor, True,
+                                               ext_net_name, **kwargs)
+            self._wait_for_ping(guest[1]['ip'])
 
     @atomic.action_timer("neutron.create_router")
     def _create_router(self, router_create_args):

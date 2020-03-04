@@ -287,6 +287,7 @@ workloads:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_vms_on_single_network.yml
       - name: netcreate-boot-ping
         enabled: true
+        num_vms: 4
         image_name: cirros
         flavor_name: m1.xtiny
         ext_net_id:
