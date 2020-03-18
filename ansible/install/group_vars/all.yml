@@ -18,6 +18,12 @@ tripleo: true
 home_dir: "/home/{{browbeat_user}}"
 browbeat_path: "{{home_dir}}/browbeat"
 
+# Creates rally deployment Undercloud
+rally_undercloud_enabled: true
+
+# The Undercloud RC file
+stackrc: "{{home_dir}}/stackrc"
+
 # The Overcloud RC file
 overcloudrc: "{{home_dir}}/overcloudrc"
 

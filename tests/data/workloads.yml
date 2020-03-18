@@ -5,6 +5,25 @@ rally:
       name: valid-test-authenticate-01
       enabled: true
       type: rally
+      rally_deployment: overcloud
+      concurrency:
+        - 1
+      times: 1
+      scenarios:
+        - name: valid-test-authentic-keystone
+          enabled: true
+          file: rally/authenticate/keystone-cc.yml
+        - name: valid-test-authentic-neutron
+          enabled: false
+          file: rally/authenticate/validate_neutron-cc.yml
+        - name: valid-test-authentic-octavia
+          enabled: true
+          file: rally/authenticate/validate_octavia-cc.yml
+  - valid: true
+    data:
+      name: valid-test-authenticate-02
+      enabled: true
+      type: rally
       concurrency:
         - 1
       times: 1
@@ -23,6 +42,7 @@ rally:
       name: invalid-test-authenticate-01
       enabled: true
       type: rally-incorrect
+      rally_deployment: 1
       concurrency:
         - 1
       times: 1

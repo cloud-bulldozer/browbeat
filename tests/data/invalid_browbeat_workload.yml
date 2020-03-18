@@ -41,7 +41,7 @@ shaker:
   external_host: 2.2.2.2
 
 workloads:
-  # Missing name
+  # Missing name for workload
   - enabled: false
     type: rally
     concurrency:

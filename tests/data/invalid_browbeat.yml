@@ -45,6 +45,7 @@ workloads:
   - name: browbeat-test-authenticate
     enabled: false
     type: rally
+    rally_deployment: underclouud
     concurrency:
       - 1
     times: 1
