@@ -48,8 +48,8 @@ class Elastic(object):
         )
         self.workload = workload
         today = datetime.datetime.today()
-        self.index = "{}-{}-{}".format(tool,
-                                       workload, today.strftime('%Y.%m.%d'))
+        self.index = "{}-{}-{}".format(tool, workload,
+                                       today.strftime('%Y.%m'))
 
     def __del__(self):
         self.flush_cache()
@@ -97,7 +97,6 @@ class Elastic(object):
             es_item = {}
             es_item['_id'] = item['_id']
             es_item['_source'] = item['result']
-            es_item['_type'] = item['_type']
             es_item['_index'] = self.index
             output.append(es_item)
         return output
@@ -667,6 +666,7 @@ class Elastic(object):
         body = {"query": {
                 "bool": {"must": [
                     {"term": {"browbeat_uuid": browbeat_id}},
+                    {"term": {"doc_type": 'error'}}
                 ]}
                 }}
         """
@@ -680,7 +680,6 @@ class Elastic(object):
         """
         page = self.es.search(
             index=index,
-            doc_type='error',
             scroll='1m',
             size=1000,
             body=body,
@@ -702,7 +701,6 @@ class Elastic(object):
         self.logger.info("Making query against {}".format(index))
         page = self.es.search(
             index=index,
-            doc_type='result',
             scroll='1m',
             size=1000,
             body=body,
@@ -732,10 +730,10 @@ class Elastic(object):
         result['cloud_name'] = self.config['browbeat']['cloud_name']
         result['browbeat_config'] = self.config
         data['result'] = result
+        data['result']['doc_type'] = _type
         data['test_name'] = test_name
         data['result_dir'] = result_dir
         data['identifier'] = identifier
-        data['_type'] = _type
         data['_id'] = _id
         self.cache.append(data)
         now = datetime.datetime.utcnow()
