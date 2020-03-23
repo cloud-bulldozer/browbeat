@@ -1,0 +1,50 @@
+{% set image_name = image_name or 'cirros' %}
+{% set flavor_name = flavor_name or 'm1.xtiny' %}
+{% set num_vms = num_vms or 1 %}
+{% set num_sg = num_sg or 1 %}
+{% set num_sgr = num_sgr or 2 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatPlugin.create_network_nova_boot_ping_sec_groups:
+-
+    args:
+      floating: True
+      flavor:
+        name: '{{flavor_name}}'
+      image:
+        name: '{{image_name}}'
+      num_vms: {{num_vms}}
+      num_sg: {{num_sg}}
+      num_sgr: {{num_sgr}}
+      ext_net_id: '{{ext_net_id}}'
+      network_create_args: {}
+      router_create_args: {}
+      subnet_create_args: {}
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: "constant"
+    context:
+      users:
+        tenants: 1
+        users_per_tenant: 1
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+          floatingip: -1
+          security_group: -1
+          security_group_rule: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
