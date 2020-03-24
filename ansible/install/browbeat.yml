@@ -7,6 +7,7 @@
   remote_user: "{{ browbeat_user }}"
   roles:
     - common
+    - osp_version
     - browbeat
     - stockpile
     - { role: browbeat-results, when: browbeat_results_in_httpd}
