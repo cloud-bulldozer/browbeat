@@ -92,6 +92,9 @@ per_process_panels:
         - ceilometer-collector
         - ceilometer-polling
         - ceilometer_wsgi
+    - name: "Conmon"
+      processes:
+        - conmon
     - name: "Docker"
       processes:
         - docker-registry
@@ -225,6 +228,9 @@ per_process_panels:
         - cinder-scheduler
         - cinder-volume
         - cinder_wsgi
+    - name: "Conmon"
+      processes:
+        - conmon
     - name: "Corosync/Pacemaker"
       processes:
         - attrd
@@ -432,6 +438,9 @@ per_process_panels:
     - name: "Collectd"
       processes:
         - collectd
+    - name: "Conmon"
+      processes:
+        - conmon
 
   #
   # This dashboard "OpenStack" aims to be comprehensive with all processes across:
@@ -469,6 +478,9 @@ per_process_panels:
         - cinder-scheduler
         - cinder-volume
         - cinder_wsgi
+    - name: "Conmon"
+      processes:
+        - conmon
     - name: "Corosync/Pacemaker"
       processes:
         - attrd
