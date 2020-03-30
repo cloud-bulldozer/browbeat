@@ -54,7 +54,7 @@ workloads:
 # file for shaker should be one of https://opendev.org/performa/shaker/src/branch/master/shaker/scenarios/openstack
 # Shaker
   - name: shaker-l2
-    enabled: true
+    enabled: false
     type: shaker
     density: 1
     compute: 1
@@ -62,7 +62,7 @@ workloads:
     time: 60
     file: dense_l2.yaml
   - name: shaker-l3-north-south
-    enabled: true
+    enabled: false
     type: shaker
     placement: double_room
     density: 1
@@ -71,7 +71,7 @@ workloads:
     time: 60
     file: dense_l3_north_south.yaml
   - name: shaker-l3-east-west
-    enabled: true
+    enabled: false
     type: shaker
     density: 1
     compute: 1
@@ -79,7 +79,7 @@ workloads:
     file: dense_l3_east_west.yaml
 # Rally
   - name: authenticate
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -97,7 +97,7 @@ workloads:
         file: rally/authenticate/validate_nova-cc.yml
 
   - name: cinder
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -111,7 +111,7 @@ workloads:
         file: rally/cinder/cinder-create-and-attach-volume-cc.yml
 
   - name: keystonebasic
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -126,7 +126,7 @@ workloads:
         file: rally/keystonebasic/create_and_list_users-cc.yml
 
   - name: neutron
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -173,7 +173,7 @@ workloads:
         file: rally/neutron/neutron-boot-server-and-batch-add-subports.yml
 
   - name: nova
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -213,7 +213,7 @@ workloads:
         final_flavor_name: m1.small
 
   - name: glance
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -273,7 +273,7 @@ workloads:
         sla_max_failure: 0
 
   - name: simple-plugins
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
