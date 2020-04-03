@@ -24,8 +24,8 @@ BrowbeatPlugin.create_network_nova_boot_ping:
       type: "constant"
     context:
       users:
-        tenants: 1
-        users_per_tenant: 1
+        tenants: 10
+        users_per_tenant: 10
       quotas:
         neutron:
           network: -1
