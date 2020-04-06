@@ -169,8 +169,8 @@ def main():
         _logger.info("Checking for Metadata")
         metadata_exists = tools.check_metadata()
         if not metadata_exists:
-            _logger.error("Elasticsearch has been enabled but"
-                          " metadata files do not exist")
+            _logger.info("Elasticsearch has been enabled but"
+                         " metadata files do not exist")
             _logger.info("Gathering Metadata")
             tools.gather_metadata()
         elif _config['elasticsearch']['regather']:
