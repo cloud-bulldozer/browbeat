@@ -29,6 +29,9 @@ mapping:
       metadata_playbook:
         type: str
         required: True
+      logging_playbook:
+         type: str
+         required: True
       ssh_config:
         type: str
         required: True
@@ -77,6 +80,13 @@ mapping:
         required: True
       port:
         type: int
+        required: True
+  filebeat:
+    required: True
+    type: map
+    mapping:
+      enabled:
+        type: bool
         required: True
   rally:
     required: True

@@ -161,9 +161,10 @@ def main():
                 "If you meant 'all' use: './browbeat.py all' or './browbeat.py'")
         exit(1)
 
+    browbeat_uuid = browbeat.elastic.browbeat_uuid
     result_dir_ts = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
     _logger.info("Browbeat test suite kicked off")
-    _logger.info("Browbeat UUID: {}".format(browbeat.elastic.browbeat_uuid))
+    _logger.info("Browbeat UUID: {}".format(browbeat_uuid))
     if _config['elasticsearch']['enabled']:
         _logger.info("Checking for Metadata")
         metadata_exists = tools.check_metadata()
@@ -175,6 +176,11 @@ def main():
         elif _config['elasticsearch']['regather']:
             _logger.info("Regathering Metadata")
             tools.gather_metadata()
+
+    if _config['filebeat']['enabled']:
+        _logger.info("Enabling filebeat for log collection"
+                     " with browbeat_uuid {}".format(browbeat_uuid))
+        tools.common_logging(browbeat_uuid, logging_status=True)
 
     _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
 
@@ -194,15 +200,20 @@ def main():
 
     if base.WorkloadBase.failure > 0:
         _logger.info(
-            "Browbeat finished with test failures, UUID: {}".format(browbeat.elastic.browbeat_uuid))
+            "Browbeat finished with test failures, UUID: {}".format(browbeat_uuid))
         sys.exit(1)
 
     if base.WorkloadBase.index_failures > 0:
         _logger.info("Browbeat finished with Elasticsearch indexing failures, UUID: {}"
-                     .format(browbeat.elastic.browbeat_uuid))
+                     .format(browbeat_uuid))
         sys.exit(2)
 
-    _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat.elastic.browbeat_uuid))
+    if _config['filebeat']['enabled']:
+        _logger.info("Disabling filebeat for log collection"
+                     " for browbeat_uuid {}".format(browbeat_uuid))
+        tools.common_logging("", logging_status=False)
+
+    _logger.info("Browbeat finished successfully, UUID: {}".format(browbeat_uuid))
     sys.exit(0)
 
 

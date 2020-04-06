@@ -9,6 +9,7 @@ browbeat:
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false
@@ -30,6 +31,8 @@ grafana:
   port: 3000
   dashboards:
     - openstack-general-system-performance
+filebeat:
+  enabled: false
 rally:
   sleep_before: 0
   sleep_after: 0

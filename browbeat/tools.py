@@ -92,6 +92,15 @@ class Tools(object):
             self.logger.info("Metadata about cloud has been gathered")
             return True
 
+    def common_logging(self, browbeat_uuid, logging_status):
+        os.putenv("ANSIBLE_SSH_ARGS", " -F {}".format(self.config['ansible']['ssh_config']))
+        ansible_cmd = \
+            'ansible-playbook -i {} {} -e "browbeat_uuid={} logging_status={}"' \
+            .format(self.config['ansible']['hosts'],
+                    self.config['ansible']['logging_playbook'],
+                    browbeat_uuid, logging_status)
+        self.run_cmd(ansible_cmd)
+
     def post_process(self, cli):
         workloads = {}
         workloads['shaker'] = re.compile("shaker")

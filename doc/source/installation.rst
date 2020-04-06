@@ -89,8 +89,8 @@ can also work with Queens release but it is not recommended.
 
   [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
 
-(Optional) Install Rsyslogd logging with aggregation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Optional) Install Rsyslogd logging with aggregation (not maintained)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First configure the values rsyslog values and elasticsearch parameters in
 `ansible/install/group_vars/all.yml`. If you have a large number of hosts
@@ -124,6 +124,22 @@ http://docs.grafana.org/http_api/auth/#create-api-token
   [stack@ospd ansible]$ vi install/group_vars/all.yml
   [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml # if not run before.
   [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
+
+(Optional) Install Browbeat Common Logging through filebeat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Browbeat can be used to setup common logging on your OpenStack Cluster using Filebeat on the
+client side and Elasticsearch on the server side. Set the `cloud_prefix` and `es_ip` in
+`install/group_vars/all.yml` before running the playbook to setup common logging for your cloud.
+
+::
+
+  [stack@ospd ansible]$ # update the vars
+  [stack@ospd ansible]$ vi install/group_vars/all.yml
+  [stack@ospd ansible]$ # install filebeat
+  [stack@ospd ansible]$ ansible-playbook -i hosts common_logging/install_logging.yml
+  [stack@ospd ansible]$ # install and start filebeat
+  [stack@ospd ansible]$ ansible-playbook -i hosts common_logging/install_logging.yml -e "start_filebeat=True"
 
 Not mantained (Pre-Pike): Run Overcloud checks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -604,9 +620,8 @@ Graphite dashboard included and it is recommended to install collectd on your
 monitoring host such that you can see if you hit resource issues with your
 monitoring host.
 
-
-Install Kibana Visualizations
--------------------------------
+(Optional) Install Kibana Visualizations
+----------------------------------------
 
 1. Update install/group_vars/all.yml (es_ip) to identify your ELK host.
 2. Install Kibana Visualizations via Ansible playbook

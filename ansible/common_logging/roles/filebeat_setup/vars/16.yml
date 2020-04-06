@@ -1,0 +1,75 @@
+---
+filebeat_logs:
+    undercloud:
+       - /var/log/containers/nova/nova-api.log
+       - /var/log/containers/nova/nova-compute.log
+       - /var/log/containers/nova/nova-conductor.log
+       - /var/log/containers/nova/nova-scheduler.log
+       - /var/log/containers/glance/api.log
+       - /var/log/containers/heat/heat-engine.log
+       - /var/log/containers/heat/heat_api.log
+       - /var/log/containers/ironic/ironic-conductor.log
+       - /var/log/containers/ironic-inspector/ironic-inspector.log
+       - /var/log/containers/keystone/keystone.log
+       - /var/log/containers/mistral/api.log
+       - /var/log/containers/mistral/engine.log
+       - /var/log/containers/mistral/event-engine.log
+       - /var/log/containers/mistral/executor.log
+       - /var/log/containers/mysql/mariadb.log
+       - /var/log/containers/neutron/dhcp-agent.log
+       - /var/log/containers/neutron/ironic-neutron-agent.log
+       - /var/log/containers/neutron/l3-agent.log
+       - /var/log/containers/neutron/openvswitch-agent.log
+       - /var/log/containers/neutron/server.log
+       - /var/log/containers/placement/placement.log
+       - /var/log/containers/zaqar/zaqar-server.log
+       - /var/log/containers/httpd/heat-api/heat_api_wsgi_error.log
+       - /var/log/containers/httpd/ironic-api/ironic_wsgi_error.log
+       - /var/log/containers/httpd/ironic-pxe/ipxe_vhost_error.log
+       - /var/log/containers/httpd/keystone/keystone_wsgi_error.log
+       - /var/log/containers/httpd/nova-api/nova_api_wsgi_error.log
+       - /var/log/containers/httpd/placement/placement_wsgi_error.log
+       - /var/log/containers/httpd/zaqar/zaqar_wsgi_error.log
+    controller:
+        - /var/log/containers/cinder/cinder-api.log
+        - /var/log/containers/cinder/cinder-manage.log
+        - /var/log/containers/cinder/cinder-rowsflush.log
+        - /var/log/containers/cinder/cinder-scheduler.log
+        - /var/log/containers/cinder/cinder-volume.log
+        - /var/log/containers/glance/api.log
+        - /var/log/containers/heat/heat_api_cfn.log
+        - /var/log/containers/heat/heat_api.log
+        - /var/log/containers/heat/heat-engine.log
+        - /var/log/containers/keystone/keystone.log
+        - /var/log/containers/mysql/mysqld.log
+        - /var/log/containers/neutron/server.log
+        - /var/log/containers/neutron/l3-agent.log
+        - /var/log/containers/neutron/dhcp-agent.log
+        - /var/log/containers/neutron/metadata-agent.log
+        - /var/log/containers/neutron/openvswitch-agent.log
+        - /var/log/containers/nova/nova-api.log
+        - /var/log/containers/nova/nova-conductor.log
+        - /var/log/containers/nova/nova-scheduler.log
+        - /var/log/containers/nova/nova-metadata-api.log
+        - /var/log/containers/nova/nova-novncproxy.log
+        - /var/log/containers/openvswitch/ovn-controller.log
+        - /var/log/containers/openvswitch/ovn-northd.log
+        - /var/log/containers/openvswitch/ovsdb-server-nb.log
+        - /var/log/containers/openvswitch/ovsdb-server-sb.log
+        - /var/log/containers/placement/placement.log
+        - /var/log/containers/rabbitmq/rabbit@{{ inventory_hostname }}.log
+        - /var/log/containers/httpd/heat-api/heat_api_wsgi_error.log
+        - /var/log/containers/httpd/ironic-api/ironic_wsgi_error.log
+        - /var/log/containers/httpd/ironic-pxe/ipxe_vhost_error.log
+        - /var/log/containers/httpd/keystone/keystone_wsgi_error.log
+        - /var/log/containers/httpd/nova-api/nova_api_wsgi_error.log
+        - /var/log/containers/httpd/placement/placement_wsgi_error.log
+        - /var/log/containers/httpd/cinder-api/cinder_wsgi_error.log
+        - /var/log/containers/httpd/heat-api-cfn/heat_api_cfn_wsgi_error.log
+        - /var/log/containers/httpd/nova-metadata/nova_metadata_wsgi_error.log
+        - /var/log/containers/swift/swift.log
+    compute:
+        - /var/log/containers/libvirt/libvirtd.log
+        - /var/log/containers/neutron/ovn-metadata-agent.log
+        - /var/log/containers/nova/nova-compute.log
+        - /var/log/containers/openvswitch/ovn-controller.log

@@ -1,0 +1,13 @@
+- name: restart filebeat
+  service:
+    name: filebeat
+    state: restarted
+  become: true
+
+- name: stop filebeat
+  service:
+    name: filebeat
+    state: stopped
+  become: true
+  when: not logging_status|bool
+

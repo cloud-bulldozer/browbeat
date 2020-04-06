@@ -1,0 +1,44 @@
+#=========================== Filebeat inputs =============================
+
+filebeat.inputs:
+
+- type: log
+
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+{% for log in filebeat_logs[config_type] %}
+    - {{ log }}
+{% endfor %}
+
+
+  fields:
+    cloud_name: {{ cloud_prefix }}
+    browbeat_uuid: ""
+
+setup.ilm.enabled: false
+setup.template.name: "browbeat-logs"
+setup.template.pattern: "browbeat-logs-*"
+#============================= Filebeat modules ===============================
+
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+  # Period on which files under path should be checked for changes
+  #reload.period: 10s
+
+#==================== Elasticsearch template setting ==========================
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["{{ es_ip }}:{{ es_local_port }}"]
+  index: "browbeat-logs-{{ cloud_prefix }}"
