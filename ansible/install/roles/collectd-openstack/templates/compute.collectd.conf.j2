@@ -123,6 +123,13 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {% endif %}
+
+{% if ovs_flows_monitoring %}
+<Plugin exec>
+  Exec "heat-admin:heat-admin" "/usr/local/bin/ovs_flows.sh"
+</Plugin>
+{% endif %}
+
 {%if iostat_compute_collectd_plugin %}
 <Plugin python>
   ModulePath "/usr/local/bin/"

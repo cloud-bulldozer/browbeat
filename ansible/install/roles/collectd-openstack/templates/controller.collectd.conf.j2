@@ -106,6 +106,12 @@ PreCacheChain "PreCache"
 {% if ceph_controller_collectd_plugin %}
 {% if inventory_hostname == groups['controller'][0] %}
 
+{% if ovs_flows_monitoring %}
+<Plugin exec>
+  Exec "heat-admin:heat-admin" "/usr/local/bin/ovs_flows.sh"
+</Plugin>
+{% endif %}
+
 <Plugin ceph>
   LongRunAvgLatency false
   ConvertSpecialMetricTypes true

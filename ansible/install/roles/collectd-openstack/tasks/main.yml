@@ -245,6 +245,19 @@
       dest: /usr/local/bin/collectd_ovsagent.py
   when: "('controller' in group_names ) or ('compute' in group_names) or ('networker' in group_names)"
 
+- name: Copy exec plugins
+  copy:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  with_items:
+    - src: ovs_flows.sh
+      dest: /usr/local/bin/ovs_flows.sh
+  when: "('controller' in group_names ) or ('compute' in group_names)"
+
 # Rabbitmq monitoring
 - name: Install pyrabbit
   easy_install:

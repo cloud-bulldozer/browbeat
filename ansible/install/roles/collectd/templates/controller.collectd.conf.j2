@@ -200,6 +200,13 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {% endif %}
+
+{% if ovs_flows_monitoring %}
+<Plugin exec>
+  Exec stack "/usr/local/bin/ovs_flows.sh"
+</Plugin>
+{% endif %}
+
 {%if iostat_controller_collectd_plugin %}
 <Plugin python>
   ModulePath "/usr/local/bin/"
