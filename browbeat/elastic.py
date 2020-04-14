@@ -33,7 +33,7 @@ class Elastic(object):
             config,
             workload,
             tool="browbeat",
-            cache_size=1000,
+            cache_size=50,
             max_cache_time=10):
         self.config = config
         self.cache = deque()
