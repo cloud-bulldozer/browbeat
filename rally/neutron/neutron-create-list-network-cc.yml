@@ -1,6 +1,7 @@
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
+{% set sla_avg_list_networks = sla_avg_list_networks or 15 %}
 ---
   NeutronNetworks.create_and_list_networks:
     -
@@ -25,3 +26,5 @@
         max_seconds_per_iteration: {{sla_max_seconds}}
         failure_rate:
           max: {{sla_max_failure}}
+        max_avg_duration_per_atomic:
+          neutron.list_networks: {{sla_avg_list_networks}}

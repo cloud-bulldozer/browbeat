@@ -1,4 +1,7 @@
 {% set subnets_per_network = subnets_per_network or 2 %}
+{% set network_create_args = network_create_args or {} %}
+{% set subnet_create_args = subnet_create_args or {} %}
+{% set subnet_cidr_start = subnet_cidr_start or "10.0.0.0/16" %}
 {% set router_create_args = router_create_args or {} %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
@@ -7,9 +10,9 @@
   NeutronNetworks.create_and_list_routers:
     -
       args:
-        network_create_args: {}
-        subnet_create_args: {}
-        subnet_cidr_start: "10.0.0.0/16"
+        network_create_args: {{network_create_args}}
+        subnet_create_args: {{subnet_create_args}}
+        subnet_cidr_start: {{subnet_cidr_start}}
         subnets_per_network: {{subnets_per_network}}
         router_create_args: {{ router_create_args }}
       runner:
