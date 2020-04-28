@@ -5,6 +5,7 @@ skip_list:
   - '206'  # [E206] Variables should have spaces before and after: {{ var_name }}
   - '306'
   - '405'
+  - '403'
   - '503'  # [E503] Tasks that run when changed should likely be handlers
   - '504'
   - '602'  # [E602] Don't compare to empty string

@@ -48,13 +48,12 @@
 - name: Update virtualenv and setuptools
   pip:
     name: "{{item.name}}"
-    version: "{{item.version}}"
+    state: latest
   become: true
   with_items:
     - name: virtualenv
-      version: 15.2.0
     - name: setuptools
-      version: 38.7.0
+  ignore_errors: True
   when:  ansible_user != "zuul" and ansible_distribution_major_version < '8'
 
 - name: Install virtualenv and setuptools- zuul user
