@@ -21,9 +21,9 @@
     version: "{{ rally_openstack_version }}"
     virtualenv: "{{ rally_venv }}"
 
-- name: Install elasticsearch into rally-venv
+- name: Install rally-requirements.txt into rally-venv
   pip:
-    name: elasticsearch
+    requirements: "{{ browbeat_path }}/rally-requirements.txt"
     virtualenv: "{{ rally_venv }}"
 
 - name: Create rally configuration directory
