@@ -1,0 +1,32 @@
+{% set flavor_name = flavor_name or "m1.xtiny" %}
+{% set image_name = image_name or "cirros" %}
+{% set username = username or "cirros" %}
+{% set ssh_timeout = ssh_timeout or 120 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  BrowbeatPlugin.create_network_nova_boot_test_metadata:
+    -
+      args:
+        flavor:
+            name: "{{flavor_name}}"
+        image:
+            name: "{{image_name}}"
+        floating_network: "{{external_network}}"
+        username: "{{username}}"
+        ssh_timeout: {{ssh_timeout}}
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        users:
+          tenants: 3
+          users_per_tenant: 2
+        network: {}
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}

@@ -327,6 +327,14 @@ workloads:
         flavor_name: m1.xtiny
         ext_net_id:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping_sec_groups.yml
+      - name: netcreate-boot-test-metadata
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        username: cirros
+        ssh_timeout: 120
+        external_network:
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_test_metadata.yml
       - name: router-subnet-create-delete
         enabled: true
         num_networks:  5
