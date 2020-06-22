@@ -154,18 +154,80 @@ workloads:
       - name: create-list-network
         enabled: true
         file: rally/neutron/neutron-create-list-network-cc.yml
+      - name: create-update-network
+        enabled: false
+        file: rally/neutron/neutron-create-update-network-cc.yml
+        network_update_args:
+          admin_state_up: False
+          name: "_updated"
+      - name: create-delete-network
+        enabled: false
+        file: rally/neutron/neutron-create-delete-network-cc.yml
       - name: create-list-port
         enabled: true
         file: rally/neutron/neutron-create-list-port-cc.yml
+      - name: create-update-port
+        enabled: false
+        file: rally/neutron/neutron-create-update-port-cc.yml
+        network_create_args: {}
+        port_create_args: {}
+        ports_per_network: 5
+        port_update_args:
+          admin_state_up: False
+          device_id: "dummy_id"
+          device_owner: "dummy_owner"
+          name: "_port_updated"
+      - name: create-delete-port
+        enabled: false
+        file: rally/neutron/neutron-create-delete-port-cc.yml
+        network_create_args: {}
+        port_create_args: {}
+        ports_per_network: 5
       - name: create-list-router
         enabled: true
         file: rally/neutron/neutron-create-list-router-cc.yml
+      - name: create-update-router
+        enabled: false
+        file: rally/neutron/neutron-create-update-router-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
+        router_create_args: {}
+        router_update_args:
+          admin_state_up: False
+          name: "_router_updated"
+      - name: create-delete-router
+        enabled: false
+        file: rally/neutron/neutron-create-delete-router-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
+        router_create_args: {}
       - name: create-list-security-group
         enabled: true
         file: rally/neutron/neutron-create-list-security-group-cc.yml
       - name: create-list-subnet
         enabled: true
         file: rally/neutron/neutron-create-list-subnet-cc.yml
+      - name: create-update-subnets
+        enabled: false
+        file: rally/neutron/neutron-create-update-subnet-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.4.0.0/16"
+        subnets_per_network: 2
+        subnet_update_args:
+          enable_dhcp: true
+          name: "_subnet_updated"
+      - name: create-delete-subnets
+        enabled: false
+        file: rally/neutron/neutron-create-delete-subnet-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
       - name: create-list-trunks
         enabled: true
         subport_count: 10
