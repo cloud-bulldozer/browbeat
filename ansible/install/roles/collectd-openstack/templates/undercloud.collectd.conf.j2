@@ -229,6 +229,9 @@ PreCacheChain "PreCache"
   # Collectd (Browbeat Installed)
   ProcessMatch "collectd" "/usr/sbin/collectd"
 
+  # Conmon (OpenStack Installed)
+  ProcessMatch "conmon" "/usr/bin/conmon"                                               # 16
+
   # Docker (OpenStack Installed)
   ProcessMatch "docker-registry" "registry.+serve.+/etc/docker-distribution"            # 11,12,13
   ProcessMatch "dockerd-current" "dockerd-current"                                      # 11,12,13
