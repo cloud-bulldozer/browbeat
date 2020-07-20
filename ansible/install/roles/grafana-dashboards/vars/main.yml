@@ -321,6 +321,8 @@ per_process_panels:
         - ovs-vswitchd
         - ovsdb-client
         - ovsdb-server
+        - ovsdb-server-nb
+        - ovsdb-server-sb
         - ovn-northd
         - ovn-controller
         - ovn-controller-vtep
@@ -592,6 +594,8 @@ per_process_panels:
         - ovs-vswitchd
         - ovsdb-client
         - ovsdb-server
+        - ovsdb-server-nb
+        - ovsdb-server-sb
         - ovn-northd
         - ovn-controller
         - ovn-controller-vtep

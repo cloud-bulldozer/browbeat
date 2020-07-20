@@ -377,7 +377,9 @@ PreCacheChain "PreCache"
   ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12,13
   ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12,13
   ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12,13
-  ProcessMatch "ovn-northd" "ovn-northd.+openvswitch"                                   # 9,10
+  ProcessMatch "ovsdb-server-nb" "ovsdb-server.+ovsdb-server-nb"                           # 16
+  ProcessMatch "ovsdb-server-sb" "ovsdb-server.+ovsdb-server-sb"                           # 16
+  ProcessMatch "ovn-northd" "ovn-northd.+ovnnb_db"                                      # 16
   ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
   ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
 
