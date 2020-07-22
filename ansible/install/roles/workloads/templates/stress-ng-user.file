@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sudo yum clean all
+sudo yum install -y epel-release
+sudo yum install -y stress-ng
+sudo sed -i 's/disable_root: 1/disable_root: 0/g' /etc/cloud/cloud.cfg
+sudo sed -i 's/^.*sleep 10" //g' /root/.ssh/authorized_keys
+sudo cat /root/.ssh/authorized_keys
+sudo cat /etc/cloud/cloud.cfg
+sudo chattr +i /etc/cloud/cloud.cfg
+echo "Browbeat workload installed"

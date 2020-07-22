@@ -520,7 +520,7 @@ workloads:
     times: 1
     scenarios:
       - name: linpack
-        enabled: true
+        enabled: false
         image_name: browbeat-linpack
         flavor_name: m1.small
         external_network:
@@ -528,7 +528,7 @@ workloads:
         file: rally/rally-plugins/workloads/linpack.yml
 
       - name: sysbench
-        enabled: true
+        enabled: false
         user: root
         image_name: browbeat-sysbench
         flavor_name: m1.small
@@ -540,7 +540,7 @@ workloads:
         file: rally/rally-plugins/workloads/sysbench.yml
 
       - name: browbeat-pbench-uperf
-        enabled: true
+        enabled: false
         user: root
         image_name: browbeat-uperf
         flavor_name: m1.small
@@ -562,7 +562,7 @@ workloads:
         file: rally/rally-plugins/workloads/pbench-uperf.yml
 
       - name: browbeat-abench
-        enabled: true
+        enabled: false
         user: centos
         image_name: browbeat-abench
         flavor_name: m1.small
@@ -578,6 +578,21 @@ workloads:
         concurrency_level: 10
         send_results: true
         file: rally/rally-plugins/workloads/abench.yml
+
+      - name: browbeat-stress-ng
+        enabled: false
+        username: centos
+        image_name: browbeat-stress-ng
+        flavor_name: m1.small
+        external_network:
+        ssh_timeout: 120
+        num_clients: 2
+        cpu: 4
+        io: 2
+        vm: 1
+        vm_bytes: '1G'
+        timeout: '60s'
+        file: rally/rally-plugins/workloads/stress-ng.yml
 
   - name: dynamic-workloads
     enabled: false

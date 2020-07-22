@@ -1,0 +1,51 @@
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set image_name = image_name or "browbeat-stress-ng" %}
+{% set username = username or "centos7" %}
+{% set num_clients = num_clients or 2 %}
+{% set cpu = cpu or 4 %}
+{% set io = io or 2 %}
+{% set password = password or 'None' %}
+{% set vm = vm or 1 %}
+{% set vm_bytes = vm_bytes or "1G" %}
+{% set timeout = timeout or "60s" %}
+{% set ssh_timeout = ssh_timeout or 120 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  BrowbeatPlugin.stress_ng:
+    -
+      args:
+        flavor:
+            name: "{{flavor_name}}"
+        image:
+            name: "{{image_name}}"
+        floating_network: "{{external_network}}"
+        username: "{{username}}"
+        ssh_timeout: {{ssh_timeout}}
+        num_clients: {{num_clients}}
+        command: "stress-ng --cpu {{cpu}} --io {{io}} --vm {{vm}} --vm-bytes {{vm_bytes}} --timeout {{timeout}} --metrics-brief"
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        users:
+          tenants: 3
+          users_per_tenant: 2
+        network: {}
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+            router: -1
+            subnet: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}
