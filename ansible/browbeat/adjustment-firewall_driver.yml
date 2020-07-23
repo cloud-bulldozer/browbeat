@@ -1,4 +1,4 @@
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   gather_facts: false
   vars:
@@ -7,7 +7,7 @@
   roles:
   - neutron-firewall
 
-- hosts: compute
+- hosts: Compute
   remote_user: heat-admin
   gather_facts: false
   vars:

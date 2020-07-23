@@ -1,6 +1,6 @@
 ---
 - name: Install Browbeat
-  hosts: undercloud
+  hosts: Undercloud
   vars:
     results_in_httpd: false
     statsd_host: "{{ graphite_host }}"

@@ -1,4 +1,4 @@
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   vars_files:
     - ../install/group_vars/all.yml
@@ -8,7 +8,7 @@
     - { role: osp_version }
     - { role: filebeat_setup }
 
-- hosts: controller
+- hosts: Controller
   remote_user: "{{ host_remote_user }}"
   vars_files:
     - ../install/group_vars/all.yml
@@ -18,7 +18,7 @@
     - { role: osp_version }
     - { role: filebeat_setup }
 
-- hosts: compute
+- hosts: Compute
   remote_user: "{{ host_remote_user }}"
   vars_files:
     - ../install/group_vars/all.yml

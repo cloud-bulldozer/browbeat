@@ -3,7 +3,7 @@
 # Playbook to clean log files on controller nodes
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   gather_facts: false
   tasks:

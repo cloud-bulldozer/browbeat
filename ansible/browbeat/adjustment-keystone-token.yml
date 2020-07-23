@@ -7,7 +7,7 @@
 # ansible-playbook -i hosts browbeat/adjustment-keystone-token.yml -e "token_provider=uuid"
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   pre_tasks:
     - name: Check for variable (token_provider)

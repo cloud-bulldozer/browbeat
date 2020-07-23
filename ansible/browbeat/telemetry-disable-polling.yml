@@ -5,7 +5,7 @@
 # Cuts off the flow of measures into the backlog.
 #
 
-- hosts: controller, compute
+- hosts: Controller, Compute
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
   vars_files:
@@ -20,22 +20,22 @@
     - name: (Ocata) Set Controller Polling Daemon
       set_fact:
         polling_daemon: "openstack-ceilometer-central.service"
-      when: "('Ocata' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+      when: "('Ocata' in osp_version['content'] | b64decode) and ('Controller' in group_names)"
 
     - name: (Ocata) Set Compute Polling Daemon
       set_fact:
         polling_daemon: "openstack-ceilometer-compute.service"
-      when: "('Ocata' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+      when: "('Ocata' in osp_version['content'] | b64decode) and ('Compute' in group_names)"
 
     - name: (Pike) Set Controller Polling Daemon
       set_fact:
         polling_daemon: "openstack-ceilometer-polling.service"
-      when: "('Pike' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('Controller' in group_names)"
 
     - name: (Pike) Set Compute Polling Daemon
       set_fact:
         polling_daemon: "openstack-ceilometer-polling.service"
-      when: "('Pike' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('Compute' in group_names)"
 
     - name: Stopping Ceilometer Polling Daemon
       systemd:

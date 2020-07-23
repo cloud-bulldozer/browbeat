@@ -10,7 +10,7 @@
   shell: docker ps | wc -l
   register: docker_ps
   delegate_to: overcloud-controller-0
-  when: "'overcloud' in group_names"
+  when: "'Overcloud' in group_names"
   ignore_errors: True
 
 - name: Set var for container deployment

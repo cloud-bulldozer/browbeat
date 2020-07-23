@@ -30,7 +30,7 @@
   tags: guest
   environment: "{{proxy_env}}"
 
-- hosts: graphite
+- hosts: Graphite
   remote_user: root
   vars:
     config_type: graphite

@@ -6,7 +6,7 @@
 # ansible-playbook -i hosts browbeat/adjustment-l3.yml -e "max_l3_agents=3 min_l3_agents=3"
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   gather_facts: false
   vars:

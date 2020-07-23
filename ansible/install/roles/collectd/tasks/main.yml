@@ -6,7 +6,7 @@
 - name: (Undercloud) Get ctlplane ip address
   shell: ip r | egrep 'br-ctlplane\s*proto kernel' | awk '{print $NF}'
   register: undercloud_ctlplane_ip_address
-  when: "'undercloud' in group_names"
+  when: "'Undercloud' in group_names"
 
 - name: Configure mysql for collectd.conf
   block:
@@ -14,13 +14,13 @@
       command: hiera -c /etc/puppet/hiera.yaml mysql::server::root_password
       become: true
       register: mysql_root_password
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: (Undercloud) Get mysql root password
       shell: |
         grep undercloud_mysql_root_password: undercloud-passwords.conf | sed 's/undercloud_mysql_root_password: //g'
       register: undercloud_mysql_password
-      when: "'undercloud' in group_names"
+      when: "'Undercloud' in group_names"
 
 - name: Configure rabbitmq monitoring
   block:
@@ -28,25 +28,25 @@
       command:  hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
       become: true
       register: undercloud_rabbitmq_username
-      when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
+      when: "('Undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
     - name: (Undercloud) Get Rabbitmq password
       shell: |
         grep undercloud_rabbit_password /home/stack/undercloud-passwords.conf | sed 's/undercloud_rabbit_password: //g'
       register: undercloud_rabbitmq_password
-      when: "('undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
+      when: "('Undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
     - name: (Controller) Get Rabbitmq username
       command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_user
       register: controller0_rabbitmq_username
       become: true
-      when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
+      when: "'Controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['Controller'][0]"
 
     - name: (Controller) Get Rabbitmq password
       command: hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
       register: controller0_rabbitmq_password
       become: true
-      when: "'controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['controller'][0]"
+      when: "'Controller' in group_names and rabbitmq_controller_collectd_plugin and inventory_hostname == groups['Controller'][0]"
 
 - name: Check if Container Files Directory exists
   stat:

@@ -3,7 +3,7 @@
 # Playbook to install Browbeat (Rally + Shaker) on undercloud
 #
 
-- hosts: browbeat
+- hosts: Browbeat
   remote_user: "{{ browbeat_user }}"
   roles:
     - common
@@ -19,7 +19,7 @@
     - { role: workloads, when: install_browbeat_workloads}
   environment: "{{proxy_env}}"
 
-- hosts: controller, compute
+- hosts: Controller, Compute
   remote_user: "{{ host_remote_user }}"
   roles:
     - no-sshd-dns

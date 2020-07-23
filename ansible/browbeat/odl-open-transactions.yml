@@ -1,4 +1,4 @@
-- hosts: controller
+- hosts: Controller
   remote_user: "{{host_remote_user}}"
   vars_files:
     - ../install/group_vars/all.yml

@@ -13,7 +13,7 @@
 - import_playbook: gather-metadata.yml
 
 - name: Run Browbeat
-  hosts: undercloud
+  hosts: Undercloud
   roles:
     - browbeat/browbeat-run
     - browbeat/browbeat-classify

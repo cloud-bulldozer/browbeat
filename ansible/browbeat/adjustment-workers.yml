@@ -12,7 +12,7 @@
 # ansible-playbook -i hosts browbeat/adjustment-workers.yml -e "service=keystone workers=12 keystone_deployment=httpd"
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   gather_facts: false
   vars:

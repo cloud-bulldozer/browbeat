@@ -10,7 +10,7 @@
 # ansible-playbook -i hosts browbeat/sync-ceilometer-polling.yml -e 'task_time=18:25'
 #
 
-- hosts: controller,compute
+- hosts: Controller,Compute
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
   vars_files:
@@ -25,22 +25,22 @@
     - name: (Newton, Ocata) Set Controller Task
       set_fact:
         the_task: "systemctl restart openstack-ceilometer-central.service"
-      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('Controller' in group_names)"
 
     - name: (Newton, Ocata) Set Compute Task
       set_fact:
         the_task: "systemctl restart openstack-ceilometer-compute.service"
-      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+      when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and ('Compute' in group_names)"
 
     - name: (Pike) Set Controller Task
       set_fact:
         the_task: "docker restart ceilometer_agent_central"
-      when: "('Pike' in osp_version['content'] | b64decode) and ('controller' in group_names)"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('Controller' in group_names)"
 
     - name: (Pike) Set Compute Task
       set_fact:
         the_task: "docker restart ceilometer_agent_compute"
-      when: "('Pike' in osp_version['content'] | b64decode) and ('compute' in group_names)"
+      when: "('Pike' in osp_version['content'] | b64decode) and ('Compute' in group_names)"
 
   roles:
     - run-task-at

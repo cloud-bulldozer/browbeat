@@ -56,7 +56,7 @@
         dest: "{{home_dir}}/undercloudrc"
 
     - name: Get the OS_AUTH_URL value in stackrc
-      shell: cat undercloudrc | grep OS_AUTH_URL=
+      shell: cat {{home_dir}}/undercloudrc | grep OS_AUTH_URL=
       register: os_auth_url
 
     - name: Add v3 to OS_AUTH_URL in stackrc

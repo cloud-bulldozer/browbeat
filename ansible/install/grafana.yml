@@ -3,7 +3,7 @@
 # Playbook to install Grafana
 #
 
-- hosts: grafana
+- hosts: Grafana
   remote_user: root
   roles:
     - {role: epel, when: ansible_distribution_major_version == '7'}

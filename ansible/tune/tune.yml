@@ -3,7 +3,7 @@
 # Tunes overcloud for browbeat/performance
 #
 
-- hosts: controller:compute
+- hosts: Controller:Compute
   gather_facts: false
   remote_user: heat-admin
   roles:

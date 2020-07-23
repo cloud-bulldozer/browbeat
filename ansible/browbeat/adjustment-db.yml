@@ -2,7 +2,7 @@
 #
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: heat-admin
   gather_facts: false
   vars:

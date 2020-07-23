@@ -30,7 +30,7 @@ LoadPlugin apache
 LoadPlugin network
 {% endif %}
 {% if ceph_controller_collectd_plugin %}
-{% if inventory_hostname == groups['controller'][0] %}
+{% if inventory_hostname == groups['Controller'][0] %}
 LoadPlugin ceph
 {% endif %}
 {% endif %}
@@ -39,7 +39,7 @@ LoadPlugin cpu
 LoadPlugin conntrack
 {% endif %}
 {% if keystone_overcloud_collectd_plugin %}
-{%if inventory_hostname == groups['controller'][0] %}
+{%if inventory_hostname == groups['Controller'][0] %}
 LoadPlugin dbi
 {% endif %}
 {% endif %}
@@ -115,7 +115,7 @@ PreCacheChain "PreCache"
 </Plugin>
 {% endif %}
 {% if ceph_controller_collectd_plugin %}
-{% if inventory_hostname == groups['controller'][0] %}
+{% if inventory_hostname == groups['Controller'][0] %}
 
 <Plugin ceph>
   LongRunAvgLatency false
@@ -128,7 +128,7 @@ PreCacheChain "PreCache"
 {% endif %}
 {% endif %}
 {% if ceph_controller_collectd_radosbench_plugin or ceph_controller_collectd_mon_plugin or ceph_controller_collectd_osd_plugin or ceph_controller_collectd_pg_plugin or ceph_controller_collectd_pool_plugin %}
-{% if inventory_hostname == groups['controller'][0] %}
+{% if inventory_hostname == groups['Controller'][0] %}
 
 <Plugin python>
   LogTraces true
@@ -153,7 +153,7 @@ PreCacheChain "PreCache"
 {% endif %}
 {% endif %}
 {% if keystone_overcloud_collectd_plugin %}
-{%if inventory_hostname == groups['controller'][0] %}
+{%if inventory_hostname == groups['Controller'][0] %}
 
 <Plugin dbi>
   <Query token_count>
@@ -175,7 +175,7 @@ PreCacheChain "PreCache"
   </Database>
 </Plugin>
 {% else %}
-# Token Count plugin installed and enabled on {{groups['controller'][0]}}
+# Token Count plugin installed and enabled on {{groups['Controller'][0]}}
 {% endif %}
 {% endif %}
 
@@ -246,7 +246,7 @@ PreCacheChain "PreCache"
 
 {% endif %}
 {%if gnocchi_status_controller_collectd_plugin %}
-{%if inventory_hostname == groups['controller'][0] %}
+{%if inventory_hostname == groups['Controller'][0] %}
 <Plugin python>
   ModulePath "/usr/local/bin/"
   LogTraces true
@@ -258,7 +258,7 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {% else %}
-# Gnocchi status plugin installed and enabled on {{groups['controller'][0]}}
+# Gnocchi status plugin installed and enabled on {{groups['Controller'][0]}}
 
 {% endif %}
 {% endif %}
@@ -425,7 +425,7 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {%if rabbitmq_controller_collectd_plugin %}
-{%if inventory_hostname == groups['controller'][0] %}
+{%if inventory_hostname == groups['Controller'][0] %}
 <Plugin python>
   ModulePath "/usr/local/bin/"
   LogTraces true
@@ -442,11 +442,11 @@ PreCacheChain "PreCache"
   </Module>
 </Plugin>
 {% else %}
-# Rabbitmq plugin installed and enabled on {{groups['controller'][0]}}
+# Rabbitmq plugin installed and enabled on {{groups['Controller'][0]}}
 {% endif %}
 {% endif %}
 {%if swift_stat_controller_collectd_plugin %}
-{%if inventory_hostname == groups['controller'][0] %}
+{%if inventory_hostname == groups['Controller'][0] %}
 
 <Plugin python>
   ModulePath "/usr/local/bin/"
@@ -464,7 +464,7 @@ PreCacheChain "PreCache"
   </Module>
 </Plugin>
 {% else %}
-# swift_stat plugin installed and enabled on {{groups['controller'][0]}}
+# swift_stat plugin installed and enabled on {{groups['Controller'][0]}}
 {% endif %}
 {% endif %}
 
@@ -475,17 +475,17 @@ PreCacheChain "PreCache"
 
 # ping plugin
 {% if ping_plugin %}
-{% if groups['controller'] | length > 1 %}
+{% if groups['Controller'] | length > 1 %}
 <Plugin "ping">
-{% if inventory_hostname == groups['controller'][0] %}
-   Host "{{groups['controller'][1]}}"
-   Host "{{groups['controller'][2]}}"
-{% elif inventory_hostname == groups['controller'][1] %}
-   Host "{{groups['controller'][0]}}"
-   Host "{{groups['controller'][2]}}"
-{% elif inventory_hostname == groups['controller'][2] %}
-   Host "{{groups['controller'][0]}}"
-   Host "{{groups['controller'][1]}}"
+{% if inventory_hostname == groups['Controller'][0] %}
+   Host "{{groups['Controller'][1]}}"
+   Host "{{groups['Controller'][2]}}"
+{% elif inventory_hostname == groups['Controller'][1] %}
+   Host "{{groups['Controller'][0]}}"
+   Host "{{groups['Controller'][2]}}"
+{% elif inventory_hostname == groups['Controller'][2] %}
+   Host "{{groups['Controller'][0]}}"
+   Host "{{groups['Controller'][1]}}"
 {% endif %}
    Interval {{ping_interval}}
 </Plugin>

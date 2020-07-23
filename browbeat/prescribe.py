@@ -24,7 +24,7 @@ class Metadata(object):
     def __init__(self):
         # These are the only groups from the ansible inventory, that we are
         # Interested in
-        self._supported_node_types = ['overcloud', 'undercloud']
+        self._supported_node_types = ['Overcloud', 'Undercloud']
         pass
 
     def load_file(self, filename):
@@ -83,7 +83,7 @@ class Metadata(object):
     def get_version_metadata(self, sys_data):
         version = {}
         for item, dictionary in six.iteritems(sys_data):
-            if 'undercloud' in sys_data[item]['group_names']:
+            if 'Undercloud' in sys_data[item]['group_names']:
                 if 'stockpile_rhosp_version' in dictionary:
                     version['rhosp_version'] = dictionary['stockpile_rhosp_version']
                 if 'stockpile_rhosp_major' in dictionary:

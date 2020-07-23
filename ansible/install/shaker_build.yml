@@ -3,7 +3,7 @@
 # Playbook to build shaker-image
 #
 
-- hosts: browbeat
+- hosts: Browbeat
   remote_user: "{{ browbeat_user }}"
   tasks:
     - name: Check external connectivity

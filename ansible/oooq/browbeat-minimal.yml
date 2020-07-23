@@ -12,7 +12,7 @@
   when: enable_minimal_browbeat|default(false)|bool
 
 - name: Run Browbeat
-  hosts: undercloud
+  hosts: Undercloud
   roles:
     - { role: browbeat/browbeat-run,
         when: enable_minimal_browbeat|default(false)|bool }

@@ -16,7 +16,7 @@
 #
 
 
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   vars:
     config_type: undercloud
@@ -34,7 +34,7 @@
   tags: undercloud
   environment: "{{proxy_env}}"
 
-- hosts: controller
+- hosts: Controller
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: controller
@@ -53,7 +53,7 @@
   tags: controller
   environment: "{{proxy_env}}"
 
-- hosts: networker
+- hosts: Networker
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: networker
@@ -71,7 +71,7 @@
   tags: networker
   environment: "{{proxy_env}}"
 
-- hosts: blockstorage
+- hosts: BlockStorage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: blockstorage
@@ -89,7 +89,7 @@
   tags: blockstorage
   environment: "{{proxy_env}}"
 
-- hosts: objectstorage
+- hosts: ObjectStorage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: objectstorage
@@ -107,7 +107,7 @@
   tags: objectstorage
   environment: "{{proxy_env}}"
 
-- hosts: cephstorage
+- hosts: CephStorage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: cephstorage
@@ -125,7 +125,7 @@
   tags: cephstorage
   environment: "{{proxy_env}}"
 
-- hosts: compute
+- hosts: Compute
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: compute

@@ -1,6 +1,6 @@
 ---
 - name: Setup Undercloud Metrics
-  hosts: undercloud
+  hosts: Undercloud
   vars:
     - config_type: "{{group_names[0]}}"
     - statsd_host: "{{ graphite_host }}"

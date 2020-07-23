@@ -4,7 +4,7 @@
 #
 
 
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   vars:
     - ansible_ssh_pipelining: yes

@@ -9,7 +9,7 @@
 # ansible-playbook -i hosts browbeat/adjustment-gnocchi.yml -e 'metricd_workers=12 metric_processing_delay=30 processing_replicas=3'
 #
 
-- hosts: controller
+- hosts: Controller
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
   vars_files:

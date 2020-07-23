@@ -9,7 +9,7 @@
 # ansible-playbook -i hosts install/collectd.yml --tags="compute"
 
 
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   vars:
     config_type: undercloud
@@ -21,7 +21,7 @@
   tags: undercloud
   environment: "{{proxy_env}}"
 
-- hosts: controller
+- hosts: Controller
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: controller
@@ -32,7 +32,7 @@
     - { role: collectd, when: collectd_controller|bool }
   tags: controller
 
-- hosts: compute
+- hosts: Compute
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: compute
@@ -43,7 +43,7 @@
     - { role: collectd, when: collectd_compute|bool }
   tags: compute
 
-- hosts: networker
+- hosts: Networker
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: networker
@@ -54,7 +54,7 @@
     - { role: collectd, when: collectd_networker|bool }
   tags: networker
 
-- hosts: blockstroage
+- hosts: BlockStroage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: blockstorage
@@ -65,7 +65,7 @@
     - { role: collectd, when: collectd_blockstorage|bool }
   tags: blockstorage
 
-- hosts: objectstorage
+- hosts: ObjectStorage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: objectstorage
@@ -76,7 +76,7 @@
     - { role: collectd, when: collectd_objectstorage|bool }
   tags: objectstorage
 
-- hosts: cephstorage
+- hosts: CephStorage
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: cephstorage
@@ -86,5 +86,3 @@
     - { role: common, when: collectd_cephstorage|bool }
     - { role: collectd, when: collectd_cephstorage|bool }
   tags: cephstorage
-
-

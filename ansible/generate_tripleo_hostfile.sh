@@ -281,7 +281,7 @@ echo "---------------------------"
 echo "Creating ansible inventory file:"
 echo "---------------------------"
 echo ""
-echo "[browbeat]" | tee ${ansible_inventory_file}
+echo "[Browbeat]" | tee ${ansible_inventory_file}
 echo "# Pick host depending on desired install" | tee -a ${ansible_inventory_file}
 if [ "${uncomment_localhost}" = true ]; then
   echo "localhost" | tee -a ${ansible_inventory_file}
@@ -291,10 +291,10 @@ else
   echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 fi
 echo ""  | tee -a ${ansible_inventory_file}
-echo "[undercloud]" | tee -a ${ansible_inventory_file}
+echo "[Undercloud]" | tee -a ${ansible_inventory_file}
 echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 echo "" | tee -a ${ansible_inventory_file}
-echo "[controller]" | tee -a ${ansible_inventory_file}
+echo "[Controller]" | tee -a ${ansible_inventory_file}
 if [[ ${#controller_hn} -gt 0 ]]; then
  for ct in ${controller_hn[@]}; do
    ironic_uuid=''
@@ -310,7 +310,7 @@ if [[ ${#controller_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[networker]" | tee -a ${ansible_inventory_file}
+echo "[Networker]" | tee -a ${ansible_inventory_file}
 if [[ ${#networker_hn} -gt 0 ]]; then
  for networker in ${networker_hn[@]}; do
   ironic_uuid=''
@@ -326,7 +326,7 @@ if [[ ${#networker_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[blockstorage]" | tee -a ${ansible_inventory_file}
+echo "[BlockStorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#blockstorage_hn} -gt 0 ]]; then
  for blockstorage in ${blockstorage_hn[@]}; do
   ironic_uuid=''
@@ -342,7 +342,7 @@ if [[ ${#blockstorage_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[objectstorage]" | tee -a ${ansible_inventory_file}
+echo "[ObjectStorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#objectstorage_hn} -gt 0 ]]; then
  for objectstorage in ${objectstorage_hn[@]}; do
   ironic_uuid=''
@@ -358,7 +358,7 @@ if [[ ${#objectstorage_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[cephstorage]" | tee -a ${ansible_inventory_file}
+echo "[CephStorage]" | tee -a ${ansible_inventory_file}
 if [[ ${#cephstorage_hn} -gt 0 ]]; then
  for cephstorage in ${cephstorage_hn[@]}; do
   ironic_uuid=''
@@ -374,7 +374,7 @@ if [[ ${#cephstorage_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[compute]" | tee -a ${ansible_inventory_file}
+echo "[Compute]" | tee -a ${ansible_inventory_file}
 if [[ ${#compute_hn} -gt 0 ]]; then
  for compute in ${compute_hn[@]}; do
    ironic_uuid=''
@@ -393,22 +393,22 @@ if [[ ${#controller_hn} -gt 0 ]] || [[ ${#blockstorage_hn} -gt 0 ]] || [[ ${#obj
  echo "" | tee -a ${ansible_inventory_file}
  echo "[overcloud:children]" | tee -a ${ansible_inventory_file}
  if [[ ${#controller_hn} -gt 0 ]]; then
-  echo "controller" | tee -a ${ansible_inventory_file}
+  echo "Controller" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#networker_hn} -gt 0 ]]; then
-  echo "networker" | tee -a ${ansible_inventory_file}
+  echo "Networker" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#blockstorage_hn} -gt 0 ]]; then
-  echo "blockstorage" | tee -a ${ansible_inventory_file}
+  echo "BlockStorage" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#objectstorage_hn} -gt 0 ]]; then
-  echo "objectstorage" | tee -a ${ansible_inventory_file}
+  echo "ObjectStorage" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#cephstorage_hn} -gt 0 ]]; then
-  echo "cephstorage" | tee -a ${ansible_inventory_file}
+  echo "CephStorage" | tee -a ${ansible_inventory_file}
  fi
  if [[ ${#compute_hn} -gt 0 ]]; then
-  echo "compute" | tee -a ${ansible_inventory_file}
+  echo "Compute" | tee -a ${ansible_inventory_file}
  fi
  echo "" | tee -a ${ansible_inventory_file}
  echo "[overcloud:vars]" | tee -a ${ansible_inventory_file}
@@ -422,11 +422,11 @@ if [[ ${#other_hn} -gt 0 ]]; then
  done
 fi
 echo "" | tee -a ${ansible_inventory_file}
-echo "[graphite]" | tee -a ${ansible_inventory_file}
+echo "[Graphite]" | tee -a ${ansible_inventory_file}
 echo "## example host entry." | tee -a ${ansible_inventory_file}
 echo "#host-01" | tee -a ${ansible_inventory_file}
 echo "" | tee -a ${ansible_inventory_file}
-echo "[grafana]" | tee -a ${ansible_inventory_file}
+echo "[Grafana]" | tee -a ${ansible_inventory_file}
 echo "## example host entry." | tee -a ${ansible_inventory_file}
 echo "#host-02" | tee -a ${ansible_inventory_file}
 
@@ -440,7 +440,7 @@ echo "[elk-client]" | tee -a ${ansible_inventory_file}
 echo "## example host entry." | tee -a ${ansible_inventory_file}
 echo "#host-02" | tee -a ${ansible_inventory_file}
 echo "" | tee -a ${ansible_inventory_file}
-echo "[stockpile]" | tee -a ${ansible_inventory_file}
+echo "[Stockpile]" | tee -a ${ansible_inventory_file}
 echo "undercloud ansible_user=${user}" | tee -a ${ansible_inventory_file}
 
 echo "---------------------------"

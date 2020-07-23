@@ -74,7 +74,7 @@
 - name: Setup fernet keys
   become: true
   command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
-  when: (token_provider == 'fernet') and (inventory_hostname == groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname == groups['Controller'][0])
 
 - name: Get fernet keys
   become: true
@@ -82,7 +82,7 @@
   with_items:
     - 0
     - 1
-  when: (token_provider == 'fernet') and (inventory_hostname == groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname == groups['Controller'][0])
   changed_when: false
 
 - name: Copy fernet keys
@@ -91,7 +91,7 @@
   with_items:
     - "0"
     - "1"
-  when: (token_provider == 'fernet') and (inventory_hostname != groups['controller'][0])
+  when: (token_provider == 'fernet') and (inventory_hostname != groups['Controller'][0])
 
 - name: Copy keystone type enforcement file
   become: true

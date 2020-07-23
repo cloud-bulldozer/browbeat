@@ -5,7 +5,7 @@
 # Versions tested: Newton, Ocata
 #
 
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   gather_facts: false
   vars_files:
@@ -14,7 +14,7 @@
     - name: Create low-workload archive-policy
       shell: ". {{ overcloudrc }}; gnocchi archive-policy create -d points:8640,granularity:0:05:00 -b 0 -m std -m count -m min -m max -m sum -m mean low-workload"
 
-- hosts: controller
+- hosts: Controller
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
   vars_files:

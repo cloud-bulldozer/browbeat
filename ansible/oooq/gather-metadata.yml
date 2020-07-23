@@ -1,12 +1,12 @@
 ---
-- hosts: compute
+- hosts: Compute
   remote_user: "heat_admin"
   become: true
   roles:
     - browbeat-metadata/common
     - browbeat-metadata/compute
 
-- hosts: controller
+- hosts: Controller
   remote_user: "heat_admin"
   become: true
   roles:
@@ -22,7 +22,7 @@
     - browbeat-metadata/rabbitmq
     - browbeat-metadata/glance
 
-- hosts: undercloud
+- hosts: Undercloud
   remote_user: "stack"
   become: true
   roles:
@@ -31,7 +31,7 @@
     - browbeat-metadata/mistral
 
 - name: Dump metadata to files
-  hosts: undercloud
+  hosts: Undercloud
   roles:
     - browbeat-metadata/dump-facts
     - browbeat/oooq-metadata

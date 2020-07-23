@@ -3,7 +3,7 @@
 # For podman containers change "container_cli" configuration to podman
 #
 
-- hosts: stockpile
+- hosts: Stockpile
   tasks:
     - name: setting facts needed
       set_fact:
@@ -16,7 +16,7 @@
       set_fact:
         overcloud_user: "{{ host_remote_user }}"
 
-- hosts: undercloud
+- hosts: Undercloud
   tasks:
     - name: setting facts
       set_fact:
@@ -26,7 +26,7 @@
   vars:
     stockpile_output_path: "{{ md_output_path }}"
 
-- hosts: stockpile
+- hosts: Stockpile
   tasks:
     - name: run prescribe
       command: '"{{ ansible_python.executable }}" {{ browbeat_path }}/browbeat/prescribe.py {{ browbeat_path }}/metadata'

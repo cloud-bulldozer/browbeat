@@ -3,7 +3,7 @@
 # Playbook to reverse disable Telemetry Services playbook
 #
 
-- hosts: controller, compute
+- hosts: Controller, Compute
   remote_user: "{{ host_remote_user }}"
   gather_facts: false
   vars_files:
@@ -67,7 +67,7 @@
           dest: /etc/httpd/conf.d/10-gnocchi_wsgi.conf
         - src: /root/10-panko_wsgi.conf
           dest: /etc/httpd/conf.d/10-panko_wsgi.conf
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: Clean Up HTTPD wsgi service config files in /root
       become: true
@@ -79,21 +79,21 @@
         - "/root/10-ceilometer_wsgi.conf"
         - "/root/10-gnocchi_wsgi.conf"
         - "/root/10-panko_wsgi.conf"
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: Starting Telemetry Controller Services
       systemd:
         name: "{{ item }}"
         state: started
       with_items: "{{controller_services}}"
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: Starting Telemetry Compute Service(s)
       systemd:
         name: "{{ item }}"
         state: started
       with_items: "{{compute_services}}"
-      when: "'compute' in group_names"
+      when: "'Compute' in group_names"
 
     - name: Setting Nova Notification Driver to messagingv2
       become: true
@@ -135,7 +135,7 @@
         - dest: /etc/neutron/neutron.conf
           group: neutron
           value:
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: Restart Controller Services to enable notifications
       systemd:
@@ -150,10 +150,10 @@
         - openstack-nova-conductor.service
         - openstack-nova-scheduler.service
         - httpd
-      when: "'controller' in group_names"
+      when: "'Controller' in group_names"
 
     - name: Restart Nova Compute Services to enable notifications
       systemd:
         name: openstack-nova-compute.service
         state: restarted
-      when: "'compute' in group_names"
+      when: "'Compute' in group_names"

@@ -33,12 +33,27 @@ Install your public key into stack's authorized\_keys
 
     # ssh-copy-id stack@<undercloud-ip>
 
-Then run generate\_tripleo\_hosts.sh script to generate your overcloud's
-hosts file for ansible and generate a "jumpbox" ssh config:
+Generate overcloud's inventory file
+-----------------------------------
+
+Currently we have two scripts to generate overcloud's inventory file.
+    1. generate_tripleo_inventory.sh
+    2. generate_tripleo_hostfile.sh
+
+`generate_tripleo_inventory.sh` is the recommended way to generate the overcloud inventory file.
+It will use the `tripleo-ansible-inventory` command to generate the inventory file.
+It is faster and maintained with tripleo release.
 
 ::
 
-    # ./generate_tripleo_hostfile.sh <undercloud-ip> ~/.ssh/config
+    # ./generate_tripleo_inventory.sh <undercloud-ip>
+
+`generate_tripleo_hostfile.sh` is a shell script that will ssh to each machine and prepare the inventory file.
+It is deprecated now and very slow, It may get removed in future releases.
+
+::
+
+    # ./generate_tripleo_hostfile.sh <undercloud-ip>
 
 Review the hosts file the script generates.
 
