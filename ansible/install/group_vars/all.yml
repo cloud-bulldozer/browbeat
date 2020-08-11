@@ -82,21 +82,25 @@ browbeat_workloads:
     src: sysbench-user.file
     dest: "{{ browbeat_path }}/sysbench-user.file"
     image: centos7
+    enabled: false
   linpack:
     name: browbeat-linpack
     src: linpack-user.file
     dest: "{{ browbeat_path }}/linpack-user.file"
     image: centos7
+    enabled: false
   uperf:
     name: browbeat-uperf
     src: pbench-uperf-user.file
     dest: "{{ browbeat_path }}/pbench-uperf-user.file"
     image: centos7
+    enabled: false
   abench:
     name: browbeat-abench
     src: abench-user.file
     dest: "{{ browbeat_path }}/abench-user.file"
     image: centos7
+    enabled: false
 
 ########################################
 # Other Install Configuration Items

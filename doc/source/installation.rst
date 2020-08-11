@@ -63,8 +63,20 @@ We currently support a handful of workloads
 - Pbench-Uperf - Networking throughput / RR test
 - Linpack - Microbenchmark for CPU load
 
-To enable installation of the Browbeat workloads set install_browbeat_workloads: true in
-ansible/install/group_vars/all.yml.
+To enable installation of the Browbeat workloads set install_browbeat_workloads: true
+in ansible/install/group_vars/all.yml.
+
+To build the custom images for workloads set enabled: true
+in ansible/install/group_vars/all.yml.
+
+Example:
+        browbeat_workloads:
+          sysbench:
+            name: browbeat-sysbench
+            src: sysbench-user.file
+            dest: "{{ browbeat_path }}/sysbench-user.file"
+            image: centos7
+            enabled: true
 
 It is also required to provide the neutron network id of a private network which
 has external access. To set this, edit ansible/install/group_vars/all.yml and
