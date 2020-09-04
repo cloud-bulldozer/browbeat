@@ -144,8 +144,6 @@ repos: {}
 # Collectd Configuration
 ########################################
 # Install release specific templates
-# Set collectd_container true for OSP >= 15
-collectd_container: true
 # Install collectd from EPEL
 collectd_from_epel: true
 # Interval in seconds

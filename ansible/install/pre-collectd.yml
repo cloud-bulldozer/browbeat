@@ -1,0 +1,8 @@
+---
+- hosts: undercloud
+  roles:
+    - { role: osp_version }
+  tasks:
+    - name: set fact collectd_container
+      set_fact:
+        collectd_container: "{{ (rhosp_major|int > 14)| ternary(true, false) }}"

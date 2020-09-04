@@ -82,8 +82,7 @@ has been installed. To skip directly to this task execute:
 (Optional) Install Collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Set ``collectd_container`` to true in ``ansible/install/group_vars/all.yml`` if running on OpenStack version Stein or later. The containerized collectd work
-can also work with Queens release but it is not recommended.
+``collectd_container`` is set to true if running on OpenStack version Stein or later. The containerized collectd can also work with Queens release but it is not recommended.
 
 ::
 

@@ -1,9 +1,11 @@
 ---
+- name: set fact collectd_container
+  import_playbook: pre-collectd.yml
+
 - name: Run containerized collectd (Stein and greater recommended)
   import_playbook: collectd-container.yml
-  when: collectd_container
+  when: hostvars['undercloud']['collectd_container']
 
 - name: Run collectd installed through RPMs
   import_playbook: collectd-baremetal.yml
-  when: not collectd_container
-
+  when: not hostvars['undercloud']['collectd_container']
