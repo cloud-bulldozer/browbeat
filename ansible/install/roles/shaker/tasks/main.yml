@@ -12,6 +12,11 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
+- name: Install shaker-requirements into shaker-venv
+  pip:
+    requirements: "{{ browbeat_path }}/tools-requirements.txt"
+    virtualenv: "{{ shaker_venv }}"
+
 - name: Install shaker
   pip:
     name: pyshaker

@@ -8,6 +8,8 @@ hacking>=1.1.0,<1.2.0;python_version<'3' # Apache-2.0
 pykwalify
 coverage>=3.6
 pre-commit  # MIT
+pyrsistent==0.16.0;python_version<'3'
+pyrsistent>=0.17.0;python_version>='3'
 pytest==3.2.1
 python-subunit>=0.0.18
 
