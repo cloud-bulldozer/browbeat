@@ -71,21 +71,21 @@ class BrowbeatSysbench(vm_utils.VMScenario,
         cmd = "cd {}".format(sysbench_path)
         LOG.info("Running command : {}".format(cmd))
         exitcode, stdout, stderr = host_ssh.execute(cmd)
-        if exitcode is 1:
-                LOG.error(stderr)
-                return False
+        if exitcode == 1:
+            LOG.error(stderr)
+            return False
         if test_name == "cpu":
-                sysbench = "sysbench --test=cpu --cpu-max-prime={} run".format(cpu_max_prime)
-                sysbench += " | grep '{}' | grep -E -o '[0-9]+([.][0-9]+)?'".format("total time: ")
-                LOG.info("Starting sysbench with CPU test")
-                LOG.info("Running command : {}".format(sysbench))
-                test_exitcode, test_stdout, test_stderr = host_ssh.execute(sysbench)
-                if test_exitcode is not 1:
-                        LOG.info("Result: {}".format(test_stdout))
-                        report = [[cpu_max_prime,float(test_stdout)]]
-                        self.add_output(additive={"title": "Sysbench Stats",
-                                                  "description": "Sysbench CPU Scenario",
-                                                  "chart_plugin": "StatsTable",
-                                                  "data": report})
-                else:
-                        LOG.error(test_stderr)
+            sysbench = "sysbench --test=cpu --cpu-max-prime={} run".format(cpu_max_prime)
+            sysbench += " | grep '{}' | grep -E -o '[0-9]+([.][0-9]+)?'".format("total time: ")
+            LOG.info("Starting sysbench with CPU test")
+            LOG.info("Running command : {}".format(sysbench))
+            test_exitcode, test_stdout, test_stderr = host_ssh.execute(sysbench)
+            if test_exitcode != 1:
+                LOG.info("Result: {}".format(test_stdout))
+                report = [[cpu_max_prime,float(test_stdout)]]
+                self.add_output(additive={"title": "Sysbench Stats",
+                                          "description": "Sysbench CPU Scenario",
+                                          "chart_plugin": "StatsTable",
+                                          "data": report})
+            else:
+                LOG.error(test_stderr)

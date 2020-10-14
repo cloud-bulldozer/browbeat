@@ -118,7 +118,7 @@ class CreateNetworkNovaBootPingSecGroups(vm_utils.VMScenario,
         self.assertTrue(security_group, err_msg=msg)
         for protocol in ["icmp", "tcp"]:
             security_group_rule_args = {}
-            if protocol is "icmp":
+            if protocol == "icmp":
                 security_group_rule_args["protocol"] = "icmp"
                 security_group_rule_args["remote_ip_prefix"] = "0.0.0.0/0"
             else:

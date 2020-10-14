@@ -1,8 +1,12 @@
 ---
 parseable: true
 skip_list:
+  - '102'
+  - '106'
   - '204'  # [E204] Lines should be no longer than 120 chars
   - '206'  # [E206] Variables should have spaces before and after: {{ var_name }}
+  - '208'  # [E208] File permission unset or incorrect
+  - '305'
   - '306'
   - '405'
   - '403'

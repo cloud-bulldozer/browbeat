@@ -9,9 +9,9 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
   - repo: https://github.com/ansible/ansible-lint
-    rev: 49372c5c3822567f36a809b20e0273020f024ed7
+    rev: v4.3.5
     hooks:
       - id: ansible-lint
-        files: \.(yaml|yml)$
-        exclude: ^(rally/|\.zuul\.yaml)
+        files:  'ansible/.(yaml|yml)$'
+        exclude: ^(rally/|\.zuul\.yml)
         entry: ansible-lint --force-color -v

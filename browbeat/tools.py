@@ -136,10 +136,10 @@ class Tools(object):
         """ Iterate through each workload result, generate ES JSON """
         if len(workload_results) > 0:
             for workload in workload_results:
-                if workload is "rally":
+                if workload == "rally":
                     rally_workload = rally.Rally(self.config)
                     for file in workload_results[workload]:
                         errors, results = rally_workload.file_to_json(file)
-                if workload is "shaker":
+                if workload == "shaker":
                     # Stub for Shaker.
                     continue

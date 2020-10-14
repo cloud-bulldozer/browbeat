@@ -83,7 +83,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
         _clients = []
         # Launch Guests
         network_name = None
-        if num_pairs is 1:
+        if num_pairs == 1:
             if zones['server'] != 'None':
                 kwargs['availability_zone'] = zones['server']
             server = self._boot_server(
@@ -153,7 +153,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                     LOG.error(
                         "Console : stdout:{} stderr:{}".format(s1_stdout,s1_stderr))
                     return False
-                if s1_exitcode is 0:
+                if s1_exitcode == 0:
                     LOG.info("Server: {} ready".format(sip))
                     ready = True
                 else:
@@ -216,11 +216,11 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
         # Prepare results
         cmd = "cat {}/uperf_{}*/result.csv".format(pbench_results, test_name)
         exitcode, stdout, stderr = jump_ssh.execute(cmd)
-        if exitcode is 1:
+        if exitcode == 1:
             return False
 
         if send_results:
-            if uperf_exitcode is not 1:
+            if uperf_exitcode != 1:
                 cmd = "cat {}/uperf_{}*/result.json".format(
                     pbench_results, test_name)
                 LOG.info("Running command : {}".format(cmd))
@@ -252,7 +252,7 @@ class BrowbeatPbenchUperf(neutron_utils.NeutronScenario,
                 LOG.info("Row: {}".format(row))
                 if len(row) < 1 :
                     continue
-                if row[2] is '' or row[3] is '' :
+                if row[2] == '' or row[3] == '' :
                     continue
                 if len(row) >= 3:
                     report.append(
