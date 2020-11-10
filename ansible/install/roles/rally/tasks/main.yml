@@ -4,7 +4,7 @@
 #
 
 - name: Create rally virtualenv
-  command: virtualenv {{ rally_venv }} creates={{ rally_venv }}
+  command: virtualenv --python=python3 {{ rally_venv }} creates={{ rally_venv }}
 
 - name: Rally Add browbeat to Python path
   shell: echo 'export PYTHONPATH=$PYTHONPATH:{{ browbeat_path }}' >> {{ rally_venv }}/bin/activate

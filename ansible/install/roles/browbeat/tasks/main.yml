@@ -18,9 +18,11 @@
       - openssl-devel
       - policycoreutils-python
       - python-devel
+      - python3
     state: present
   become: true
   when: ansible_distribution_major_version < '8'
+  ignore_errors: yes
 
 - name: Install dependencies for RHEL8
   yum:
