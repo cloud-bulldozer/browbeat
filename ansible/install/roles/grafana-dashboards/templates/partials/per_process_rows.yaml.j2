@@ -23,7 +23,7 @@
           targets:
     {% for process in panel.processes %}
       {% for metric in metrics.metrics %}
-        {% if metrics.name|match('Process CPU') %}
+        {% if metrics.name == 'Process CPU' %}
             - target: alias(scale($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, 0.0001), '{{process}} {{metric.name}}')
         {% else %}
             - target: alias($Cloud.$Node.processes-{{process|replace('.', '_')|replace(':', '_')}}{{metric.query}}, '{{process}} {{metric.name}}')
