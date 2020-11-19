@@ -2,7 +2,9 @@
 - hosts: undercloud
   roles:
     - { role: osp_version }
+  tags: undercloud, controller, compute
   tasks:
     - name: set fact collectd_container
       set_fact:
         collectd_container: "{{ (rhosp_major|int > 14)| ternary(true, false) }}"
+      tags: undercloud, controller, compute
