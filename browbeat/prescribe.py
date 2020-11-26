@@ -121,6 +121,8 @@ class Metadata(object):
                             sample_vuln_dict['vulnerability'] = {}
                         for vuln in output:
                             vuln = vuln.split('/sys/devices/system/cpu/vulnerabilities/')
+                            if len(vuln) <= 1:
+                                continue
                             vuln = vuln[1].split(':', 1)
                             sample_vuln_dict['vulnerability'][vuln[0]] = {}
                             if 'Mitigation: ' in vuln[1]:
