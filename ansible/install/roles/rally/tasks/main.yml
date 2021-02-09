@@ -15,6 +15,16 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
+- name: Upgrade pip if it is old
+  shell: |
+    source "{{ rally_venv }}/bin/activate"
+    if [ "$(pip --version | cut -d' ' -f2 | cut -d'.' -f1)" -lt "19" ]; then
+       pip install --upgrade 'pip<20'
+    fi
+  args:
+    executable: /bin/bash
+    chdir: "{{ browbeat_path }}"
+
 - name: Install rally-requirements into rally-venv
   pip:
     requirements: "{{ browbeat_path }}/tools-requirements.txt"
