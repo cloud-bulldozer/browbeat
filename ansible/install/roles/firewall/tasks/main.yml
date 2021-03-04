@@ -53,6 +53,8 @@
     immediate: true
   become: true
   when: firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_shaker_port_exists.rc != 0
+  tags:
+    - skip_ansible_lint
 
 - name: (browbeat_results) Add firewall rule for TCP/{{browbeat_results_port}} (firewalld)
   firewalld:
@@ -63,6 +65,8 @@
     immediate: true
   become: true
   when: browbeat_results_in_httpd and firewalld_in_use.rc == 0 and firewalld_is_active.rc == 0 and firewalld_browbeat_results_port_exists.rc != 0
+  tags:
+    - skip_ansible_lint
 
 # iptables-services
 - name: (shaker) check firewall rules for TCP/{{shaker_port}} (iptables-services)
