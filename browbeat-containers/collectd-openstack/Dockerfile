@@ -9,6 +9,7 @@ RUN yum update -y && \
      collectd-mysql collectd-python collectd-ping && \
     yum install -y sysstat && \
     yum install -y python2-pip python2-devel && \
+    pip install --upgrade 'pip<20' && \
     pip install pyrabbit && \
     yum install -y libdbi-dbd-mysql collectd-dbi && \
     yum install -y https://cbs.centos.org/kojifiles/packages/openvswitch/2.11.0/4.el7/x86_64/openvswitch-2.11.0-4.el7.x86_64.rpm && \
