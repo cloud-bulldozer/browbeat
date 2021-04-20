@@ -24,7 +24,7 @@ class Metadata(object):
     def __init__(self):
         # These are the only groups from the ansible inventory, that we are
         # Interested in
-        self._supported_node_types = ['Overcloud', 'Undercloud']
+        self._supported_node_types = ['overcloud', 'Undercloud']
         pass
 
     def load_file(self, filename):
