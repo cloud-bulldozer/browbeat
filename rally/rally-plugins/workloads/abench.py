@@ -12,7 +12,6 @@
 
 import logging
 import time
-
 from rally.common import sshutils
 from rally_openstack import consts
 from rally_openstack.scenarios.vm import utils as vm_utils
@@ -105,7 +104,7 @@ class BrowbeatApacheBench(vm_utils.VMScenario,
             LOG.info("Waiting for the load balancer to be active")
             self.octavia.wait_for_loadbalancer_prov_status(lb)
             time.sleep(90)
-            lb_id = lb["loadbalancer"]["id"]
+            lb_id = lb_id = lb["id"]
             listener_args = {
                 "name": self.generate_random_name(),
                 "loadbalancer_id": lb_id,
@@ -124,11 +123,12 @@ class BrowbeatApacheBench(vm_utils.VMScenario,
                 "timeout_tcp_inspect": 0,
             }
             LOG.info("Creating a listener")
-            listener = self.octavia.listener_create(**listener_args)
+            listener = self.octavia.listener_create(
+                json={"listener": listener_args})
             time.sleep(30)
             LOG.info("Creating a pool")
             pool = self.octavia.pool_create(
-                lb_id=lb["loadbalancer"]["id"],
+                lb_id=lb["id"],
                 protocol=protocol,
                 lb_algorithm=lb_algorithm,
                 listener_id=listener["listener"]["id"],
@@ -150,11 +150,11 @@ class BrowbeatApacheBench(vm_utils.VMScenario,
                 LOG.info("Adding member : {} to the pool".format(client_ip))
                 self.octavia.member_create(
                     pool["id"],
-                    **member_args)
+                    json={"member": member_args})
                 time.sleep(30)
             # execute command, stdout will have infomation
             time.sleep(90)
-            lb_ip = lb["loadbalancer"]["vip_address"]
+            lb_ip = lb["vip_address"]
             lb_ip += "/"
             LOG.info("Load balancer IP: {}".format(lb_ip))
             cmd = "ab -n {} -c {} {}".format(total_requests, concurrency_level, lb_ip)
@@ -165,6 +165,6 @@ class BrowbeatApacheBench(vm_utils.VMScenario,
             self.add_output(
                 additive={"title": "ApacheBench Stats",
                           "description": "ApacheBench Scenario",
-                          "chart_plugin": "Gbps",
+                          "chart_plugin": "StatsTable",
                           "label": "Gbps",
                           "data": report})
