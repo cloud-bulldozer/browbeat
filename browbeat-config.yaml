@@ -41,6 +41,7 @@ rally:
     - glance: rally/rally-plugins/glance
     - neutron: rally/rally-plugins/neutron
     - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - octavia: rally/rally-plugins/octavia
     - cinder: rally/rally-plugins/cinder
     - workloads: rally/rally-plugins/workloads
 shaker:
@@ -414,6 +415,17 @@ workloads:
         image_name: centos7
         flavor_name: m1.small
         file: rally/rally-plugins/cinder/boot_vm_attach_volume_list.yml
+      - name: octavia-create-loadbalancer-resources
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        user: cirros
+        ext_net_id:
+        protocol: HTTP
+        lb_algorithm: ROUND_ROBIN
+        protocol_port: 80
+        num_clients: 1
+        file: rally/rally-plugins/octavia/octavia-create-loadabalancer-resources.yml
 
   - name: plugin-workloads
     enabled: false
