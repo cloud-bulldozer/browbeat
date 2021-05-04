@@ -426,6 +426,14 @@ workloads:
         protocol_port: 80
         num_clients: 1
         file: rally/rally-plugins/octavia/octavia-create-loadabalancer-resources.yml
+      - name: octavia-fully-populated-loadbalancer
+        enabled: true
+        image_name: cirros
+        flavor_name: m1.xtiny
+        vip_subnet_id:
+        num_lb: 1
+        user_data_file:
+        file: rally/rally-plugins/octavia/octavia-fully-populated-loadbalancer.yml
 
   - name: plugin-workloads
     enabled: false
