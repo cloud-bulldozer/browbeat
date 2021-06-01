@@ -52,3 +52,11 @@ fi
 
 sed -i '1iBrowbeat:\n  hosts:\n    undercloud: {}' ${out_file}
 sed -i '$aStockpile:\n  hosts:\n    undercloud: {}' ${out_file}
+
+# Copy heat-admin key so we can use jumpbox
+echo ""
+echo "---------------------------"
+echo "Copying heat-admin key to local machine for use with ssh config file"
+echo "---------------------------"
+echo ""
+scp -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" "${user}@${tripleo_ip_address}":/home/${user}/.ssh/id_rsa heat-admin-id_rsa

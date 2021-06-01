@@ -8,7 +8,7 @@ browbeat:
   # rerun_type: complete
   rerun_type: iteration
 ansible:
-  hosts: ansible/hosts
+  hosts: ansible/hosts.yml
   metadata_playbook: ansible/gather/stockpile.yml
   logging_playbook: ansible/common_logging/browbeat_logging.yml
   ssh_config: ansible/ssh-config
