@@ -430,10 +430,12 @@ workloads:
         file: rally/rally-plugins/octavia/octavia-create-loadabalancer-resources.yml
       - name: octavia-fully-populated-loadbalancer
         enabled: true
-        image_name: cirros
-        flavor_name: m1.xtiny
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
         vip_subnet_id:
         num_lb: 1
+        jump_host_ip:
+        user: "cirros"
         user_data_file:
         file: rally/rally-plugins/octavia/octavia-fully-populated-loadbalancer.yml
       - name: octavia-create-loadbalancer-listeners-pools-members

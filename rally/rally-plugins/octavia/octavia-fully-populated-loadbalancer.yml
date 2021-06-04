@@ -17,6 +17,8 @@ BrowbeatPlugin.OctaviaFullyPopulatedLoadbalancer:
       vip_subnet_id: '{{vip_subnet_id}}'
       num_lb: '{{num_lb}}'
       user_data_file: {{user_data_file}}
+      jump_host_ip: "{{ jump_host_ip }}"
+      user: "{{ user}}"
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
@@ -42,4 +44,3 @@ BrowbeatPlugin.OctaviaFullyPopulatedLoadbalancer:
       max_seconds_per_iteration: {{sla_max_seconds}}
       failure_rate:
         max: {{sla_max_failure}}
-
