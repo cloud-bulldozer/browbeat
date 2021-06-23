@@ -434,6 +434,20 @@ workloads:
         num_lb: 1
         user_data_file:
         file: rally/rally-plugins/octavia/octavia-fully-populated-loadbalancer.yml
+      - name: octavia-create-loadbalancer-listeners-pools-members
+        enabled: true
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
+        protocol: HTTP
+        lb_algorithm: ROUND_ROBIN
+        protocol_port: 80
+        vip_subnet_id:
+        num_pools: 2
+        num_clients: 2
+        user: "cirros"
+        user_data_file: /home/stack/user_data.file
+        jump_host_ip:
+        file: rally/rally-plugins/octavia/octavia-create-loadabalancer-listeners-pools-members.yml
 
   - name: plugin-workloads
     enabled: false
