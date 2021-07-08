@@ -42,12 +42,12 @@ On the Undercloud
   [stack@undercloud ~]$ git clone https://github.com/openstack/browbeat.git
   [stack@undercloud ~]$ source stackrc
   [stack@undercloud ~]$ cd browbeat/ansible
-  [stack@undercloud ansible]$ ./bootstrap.py tripleo
+  [stack@undercloud ansible]$ ./generate_tripleo_inventory.sh -l
   [stack@undercloud ansible]$ sudo easy_install pip
   [stack@undercloud ansible]$ sudo pip install ansible
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
-  [stack@undercloud ansible]$ ansible-playbook -i hosts install/browbeat.yml
-  [stack@undercloud ansible]$ ansible-playbook -i hosts install/shaker_build.yml
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/browbeat.yml
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/shaker_build.yml
 
 .. note:: Your default network might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
