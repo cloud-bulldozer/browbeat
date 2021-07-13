@@ -43,7 +43,6 @@ LOG = logging.getLogger(__name__)
 class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                                                      neutron_utils.NeutronScenario,
                                                      octavia_utils.OctaviaBase):
-
     def create_clients(self, num_clients, image, flavor, user, user_data_file, **kwargs):
         _clients = []
         for i in range(num_clients):
@@ -60,7 +59,6 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                 flavor,
                 key_name=self.context["user"]["keypair"]["name"],
                 **kwargs)
-
             if hasattr(userdata, 'close'):
                 userdata.close()
 
@@ -92,10 +90,10 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
         lb = self.octavia.load_balancer_create(
             subnet_id=vip_subnet_id,
             admin_state=True)
-        LOG.info("Waiting for the load balancer to be active")
+        lb_id = lb["id"]
+        LOG.info("Waiting for the lb {} to be active".format(lb_id))
         self.octavia.wait_for_loadbalancer_prov_status(lb)
         time.sleep(90)
-        lb_id = lb["id"]
 
         for _ in range(num_pools):
             listener_args = {
@@ -106,7 +104,7 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                 "connection_limit": -1,
                 "admin_state_up": True,
             }
-            LOG.info("Creating a listener")
+            LOG.info("Creating a listener for lb {}".format(lb_id))
             attempts = 0
             # Retry to avoid HTTP 409 errors like "Load Balancer
             # is immutable and cannot be updated"
@@ -124,9 +122,11 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                     break
             LOG.info(listener)
             time.sleep(30)
+            LOG.info("Waiting for the lb {} to be active, after listener_create"
+                     .format(lb_id))
             self.octavia.wait_for_loadbalancer_prov_status(lb)
 
-            LOG.info("Creating a pool")
+            LOG.info("Creating a pool for lb {}".format(lb_id))
             attempts = 0
             # Retry to avoid HTTP 409 errors like "Load Balancer
             # is immutable and cannot be updated"
@@ -157,7 +157,8 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                     "admin_state_up": True,
                     "name": self.generate_random_name(),
                 }
-                LOG.info("Adding member : {} to the pool".format(client_ip))
+                LOG.info("Adding member : {} to the pool {} lb {}"
+                         .format(client_ip, pool["id"], lb_id))
                 attempts = 0
                 # Retry to avoid "Load Balancer is immutable and cannot be updated"
                 while attempts < max_attempts:
@@ -171,23 +172,34 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                             attempts += attempts
                             time.sleep(120)
                             self.octavia.wait_for_loadbalancer_prov_status(lb)
+                            LOG.info("member_create exception: Waiting for the lb {} to be active"
+                                     .format(lb_id))
                             continue
                         break
                 time.sleep(30)
+                LOG.info("Waiting for the lb {} to be active, after member_create"
+                         .format(lb_id))
                 self.octavia.wait_for_loadbalancer_prov_status(lb)
             protocol_port = protocol_port + 1
         # ssh and ping the vip
         lb_ip = lb["vip_address"]
         LOG.info("Load balancer IP: {}".format(lb_ip))
         port = 80
+        jump_ssh = sshutils.SSH(user, jump_host_ip, 22, None, None)
+        # check for connectivity
+        self._wait_for_ssh(jump_ssh)
         for i in range(num_pools):
-            jump_ssh = sshutils.SSH(user, jump_host_ip, 22, None, None)
-            # check for connectivity
-            self._wait_for_ssh(jump_ssh)
             for j in range(num_clients):
-                cmd = "curl -s --retry {} {}:{}".format(10, lb_ip, port)
-                test_exitcode, stdout_test, stderr = jump_ssh.execute(cmd, timeout=0)
-                LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
-                if test_exitcode != 0 and stdout_test != 1:
-                    LOG.error("ERROR with HTTP response {}".format(cmd))
+                cmd = "curl -s {}:{}".format(lb_ip, port)
+                attempts = 0
+                while attempts < max_attempts:
+                    test_exitcode, stdout_test, stderr = jump_ssh.execute(cmd, timeout=60)
+                    LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
+                    if test_exitcode != 0 and stdout_test != 1:
+                        LOG.error("ERROR with HTTP response {}".format(cmd))
+                        attempts += attempts
+                        time.sleep(30)
+                    else:
+                        LOG.info("cmd: {} succesful".format(cmd))
+                        break
             port = port + 1
