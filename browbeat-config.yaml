@@ -43,6 +43,8 @@ rally:
     - netcreate-boot: rally/rally-plugins/netcreate-boot
     - octavia: rally/rally-plugins/octavia
     - cinder: rally/rally-plugins/cinder
+    - nova: rally/rally-plugins/nova
+    - browbeat: rally/rally-plugins/browbeat
     - workloads: rally/rally-plugins/workloads
 shaker:
   server: 1.1.1.1
