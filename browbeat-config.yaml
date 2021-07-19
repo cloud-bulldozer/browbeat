@@ -452,6 +452,11 @@ workloads:
         user_data_file: /home/stack/user_data.file
         jump_host_ip:
         file: rally/rally-plugins/octavia/octavia-create-loadabalancer-listeners-pools-members.yml
+      - name: trunk-network-simulation
+        enabled: false
+        num_subports: 1
+        ext_net_id:
+        file: ./rally/rally-plugins/netcreate-boot/trunk_network_simulation.yml
 
   - name: plugin-workloads
     enabled: false
