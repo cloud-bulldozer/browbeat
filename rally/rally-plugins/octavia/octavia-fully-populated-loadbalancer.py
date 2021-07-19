@@ -138,7 +138,7 @@ class OctaviaFullyPopulatedLoadbalancer(vm_utils.VMScenario, neutron_utils.Neutr
                 LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
                 if test_exitcode != 0 and stdout_test != 1:
                     LOG.error("ERROR with HTTP response {}".format(cmd))
-                    attempts += attempts
+                    attempts += 1
                     time.sleep(30)
                 else:
                     LOG.info("cmd: {} succesful".format(cmd))

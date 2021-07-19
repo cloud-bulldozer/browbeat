@@ -115,7 +115,7 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                 except exceptions.OctaviaClientException as e:
                     # retry for 409 return code
                     if e.code == 409:
-                        attempts += attempts
+                        attempts += 1
                         time.sleep(120)
                         self.octavia.wait_for_loadbalancer_prov_status(lb)
                         continue
