@@ -46,6 +46,7 @@ rally:
     - nova: rally/rally-plugins/nova
     - browbeat: rally/rally-plugins/browbeat
     - workloads: rally/rally-plugins/workloads
+    - dynamic-workloads: rally/rally-plugins/dynamic-workloads
 shaker:
   server: 1.1.1.1
   port: 5555
@@ -525,3 +526,20 @@ workloads:
         concurrency_level: 10
         send_results: true
         file: rally/rally-plugins/workloads/abench.yml
+
+  - name: dynamic-workloads
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: dynamic-workload-1
+        enabled: true
+        enable_dhcp: true
+        image_name: cirros
+        flavor_name: m1.small
+        num_vms: 10
+        file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
+
