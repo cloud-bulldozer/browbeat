@@ -24,10 +24,26 @@ import base
 )
 @validation.add("required_platform", platform="openstack", users=True)
 @scenario.configure(
-    context={"cleanup@openstack": ["neutron", "nova"]},
+    context={
+        "cleanup@openstack": ["neutron", "nova"],
+        "keypair@openstack": {},
+        "allow_ssh@openstack": None,
+    },
     name="BrowbeatPlugin.dynamic_workload",
     platform="openstack",
 )
 class DynamicWorkload(base.DynamicBase):
-    def run(self, image, flavor, num_vms, subnet_create_args, **kwargs):
-        self.create_delete_servers(image, flavor, num_vms, subnet_create_args=subnet_create_args)
+    def run(self, image, flavor, ext_net_id, num_migrate_vms, num_vms=1, workloads="all",
+            router_create_args=None, network_create_args=None, subnet_create_args=None, **kwargs):
+
+        if workloads != "all":
+            workloads_list = workloads.split(",")
+
+        if workloads == "all" or "create_delete_servers" in workloads_list:
+            self.create_delete_servers(image, flavor, num_vms,
+                                       subnet_create_args=subnet_create_args)
+
+        if workloads == "all" or "migrate_servers" in workloads_list:
+            self.server_boot_floatingip(image, flavor, ext_net_id, num_vms, router_create_args,
+                                        network_create_args, subnet_create_args, **kwargs)
+            self.migrate_servers_with_fip(num_migrate_vms)

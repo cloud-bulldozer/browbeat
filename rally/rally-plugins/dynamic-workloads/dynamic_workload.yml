@@ -1,25 +1,31 @@
 {% set image_name = image_name or 'cirros' %}
 {% set flavor_name = flavor_name or 'm1.xtiny' %}
-{% set enable_dhcp = enable_dhcp or true %}
 {% set num_vms = num_vms or 1 %}
+{% set num_migrate_vms = num_migrate_vms or 1 %}
+{% set workloads = workloads or 'all' %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
 ---
 BrowbeatPlugin.dynamic_workload:
-  -
+-
     args:
+      floating: True
       flavor:
         name: '{{flavor_name}}'
       image:
         name: '{{image_name}}'
       network_create_args: {}
-      subnet_create_args: {'enable_dhcp': '{{enable_dhcp}}'}
+      router_create_args: {}
+      subnet_create_args: {}
       num_vms: {{num_vms}}
+      num_migrate_vms: {{num_migrate_vms}}
+      ext_net_id: '{{ext_net_id}}'
+      workloads: '{{workloads}}'
     runner:
       concurrency: {{concurrency}}
       times: {{times}}
-      type: 'constant'
+      type: "constant"
     context:
       users:
         tenants: 1
@@ -30,6 +36,7 @@ BrowbeatPlugin.dynamic_workload:
           port: -1
           router: -1
           subnet: -1
+          floatingip: -1
         nova:
           instances: -1
           cores: -1

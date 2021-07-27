@@ -11,8 +11,10 @@
 #   limitations under the License.
 
 import logging
+import random
 from rally_openstack.scenarios.neutron import utils as neutron_utils
 from rally_openstack.scenarios.vm import utils as vm_utils
+from rally.task import atomic
 
 LOG = logging.getLogger(__name__)
 
@@ -20,7 +22,7 @@ LOG = logging.getLogger(__name__)
 class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
     def create_delete_servers(self, image, flavor, num_vms=1, min_sleep=0, max_sleep=10,
                               network_create_args=None, subnet_create_args=None):
-        """Creates <num_vms> servers and deletes <num_vms//2> servers.
+        """Create <num_vms> servers and delete <num_vms//2> servers.
 
         :param image: image ID or instance for server creation
         :param flavor: int, flavor ID or instance for server creation
@@ -35,7 +37,6 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
         kwargs = {}
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
         servers = []
-
         for i in range(num_vms):
             server = self._boot_server(image, flavor, **kwargs)
             LOG.info("Created server {} when i = {}".format(server,i))
@@ -47,3 +48,101 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
                 self._delete_server(server_to_delete, force=True)
                 LOG.info("Deleted server {} when i = {}".format(server_to_delete,i))
                 servers.pop(0)
+
+    def server_boot_floatingip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
+                               network_create_args=None, subnet_create_args=None, **kwargs):
+        """Create <num_vms> servers with floating IPs
+
+        :param image: image ID or instance for server creation
+        :param flavor: int, flavor ID or instance for server creation
+        :param ext_net_id: external network ID for floating IP creation
+        :param num_vms: int, number of servers to create
+        :param router_create_args: dict, arguments for router creation
+        :param network_create_args: dict, arguments for network creation
+        :param subnet_create_args: dict, arguments for subnet creation
+        :param kwargs: dict, Keyword arguments to function
+        """
+        ext_net_name = None
+        if ext_net_id:
+            ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
+                "name"
+            ]
+        router_create_args["name"] = self.generate_random_name()
+        router_create_args["tenant_id"] = self.context["tenant"]["id"]
+        router_create_args.setdefault(
+            "external_gateway_info", {"network_id": ext_net_id, "enable_snat": True}
+        )
+        router = self._create_router(router_create_args)
+
+        network = self._create_network(network_create_args or {})
+        subnet = self._create_subnet(network, subnet_create_args or {})
+        self._add_interface_router(subnet["subnet"], router["router"])
+        for i in range(num_vms):
+            kwargs["nics"] = [{"net-id": network["network"]["id"]}]
+            guest = self._boot_server_with_fip(
+                image, flavor, True, ext_net_name, **kwargs
+            )
+            self._wait_for_ping(guest[1]["ip"])
+
+    @atomic.action_timer("neutron.create_router")
+    def _create_router(self, router_create_args):
+        """Create neutron router.
+
+        :param router_create_args: POST /v2.0/routers request options
+        :returns: neutron router dict
+        """
+        return self.admin_clients("neutron").create_router(
+            {"router": router_create_args}
+        )
+
+    def get_servers_migration_list(self, num_migrate_vms):
+        """Generate list of servers to migrate between computes
+
+        :param num_migrate_vms: int, number of servers to migrate between computes
+        :returns: list of server objects to migrate between computes
+        """
+        servers = self._list_servers(True)
+        trunks = self._list_trunks()
+        eligible_servers = []
+
+        for server in servers:
+            has_floating_ip = False
+            is_not_trunk_network_server = True
+
+            for network, addr_list in server.addresses.items():
+                if len(addr_list) > 1:
+                    has_floating_ip = True
+
+            for interface in self._list_interfaces(server):
+                for trunk in trunks:
+                    if interface._info['port_id'] == trunk['port_id']:
+                        is_not_trunk_network_server = False
+                        break
+                if not(is_not_trunk_network_server):
+                    break
+
+            if has_floating_ip and is_not_trunk_network_server:
+                eligible_servers.append(server)
+
+        random.shuffle(eligible_servers)
+        num_servers_to_migrate = min(num_migrate_vms, len(eligible_servers))
+        list_of_servers_to_migrate = []
+
+        for i in range(num_servers_to_migrate):
+            list_of_servers_to_migrate.append(eligible_servers[i])
+
+        return list_of_servers_to_migrate
+
+    def migrate_servers_with_fip(self, num_migrate_vms):
+        """Migrate servers between computes
+
+        :param num_migrate_vms: int, number of servers to migrate between computes
+        """
+        for server in self.get_servers_migration_list(num_migrate_vms):
+            fip = list(server.addresses.values())[0][1]['addr']
+            LOG.info("ping {} before server migration".format(fip))
+            self._wait_for_ping(fip)
+            self._migrate(server)
+            self._resize_confirm(server, status="ACTIVE")
+            LOG.info("ping {} after server migration".format(fip))
+            self._wait_for_ping(fip)
