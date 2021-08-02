@@ -8,6 +8,10 @@ browbeat_flavors:
     cpu: 1
     memory: 64
     disk: 1
+  - name: m1.tiny-cirros
+    cpu: 1
+    memory: 128
+    disk: 1
   - name: m1.tiny-centos
     cpu: 1
     memory: 192
