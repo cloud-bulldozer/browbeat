@@ -106,12 +106,18 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
         eligible_servers = []
 
         for server in servers:
+            if server._info['name'].startswith('amphora-'):
+                continue
+
             has_floating_ip = False
             is_not_trunk_network_server = True
 
             for network, addr_list in server.addresses.items():
                 if len(addr_list) > 1:
                     has_floating_ip = True
+                    break
+            if not(has_floating_ip):
+                continue
 
             for interface in self._list_interfaces(server):
                 for trunk in trunks:
@@ -120,8 +126,7 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
                         break
                 if not(is_not_trunk_network_server):
                     break
-
-            if has_floating_ip and is_not_trunk_network_server:
+            if is_not_trunk_network_server:
                 eligible_servers.append(server)
 
         random.shuffle(eligible_servers)
