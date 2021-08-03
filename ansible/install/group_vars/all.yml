@@ -58,6 +58,13 @@ supported_distro: ((ansible_distribution == "CentOS" && ansible_distribution_maj
 iptables_file: /etc/sysconfig/iptables
 
 ########################################
+# Octavia
+########################################
+#test_server.bin is a static application that
+#simulates HTTP, HTTPS, and UDP servers.
+octavia_test_bin_path:
+
+########################################
 # Browbeat Workloads
 ########################################
 
@@ -83,24 +90,35 @@ browbeat_workloads:
     dest: "{{ browbeat_path }}/sysbench-user.file"
     image: centos7
     enabled: false
+    flavor: m1.small
   linpack:
     name: browbeat-linpack
     src: linpack-user.file
     dest: "{{ browbeat_path }}/linpack-user.file"
     image: centos7
     enabled: false
+    flavor: m1.small
   uperf:
     name: browbeat-uperf
     src: pbench-uperf-user.file
     dest: "{{ browbeat_path }}/pbench-uperf-user.file"
     image: centos7
     enabled: false
+    flavor: m1.small
   abench:
     name: browbeat-abench
     src: abench-user.file
     dest: "{{ browbeat_path }}/abench-user.file"
     image: centos7
     enabled: false
+    flavor: m1.small
+  octavia:
+     name: custom-cirros
+     src: custom-cirros.file
+     dest: "{{ browbeat_path }}/custom-cirros.file"
+     image: cirro5
+     enabled: false
+     flavor: m1.tiny-cirros
 
 ########################################
 # Other Install Configuration Items

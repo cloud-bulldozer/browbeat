@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd /home/cirros/ && wget "{{ octavia_test_bin_path }}"
+echo "Browbeat workload installed"

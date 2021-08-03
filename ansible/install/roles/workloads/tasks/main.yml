@@ -12,7 +12,7 @@
   when: browbeat_workloads[item].enabled
 
 - name: Build images
-  shell: source {{ overcloudrc }} ; openstack server create --wait --flavor m1.small --image {{ browbeat_workloads[item].image }} --nic net-id={{ browbeat_network }} --user-data {{ browbeat_workloads[item].dest }} {{ browbeat_workloads[item].name }} | egrep '\sid\s' | awk '{print $4}'
+  shell: source {{ overcloudrc }} ; openstack server create --wait --flavor {{ browbeat_workloads[item].flavor }} --image {{ browbeat_workloads[item].image }} --nic net-id={{ browbeat_network }} --user-data {{ browbeat_workloads[item].dest }} {{ browbeat_workloads[item].name }} | egrep '\sid\s' | awk '{print $4}'
   with_items: "{{ browbeat_workloads }}"
   when: browbeat_workloads[item].enabled
   register: workload_ids
