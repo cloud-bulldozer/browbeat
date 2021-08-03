@@ -536,14 +536,24 @@ workloads:
     times: 1
     scenarios:
       - name: dynamic-workload
-        enabled: true
+        enabled: false
         image_name: cirros
         flavor_name: m1.small
         ext_net_id:
         num_vms: 10
         num_migrate_vms: 5
+        jump_host_ip:
+        octavia_image_name: custom-cirros
+        octavia_flavor_name: m1.tiny-cirros
+        num_lbs: 2
+        num_pools: 2
+        num_clients: 2
+        vip_subnet_id:
+        user: cirros
+        user_data_file:
         # workloads can be 'all', a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
+        # create_loadbalancers
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
