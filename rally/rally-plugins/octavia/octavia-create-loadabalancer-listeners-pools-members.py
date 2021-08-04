@@ -143,7 +143,7 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                 except exceptions.OctaviaClientException as e:
                     # retry for 409 return code
                     if e.code == 409:
-                        attempts += attempts
+                        attempts += 1
                         time.sleep(120)
                         continue
                     break
@@ -169,7 +169,7 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                     except exceptions.OctaviaClientException as e:
                         # retry for 409 return code
                         if e.code == 409:
-                            attempts += attempts
+                            attempts += 1
                             time.sleep(120)
                             self.octavia.wait_for_loadbalancer_prov_status(lb)
                             LOG.info("member_create exception: Waiting for the lb {} to be active"
@@ -197,7 +197,7 @@ class OctaviaCreateLoadbalancerListenersPoolsMembers(vm_utils.VMScenario,
                     LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
                     if test_exitcode != 0 and stdout_test != 1:
                         LOG.error("ERROR with HTTP response {}".format(cmd))
-                        attempts += attempts
+                        attempts += 1
                         time.sleep(30)
                     else:
                         LOG.info("cmd: {} succesful".format(cmd))
