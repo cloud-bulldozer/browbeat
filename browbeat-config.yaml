@@ -458,6 +458,21 @@ workloads:
         num_subports: 1
         ext_net_id:
         file: ./rally/rally-plugins/netcreate-boot/trunk_network_simulation.yml
+      # provider_phys_net should be provider physical network name.
+      # Please don't create any vlan interfaces on the physical interface used with this provider type.
+      # So use a dedicated interface with provider bridge mappings.
+      # Provide the MAC address of this interface you find in the undercloud.
+      # Workload will prepare a scapy packet using the interface name and mac.
+      - name: provider-netcreate-boot-ping
+        enabled: true
+        enable_dhcp: true
+        num_vms: 1
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
+        provider_phys_net: "provider"
+        iface_name: "ens7f0"
+        iface_mac: "3c:fd:fe:c1:8c:70"
+        file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping.yml
 
   - name: plugin-workloads
     enabled: false
