@@ -105,7 +105,8 @@ class TrunkSubportConnection(vm_utils.VMScenario,
             subnets.append(subnet[0])
             subports.append(self._create_port(
                 net, {"fixed_ips": [{
-                    "subnet_id": subnet[0]["subnet"]["id"]}]}))
+                      "subnet_id": subnet[0]["subnet"]["id"]}],
+                      "security_groups": [security_group["id"]]}))
             self._add_interface_router(subnet[0]['subnet'], router['router'])
 
         jump_ssh = sshutils.SSH("centos", fip, pkey=self.keypair["private"])
