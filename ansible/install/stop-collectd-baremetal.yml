@@ -1,0 +1,80 @@
+---
+#
+# Playbook to stop collectd on undercloud/overcloud
+#
+# Stop on all undercloud/overcloud machines:
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml
+#
+# Or use tags:
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "undercloud"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "controller"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "networker"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "blockstorage"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "objectstorage"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "cephstorage"
+# ansible-playbook -i hosts.yml install/stop-collectd-baremetal.yml --tag "compute"
+#
+
+
+- hosts: Undercloud
+  remote_user: "{{ local_remote_user }}"
+  tasks:
+    - name: Stop Collectd on undercloud
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: undercloud
+
+- hosts: Controller
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on controller
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: controller
+
+- hosts: Networker
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on networker
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: networker
+
+- hosts: BlockStorage
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on blockstorage
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: blockstorage
+
+- hosts: ObjectStorage
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on objectstorage
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: objectstorage
+
+- hosts: CephStorage
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on cephstorage
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: cephstorage
+
+- hosts: Compute
+  remote_user: "{{ host_remote_user }}"
+  tasks:
+    - name: Stop Collectd on compute
+      service: name=collectd state=stopped enabled=false
+      become: true
+      ignore_errors: true
+  tags: compute
