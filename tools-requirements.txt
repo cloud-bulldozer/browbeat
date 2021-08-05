@@ -1,4 +1,5 @@
 setuptools>=40.3.0
 elasticsearch
+scapy
 pyrsistent==0.16.0;python_version<'3'
 pyrsistent>=0.17.0;python_version>='3'
