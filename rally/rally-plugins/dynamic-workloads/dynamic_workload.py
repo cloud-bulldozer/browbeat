@@ -15,26 +15,35 @@ from rally.task import scenario
 from rally.task import types
 from rally.task import validation
 import base
+import octavia
 
 
+@types.convert(octavia_image={"type": "glance_image"}, octavia_flavor={"type": "nova_flavor"})
+@validation.add("image_valid_on_flavor", flavor_param="octavia_flavor", image_param="octavia_image")
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
 @validation.add(
-    "required_services", services=[consts.Service.NEUTRON, consts.Service.NOVA]
+    "required_services", services=[consts.Service.NEUTRON,
+                                   consts.Service.NOVA,
+                                   consts.Service.OCTAVIA]
 )
 @validation.add("required_platform", platform="openstack", users=True)
 @scenario.configure(
     context={
-        "cleanup@openstack": ["neutron", "nova"],
+        "cleanup@openstack": ["neutron", "nova", "octavia"],
         "keypair@openstack": {},
         "allow_ssh@openstack": None,
     },
     name="BrowbeatPlugin.dynamic_workload",
     platform="openstack",
 )
-class DynamicWorkload(base.DynamicBase):
-    def run(self, image, flavor, ext_net_id, num_migrate_vms, num_vms=1, workloads="all",
-            router_create_args=None, network_create_args=None, subnet_create_args=None, **kwargs):
+class DynamicWorkload(base.DynamicBase, octavia.DynamicOctaviaBase):
+    def run(
+        self, image, flavor, ext_net_id, num_migrate_vms, jump_host_ip,
+        user_data_file, num_lbs, num_pools, vip_subnet_id, num_clients,
+        user, octavia_image, octavia_flavor, workloads="all", num_vms=1,
+        router_create_args=None, network_create_args=None,
+        subnet_create_args=None, **kwargs):
 
         if workloads != "all":
             workloads_list = workloads.split(",")
@@ -47,3 +56,9 @@ class DynamicWorkload(base.DynamicBase):
             self.server_boot_floatingip(image, flavor, ext_net_id, num_vms, router_create_args,
                                         network_create_args, subnet_create_args, **kwargs)
             self.migrate_servers_with_fip(num_migrate_vms)
+
+        if "create_loadbalancers" in workloads_list:
+            self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs,
+                                      jump_host_ip, vip_subnet_id, user_data_file, num_pools,
+                                      num_clients, router_create_args, network_create_args,
+                                      subnet_create_args, **kwargs)

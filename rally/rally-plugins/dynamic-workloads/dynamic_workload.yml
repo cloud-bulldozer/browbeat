@@ -3,6 +3,12 @@
 {% set num_vms = num_vms or 1 %}
 {% set num_migrate_vms = num_migrate_vms or 1 %}
 {% set workloads = workloads or 'all' %}
+{% set octavia_image_name = octavia_image_name or 'custom-cirros' %}
+{% set octavia_flavor_name = octavia_flavor_name or 'm1.tiny-cirros' %}
+{% set num_lbs = num_lbs or 2 %}
+{% set num_pools = num_pools or 2 %}
+{% set num_clients = num_clients or 2 %}
+{% set user = user or 'cirros' %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
@@ -15,6 +21,17 @@ BrowbeatPlugin.dynamic_workload:
         name: '{{flavor_name}}'
       image:
         name: '{{image_name}}'
+      user: '{{ user }}'
+      jump_host_ip: '{{ jump_host_ip }}'
+      octavia_image:
+         name: '{{ octavia_image_name }}'
+      octavia_flavor:
+        name: '{{ octavia_flavor_name }}'
+      num_lbs: {{ num_lbs }}
+      num_pools: {{ num_pools }}
+      num_clients: {{ num_clients }}
+      vip_subnet_id: '{{ vip_subnet_id }}'
+      user_data_file: '{{ user_data_file }}'
       network_create_args: {}
       router_create_args: {}
       subnet_create_args: {}
