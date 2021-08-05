@@ -29,7 +29,6 @@ BrowbeatPlugin.dynamic_workload:
       image:
         name: '{{image_name}}'
       user: '{{ user }}'
-      jump_host_ip: '{{ jump_host_ip }}'
       octavia_image:
          name: '{{ octavia_image_name }}'
       octavia_flavor:
@@ -37,7 +36,6 @@ BrowbeatPlugin.dynamic_workload:
       num_lbs: {{ num_lbs }}
       num_pools: {{ num_pools }}
       num_clients: {{ num_clients }}
-      vip_subnet_id: '{{ vip_subnet_id }}'
       user_data_file: '{{ user_data_file }}'
       trunk_image:
         name: '{{ trunk_image_name }}'

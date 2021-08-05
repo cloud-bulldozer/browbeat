@@ -44,12 +44,15 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase):
     def run(
         self, image, flavor, ext_net_id, num_vms_to_create_for_migration,
-        num_vms_to_migrate, jump_host_ip, user_data_file, num_lbs, num_pools,
-        vip_subnet_id, num_clients, user, octavia_image, octavia_flavor,
-        trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
-        num_add_subports, num_add_subports_trunks, num_create_delete_vms,
-        workloads="all", router_create_args=None, network_create_args=None,
-        subnet_create_args=None, **kwargs):
+        num_vms_to_migrate, user_data_file, user, num_lbs, num_pools,
+        num_clients, octavia_image, octavia_flavor, trunk_image,
+        trunk_flavor, num_initial_subports, num_trunk_vms,
+        num_add_subports, num_add_subports_trunks,
+        num_create_delete_vms, workloads="all",
+        router_create_args=None,
+        network_create_args=None,
+        subnet_create_args=None,
+        **kwargs):
 
         if workloads != "all":
             workloads_list = workloads.split(",")
@@ -64,15 +67,14 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                                        subnet_create_args, **kwargs)
             self.migrate_servers_with_fip(num_vms_to_migrate)
 
-        if workloads == "all" or "create_loadbalancers" in workloads_list:
-            self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs,
-                                      jump_host_ip, vip_subnet_id, user_data_file, num_pools,
-                                      num_clients, router_create_args, network_create_args,
-                                      subnet_create_args, **kwargs)
-
         if workloads == "all" or "pod_fip_simulation" in workloads_list:
             self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor,
                                     num_initial_subports, num_trunk_vms)
 
         if workloads == "all" or "add_subports_to_random_trunks" in workloads_list:
             self.add_subports_to_random_trunks(num_add_subports_trunks, num_add_subports)
+
+        if "create_loadbalancers" in workloads_list:
+            self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs, user_data_file,
+                                      num_pools, num_clients, ext_net_id, router_create_args,
+                                      network_create_args, subnet_create_args, **kwargs)

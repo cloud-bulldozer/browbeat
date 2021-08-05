@@ -22,18 +22,58 @@ LOG = logging.getLogger(__name__)
 
 
 class DynamicOctaviaBase(octavia_utils.OctaviaBase):
+    def build_jump_host(self, ext_net_name, image, flavor, user, subnet, password=None, **kwargs):
+        """Builds jump host
 
-    def create_clients(self, num_clients, user, user_data_file, image, flavor, **kwargs):
-        """Create <num_clients> clients
-
-        :param num_clients: int, number of clients to create
+        :param ext_net_name: External network name
         :param image: image ID or instance for server creation
         :param flavor: int, flavor ID or instance for server creation
         :param user: user to ssh
-        :param user_data_file: user data file to serve from the metadata server
+        :param subnet: subnet
         :param kwargs: dict, Keyword arguments to function
         """
 
+        kwargs["nics"] = [{"net-id": subnet['network_id']}]
+        keyname = self.context["user"]["keypair"]["name"]
+        LOG.info("Building Jump Host with key : {}".format(keyname))
+        jump_host, jump_host_ip = self._boot_server_with_fip(image,
+                                                             flavor,
+                                                             True,
+                                                             floating_network=ext_net_name,
+                                                             key_name=keyname,
+                                                             **kwargs)
+        # wait for ping
+        self._wait_for_ping(jump_host_ip["ip"])
+
+        # open ssh connection
+        jump_ssh = sshutils.SSH(user, jump_host_ip["ip"], 22, self.context[
+                                "user"]["keypair"]["private"], password)
+
+        # check for connectivity
+        self._wait_for_ssh(jump_ssh)
+
+        # write id_rsa(private key) to get to guests
+        self._run_command_over_ssh(jump_ssh, {"remote_path": "rm -rf ~/.ssh"})
+        self._run_command_over_ssh(jump_ssh, {"remote_path": "mkdir ~/.ssh"})
+        jump_ssh.run(
+            "cat > ~/.ssh/id_rsa",
+            stdin=self.context["user"]["keypair"]["private"])
+        jump_ssh.execute("chmod 0600 ~/.ssh/id_rsa")
+        return jump_ssh, jump_host_ip, jump_host
+
+    def create_clients(self, num_clients, user, user_data_file, image, flavor, subnet, **kwargs):
+        """Create <num_clients> clients
+
+        :param num_clients: int, number of clients to create
+        :param user: user to ssh
+        :param user_data_file: user data file to serve from the metadata server
+        :param image: image ID or instance for server creation
+        :param flavor: int, flavor ID or instance for server creation
+        :param subnet: subnet
+        :param kwargs: dict, Keyword arguments to function
+        """
+
+        kwargs["nics"] = [{"net-id": subnet['network_id']}]
         _clients = []
         for i in range(num_clients):
             try:
@@ -166,10 +206,9 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         LOG.info("Waiting for the lb {} to be active, after member_create"
                  .format(lb_id))
 
-    def check_connection(self, lb, user, jump_host_ip, num_pools, num_clients, max_attempts=10):
+    def check_connection(self, lb, jump_ssh, num_pools, num_clients, max_attempts=10):
         """Checks the connection
         :param lb: loadbalancer
-        :param user: ssh user
         :param jump_host_ip: Floating IP of jumphost
         :param num_pools: number of pools per loadbalancer
         :param num_clients: number of clients per loadbalancer
@@ -179,7 +218,6 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         port = 80
         lb_ip = lb["vip_address"]
         LOG.info("Load balancer IP: {}".format(lb_ip))
-        jump_ssh = sshutils.SSH(user, jump_host_ip, 22, None, None)
         # check for connectivity
         self._wait_for_ssh(jump_ssh)
         for i in range(num_pools):
@@ -199,9 +237,10 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
             port = port + 1
 
     def create_loadbalancers(
-        self, octavia_image, octavia_flavor, user, num_lbs, jump_host_ip, vip_subnet_id,
-        user_data_file, num_pools, num_clients, router_create_args=None,
-        network_create_args=None, subnet_create_args=None, **kwargs):
+        self, octavia_image, octavia_flavor, user, num_lbs, user_data_file,
+        num_pools, num_clients, ext_net_id, router_create_args=None,
+        network_create_args=None, subnet_create_args=None,
+        **kwargs):
 
         """Create <num_lbs> loadbalancers with specified <num_pools> <num_clients> per Loadbalancer.
 
@@ -209,37 +248,58 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         :param octavia_flavor: int, flavor ID or instance for server creation
         :param user: ssh user
         :param num_lbs: int, number of loadbalancers to create
-        :param jump_host_ip: floating ip of jumphost
-        :param vip_subnet_id: Set subnet for the load balancer (name or ID)
         :param user_data_file: pass user-data file for clients
         :param num_pools: int, number of pools to create
         :param num_clients: int, number of clients to create
+        :param ext_net_id: external network ID
         :param router_create_args: dict, arguments for router creation
         :param network_create_args: dict, arguments for network creation
         :param subnet_create_args: dict, arguments for subnet creation
         :param kwargs: dict, Keyword arguments to function
         """
 
-        network = self._create_network(network_create_args or {})
-        subnet = self._create_subnet(network, subnet_create_args or {})
-        kwargs["nics"] = [{"net-id": network['network']['id']}]
-        subnet_id = subnet['subnet']['id']
-        _clients = self.create_clients(num_clients, user, user_data_file, octavia_image,
-                                       octavia_flavor, **kwargs)
-        LOG.info("Creating a load balancer")
+        if ext_net_id:
+            ext_net_name = self.clients("neutron").show_network(
+                ext_net_id)["network"]["name"]
+        router_create_args["name"] = self.generate_random_name()
+        router_create_args["tenant_id"] = self.context["tenant"]["id"]
+        router_create_args.setdefault("external_gateway_info",
+                                      {"network_id": ext_net_id, "enable_snat": True})
+        router = self._create_router(router_create_args)
+
         for _ in range(num_lbs):
+            subnets = []
+            num_networks = 2
+            for net in range(0, num_networks):
+                network = self._create_network(network_create_args or {})
+                subnet = self._create_subnet(network, subnet_create_args or {})
+                subnets.append(subnet)
+            self._add_interface_router(subnets[0]['subnet'], router['router'])
+            LOG.info("Subnets {}".format(subnets))
+            vip_subnet_id = subnets[0]['subnet']['id']
+            mem_subnet_id = subnets[1]['subnet']['id']
+
+            # network1 is used by jumphost and LB
+            # network2 is used by clients (members)
+            jump_ssh, jump_host_ip, jump_host = self.build_jump_host(
+                ext_net_name, octavia_image, octavia_flavor, user, subnets[0]['subnet'], **kwargs)
+
+            _clients = self.create_clients(num_clients, user, user_data_file, octavia_image,
+                                           octavia_flavor, subnets[1]['subnet'], **kwargs)
+
             protocol_port = 80
             lb = self.octavia.load_balancer_create(subnet_id=vip_subnet_id, admin_state=True)
             lb_id = lb["id"]
             LOG.info("Waiting for the lb {} to be active".format(lb["id"]))
             self.octavia.wait_for_loadbalancer_prov_status(lb)
             time.sleep(90)
+
             for _ in range(num_pools):
                 listener = self.create_listener(lb_id, protocol_port)
                 self.octavia.wait_for_loadbalancer_prov_status(lb)
                 pool = self.create_pool(lb_id, listener["listener"]["id"])
                 self.octavia.wait_for_loadbalancer_prov_status(lb)
                 for client_ip in _clients:
-                    self.create_member(client_ip, pool["id"], protocol_port, subnet_id, lb_id)
+                    self.create_member(client_ip, pool["id"], protocol_port, mem_subnet_id, lb_id)
                 protocol_port = protocol_port + 1
-            self.check_connection(lb, user, jump_host_ip, num_pools, num_clients)
+            self.check_connection(lb, jump_ssh, num_pools, num_clients)

@@ -14,6 +14,7 @@ Functions:
 - create_pool: Create pool
 - create_member: Create member
 - check_connection: Check the connection of LB
+- build_jump_host: Builds Jump host
 - _run_command_with_attempts: Run command over ssh connection with multiple attempts
 - simulate_subport_connection: Simulate subport connection from jumphost to VM
 - get_server_by_trunk: Get server details for a given trunk

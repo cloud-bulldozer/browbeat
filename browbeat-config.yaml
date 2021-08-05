@@ -558,13 +558,11 @@ workloads:
         num_create_delete_vms: 10
         num_vms_to_create_for_migration: 10
         num_vms_to_migrate: 5
-        jump_host_ip:
         octavia_image_name: custom-cirros
         octavia_flavor_name: m1.tiny-cirros
         num_lbs: 2
         num_pools: 2
         num_clients: 2
-        vip_subnet_id:
         user: cirros
         user_data_file:
         trunk_image_name: centos7
