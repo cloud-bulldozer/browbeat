@@ -555,8 +555,9 @@ workloads:
         image_name: cirros
         flavor_name: m1.small
         ext_net_id:
-        num_vms: 10
-        num_migrate_vms: 5
+        num_create_delete_vms: 10
+        num_vms_to_create_for_migration: 10
+        num_vms_to_migrate: 5
         jump_host_ip:
         octavia_image_name: custom-cirros
         octavia_flavor_name: m1.tiny-cirros
@@ -566,9 +567,15 @@ workloads:
         vip_subnet_id:
         user: cirros
         user_data_file:
+        trunk_image_name: centos7
+        trunk_flavor_name: m1.tiny-centos
+        num_initial_subports: 1
+        num_trunk_vms: 1
+        num_add_subports_trunks: 1
+        num_add_subports: 1
         # workloads can be 'all', a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
-        # create_loadbalancers
+        # create_loadbalancers, pod_fip_simulation, add_subports_to_random_trunks
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml

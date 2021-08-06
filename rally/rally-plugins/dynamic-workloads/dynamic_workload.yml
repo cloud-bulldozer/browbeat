@@ -1,7 +1,8 @@
 {% set image_name = image_name or 'cirros' %}
 {% set flavor_name = flavor_name or 'm1.xtiny' %}
-{% set num_vms = num_vms or 1 %}
-{% set num_migrate_vms = num_migrate_vms or 1 %}
+{% set num_create_delete_vms = num_create_delete_vms or 2 %}
+{% set num_vms_to_create_for_migration = num_vms_to_create_for_migration or 1 %}
+{% set num_vms_to_migrate = num_vms_to_migrate or 1 %}
 {% set workloads = workloads or 'all' %}
 {% set octavia_image_name = octavia_image_name or 'custom-cirros' %}
 {% set octavia_flavor_name = octavia_flavor_name or 'm1.tiny-cirros' %}
@@ -9,6 +10,12 @@
 {% set num_pools = num_pools or 2 %}
 {% set num_clients = num_clients or 2 %}
 {% set user = user or 'cirros' %}
+{% set trunk_image_name = trunk_image_name or 'centos7' %}
+{% set trunk_flavor_name = trunk_flavor_name or 'm1.tiny-centos' %}
+{% set num_initial_subports = num_initial_subports or 1 %}
+{% set num_trunk_vms = num_trunk_vms or 1 %}
+{% set num_add_subports_trunks = num_add_subports_trunks or 1 %}
+{% set num_add_subports = num_add_subports or 1 %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
@@ -32,11 +39,20 @@ BrowbeatPlugin.dynamic_workload:
       num_clients: {{ num_clients }}
       vip_subnet_id: '{{ vip_subnet_id }}'
       user_data_file: '{{ user_data_file }}'
+      trunk_image:
+        name: '{{ trunk_image_name }}'
+      trunk_flavor:
+        name: '{{ trunk_flavor_name }}'
+      num_initial_subports: {{num_initial_subports}}
+      num_trunk_vms: {{num_trunk_vms}}
+      num_add_subports_trunks: {{num_add_subports_trunks}}
+      num_add_subports: {{num_add_subports}}
       network_create_args: {}
       router_create_args: {}
       subnet_create_args: {}
-      num_vms: {{num_vms}}
-      num_migrate_vms: {{num_migrate_vms}}
+      num_create_delete_vms: {{num_create_delete_vms}}
+      num_vms_to_create_for_migration: {{num_vms_to_create_for_migration}}
+      num_vms_to_migrate: {{num_vms_to_migrate}}
       ext_net_id: '{{ext_net_id}}'
       workloads: '{{workloads}}'
     runner:
@@ -54,6 +70,7 @@ BrowbeatPlugin.dynamic_workload:
           router: -1
           subnet: -1
           floatingip: -1
+          trunk: -1
         nova:
           instances: -1
           cores: -1

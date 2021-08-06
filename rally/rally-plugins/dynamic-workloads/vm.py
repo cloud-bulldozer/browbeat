@@ -12,14 +12,16 @@
 
 import logging
 import random
-from rally_openstack.scenarios.neutron import utils as neutron_utils
+
 from rally_openstack.scenarios.vm import utils as vm_utils
-from rally.task import atomic
+import neutron_custom
 
 LOG = logging.getLogger(__name__)
 
 
-class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
+class VMDynamicScenario(vm_utils.VMScenario,
+                        neutron_custom.NeutronDynamicScenario):
+
     def create_delete_servers(self, image, flavor, num_vms=1, min_sleep=0, max_sleep=10,
                               network_create_args=None, subnet_create_args=None):
         """Create <num_vms> servers and delete <num_vms//2> servers.
@@ -49,8 +51,8 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
                 LOG.info("Deleted server {} when i = {}".format(server_to_delete,i))
                 servers.pop(0)
 
-    def server_boot_floatingip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
-                               network_create_args=None, subnet_create_args=None, **kwargs):
+    def boot_servers_with_fip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
+                              network_create_args=None, subnet_create_args=None, **kwargs):
         """Create <num_vms> servers with floating IPs
 
         :param image: image ID or instance for server creation
@@ -83,17 +85,6 @@ class DynamicBase(vm_utils.VMScenario, neutron_utils.NeutronScenario):
                 image, flavor, True, ext_net_name, **kwargs
             )
             self._wait_for_ping(guest[1]["ip"])
-
-    @atomic.action_timer("neutron.create_router")
-    def _create_router(self, router_create_args):
-        """Create neutron router.
-
-        :param router_create_args: POST /v2.0/routers request options
-        :returns: neutron router dict
-        """
-        return self.admin_clients("neutron").create_router(
-            {"router": router_create_args}
-        )
 
     def get_servers_migration_list(self, num_migrate_vms):
         """Generate list of servers to migrate between computes

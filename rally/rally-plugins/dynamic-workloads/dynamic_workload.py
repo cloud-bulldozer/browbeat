@@ -14,12 +14,15 @@ from rally_openstack import consts
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation
-import base
+import vm
+import trunk
 import octavia
 
 
 @types.convert(octavia_image={"type": "glance_image"}, octavia_flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="octavia_flavor", image_param="octavia_image")
+@types.convert(trunk_image={"type": "glance_image"}, trunk_flavor={"type": "nova_flavor"})
+@validation.add("image_valid_on_flavor", flavor_param="trunk_flavor", image_param="trunk_image")
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
 @validation.add(
@@ -37,28 +40,39 @@ import octavia
     name="BrowbeatPlugin.dynamic_workload",
     platform="openstack",
 )
-class DynamicWorkload(base.DynamicBase, octavia.DynamicOctaviaBase):
+class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
+                      octavia.DynamicOctaviaBase):
     def run(
-        self, image, flavor, ext_net_id, num_migrate_vms, jump_host_ip,
-        user_data_file, num_lbs, num_pools, vip_subnet_id, num_clients,
-        user, octavia_image, octavia_flavor, workloads="all", num_vms=1,
-        router_create_args=None, network_create_args=None,
+        self, image, flavor, ext_net_id, num_vms_to_create_for_migration,
+        num_vms_to_migrate, jump_host_ip, user_data_file, num_lbs, num_pools,
+        vip_subnet_id, num_clients, user, octavia_image, octavia_flavor,
+        trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
+        num_add_subports, num_add_subports_trunks, num_create_delete_vms,
+        workloads="all", router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
         if workloads != "all":
             workloads_list = workloads.split(",")
 
         if workloads == "all" or "create_delete_servers" in workloads_list:
-            self.create_delete_servers(image, flavor, num_vms,
+            self.create_delete_servers(image, flavor, num_create_delete_vms,
                                        subnet_create_args=subnet_create_args)
 
         if workloads == "all" or "migrate_servers" in workloads_list:
-            self.server_boot_floatingip(image, flavor, ext_net_id, num_vms, router_create_args,
-                                        network_create_args, subnet_create_args, **kwargs)
-            self.migrate_servers_with_fip(num_migrate_vms)
+            self.boot_servers_with_fip(image, flavor, ext_net_id, num_vms_to_create_for_migration,
+                                       router_create_args, network_create_args,
+                                       subnet_create_args, **kwargs)
+            self.migrate_servers_with_fip(num_vms_to_migrate)
 
-        if "create_loadbalancers" in workloads_list:
+        if workloads == "all" or "create_loadbalancers" in workloads_list:
             self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs,
                                       jump_host_ip, vip_subnet_id, user_data_file, num_pools,
                                       num_clients, router_create_args, network_create_args,
                                       subnet_create_args, **kwargs)
+
+        if workloads == "all" or "pod_fip_simulation" in workloads_list:
+            self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor,
+                                    num_initial_subports, num_trunk_vms)
+
+        if workloads == "all" or "add_subports_to_random_trunks" in workloads_list:
+            self.add_subports_to_random_trunks(num_add_subports_trunks, num_add_subports)
