@@ -552,8 +552,10 @@ workloads:
     scenarios:
       - name: dynamic-workload
         enabled: false
-        image_name: cirros
-        flavor_name: m1.small
+        # smallest image name and smallest flavor name are used for 
+        # vm dynamic scenarios and for jumphost in trunk dynamic scenario.
+        smallest_image_name: cirros
+        smallest_flavor_name: m1.small
         ext_net_id:
         num_create_delete_vms: 10
         num_vms_to_create_for_migration: 10
@@ -565,8 +567,6 @@ workloads:
         num_clients: 2
         user: cirros
         user_data_file:
-        trunk_image_name: centos7
-        trunk_flavor_name: m1.tiny-centos
         num_initial_subports: 1
         num_trunk_vms: 1
         num_add_subports_trunks: 1
@@ -575,5 +575,7 @@ workloads:
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
         # create_loadbalancers, pod_fip_simulation, add_subports_to_random_trunks
+        # Note: Octavia scenarios are not included in 'all' by default, and have
+        # to be included separately.
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml

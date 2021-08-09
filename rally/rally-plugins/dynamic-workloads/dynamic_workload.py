@@ -23,8 +23,10 @@ import octavia
 @validation.add("image_valid_on_flavor", flavor_param="octavia_flavor", image_param="octavia_image")
 @types.convert(trunk_image={"type": "glance_image"}, trunk_flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="trunk_flavor", image_param="trunk_image")
-@types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
-@validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
+@types.convert(smallest_image={"type": "glance_image"}, smallest_flavor={"type": "nova_flavor"})
+@validation.add(
+    "image_valid_on_flavor", flavor_param="smallest_flavor", image_param="smallest_image"
+)
 @validation.add(
     "required_services", services=[consts.Service.NEUTRON,
                                    consts.Service.NOVA,
@@ -43,7 +45,7 @@ import octavia
 class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase):
     def run(
-        self, image, flavor, ext_net_id, num_vms_to_create_for_migration,
+        self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_for_migration,
         num_vms_to_migrate, user_data_file, user, num_lbs, num_pools,
         num_clients, octavia_image, octavia_flavor, trunk_image,
         trunk_flavor, num_initial_subports, num_trunk_vms,
@@ -54,22 +56,21 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         subnet_create_args=None,
         **kwargs):
 
-        if workloads != "all":
-            workloads_list = workloads.split(",")
+        workloads_list = workloads.split(",")
 
         if workloads == "all" or "create_delete_servers" in workloads_list:
-            self.create_delete_servers(image, flavor, num_create_delete_vms,
+            self.create_delete_servers(smallest_image, smallest_flavor, num_create_delete_vms,
                                        subnet_create_args=subnet_create_args)
 
         if workloads == "all" or "migrate_servers" in workloads_list:
-            self.boot_servers_with_fip(image, flavor, ext_net_id, num_vms_to_create_for_migration,
-                                       router_create_args, network_create_args,
-                                       subnet_create_args, **kwargs)
+            self.boot_servers_with_fip(smallest_image, smallest_flavor, ext_net_id,
+                                       num_vms_to_create_for_migration, router_create_args,
+                                       network_create_args, subnet_create_args, **kwargs)
             self.migrate_servers_with_fip(num_vms_to_migrate)
 
         if workloads == "all" or "pod_fip_simulation" in workloads_list:
-            self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor,
-                                    num_initial_subports, num_trunk_vms)
+            self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor, smallest_image,
+                                    smallest_flavor, num_initial_subports, num_trunk_vms)
 
         if workloads == "all" or "add_subports_to_random_trunks" in workloads_list:
             self.add_subports_to_random_trunks(num_add_subports_trunks, num_add_subports)

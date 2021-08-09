@@ -88,11 +88,14 @@ class TrunkDynamicScenario(
                     break
         return trunk_server_fip, trunk_server
 
-    def pod_fip_simulation(self, ext_net_id, image, flavor, subport_count, num_vms=1):
+    def pod_fip_simulation(self, ext_net_id, trunk_image, trunk_flavor,
+                           jumphost_image, jumphost_flavor, subport_count, num_vms=1):
         """Simulate pods with floating ips using subports on trunks and VMs
         :param ext_net_id: external network ID for floating IP creation
-        :param image: image ID or instance for server creation
-        :param flavor: int, flavor ID or instance for server creation
+        :param trunk_image: image ID or instance for trunk server creation
+        :param trunk_flavor: int, flavor ID or instance for trunk server creation
+        :param jumphost_image: image ID or instance for jumphost creation
+        :param jumphost_flavor: int, flavor ID or instance for jumphost creation
         :param subport_count: int, number of subports to create per trunk
         :param num_vms: int, number of servers to create
         """
@@ -118,26 +121,10 @@ class TrunkDynamicScenario(
         kwargs = {}
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
         self.keypair = self.context["user"]["keypair"]
-        images = self.clients("glance").images.list()
-        jump_host_image = [i.id for i in images if i.name == "cirros"][0]
-        flavors = self._list_flavors()
-        jump_host_flavor = [f.id for f in flavors if f.name == "m1.xtiny"][0]
-        jump_host = self._boot_server_with_fip(
-            jump_host_image,
-            jump_host_flavor,
-            True,
-            ext_net_name,
-            key_name=self.keypair["name"],
-            **kwargs,
-        )
+        jump_host = self._boot_server_with_fip(jumphost_image, jumphost_flavor, True,
+                                               ext_net_name, key_name=self.keypair["name"],
+                                               **kwargs)
         jump_fip = jump_host[1]["ip"]
-
-        images = self.clients("glance").images.list()
-        image_name = [i.name for i in images if str(i.id) == image][0]
-        if image_name == "centos7":
-            vm_user = "centos"
-        elif image_name == "cirros":
-            vm_user = "cirros"
 
         for _ in range(num_vms):
             kwargs = {}
@@ -148,14 +135,9 @@ class TrunkDynamicScenario(
             trunk_payload = {"port_id": parent["port"]["id"]}
             trunk = self._create_trunk(trunk_payload)
             kwargs["nics"] = [{"port-id": parent["port"]["id"]}]
-            vm = self._boot_server_with_fip(
-                image,
-                flavor,
-                True,
-                ext_net_name,
-                key_name=self.keypair["name"],
-                **kwargs,
-            )
+            vm = self._boot_server_with_fip(trunk_image, trunk_flavor, True,
+                                            ext_net_name, key_name=self.keypair["name"],
+                                            **kwargs)
             vm_fip = vm[1]["ip"]
 
             subnets = []
@@ -174,7 +156,7 @@ class TrunkDynamicScenario(
                 )
                 self._add_interface_router(subnet[0]["subnet"], self.router["router"])
 
-            vm_ssh = sshutils.SSH(vm_user, vm_fip, pkey=self.keypair["private"])
+            vm_ssh = sshutils.SSH("centos", vm_fip, pkey=self.keypair["private"])
             self._wait_for_ssh(vm_ssh)
 
             # Inside VM, subports are simulated (implemented) using vlan interfaces
@@ -203,16 +185,9 @@ class TrunkDynamicScenario(
                 self._run_command_with_attempts(vm_ssh, cmd)
 
             subport_fip = self._create_floatingip(ext_net_name)["floatingip"]
-            self.simulate_subport_connection(
-                vm_fip,
-                jump_fip,
-                vm_user,
-                "cirros",
-                subport_fip,
-                subports[0]["port"],
-                subnets[0]["subnet"]["gateway_ip"],
-                True,
-            )
+            self.simulate_subport_connection(vm_fip, jump_fip, "centos",
+                                             "cirros", subport_fip, subports[0]["port"],
+                                             subnets[0]["subnet"]["gateway_ip"], True)
 
     def add_subports_to_random_trunks(self, num_trunks, subport_count):
         """Add <<subport_count>> subports to <<num_trunks>> randomly chosen trunks
@@ -245,17 +220,8 @@ class TrunkDynamicScenario(
 
             trunk_server_fip, trunk_server = self.get_server_by_trunk(trunk, servers)
 
-            images = self.clients("glance").images.list()
-            image_name = [
-                i.name for i in images if str(i.id) == trunk_server._info["image"]["id"]
-            ][0]
-            if image_name == "centos7":
-                vm_user = "centos"
-            elif image_name == "cirros":
-                vm_user = "cirros"
-
             vm_ssh = sshutils.SSH(
-                vm_user, trunk_server_fip, pkey=self.keypair["private"]
+                "centos", trunk_server_fip, pkey=self.keypair["private"]
             )
             self._wait_for_ssh(vm_ssh)
 
