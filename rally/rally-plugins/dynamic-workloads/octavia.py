@@ -10,9 +10,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import io
 import logging
 import time
-import io
+import random
 from rally.common import sshutils
 
 from rally_openstack.scenarios.octavia import utils as octavia_utils
@@ -303,3 +304,16 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
                     self.create_member(client_ip, pool["id"], protocol_port, mem_subnet_id, lb_id)
                 protocol_port = protocol_port + 1
             self.check_connection(lb, jump_ssh, num_pools, num_clients)
+
+    def delete_loadbalancers(self, delete_num_lbs):
+        """Deletes <delete_num_lbs> loadbalancers randomly
+
+        :param delete_num_lbs: number of loadbalancers to delete
+        """
+
+        lb_list = self.octavia.load_balancer_list()
+        for _ in range(delete_num_lbs):
+            random_lb = random.choice(lb_list["loadbalancers"])
+            self.octavia._clients.octavia().load_balancer_delete(random_lb["id"], cascade=True)
+            LOG.info("Random LB deleted {}".format(random_lb["id"]))
+            lb_list["loadbalancers"].remove(random_lb)

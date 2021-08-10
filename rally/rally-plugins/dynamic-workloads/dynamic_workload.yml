@@ -6,10 +6,11 @@
 {% set workloads = workloads or 'all' %}
 {% set octavia_image_name = octavia_image_name or 'custom-cirros' %}
 {% set octavia_flavor_name = octavia_flavor_name or 'm1.tiny-cirros' %}
-{% set num_lbs = num_lbs or 2 %}
+{% set num_lbs = num_lbs or 4 %}
 {% set num_pools = num_pools or 2 %}
 {% set num_clients = num_clients or 2 %}
 {% set user = user or 'cirros' %}
+{% set delete_num_lbs = delete_num_lbs or 2 %}
 # Do not change trunk_image_name, as cirros image doesn't support vlans.
 {% set trunk_image_name = trunk_image_name or 'centos7' %}
 {% set trunk_flavor_name = trunk_flavor_name or 'm1.tiny-centos' %}
@@ -37,6 +38,7 @@ BrowbeatPlugin.dynamic_workload:
       num_lbs: {{ num_lbs }}
       num_pools: {{ num_pools }}
       num_clients: {{ num_clients }}
+      delete_num_lbs: {{delete_num_lbs}}
       user_data_file: '{{ user_data_file }}'
       trunk_image:
         name: '{{ trunk_image_name }}'
