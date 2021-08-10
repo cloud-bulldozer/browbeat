@@ -33,9 +33,6 @@ LOG = logging.getLogger(__name__)
 # sudo ip a a {address}/24 dev eth0.1
 # sudo ip r a {vm2_address} via {gateway} dev eth0.1
 #
-# Note: Though we are creating vlan interface for each subport, ping test
-# will test only first vlan interface (i.e first subport)
-#
 # We can't use cirros image as it doesn't support vlans
 # smallest flavor for centos is m1.tiny-centos (RAM 192, disk 8, vcpu 1)
 #
@@ -45,28 +42,52 @@ LOG = logging.getLogger(__name__)
 class TrunkDynamicScenario(
     nova_custom.NovaDynamicScenario, neutron_utils.NeutronScenario
 ):
-    def simulate_subport_connection(self, local_vm, dest_vm, local_vm_user,
-                                    dest_vm_user, fip, port, gateway, add_route=False):
-        """Simulate subport connection from jumphost to VM.
+    def add_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
+                                      subport_number, gateway):
+        """Add route from trunk vm to jumphost via trunk subport
+        :param local_vm: floating ip of local VM
+        :param dest_vm: floating ip of destination VM
+        :param local_vm_user: str, ssh user for local VM
+        :param subport_number: int, trunk subport on which route is created
+        :param gateway: network gateway
+        """
+        script = f"sudo ip r a {dest_vm} via {gateway} dev eth0.{subport_number}"
+        source_ssh = sshutils.SSH(
+            local_vm_user, local_vm, pkey=self.keypair["private"]
+        )
+        self._wait_for_ssh(source_ssh)
+        self._run_command_with_attempts(source_ssh, script)
+
+    def delete_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
+                                         subport_number, gateway):
+        """Delete route from trunk vm to jumphost via trunk subport
+        :param local_vm: floating ip of local VM
+        :param dest_vm: floating ip of destination VM
+        :param local_vm_user: str, ssh user for local VM
+        :param subport_number: int, trunk subport on which route is created
+        :param gateway: network gateway
+        """
+        script = f"sudo ip r d {dest_vm} via {gateway} dev eth0.{subport_number}"
+        source_ssh = sshutils.SSH(
+            local_vm_user, local_vm, pkey=self.keypair["private"]
+        )
+        self._wait_for_ssh(source_ssh)
+        self._run_command_with_attempts(source_ssh, script)
+
+    def ping_subport_fip_from_jumphost(self, local_vm, dest_vm, local_vm_user,
+                                       dest_vm_user, fip, port):
+        """Ping subport floating ip from jumphost
         :param local_vm: floating ip of local VM
         :param dest_vm: floating ip of destination VM
         :param local_vm_user: str, ssh user for local VM
         :param dest_vm_user: str, ssh user for destination VM
         :param fip: floating ip of subport
         :param port: subport to ping from jumphost
-        :param gateway: network gateway
         """
         fip_update_dict = {"port_id": port["id"]}
         self.clients("neutron").update_floatingip(
             fip["id"], {"floatingip": fip_update_dict}
         )
-        if add_route:
-            script = f"sudo ip r a {dest_vm} via {gateway} dev eth0.1"
-            source_ssh = sshutils.SSH(
-                local_vm_user, local_vm, pkey=self.keypair["private"]
-            )
-            self._wait_for_ssh(source_ssh)
-            self._run_command_with_attempts(source_ssh, script)
 
         address = fip["floating_ip_address"]
         dest_ssh = sshutils.SSH(dest_vm_user, dest_vm, pkey=self.keypair["private"])
@@ -74,19 +95,111 @@ class TrunkDynamicScenario(
         cmd = f"ping -c1 -w1 {address}"
         self._run_command_with_attempts(dest_ssh, cmd)
 
-    def get_server_by_trunk(self, trunk, servers):
+    def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
+        """Simulate connection from jumphost to random subport of trunk VM
+        :param trunk_id: id of trunk on which subport is present
+        :param vm_fip: floating ip of trunk VM
+        :param jump_fip: floating ip of jumphost
+        """
+        trunk = self.clients("neutron").show_trunk(trunk_id)
+        subport_count = len(trunk["trunk"]["sub_ports"])
+        subport_number_for_route = random.randint(1, subport_count)
+        subport_for_route = self.clients("neutron").show_port(
+            trunk["trunk"]["sub_ports"][subport_number_for_route-1]["port_id"])
+        subnet_for_route = self.clients("neutron").show_subnet(
+            subport_for_route["port"]["fixed_ips"][0]["subnet_id"])
+        self.add_route_from_vm_to_jumphost(vm_fip, jump_fip, "centos",
+                                           subport_number_for_route,
+                                           subnet_for_route["subnet"]["gateway_ip"])
+        subport_fip = self._create_floatingip(self.ext_net_name)["floatingip"]
+        self.ping_subport_fip_from_jumphost(vm_fip, jump_fip, "centos", "cirros",
+                                            subport_fip,
+                                            subport_for_route["port"])
+        # We delete the route from vm to jumphost through the randomly
+        # chosen subport after simulate subport connection is executed,
+        # as additional subports can be tested for connection in the
+        # add_subports_random_trunks function, and we would not want the
+        # existing route created here to be used for those subports.
+        self.delete_route_from_vm_to_jumphost(vm_fip, jump_fip, "centos",
+                                              subport_number_for_route,
+                                              subnet_for_route["subnet"]["gateway_ip"])
+        # Dissociate floating IP as the same subport can be used again
+        # later.
+        fip_update_dict = {"port_id": None}
+        self.clients("neutron").update_floatingip(
+            subport_fip["id"], {"floatingip": fip_update_dict}
+        )
+
+    def get_server_by_trunk(self, trunk):
         """Get server details for a given trunk
         :param trunk: dict, trunk details
-        :param servers: list, list of server objects to search
-        :returns: floating ip of server, server object
+        :returns: floating ip of server
         """
-        for server in servers:
-            for interface in self._list_interfaces(server):
-                if interface._info["port_id"] == trunk["port_id"]:
-                    trunk_server_fip = list(server.addresses.values())[0][1]["addr"]
-                    trunk_server = server
-                    break
-        return trunk_server_fip, trunk_server
+        trunk_server = self._get_servers_by_tag("trunk:"+str(trunk["id"]))[0]
+        trunk_server_fip = list(trunk_server.addresses.values())[0][1]["addr"]
+        return trunk_server_fip
+
+    def get_jumphost_by_trunk(self, trunk):
+        """Get jumphost details for a given trunk
+        :param trunk: dict, trunk details
+        :returns: floating ip of jumphost
+        """
+        jumphost_fip = trunk["description"][9:]
+        return jumphost_fip
+
+    def create_subnets_and_subports(self, subport_count):
+        """Create <<subport_count>> subnets and subports
+        :param subport_count: int, number of subports to create
+        :returns: list of subnets, list of subports
+        """
+        subnets = []
+        subports = []
+        for _ in range(subport_count):
+            net, subnet = self._create_network_and_subnets(network_create_args={})
+            subnets.append(subnet[0])
+            subports.append(
+                self._create_port(
+                    net,
+                    {
+                        "fixed_ips": [{"subnet_id": subnet[0]["subnet"]["id"]}],
+                        "security_groups": [self.security_group["id"]],
+                    },
+                )
+            )
+            self._add_interface_router(subnet[0]["subnet"], self.router["router"])
+        return subnets, subports
+
+    def add_subports_to_trunk_and_vm(self, subports, trunk_id, vm_ssh, start_seg_id):
+        """Add subports to trunk and create vlan interfaces for subports inside trunk VM
+        :param subports: list, list of subports
+        :param trunk_id: id of trunk to add subports
+        :param vm_ssh: ssh connection to trunk VM
+        :param start_seg_id: int, number of vlan interface to start subport addition
+        """
+        # Inside VM, subports are simulated (implemented) using vlan interfaces
+        # Later we ping these vlan interfaces
+        for seg_id, p in enumerate(subports, start=start_seg_id):
+            subport_payload = [
+                {
+                    "port_id": p["port"]["id"],
+                    "segmentation_type": "vlan",
+                    "segmentation_id": seg_id,
+                }
+            ]
+            self._add_subports_to_trunk(trunk_id, subport_payload)
+
+            mac = p["port"]["mac_address"]
+            address = p["port"]["fixed_ips"][0]["ip_address"]
+            # Note: Manually assign ip as calling dnsmasq will also add
+            # default route which will break floating ip for the VM
+            cmd = f"sudo ip link add link eth0 name eth0.{seg_id} type vlan id {seg_id}"
+            self._run_command_with_attempts(vm_ssh, cmd)
+            cmd = f"sudo ip link set dev eth0.{seg_id} address {mac}"
+            self._run_command_with_attempts(vm_ssh, cmd)
+            cmd = f"sudo ip link set dev eth0.{seg_id} up"
+            self._run_command_with_attempts(vm_ssh, cmd)
+            cmd = f"sudo ip a a {address}/24 dev eth0.{seg_id}"
+            self._run_command_with_attempts(vm_ssh, cmd)
 
     def pod_fip_simulation(self, ext_net_id, trunk_image, trunk_flavor,
                            jumphost_image, jumphost_flavor, subport_count, num_vms=1):
@@ -99,9 +212,9 @@ class TrunkDynamicScenario(
         :param subport_count: int, number of subports to create per trunk
         :param num_vms: int, number of servers to create
         """
-        ext_net_name = None
+        self.ext_net_name = None
         if ext_net_id:
-            ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
+            self.ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
                 "name"
             ]
 
@@ -121,9 +234,11 @@ class TrunkDynamicScenario(
         kwargs = {}
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
         self.keypair = self.context["user"]["keypair"]
-        jump_host = self._boot_server_with_fip(jumphost_image, jumphost_flavor, True,
-                                               ext_net_name, key_name=self.keypair["name"],
-                                               **kwargs)
+        jump_host = self._boot_server_with_fip_and_tag(jumphost_image, jumphost_flavor,
+                                                       "jumphost_trunk", True,
+                                                       self.ext_net_name,
+                                                       key_name=self.keypair["name"],
+                                                       **kwargs)
         jump_fip = jump_host[1]["ip"]
 
         for _ in range(num_vms):
@@ -132,62 +247,27 @@ class TrunkDynamicScenario(
             self.security_group = self.context["tenant"]["users"][0]["secgroup"]
             port_creates_args = {"security_groups": [self.security_group["id"]]}
             parent = self._create_port(network, port_creates_args)
-            trunk_payload = {"port_id": parent["port"]["id"]}
+            # Using tags for trunk returns an error,
+            # so we instead use description.
+            trunk_payload = {"port_id": parent["port"]["id"],
+                             "description": "jumphost:"+str(jump_fip)}
             trunk = self._create_trunk(trunk_payload)
             kwargs["nics"] = [{"port-id": parent["port"]["id"]}]
-            vm = self._boot_server_with_fip(trunk_image, trunk_flavor, True,
-                                            ext_net_name, key_name=self.keypair["name"],
-                                            **kwargs)
+            vm = self._boot_server_with_fip_and_tag(trunk_image, trunk_flavor,
+                                                    "trunk:"+str(trunk["trunk"]["id"]), True,
+                                                    self.ext_net_name,
+                                                    key_name=self.keypair["name"],
+                                                    **kwargs)
             vm_fip = vm[1]["ip"]
 
-            subnets = []
-            subports = []
-            for _ in range(subport_count + 1):
-                net, subnet = self._create_network_and_subnets(network_create_args={})
-                subnets.append(subnet[0])
-                subports.append(
-                    self._create_port(
-                        net,
-                        {
-                            "fixed_ips": [{"subnet_id": subnet[0]["subnet"]["id"]}],
-                            "security_groups": [self.security_group["id"]],
-                        },
-                    )
-                )
-                self._add_interface_router(subnet[0]["subnet"], self.router["router"])
+            subnets, subports = self.create_subnets_and_subports(subport_count)
 
             vm_ssh = sshutils.SSH("centos", vm_fip, pkey=self.keypair["private"])
             self._wait_for_ssh(vm_ssh)
 
-            # Inside VM, subports are simulated (implemented) using vlan interfaces
-            # Later we ping these vlan interfaces
-            for seg_id, p in enumerate(subports, start=1):
-                subport_payload = [
-                    {
-                        "port_id": p["port"]["id"],
-                        "segmentation_type": "vlan",
-                        "segmentation_id": seg_id,
-                    }
-                ]
-                self._add_subports_to_trunk(trunk["trunk"]["id"], subport_payload)
+            self.add_subports_to_trunk_and_vm(subports, trunk["trunk"]["id"], vm_ssh, 1)
 
-                mac = p["port"]["mac_address"]
-                address = p["port"]["fixed_ips"][0]["ip_address"]
-                # Note: Manually assign ip as calling dnsmasq will also add
-                # default route which will break floating ip for the VM
-                cmd = f"sudo ip link add link eth0 name eth0.{seg_id} type vlan id {seg_id}"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip link set dev eth0.{seg_id} address {mac}"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip link set dev eth0.{seg_id} up"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip a a {address}/24 dev eth0.{seg_id}"
-                self._run_command_with_attempts(vm_ssh, cmd)
-
-            subport_fip = self._create_floatingip(ext_net_name)["floatingip"]
-            self.simulate_subport_connection(vm_fip, jump_fip, "centos",
-                                             "cirros", subport_fip, subports[0]["port"],
-                                             subnets[0]["subnet"]["gateway_ip"], True)
+            self.simulate_subport_connection(trunk["trunk"]["id"], vm_fip, jump_fip)
 
     def add_subports_to_random_trunks(self, num_trunks, subport_count):
         """Add <<subport_count>> subports to <<num_trunks>> randomly chosen trunks
@@ -195,53 +275,23 @@ class TrunkDynamicScenario(
         :param subport_count: int, number of subports to add to each trunk
         """
         trunks = self._list_trunks()
-        servers = self._list_servers(True)
 
         random.shuffle(trunks)
         num_trunks = min(num_trunks, len(trunks))
         trunks_to_add_subports = [trunks[i] for i in range(num_trunks)]
 
         for trunk in trunks_to_add_subports:
-            subnets = []
-            subports = []
-            for _ in range(subport_count):
-                net, subnet = self._create_network_and_subnets(network_create_args={})
-                subnets.append(subnet[0])
-                subports.append(
-                    self._create_port(
-                        net,
-                        {
-                            "fixed_ips": [{"subnet_id": subnet[0]["subnet"]["id"]}],
-                            "security_groups": [self.security_group["id"]],
-                        },
-                    )
-                )
-                self._add_interface_router(subnet[0]["subnet"], self.router["router"])
+            subnets, subports = self.create_subnets_and_subports(subport_count)
 
-            trunk_server_fip, trunk_server = self.get_server_by_trunk(trunk, servers)
+            trunk_server_fip = self.get_server_by_trunk(trunk)
+            jump_fip = self.get_jumphost_by_trunk(trunk)
 
             vm_ssh = sshutils.SSH(
                 "centos", trunk_server_fip, pkey=self.keypair["private"]
             )
             self._wait_for_ssh(vm_ssh)
 
-            for seg_id, p in enumerate(subports, start=len(trunk["sub_ports"]) + 1):
-                subport_payload = [
-                    {
-                        "port_id": p["port"]["id"],
-                        "segmentation_type": "vlan",
-                        "segmentation_id": seg_id,
-                    }
-                ]
-                self._add_subports_to_trunk(trunk["id"], subport_payload)
+            self.add_subports_to_trunk_and_vm(subports, trunk["id"],
+                                              vm_ssh, len(trunk["sub_ports"])+1)
 
-                mac = p["port"]["mac_address"]
-                address = p["port"]["fixed_ips"][0]["ip_address"]
-                cmd = f"sudo ip link add link eth0 name eth0.{seg_id} type vlan id {seg_id}"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip link set dev eth0.{seg_id} address {mac}"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip link set dev eth0.{seg_id} up"
-                self._run_command_with_attempts(vm_ssh, cmd)
-                cmd = f"sudo ip a a {address}/24 dev eth0.{seg_id}"
-                self._run_command_with_attempts(vm_ssh, cmd)
+            self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
