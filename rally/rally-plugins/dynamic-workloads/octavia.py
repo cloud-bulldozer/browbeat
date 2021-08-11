@@ -317,3 +317,33 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
             self.octavia._clients.octavia().load_balancer_delete(random_lb["id"], cascade=True)
             LOG.info("Random LB deleted {}".format(random_lb["id"]))
             lb_list["loadbalancers"].remove(random_lb)
+
+    def delete_members_random_lb(self, delete_num_members, max_attempts=10):
+        """Deletes members from a random loadbalancer
+        :param delete_num_members: number of members to delete
+        """
+
+        lb_list = self.octavia.load_balancer_list()
+        random_lb = random.choice(lb_list["loadbalancers"])
+        LOG.info("Random LB selected {}".format(random_lb))
+        self.octavia.wait_for_loadbalancer_prov_status(random_lb)
+        random_lb_pool = random.choice(random_lb["pools"])
+        LOG.info("Random pool {}".format(random_lb_pool))
+        members_list = self.octavia.member_list(random_lb_pool['id'])
+        for i in range(delete_num_members):
+            attempts = 0
+            random_member = random.choice(members_list['members'])
+            # Retry to avoid "Pool is immutable and cannot be updated"
+            while attempts < max_attempts:
+                try:
+                    self.octavia._clients.octavia().member_delete(random_lb_pool['id'],
+                                                                  random_member['id'])
+                    LOG.info("Member-{} deleted {}".format(i, random_member['id']))
+                    break
+                except exceptions.OctaviaClientException as e:
+                    # retry for 409 return code
+                    if e.code == 409:
+                        attempts += 1
+                        time.sleep(30)
+                        continue
+                    break

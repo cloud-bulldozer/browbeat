@@ -14,6 +14,7 @@ Functions:
 - create_listener: Create listener
 - create_pool: Create pool
 - create_member: Create member
+- delete_members_random_lb: Deletes 'M' members from a random loadbalancer
 - check_connection: Check the connection of LB
 - build_jump_host: Builds Jump host
 - _run_command_with_attempts: Run command over ssh connection with multiple attempts

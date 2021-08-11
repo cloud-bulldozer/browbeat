@@ -566,6 +566,7 @@ workloads:
         num_pools: 2
         num_clients: 2
         delete_num_lbs: 2
+        delete_num_members: 1
         user: cirros
         user_data_file:
         num_initial_subports: 1
@@ -576,7 +577,7 @@ workloads:
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
         # create_loadbalancers, pod_fip_simulation, add_subports_to_random_trunks
-        # delete_loadbalancers
+        # delete_loadbalancers,delete_members_random_lb
         # Note: Octavia scenarios are not included in 'all' by default, and have
         # to be included separately.
         workloads: all
