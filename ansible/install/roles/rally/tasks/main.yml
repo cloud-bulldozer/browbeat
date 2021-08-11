@@ -56,6 +56,25 @@
 - name: Setup rally database
   shell: . {{ rally_venv }}/bin/activate; rally db recreate
 
+# Install rally extra code which we develop in browbeat
+# as python package. This code can be used in browbeat rally plugins.
+# Sqlalchemy giving errors when we run this extra DB code as rally plugin
+# so we came up with this python package approach.
+- name: install rally browbeat code
+  shell: |
+    source {{ rally_venv }}/bin/activate
+    pip install .
+  args:
+    executable: /bin/bash
+    chdir: "{{ role_path }}/files/browbeat-rally"
+  when: rhosp_version is version('15.0', '>=')
+
+- name: create lock table in rally db for dynamic workloads
+  shell: |
+    source {{ rally_venv }}/bin/activate
+    python {{ role_path }}/files/create_lock_table.py
+  when: rhosp_version is version('15.0', '>=')
+
 - block:
     - name: copy of stackrc
       copy:
