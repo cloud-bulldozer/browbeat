@@ -62,7 +62,8 @@ iptables_file: /etc/sysconfig/iptables
 ########################################
 #test_server.bin is a static application that
 #simulates HTTP, HTTPS, and UDP servers.
-octavia_test_bin_path:
+
+#octavia_test_bin_path:
 
 ########################################
 # Browbeat Workloads

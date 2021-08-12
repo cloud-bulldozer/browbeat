@@ -567,7 +567,9 @@ workloads:
         num_clients: 2
         delete_num_lbs: 2
         user: cirros
-        user_data_file:
+        #If num_pools > 2 you need to make the change in
+        #octavia-userdata.file ( NUM_POOLS = <num_pools>)
+        user_data_file: /home/stack/octavia-userdata.file
         num_initial_subports: 1
         num_trunk_vms: 1
         num_add_subports_trunks: 1

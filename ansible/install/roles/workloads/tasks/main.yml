@@ -48,3 +48,9 @@
   with_items: "{{browbeat_workloads}}"
   when: browbeat_workloads[item].enabled
 
+- name: Generate userdata file for Octavia workloads
+  template:
+    src: octavia-userdata.file
+    dest: "{{ ansible_user_dir }}/octavia-userdata.file"
+    mode: u+rwx
+  when: octavia_test_bin_path is defined
