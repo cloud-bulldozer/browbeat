@@ -304,6 +304,8 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
                     self.create_member(client_ip, pool["id"], protocol_port, mem_subnet_id, lb_id)
                 protocol_port = protocol_port + 1
             self.check_connection(lb, jump_ssh, num_pools, num_clients)
+            self._delete_server_with_fip(jump_host, jump_host_ip)
+            LOG.info("Deleted Jump_host {}".format(jump_host_ip))
 
     def delete_loadbalancers(self, delete_num_lbs):
         """Deletes <delete_num_lbs> loadbalancers randomly
