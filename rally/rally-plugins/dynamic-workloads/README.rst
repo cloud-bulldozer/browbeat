@@ -17,7 +17,13 @@ Functions:
 - check_connection: Check the connection of LB
 - build_jump_host: Builds Jump host
 - _run_command_with_attempts: Run command over ssh connection with multiple attempts
-- simulate_subport_connection: Simulate subport connection from jumphost to VM
+- add_route_from_vm_to_jumphost: Add route from trunk vm to jumphost via trunk subport
+- delete_route_from_vm_to_jumphost: Delete route from trunk vm to jumphost via trunk subport
+- get_jumphost_by_trunk: Get jumphost details for a given trunk
+- ping_subport_fip_from_jumphost: Ping subport floating ip from jumphost
+- create_subnets_and_subports: Create N subnets and subports
+- add_subports_to_trunk_and_vm: Add subports to trunk and create vlan interfaces for subport inside trunk VM
+- simulate_subport_connection: Simulate connection from jumphost to random subport of trunk VM
 - get_server_by_trunk: Get server details for a given trunk
 - pod_fip_simulation: Simulate pods with floating ips using subports on trunks and VMs
 - add_subports_to_random_trunks: Add 'N' subports to 'M' randomly chosen trunks
