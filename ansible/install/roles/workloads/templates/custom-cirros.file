@@ -1,4 +1,5 @@
 #!/bin/sh
 
+sudo echo "nameserver {{ dns_server }}" > /etc/resolv.conf
 cd /home/cirros/ && wget "{{ octavia_test_bin_path }}"
 echo "Browbeat workload installed"
