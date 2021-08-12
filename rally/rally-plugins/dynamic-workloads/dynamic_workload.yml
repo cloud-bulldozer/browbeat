@@ -11,6 +11,7 @@
 {% set num_clients = num_clients or 2 %}
 {% set user = user or 'cirros' %}
 {% set delete_num_lbs = delete_num_lbs or 2 %}
+{% set delete_num_members = delete_num_members or 1 %}
 # Do not change trunk_image_name, as cirros image doesn't support vlans.
 {% set trunk_image_name = trunk_image_name or 'centos7' %}
 {% set trunk_flavor_name = trunk_flavor_name or 'm1.tiny-centos' %}
@@ -39,6 +40,7 @@ BrowbeatPlugin.dynamic_workload:
       num_pools: {{ num_pools }}
       num_clients: {{ num_clients }}
       delete_num_lbs: {{delete_num_lbs}}
+      delete_num_members: {{ delete_num_members }}
       user_data_file: '{{ user_data_file }}'
       trunk_image:
         name: '{{ trunk_image_name }}'

@@ -46,14 +46,12 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase):
     def run(
         self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_for_migration,
-        num_vms_to_migrate, user_data_file, user, num_lbs, delete_num_lbs, num_pools,
-        num_clients, octavia_image, octavia_flavor, trunk_image, trunk_flavor,
-        num_initial_subports, num_trunk_vms, num_add_subports,
-        num_add_subports_trunks, num_create_delete_vms,
-        workloads="all", router_create_args=None,
-        network_create_args=None,
-        subnet_create_args=None,
-        **kwargs):
+        num_vms_to_migrate, trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
+        num_add_subports, num_add_subports_trunks, octavia_image, octavia_flavor, user,
+        user_data_file, num_lbs, num_pools, num_clients,delete_num_lbs,
+        delete_num_members, num_create_delete_vms, workloads="all",
+        router_create_args=None, network_create_args=None,
+        subnet_create_args=None, **kwargs):
 
         workloads_list = workloads.split(",")
 
@@ -81,3 +79,6 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         if "delete_loadbalancers" in workloads_list:
             self.delete_loadbalancers(delete_num_lbs)
+
+        if "delete_members_random_lb" in workloads_list:
+            self.delete_members_random_lb(delete_num_members)
