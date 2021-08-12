@@ -13,13 +13,13 @@
 import logging
 import random
 
-from rally_openstack.scenarios.vm import utils as vm_utils
+import nova_custom
 import neutron_custom
 
 LOG = logging.getLogger(__name__)
 
 
-class VMDynamicScenario(vm_utils.VMScenario,
+class VMDynamicScenario(nova_custom.NovaDynamicScenario,
                         neutron_custom.NeutronDynamicScenario):
 
     def create_delete_servers(self, image, flavor, num_vms=1, min_sleep=0, max_sleep=10,
@@ -40,7 +40,7 @@ class VMDynamicScenario(vm_utils.VMScenario,
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
         servers = []
         for i in range(num_vms):
-            server = self._boot_server(image, flavor, **kwargs)
+            server = self._boot_server_with_tag(image, flavor, "create_delete", **kwargs)
             LOG.info("Created server {} when i = {}".format(server,i))
             servers.append(server)
             # Delete least recently created server from list when i=1,3,5,7.....
@@ -81,8 +81,9 @@ class VMDynamicScenario(vm_utils.VMScenario,
         self._add_interface_router(subnet["subnet"], router["router"])
         for i in range(num_vms):
             kwargs["nics"] = [{"net-id": network["network"]["id"]}]
-            guest = self._boot_server_with_fip(
-                image, flavor, True, ext_net_name, **kwargs
+            guest = self._boot_server_with_fip_and_tag(
+                image, flavor, "migrate",
+                True, ext_net_name, **kwargs
             )
             self._wait_for_ping(guest[1]["ip"])
 
@@ -92,33 +93,7 @@ class VMDynamicScenario(vm_utils.VMScenario,
         :param num_migrate_vms: int, number of servers to migrate between computes
         :returns: list of server objects to migrate between computes
         """
-        servers = self._list_servers(True)
-        trunks = self._list_trunks()
-        eligible_servers = []
-
-        for server in servers:
-            if server._info['name'].startswith('amphora-'):
-                continue
-
-            has_floating_ip = False
-            is_not_trunk_network_server = True
-
-            for network, addr_list in server.addresses.items():
-                if len(addr_list) > 1:
-                    has_floating_ip = True
-                    break
-            if not(has_floating_ip):
-                continue
-
-            for interface in self._list_interfaces(server):
-                for trunk in trunks:
-                    if interface._info['port_id'] == trunk['port_id']:
-                        is_not_trunk_network_server = False
-                        break
-                if not(is_not_trunk_network_server):
-                    break
-            if is_not_trunk_network_server:
-                eligible_servers.append(server)
+        eligible_servers = self._get_servers_by_tag("migrate")
 
         random.shuffle(eligible_servers)
         num_servers_to_migrate = min(num_migrate_vms, len(eligible_servers))
