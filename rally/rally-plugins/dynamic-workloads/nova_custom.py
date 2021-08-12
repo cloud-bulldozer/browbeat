@@ -137,4 +137,5 @@ class NovaDynamicScenario(vm_utils.VMScenario):
         :param tag: str, tag to search for
         :returns: list of server objects based on tag
         """
-        return self.clients("nova", version="2.52").servers.list(search_opts={'tags': tag})
+        return self.clients("nova", version="2.52").servers.list(
+            search_opts={'tags': tag, 'status': "ACTIVE"})
