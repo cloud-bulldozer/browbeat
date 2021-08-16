@@ -17,6 +17,7 @@ from rally.task import validation
 import vm
 import trunk
 import octavia
+import provider_network
 
 
 @types.convert(octavia_image={"type": "glance_image"}, octavia_flavor={"type": "nova_flavor"})
@@ -43,13 +44,14 @@ import octavia
     platform="openstack",
 )
 class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
-                      octavia.DynamicOctaviaBase):
+                      octavia.DynamicOctaviaBase, provider_network.DynamicProviderNetworkBase):
     def run(
         self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_for_migration,
         num_vms_to_migrate, trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
         num_add_subports, num_add_subports_trunks, num_delete_subports, num_delete_subports_trunks,
-        octavia_image, octavia_flavor, user, user_data_file, num_lbs, num_pools,
-        num_clients, delete_num_lbs, delete_num_members, num_create_delete_vms, workloads="all",
+        octavia_image, octavia_flavor, user, user_data_file, num_lbs, num_pools, num_clients,
+        delete_num_lbs, delete_num_members, num_create_delete_vms, provider_phys_net,
+        iface_name, iface_mac, num_vms_provider_net, workloads="all",
         router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
@@ -85,3 +87,15 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         if "delete_members_random_lb" in workloads_list:
             self.delete_members_random_lb(delete_num_members)
+
+        if "provider_netcreate_nova_boot_ping" in workloads_list:
+            self.provider_netcreate_nova_boot_ping(smallest_image, smallest_flavor,
+                                                   provider_phys_net, iface_name,
+                                                   iface_mac, num_vms_provider_net)
+
+        if "provider_net_nova_boot_ping" in workloads_list:
+            self.provider_net_nova_boot_ping(provider_phys_net, iface_name, iface_mac,
+                                             smallest_image, smallest_flavor)
+
+        if "provider_net_nova_delete" in workloads_list:
+            self.provider_net_nova_delete(provider_phys_net)

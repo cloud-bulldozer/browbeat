@@ -32,3 +32,6 @@ Functions:
 -  _boot_server_with_tag: Boot a server with a tag
 -  _boot_server_with_fip_and_tag: Boot server prepared for SSH actions, with tag
 - _get_servers_by_tag: Retrieve list of servers based on tag
+- provider_netcreate_nova_boot_ping: Creates a provider Network and Boots VM and ping
+- provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
+- provider_net_nova_delete: Delete all VM's and provider network

@@ -82,6 +82,13 @@
 - debug: msg="Browbeat directory exists already."
   when: browbeat_exists.stat.isdir is defined and browbeat_exists.stat.isdir
 
+- name: install scapy
+  pip:
+    name: "scapy"
+    state: latest
+  become: true
+  when:  ansible_distribution_major_version >= '8'
+
 - name: Clone browbeat on undercloud
   git:
     repo: https://github.com/openstack/browbeat.git

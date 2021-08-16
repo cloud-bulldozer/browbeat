@@ -60,6 +60,10 @@ BrowbeatPlugin.dynamic_workload:
       num_create_delete_vms: {{num_create_delete_vms}}
       num_vms_to_create_for_migration: {{num_vms_to_create_for_migration}}
       num_vms_to_migrate: {{num_vms_to_migrate}}
+      provider_phys_net: '{{ provider_phys_net }}'
+      iface_name: '{{ iface_name }}'
+      iface_mac: '{{ iface_mac }}'
+      num_vms_provider_net: {{ num_vms_provider_net }}
       ext_net_id: '{{ext_net_id}}'
       workloads: '{{workloads}}'
     runner:
