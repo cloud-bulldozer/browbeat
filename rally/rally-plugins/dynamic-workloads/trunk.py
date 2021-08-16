@@ -16,7 +16,7 @@ from rally.common import logging
 from rally.common import sshutils
 
 from rally_openstack.scenarios.neutron import utils as neutron_utils
-import nova_custom
+import dynamic_utils
 
 LOG = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ LOG = logging.getLogger(__name__)
 
 
 class TrunkDynamicScenario(
-    nova_custom.NovaDynamicScenario, neutron_utils.NeutronScenario
+    dynamic_utils.NovaUtils, neutron_utils.NeutronScenario
 ):
     def add_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
                                       subport_number, gateway):

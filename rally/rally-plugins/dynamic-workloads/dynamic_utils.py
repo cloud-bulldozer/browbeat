@@ -15,6 +15,7 @@ import time
 from rally.common import cfg
 from rally.common import logging
 from rally_openstack.scenarios.vm import utils as vm_utils
+from rally_openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import atomic
 from rally.task import utils
 
@@ -22,7 +23,7 @@ CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 
-class NovaDynamicScenario(vm_utils.VMScenario):
+class NovaUtils(vm_utils.VMScenario):
 
     def _run_command_with_attempts(self, ssh_connection, cmd, max_attempts=120, timeout=2):
         """Run command over ssh connection with multiple attempts
@@ -139,3 +140,16 @@ class NovaDynamicScenario(vm_utils.VMScenario):
         """
         return self.clients("nova", version="2.52").servers.list(
             search_opts={'tags': tag, 'status': "ACTIVE"})
+
+
+class NeutronUtils(neutron_utils.NeutronScenario):
+
+    @atomic.action_timer("neutron.create_router")
+    def _create_router(self, router_create_args):
+        """Create neutron router.
+        :param router_create_args: POST /v2.0/routers request options
+        :returns: neutron router dict
+        """
+        return self.admin_clients("neutron").create_router(
+            {"router": router_create_args}
+        )

@@ -13,14 +13,13 @@
 import logging
 import random
 
-import nova_custom
-import neutron_custom
+import dynamic_utils
 
 LOG = logging.getLogger(__name__)
 
 
-class VMDynamicScenario(nova_custom.NovaDynamicScenario,
-                        neutron_custom.NeutronDynamicScenario):
+class VMDynamicScenario(dynamic_utils.NovaUtils,
+                        dynamic_utils.NeutronUtils):
 
     def create_delete_servers(self, image, flavor, num_vms=1, min_sleep=0, max_sleep=10,
                               network_create_args=None, subnet_create_args=None):
