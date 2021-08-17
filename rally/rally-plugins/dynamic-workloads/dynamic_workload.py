@@ -47,9 +47,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
     def run(
         self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_for_migration,
         num_vms_to_migrate, trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
-        num_add_subports, num_add_subports_trunks, octavia_image, octavia_flavor, user,
-        user_data_file, num_lbs, num_pools, num_clients,delete_num_lbs,
-        delete_num_members, num_create_delete_vms, workloads="all",
+        num_add_subports, num_add_subports_trunks, num_delete_subports, num_delete_subports_trunks,
+        octavia_image, octavia_flavor, user, user_data_file, num_lbs, num_pools,
+        num_clients, delete_num_lbs, delete_num_members, num_create_delete_vms, workloads="all",
         router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
@@ -71,6 +71,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         if workloads == "all" or "add_subports_to_random_trunks" in workloads_list:
             self.add_subports_to_random_trunks(num_add_subports_trunks, num_add_subports)
+
+        if workloads == "all" or "delete_subports_from_random_trunks" in workloads_list:
+            self.delete_subports_from_random_trunks(num_delete_subports_trunks, num_delete_subports)
 
         if "create_loadbalancers" in workloads_list:
             self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs, user_data_file,

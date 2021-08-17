@@ -575,11 +575,13 @@ workloads:
         num_trunk_vms: 1
         num_add_subports_trunks: 1
         num_add_subports: 1
+        num_delete_subports_trunks: 1
+        num_delete_subports: 1
         # workloads can be 'all', a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
-        # create_loadbalancers, pod_fip_simulation, add_subports_to_random_trunks
-        # delete_loadbalancers,delete_members_random_lb
+        # create_loadbalancers, pod_fip_simulation, add_subports_to_random_trunks,
+        # delete_subports_from_random_trunks, delete_loadbalancers, delete_members_random_lb
         # Note: Octavia scenarios are not included in 'all' by default, and have
         # to be included separately.
         workloads: all
