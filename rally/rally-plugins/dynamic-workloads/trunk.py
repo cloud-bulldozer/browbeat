@@ -108,19 +108,19 @@ class TrunkDynamicScenario(
             trunk["trunk"]["sub_ports"][subport_number_for_route-1]["port_id"])
         subnet_for_route = self.clients("neutron").show_subnet(
             subport_for_route["port"]["fixed_ips"][0]["subnet_id"])
-        self.add_route_from_vm_to_jumphost(vm_fip, jump_fip, "centos",
+        self.add_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
                                            subport_number_for_route,
                                            subnet_for_route["subnet"]["gateway_ip"])
         subport_fip = self._create_floatingip(self.ext_net_name)["floatingip"]
-        self.ping_subport_fip_from_jumphost(vm_fip, jump_fip, "centos", "cirros",
-                                            subport_fip,
+        self.ping_subport_fip_from_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
+                                            self.jumphost_user, subport_fip,
                                             subport_for_route["port"])
         # We delete the route from vm to jumphost through the randomly
         # chosen subport after simulate subport connection is executed,
         # as additional subports can be tested for connection in the
         # add_subports_random_trunks function, and we would not want the
         # existing route created here to be used for those subports.
-        self.delete_route_from_vm_to_jumphost(vm_fip, jump_fip, "centos",
+        self.delete_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
                                               subport_number_for_route,
                                               subnet_for_route["subnet"]["gateway_ip"])
         # Dissociate floating IP as the same subport can be used again
@@ -144,7 +144,8 @@ class TrunkDynamicScenario(
         :param trunk: dict, trunk details
         :returns: floating ip of jumphost
         """
-        jumphost_fip = trunk["description"][9:]
+        if trunk["description"].startswith("jumphost:"):
+            jumphost_fip = trunk["description"][9:]
         return jumphost_fip
 
     def create_subnets_and_subports(self, subport_count):
@@ -178,18 +179,19 @@ class TrunkDynamicScenario(
         """
         # Inside VM, subports are simulated (implemented) using vlan interfaces
         # Later we ping these vlan interfaces
-        for seg_id, p in enumerate(subports, start=start_seg_id):
+        for seg_id, subport in enumerate(subports,
+                                         start=start_seg_id):
             subport_payload = [
                 {
-                    "port_id": p["port"]["id"],
+                    "port_id": subport["port"]["id"],
                     "segmentation_type": "vlan",
                     "segmentation_id": seg_id,
                 }
             ]
             self._add_subports_to_trunk(trunk_id, subport_payload)
 
-            mac = p["port"]["mac_address"]
-            address = p["port"]["fixed_ips"][0]["ip_address"]
+            mac = subport["port"]["mac_address"]
+            address = subport["port"]["fixed_ips"][0]["ip_address"]
             # Note: Manually assign ip as calling dnsmasq will also add
             # default route which will break floating ip for the VM
             cmd = f"sudo ip link add link eth0 name eth0.{seg_id} type vlan id {seg_id}"
@@ -217,6 +219,9 @@ class TrunkDynamicScenario(
             self.ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
                 "name"
             ]
+
+        self.trunk_vm_user = "centos"
+        self.jumphost_user = "cirros"
 
         router_create_args = {}
         router_create_args["name"] = self.generate_random_name()
@@ -262,7 +267,8 @@ class TrunkDynamicScenario(
 
             subnets, subports = self.create_subnets_and_subports(subport_count)
 
-            vm_ssh = sshutils.SSH("centos", vm_fip, pkey=self.keypair["private"])
+            vm_ssh = sshutils.SSH(self.trunk_vm_user,
+                                  vm_fip, pkey=self.keypair["private"])
             self._wait_for_ssh(vm_ssh)
 
             self.add_subports_to_trunk_and_vm(subports, trunk["trunk"]["id"], vm_ssh, 1)
@@ -287,7 +293,7 @@ class TrunkDynamicScenario(
             jump_fip = self.get_jumphost_by_trunk(trunk)
 
             vm_ssh = sshutils.SSH(
-                "centos", trunk_server_fip, pkey=self.keypair["private"]
+                self.trunk_vm_user, trunk_server_fip, pkey=self.keypair["private"]
             )
             self._wait_for_ssh(vm_ssh)
 
@@ -295,3 +301,62 @@ class TrunkDynamicScenario(
                                               vm_ssh, len(trunk["sub_ports"])+1)
 
             self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
+
+    def delete_subports_from_random_trunks(self, num_trunks, subport_count):
+        """Delete <<subport_count>> subports from <<num_trunks>> randomly chosen trunks
+        :param num_trunks: int, number of trunks to be randomly chosen
+        :param subport_count: int, number of subports to add to each trunk
+        """
+        trunks = self._list_trunks()
+
+        eligible_trunks = [trunk for trunk in trunks if len(trunk['sub_ports']) >= subport_count]
+        num_trunks = min(num_trunks, len(trunks))
+        random.shuffle(eligible_trunks)
+
+        if len(eligible_trunks) >= num_trunks:
+            trunks_to_delete_subports = [eligible_trunks[i] for i in range(num_trunks)]
+        else:
+            trunks_to_delete_subports = sorted(trunks,
+                                               key=lambda k:-len(k['sub_ports']))[:num_trunks]
+            subport_count = len(trunks_to_delete_subports[-1]['sub_ports'])
+
+        for trunk in trunks_to_delete_subports:
+            trunk_server_fip = self.get_server_by_trunk(trunk)
+            jump_fip = self.get_jumphost_by_trunk(trunk)
+
+            vm_ssh = sshutils.SSH(self.trunk_vm_user,
+                                  trunk_server_fip, pkey=self.keypair["private"])
+            self._wait_for_ssh(vm_ssh)
+
+            trunk_subports = trunk['sub_ports']
+            num_trunk_subports = len(trunk_subports)
+
+            # We delete subports from trunks starting from the last subport,
+            # instead of randomly. This is because deleting random subports
+            # might cause a lot of conflict with the add_subports_to_random_
+            # trunks function.
+            for subport_number in range(num_trunk_subports-1,
+                                        num_trunk_subports-1-subport_count, -1):
+                subport_details = trunk_subports[subport_number]
+                subport_to_delete = self.clients("neutron").show_port(subport_details["port_id"])
+                subport_payload = [
+                    {
+                        "port_id": subport_to_delete["port"]["id"],
+                        "segmentation_type": "vlan",
+                        "segmentation_id": subport_number+1,
+                    }
+                ]
+
+                cmd = f"sudo ip link delete eth0.{subport_number+1}"
+                self._run_command_with_attempts(vm_ssh,cmd)
+                self.clients("neutron").trunk_remove_subports(trunk["id"],
+                                                              {"sub_ports": subport_payload})
+                self.clients("neutron").delete_port(subport_to_delete["port"]["id"])
+
+            # Check the number of subports present in trunk after deletion,
+            # and simulate subport connection if it is > 0. We use the
+            # show_trunk function here to get updated information about the
+            # trunk, as the trunk loop variable will have whatever information
+            # was valid at the beginning of the loop.
+            if len(self.clients("neutron").show_trunk(trunk["id"])["trunk"]["sub_ports"]) > 0:
+                self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)

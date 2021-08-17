@@ -28,6 +28,7 @@ Functions:
 - get_server_by_trunk: Get server details for a given trunk
 - pod_fip_simulation: Simulate pods with floating ips using subports on trunks and VMs
 - add_subports_to_random_trunks: Add 'N' subports to 'M' randomly chosen trunks
+- delete_subports_from_random_trunks: Delete 'N' subports from 'M' randomly chosen trunks
 -  _boot_server_with_tag: Boot a server with a tag
 -  _boot_server_with_fip_and_tag: Boot server prepared for SSH actions, with tag
 - _get_servers_by_tag: Retrieve list of servers based on tag
