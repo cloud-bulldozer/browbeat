@@ -18,6 +18,7 @@ Functions:
 - check_connection: Check the connection of LB
 - build_jump_host: Builds Jump host
 - _run_command_with_attempts: Run command over ssh connection with multiple attempts
+- _run_command_until_failure: Run command over ssh connection until failure
 - add_route_from_vm_to_jumphost: Add route from trunk vm to jumphost via trunk subport
 - delete_route_from_vm_to_jumphost: Delete route from trunk vm to jumphost via trunk subport
 - get_jumphost_by_trunk: Get jumphost details for a given trunk
@@ -29,9 +30,12 @@ Functions:
 - pod_fip_simulation: Simulate pods with floating ips using subports on trunks and VMs
 - add_subports_to_random_trunks: Add 'N' subports to 'M' randomly chosen trunks
 - delete_subports_from_random_trunks: Delete 'N' subports from 'M' randomly chosen trunks
+- swap_floating_ips_between_random_subports: Swap floating IPs between 2 randomly chosen subports from 2 randomly chosen trunks
 -  _boot_server_with_tag: Boot a server with a tag
 -  _boot_server_with_fip_and_tag: Boot server prepared for SSH actions, with tag
 - _get_servers_by_tag: Retrieve list of servers based on tag
+- dissociate_and_delete_floating_ip: Dissociate and delete floating IP of port
+- create_floating_ip_and_associate_to_port: Create and associate floating IP for port
 - provider_netcreate_nova_boot_ping: Creates a provider Network and Boots VM and ping
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network

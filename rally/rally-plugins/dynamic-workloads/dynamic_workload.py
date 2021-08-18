@@ -77,6 +77,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         if workloads == "all" or "delete_subports_from_random_trunks" in workloads_list:
             self.delete_subports_from_random_trunks(num_delete_subports_trunks, num_delete_subports)
 
+        if workloads == "all" or "swap_floating_ips_between_random_subports" in workloads_list:
+            self.swap_floating_ips_between_random_subports()
+
         if "create_loadbalancers" in workloads_list:
             self.create_loadbalancers(octavia_image, octavia_flavor, user, num_lbs, user_data_file,
                                       num_pools, num_clients, ext_net_id, router_create_args,

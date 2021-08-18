@@ -50,6 +50,20 @@ class NovaUtils(vm_utils.VMScenario):
         else:
             LOG.info("Command executed successfully: %(command)s" % {"command": cmd})
 
+    def _run_command_until_failure(self, ssh_connection, cmd, timeout=2):
+        """Run command over ssh connection until failure
+        :param ssh_connection: ssh connection to run command
+        :param cmd: command to run
+        :param timeout: int, maximum time to wait for command to complete
+        """
+        while True:
+            status, out, err = ssh_connection.execute(cmd)
+            LOG.info("cmd: {}, status:{}".format(cmd, status))
+            if status == 0:
+                time.sleep(timeout)
+            else:
+                break
+
     def _boot_server_with_tag(self, image, flavor, tag,
                               auto_assign_nic=False, **kwargs):
         """Boot a server with a tag.
@@ -153,3 +167,26 @@ class NeutronUtils(neutron_utils.NeutronScenario):
         return self.admin_clients("neutron").create_router(
             {"router": router_create_args}
         )
+
+    def dissociate_and_delete_floating_ip(self, fip_id):
+        """Dissociate and delete floating IP of port
+        :param fip_id: id of floating IP of subport
+        """
+        fip_update_dict = {"port_id": None}
+        self.clients("neutron").update_floatingip(
+            fip_id, {"floatingip": fip_update_dict}
+        )
+        self.clients("neutron").delete_floatingip(fip_id)
+
+    def create_floating_ip_and_associate_to_port(self, port, ext_net_name):
+        """Create and associate floating IP for port
+        :param port: port object to create floating IP
+        :param ext_net_name: name of external network to create floating IP
+        :returns: floating IP for port
+        """
+        port_fip = self._create_floatingip(ext_net_name)["floatingip"]
+        fip_update_dict = {"port_id": port["port"]["id"]}
+        self.clients("neutron").update_floatingip(
+            port_fip["id"], {"floatingip": fip_update_dict}
+        )
+        return port_fip

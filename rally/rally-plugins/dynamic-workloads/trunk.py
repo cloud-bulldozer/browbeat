@@ -15,7 +15,6 @@ import random
 from rally.common import logging
 from rally.common import sshutils
 
-from rally_openstack.scenarios.neutron import utils as neutron_utils
 import dynamic_utils
 
 LOG = logging.getLogger(__name__)
@@ -36,11 +35,14 @@ LOG = logging.getLogger(__name__)
 # We can't use cirros image as it doesn't support vlans
 # smallest flavor for centos is m1.tiny-centos (RAM 192, disk 8, vcpu 1)
 #
-# We also have a scenario to add subports to random trunks in this test.
-
+# We have 3 other scenarios apart from the subport connection simulation mentioned
+# above.
+# 1. Add subports to random trunks
+# 2. Delete subports from random trunks
+# 3. Swap floating IPs between 2 random subports from 2 randomly chosen trunks
 
 class TrunkDynamicScenario(
-    dynamic_utils.NovaUtils, neutron_utils.NeutronScenario
+    dynamic_utils.NovaUtils, dynamic_utils.NeutronUtils
 ):
     def add_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
                                       subport_number, gateway):
@@ -74,26 +76,29 @@ class TrunkDynamicScenario(
         self._wait_for_ssh(source_ssh)
         self._run_command_with_attempts(source_ssh, script)
 
-    def ping_subport_fip_from_jumphost(self, local_vm, dest_vm, local_vm_user,
-                                       dest_vm_user, fip, port):
+    def ping_subport_fip_from_jumphost(self, dest_vm, dest_vm_user,
+                                       fip, port, success_on_ping_failure=False):
         """Ping subport floating ip from jumphost
-        :param local_vm: floating ip of local VM
         :param dest_vm: floating ip of destination VM
-        :param local_vm_user: str, ssh user for local VM
         :param dest_vm_user: str, ssh user for destination VM
         :param fip: floating ip of subport
         :param port: subport to ping from jumphost
+        :param success_on_ping_failure: bool, flag to ping till failure/success
         """
-        fip_update_dict = {"port_id": port["id"]}
-        self.clients("neutron").update_floatingip(
-            fip["id"], {"floatingip": fip_update_dict}
-        )
+        if not(success_on_ping_failure):
+            fip_update_dict = {"port_id": port["id"]}
+            self.clients("neutron").update_floatingip(
+                fip["id"], {"floatingip": fip_update_dict}
+            )
 
         address = fip["floating_ip_address"]
         dest_ssh = sshutils.SSH(dest_vm_user, dest_vm, pkey=self.keypair["private"])
         self._wait_for_ssh(dest_ssh)
         cmd = f"ping -c1 -w1 {address}"
-        self._run_command_with_attempts(dest_ssh, cmd)
+        if success_on_ping_failure:
+            self._run_command_until_failure(dest_ssh, cmd)
+        else:
+            self._run_command_with_attempts(dest_ssh, cmd)
 
     def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
         """Simulate connection from jumphost to random subport of trunk VM
@@ -112,8 +117,7 @@ class TrunkDynamicScenario(
                                            subport_number_for_route,
                                            subnet_for_route["subnet"]["gateway_ip"])
         subport_fip = self._create_floatingip(self.ext_net_name)["floatingip"]
-        self.ping_subport_fip_from_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
-                                            self.jumphost_user, subport_fip,
+        self.ping_subport_fip_from_jumphost(jump_fip, self.jumphost_user, subport_fip,
                                             subport_for_route["port"])
         # We delete the route from vm to jumphost through the randomly
         # chosen subport after simulate subport connection is executed,
@@ -123,12 +127,9 @@ class TrunkDynamicScenario(
         self.delete_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
                                               subport_number_for_route,
                                               subnet_for_route["subnet"]["gateway_ip"])
-        # Dissociate floating IP as the same subport can be used again
-        # later.
-        fip_update_dict = {"port_id": None}
-        self.clients("neutron").update_floatingip(
-            subport_fip["id"], {"floatingip": fip_update_dict}
-        )
+        # Dissociate and delete floating IP as the same subport can be used
+        # again later.
+        self.dissociate_and_delete_floating_ip(subport_fip["id"])
 
     def get_server_by_trunk(self, trunk):
         """Get server details for a given trunk
@@ -360,3 +361,75 @@ class TrunkDynamicScenario(
             # was valid at the beginning of the loop.
             if len(self.clients("neutron").show_trunk(trunk["id"])["trunk"]["sub_ports"]) > 0:
                 self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
+
+    def swap_floating_ips_between_random_subports(self):
+        """Swap floating IPs between 2 randomly chosen subports from 2 randomly chosen trunks
+        """
+        trunks = [trunk for trunk in self._list_trunks() if len(trunk["sub_ports"]) > 0]
+
+        if len(trunks) < 2:
+            LOG.info("""Number of eligible trunks not sufficient
+                     for swapping floating IPs between trunk subports""")
+            return
+
+        trunks_for_swapping = random.sample(trunks, 2)
+
+        jumphost1_fip = self.get_jumphost_by_trunk(trunks_for_swapping[0])
+        jumphost2_fip = self.get_jumphost_by_trunk(trunks_for_swapping[1])
+
+        trunk_vm1_fip = self.get_server_by_trunk(trunks_for_swapping[0])
+        trunk_vm2_fip = self.get_server_by_trunk(trunks_for_swapping[1])
+
+        subport1_count = len(trunks_for_swapping[0]["sub_ports"])
+        subport1_number_for_route = random.randint(1, subport1_count)
+        subport1 = self.clients("neutron").show_port(
+            trunks_for_swapping[0]["sub_ports"][subport1_number_for_route-1]["port_id"])
+        subnet1 = self.clients("neutron").show_subnet(
+            subport1["port"]["fixed_ips"][0]["subnet_id"])
+        self.add_route_from_vm_to_jumphost(trunk_vm1_fip, jumphost1_fip, self.trunk_vm_user,
+                                           subport1_number_for_route,
+                                           subnet1["subnet"]["gateway_ip"])
+
+        subport2_count = len(trunks_for_swapping[1]["sub_ports"])
+        subport2_number_for_route = random.randint(1, subport2_count)
+        subport2 = self.clients("neutron").show_port(
+            trunks_for_swapping[1]["sub_ports"][subport2_number_for_route-1]["port_id"])
+        subnet2 = self.clients("neutron").show_subnet(
+            subport2["port"]["fixed_ips"][0]["subnet_id"])
+        self.add_route_from_vm_to_jumphost(trunk_vm2_fip, jumphost2_fip, self.trunk_vm_user,
+                                           subport2_number_for_route,
+                                           subnet2["subnet"]["gateway_ip"])
+
+        subport1_fip = self.create_floating_ip_and_associate_to_port(subport1, self.ext_net_name)
+        subport2_fip = self.create_floating_ip_and_associate_to_port(subport2, self.ext_net_name)
+
+        fip_update_dict = {"port_id": None}
+        self.clients("neutron").update_floatingip(
+            subport1_fip["id"], {"floatingip": fip_update_dict})
+        self.clients("neutron").update_floatingip(
+            subport2_fip["id"], {"floatingip": fip_update_dict})
+
+        LOG.info("Ping until failure after dissociating subports' floating IPs, before swapping")
+        self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport1_fip,
+                                            subport1["port"], True)
+        self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport2_fip,
+                                            subport2["port"], True)
+
+        LOG.info("Ping until success by swapping subports' floating IPs")
+        self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport2_fip,
+                                            subport1["port"])
+        self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport1_fip,
+                                            subport2["port"])
+
+        self.delete_route_from_vm_to_jumphost(trunk_vm1_fip, jumphost1_fip, self.trunk_vm_user,
+                                              subport1_number_for_route,
+                                              subnet1["subnet"]["gateway_ip"])
+
+        self.delete_route_from_vm_to_jumphost(trunk_vm2_fip, jumphost2_fip, self.trunk_vm_user,
+                                              subport2_number_for_route,
+                                              subnet2["subnet"]["gateway_ip"])
+
+        # Dissociate and delete floating IPs as the same subports can be used
+        # again later.
+        self.dissociate_and_delete_floating_ip(subport1_fip["id"])
+        self.dissociate_and_delete_floating_ip(subport2_fip["id"])
