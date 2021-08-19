@@ -50,7 +50,7 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         num_vms_to_migrate, trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
         num_add_subports, num_add_subports_trunks, num_delete_subports, num_delete_subports_trunks,
         octavia_image, octavia_flavor, user, user_data_file, num_lbs, num_pools, num_clients,
-        delete_num_lbs, delete_num_members, num_create_delete_vms, provider_phys_net,
+        delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms, provider_phys_net,
         iface_name, iface_mac, num_vms_provider_net, workloads="all",
         router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
@@ -58,8 +58,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         workloads_list = workloads.split(",")
 
         if workloads == "all" or "create_delete_servers" in workloads_list:
-            self.create_delete_servers(smallest_image, smallest_flavor, num_create_delete_vms,
-                                       subnet_create_args=subnet_create_args)
+            self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
+                              subnet_create_args=subnet_create_args)
+            self.delete_random_servers(num_delete_vms)
 
         if workloads == "all" or "migrate_servers" in workloads_list:
             self.boot_servers_with_fip(smallest_image, smallest_flavor, ext_net_id,

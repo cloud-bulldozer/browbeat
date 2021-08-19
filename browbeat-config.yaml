@@ -557,7 +557,8 @@ workloads:
         smallest_image_name: cirros
         smallest_flavor_name: m1.small
         ext_net_id:
-        num_create_delete_vms: 10
+        num_create_vms: 10
+        num_delete_vms: 5
         num_vms_to_create_for_migration: 10
         num_vms_to_migrate: 5
         octavia_image_name: custom-cirros

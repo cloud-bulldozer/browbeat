@@ -3,7 +3,8 @@ Browbeat Rally Plugin: dynamic-workloads
 
 Functions:
 ----------
-- create_delete_servers: Create 'N' VMs and delete 'N/2' VMs.
+- boot_servers: Create 'N' VMs(without floating IP)
+- delete_random_servers: Delete 'N' randomly chosen VMs(without floating IP)
 - boot_servers_with_fip: Create 'N' VMs with floating IPs.
 - _create_router: Create neutron router.
 - get_servers_migration_list: Generate list of servers to migrate between computes.

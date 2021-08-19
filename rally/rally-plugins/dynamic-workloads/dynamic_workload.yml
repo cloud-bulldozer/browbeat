@@ -1,6 +1,7 @@
 {% set smallest_image_name = smallest_image_name or 'cirros' %}
 {% set smallest_flavor_name = smallest_flavor_name or 'm1.xtiny' %}
-{% set num_create_delete_vms = num_create_delete_vms or 2 %}
+{% set num_create_vms = num_create_vms or 2 %}
+{% set num_delete_vms = num_delete_vms or 1 %}
 {% set num_vms_to_create_for_migration = num_vms_to_create_for_migration or 1 %}
 {% set num_vms_to_migrate = num_vms_to_migrate or 1 %}
 {% set workloads = workloads or 'all' %}
@@ -57,7 +58,8 @@ BrowbeatPlugin.dynamic_workload:
       network_create_args: {}
       router_create_args: {}
       subnet_create_args: {}
-      num_create_delete_vms: {{num_create_delete_vms}}
+      num_create_vms: {{num_create_vms}}
+      num_delete_vms: {{num_delete_vms}}
       num_vms_to_create_for_migration: {{num_vms_to_create_for_migration}}
       num_vms_to_migrate: {{num_vms_to_migrate}}
       provider_phys_net: '{{ provider_phys_net }}'
