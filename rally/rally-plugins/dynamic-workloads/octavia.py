@@ -18,11 +18,12 @@ from rally.common import sshutils
 
 from rally_openstack.scenarios.octavia import utils as octavia_utils
 from octaviaclient.api import exceptions
+import dynamic_utils
 
 LOG = logging.getLogger(__name__)
 
 
-class DynamicOctaviaBase(octavia_utils.OctaviaBase):
+class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
     def build_jump_host(self, ext_net_name, image, flavor, user, subnet, password=None, **kwargs):
         """Builds jump host
 
@@ -62,7 +63,8 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         jump_ssh.execute("chmod 0600 ~/.ssh/id_rsa")
         return jump_ssh, jump_host_ip, jump_host
 
-    def create_clients(self, num_clients, user, user_data_file, image, flavor, subnet, **kwargs):
+    def create_clients(self, num_clients, user, user_data_file, image,
+                       flavor, subnet, lb_subnet, **kwargs):
         """Create <num_clients> clients
 
         :param num_clients: int, number of clients to create
@@ -71,6 +73,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         :param image: image ID or instance for server creation
         :param flavor: int, flavor ID or instance for server creation
         :param subnet: subnet
+        :param lb_subnet: subnet of loadbalancer
         :param kwargs: dict, Keyword arguments to function
         """
 
@@ -85,11 +88,10 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
                 LOG.info("couldn't add user data %s", e)
 
             LOG.info("Launching Client : {}".format(i))
-            server = self._boot_server(
-                image,
-                flavor,
-                key_name=self.context["user"]["keypair"]["name"],
-                **kwargs)
+            tag = "client:"+str(lb_subnet['network_id'])
+            kwargs['description'] = subnet['network_id']
+            # server description consists of network_id
+            server = self._boot_server_with_tag(image, flavor, tag, **kwargs)
             if hasattr(userdata, 'close'):
                 userdata.close()
 
@@ -267,7 +269,6 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         router_create_args.setdefault("external_gateway_info",
                                       {"network_id": ext_net_id, "enable_snat": True})
         router = self._create_router(router_create_args)
-
         for _ in range(num_lbs):
             subnets = []
             num_networks = 2
@@ -286,10 +287,14 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
                 ext_net_name, octavia_image, octavia_flavor, user, subnets[0]['subnet'], **kwargs)
 
             _clients = self.create_clients(num_clients, user, user_data_file, octavia_image,
-                                           octavia_flavor, subnets[1]['subnet'], **kwargs)
+                                           octavia_flavor, subnets[1]['subnet'],
+                                           subnets[0]['subnet'], **kwargs)
 
             protocol_port = 80
-            lb = self.octavia.load_balancer_create(subnet_id=vip_subnet_id, admin_state=True)
+            # description consists of router id
+            lb = self.octavia.load_balancer_create(subnet_id=vip_subnet_id,
+                                                   description=router['router']['id'],
+                                                   admin_state=True)
             lb_id = lb["id"]
             LOG.info("Waiting for the lb {} to be active".format(lb["id"]))
             self.octavia.wait_for_loadbalancer_prov_status(lb)
@@ -309,6 +314,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
 
     def delete_loadbalancers(self, delete_num_lbs):
         """Deletes <delete_num_lbs> loadbalancers randomly
+        with associated resources
 
         :param delete_num_lbs: number of loadbalancers to delete
         """
@@ -316,9 +322,24 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase):
         lb_list = self.octavia.load_balancer_list()
         for _ in range(delete_num_lbs):
             random_lb = random.choice(lb_list["loadbalancers"])
+            # delete the lb
             self.octavia._clients.octavia().load_balancer_delete(random_lb["id"], cascade=True)
             LOG.info("Random LB deleted {}".format(random_lb["id"]))
+            time.sleep(15)
+            # delete vm's that were added as members to lb
+            tag = "client:"+str(random_lb['vip_network_id'])
+            servers = self._get_servers_by_tag(tag)
+            for server in servers:
+                self._delete_server(server)
+            subnet_id = {'id': random_lb['vip_subnet_id']}
+            # fetch router id from the description of lb
+            router_id = {'id': random_lb['description']}
+            self._remove_interface_router(subnet_id, router_id)
+            # delete lb network
+            self.admin_clients("neutron").delete_network(random_lb['vip_network_id'])
             lb_list["loadbalancers"].remove(random_lb)
+            # get net_id from description and delete client network
+            self.admin_clients("neutron").delete_network(servers[0].description)
 
     def delete_members_random_lb(self, delete_num_members, max_attempts=10):
         """Deletes members from a random loadbalancer
