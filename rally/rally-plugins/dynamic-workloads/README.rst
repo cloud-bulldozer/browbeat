@@ -37,6 +37,10 @@ Functions:
 - _get_servers_by_tag: Retrieve list of servers based on tag
 - dissociate_and_delete_floating_ip: Dissociate and delete floating IP of port
 - create_floating_ip_and_associate_to_port: Create and associate floating IP for port
+- acquire_lock: Acquire lock on object
+- list_locks: List all locks in database
+- release_lock: Release lock on object
+- cleanup_locks: Release all locks in database
 - provider_netcreate_nova_boot_ping: Creates a provider Network and Boots VM and ping
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network

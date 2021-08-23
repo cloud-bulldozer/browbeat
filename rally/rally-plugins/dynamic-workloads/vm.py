@@ -19,7 +19,8 @@ LOG = logging.getLogger(__name__)
 
 
 class VMDynamicScenario(dynamic_utils.NovaUtils,
-                        dynamic_utils.NeutronUtils):
+                        dynamic_utils.NeutronUtils,
+                        dynamic_utils.LockUtils):
 
     def boot_servers(self, image, flavor, num_vms=2,
                      network_create_args=None, subnet_create_args=None):
@@ -49,8 +50,11 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
 
         servers_to_delete = random.sample(eligible_servers, num_vms)
         for server in servers_to_delete:
+            server_id = server.id
+            self.acquire_lock(server_id)
             LOG.info("Deleting server {}".format(server))
             self._delete_server(server, force=True)
+            self.release_lock(server_id)
 
     def boot_servers_with_fip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
                               network_create_args=None, subnet_create_args=None, **kwargs):
@@ -83,7 +87,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         for i in range(num_vms):
             kwargs["nics"] = [{"net-id": network["network"]["id"]}]
             guest = self._boot_server_with_fip_and_tag(
-                image, flavor, "migrate",
+                image, flavor, "migrate_or_swap",
                 True, ext_net_name, **kwargs
             )
             self._wait_for_ping(guest[1]["ip"])
@@ -94,9 +98,9 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         :param num_migrate_vms: int, number of servers to migrate between computes
         :returns: list of server objects to migrate between computes
         """
-        eligible_servers = self._get_servers_by_tag("migrate")
+        eligible_servers = self._get_servers_by_tag("migrate_or_swap")
 
-        num_servers_to_migrate = min(num_migrate_vms, len(eligible_servers))
+        num_servers_to_migrate = min(2*num_migrate_vms, len(eligible_servers))
         list_of_servers_to_migrate = random.sample(eligible_servers, num_servers_to_migrate)
 
         return list_of_servers_to_migrate
@@ -106,11 +110,29 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
 
         :param num_migrate_vms: int, number of servers to migrate between computes
         """
-        for server in self.get_servers_migration_list(num_migrate_vms):
-            fip = list(server.addresses.values())[0][1]['addr']
+        server_migration_list = self.get_servers_migration_list(num_migrate_vms)
+
+        loop_counter = 0
+        num_migrated = 0
+        length_server_migration_list = len(server_migration_list)
+
+        while loop_counter < length_server_migration_list and num_migrated < num_migrate_vms:
+            server_to_migrate = server_migration_list[loop_counter]
+
+            loop_counter += 1
+            if not self.acquire_lock(server_to_migrate.id):
+                continue
+
+            fip = list(server_to_migrate.addresses.values())[0][1]['addr']
             LOG.info("ping {} before server migration".format(fip))
             self._wait_for_ping(fip)
-            self._migrate(server)
-            self._resize_confirm(server, status="ACTIVE")
+            self._migrate(server_to_migrate)
+            self._resize_confirm(server_to_migrate, status="ACTIVE")
             LOG.info("ping {} after server migration".format(fip))
             self._wait_for_ping(fip)
+            self.release_lock(server_to_migrate.id)
+            num_migrated += 1
+
+        if num_migrated == 0:
+            LOG.info("""No servers which are not under lock, so
+                      cannot migrate any servers.""")

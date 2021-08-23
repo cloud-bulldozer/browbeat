@@ -30,3 +30,10 @@ def lock_list(session):
     for lock in query.all():
         locks.append(lock.as_dict())
     return locks
+
+
+@db.with_session
+def release_lock(session, lock_uuid):
+    session.query(models.RallyLock).filter_by(
+        lock_uuid=lock_uuid).delete(
+        synchronize_session=False)

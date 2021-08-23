@@ -19,6 +19,9 @@ from rally_openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import atomic
 from rally.task import utils
 
+from browbeat_rally.db import api as db_api
+from oslo_db import exception as db_exc
+
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
@@ -190,3 +193,35 @@ class NeutronUtils(neutron_utils.NeutronScenario):
             port_fip["id"], {"floatingip": fip_update_dict}
         )
         return port_fip
+
+class LockUtils:
+
+    def acquire_lock(self, object_id):
+        """Acquire lock on object
+        :param object_id: id of object to lock
+        :returns: bool, whether the lock was acquired successfully or not
+        """
+        try:
+            db_api.get_lock(object_id)
+            return True
+        except db_exc.DBDuplicateEntry:
+            return False
+
+    def list_locks(self):
+        """List all locks in database
+        :returns: list, list of lock dictionaries
+        """
+        return db_api.lock_list()
+
+    def release_lock(self, object_id):
+        """Release lock on object
+        :param object_id: id of object to release lock from
+        """
+        db_api.release_lock(object_id)
+
+    def cleanup_locks(self):
+        """Release all locks in database
+        """
+        locks_list = self.list_locks()
+        for lock in locks_list:
+            self.release_lock(lock["lock_uuid"])
