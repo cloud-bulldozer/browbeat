@@ -284,6 +284,7 @@ PreCacheChain "PreCache"
   ProcessMatch "dnsmasq-ironic" "dnsmasq.+/etc/dnsmasq-ironic.conf"                     # 10,11,12,13
   ProcessMatch "dnsmasq-ironicinspector" "/sbin/dnsmasq.+/etc/ironic-inspector/"        # 10,11,12,13
   ProcessMatch "ironic_wsgi" "ironic_wsgi.*-DFOREGROUND"                                # 12,13
+  ProcessMatch "ironic-neutron-agent" "python.+ironic-neutron-agent"                    # 16
 
   # Keystone (OpenStack Installed)
   ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11,12,13
