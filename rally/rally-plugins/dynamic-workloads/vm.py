@@ -10,12 +10,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import logging
 import random
 
 import dynamic_utils
-
-LOG = logging.getLogger(__name__)
 
 
 class VMDynamicScenario(dynamic_utils.NovaUtils,
@@ -38,7 +35,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
         for _ in range(num_vms):
             server = self._boot_server_with_tag(image, flavor, "create_delete", **kwargs)
-            LOG.info("Created server {}".format(server))
+            self.log_info("Created server {}".format(server))
 
     def delete_random_servers(self, num_vms):
         """Delete <num_vms> randomly chosen servers
@@ -52,7 +49,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         for server in servers_to_delete:
             server_id = server.id
             self.acquire_lock(server_id)
-            LOG.info("Deleting server {}".format(server))
+            self.log_info("Deleting server {}".format(server))
             self._delete_server(server, force=True)
             self.release_lock(server_id)
 
@@ -124,15 +121,15 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
                 continue
 
             fip = list(server_to_migrate.addresses.values())[0][1]['addr']
-            LOG.info("ping {} before server migration".format(fip))
+            self.log_info("ping {} before server migration".format(fip))
             self._wait_for_ping(fip)
             self._migrate(server_to_migrate)
             self._resize_confirm(server_to_migrate, status="ACTIVE")
-            LOG.info("ping {} after server migration".format(fip))
+            self.log_info("ping {} after server migration".format(fip))
             self._wait_for_ping(fip)
             self.release_lock(server_to_migrate.id)
             num_migrated += 1
 
         if num_migrated == 0:
-            LOG.info("""No servers which are not under lock, so
+            self.log_info("""No servers which are not under lock, so
                       cannot migrate any servers.""")

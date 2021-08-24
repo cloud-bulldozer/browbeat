@@ -10,10 +10,10 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import logging
 import time
 
 from rally.common import cfg
-from rally.common import logging
 from rally_openstack.scenarios.vm import utils as vm_utils
 from rally_openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import atomic
@@ -27,6 +27,14 @@ LOG = logging.getLogger(__name__)
 
 
 class NovaUtils(vm_utils.VMScenario):
+
+    def log_info(self, msg):
+        log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
+        LOG.info(log_msg)
+
+    def log_error(self, msg):
+        log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
+        LOG.error(log_msg)
 
     def _run_command_with_attempts(self, ssh_connection, cmd, max_attempts=120, timeout=2):
         """Run command over ssh connection with multiple attempts
@@ -160,6 +168,14 @@ class NovaUtils(vm_utils.VMScenario):
 
 
 class NeutronUtils(neutron_utils.NeutronScenario):
+
+    def log_info(self, msg):
+        log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
+        LOG.info(log_msg)
+
+    def log_error(self, msg):
+        log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
+        LOG.error(log_msg)
 
     @atomic.action_timer("neutron.create_router")
     def _create_router(self, router_create_args):

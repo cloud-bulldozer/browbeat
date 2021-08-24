@@ -10,7 +10,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import logging
 import random
 import os
 import subprocess
@@ -18,8 +17,6 @@ import subprocess
 from rally_openstack.scenarios.neutron import utils as neutron_utils
 import dynamic_utils
 from rally.task import atomic
-
-LOG = logging.getLogger(__name__)
 
 
 class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronScenario):
@@ -76,9 +73,9 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         proc = subprocess.Popen(cmd)
         proc.wait()
         if proc.returncode == 0:
-            LOG.info("Ping to {} is successful".format(server_ip))
+            self.log_info("Ping to {} is successful".format(server_ip))
         else:
-            LOG.info("Ping to {} is failed".format(server_ip))
+            self.log_info("Ping to {} is failed".format(server_ip))
 
     def provider_netcreate_nova_boot_ping(self, image, flavor, provider_phys_net, iface_name,
                                           iface_mac, num_vms_provider_net, router_create_args=None,
@@ -104,7 +101,8 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
             kwargs["nics"] = [{'net-id': provider_network['network']['id']}]
             tag = "provider_network:"+str(provider_network['network']['id'])
             server = self._boot_server_with_tag(image, flavor, tag, **kwargs)
-            LOG.info(" Server {} created on provider network {}".format(server, provider_network))
+            self.log_info(" Server {} created on provider network {}".format(
+                server, provider_network))
             self.ping_server(server, iface_name, iface_mac, provider_network, subnet)
 
     def pick_random_provider_net(self, provider_phys_net, **kwargs):

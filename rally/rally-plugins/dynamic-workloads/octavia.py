@@ -11,7 +11,6 @@
 #   limitations under the License.
 
 import io
-import logging
 import time
 import random
 from rally.common import sshutils
@@ -19,8 +18,6 @@ from rally.common import sshutils
 from rally_openstack.scenarios.octavia import utils as octavia_utils
 from octaviaclient.api import exceptions
 import dynamic_utils
-
-LOG = logging.getLogger(__name__)
 
 
 class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
@@ -37,7 +34,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
 
         kwargs["nics"] = [{"net-id": subnet['network_id']}]
         keyname = self.context["user"]["keypair"]["name"]
-        LOG.info("Building Jump Host with key : {}".format(keyname))
+        self.log_info("Building Jump Host with key : {}".format(keyname))
         jump_host, jump_host_ip = self._boot_server_with_fip(image,
                                                              flavor,
                                                              True,
@@ -83,11 +80,11 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             try:
                 userdata = io.open(user_data_file, "r")
                 kwargs["userdata"] = userdata
-                LOG.info("Added user data")
+                self.log_info("Added user data")
             except Exception as e:
-                LOG.info("couldn't add user data %s", e)
+                self.log_info("couldn't add user data %s", e)
 
-            LOG.info("Launching Client : {}".format(i))
+            self.log_info("Launching Client : {}".format(i))
             tag = "client:"+str(lb_subnet['network_id'])
             kwargs['description'] = subnet['network_id']
             # server description consists of network_id
@@ -103,7 +100,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             # IP Address
             _clients.append(
                 str(server.addresses[network_name][0]["addr"]))
-        LOG.info(_clients)
+        self.log_info(_clients)
         return _clients
 
     def create_listener(self, lb_id, protocol_port, max_attempts=10):
@@ -121,7 +118,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             "connection_limit": -1,
             "admin_state_up": True,
         }
-        LOG.info("Creating a listener for lb {}".format(lb_id))
+        self.log_info("Creating a listener for lb {}".format(lb_id))
         attempts = 0
         # Retry to avoid HTTP 409 errors like "Load Balancer
         # is immutable and cannot be updated"
@@ -136,9 +133,9 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                     time.sleep(60)
                     continue
                 break
-        LOG.info("Listener created {}".format(listener))
-        LOG.info("Waiting for the lb {} to be active, after listener_create"
-                 .format(lb_id))
+        self.log_info("Listener created {}".format(listener))
+        self.log_info("Waiting for the lb {} to be active, after listener_create".format(
+            lb_id))
         return listener
 
     def create_pool(self, lb_id, listener_id, max_attempts=10):
@@ -148,7 +145,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
         :param max_attempts: max retries
         """
 
-        LOG.info("Creating a pool for lb {}".format(lb_id))
+        self.log_info("Creating a pool for lb {}".format(lb_id))
         attempts = 0
         # Retry to avoid HTTP 409 errors like "Load Balancer
         # is immutable and cannot be updated"
@@ -187,8 +184,8 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             "admin_state_up": True,
             "name": self.generate_random_name(),
         }
-        LOG.info("Adding member : {} to the pool {} lb {}"
-                 .format(client_ip, pool_id, lb_id))
+        self.log_info("Adding member : {} to the pool {} lb {}".format(
+            client_ip, pool_id, lb_id))
         attempts = 0
         # Retry to avoid "Load Balancer is immutable and cannot be updated"
         while attempts < max_attempts:
@@ -201,13 +198,13 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 if e.code == 409:
                     attempts += 1
                     time.sleep(120)
-                    LOG.info("mem_create exception: Waiting for the lb {} to be active"
-                             .format(lb_id))
+                    msg = "mem_create exception: Waiting for the lb {} to be active".format(lb_id)
+                    self.log_info(msg)
                     continue
                 break
         time.sleep(30)
-        LOG.info("Waiting for the lb {} to be active, after member_create"
-                 .format(lb_id))
+        self.log_info("Waiting for the lb {} to be active, after member_create".format(
+            lb_id))
 
     def check_connection(self, lb, jump_ssh, num_pools, num_clients, max_attempts=10):
         """Checks the connection
@@ -220,7 +217,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
 
         port = 80
         lb_ip = lb["vip_address"]
-        LOG.info("Load balancer IP: {}".format(lb_ip))
+        self.log_info("Load balancer IP: {}".format(lb_ip))
         # check for connectivity
         self._wait_for_ssh(jump_ssh)
         for i in range(num_pools):
@@ -229,13 +226,13 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 attempts = 0
                 while attempts < max_attempts:
                     test_exitcode, stdout_test, stderr = jump_ssh.execute(cmd, timeout=60)
-                    LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
+                    self.log_info("cmd: {}, stdout:{}".format(cmd, stdout_test))
                     if stdout_test != '1':
-                        LOG.error("ERROR with HTTP response {}".format(cmd))
+                        self.log_error("ERROR with HTTP response {}".format(cmd))
                         attempts += 1
                         time.sleep(30)
                     else:
-                        LOG.info("cmd: {} successful".format(cmd))
+                        self.log_info("cmd: {} successful".format(cmd))
                         break
             port = port + 1
 
@@ -277,7 +274,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 subnet = self._create_subnet(network, subnet_create_args or {})
                 subnets.append(subnet)
             self._add_interface_router(subnets[0]['subnet'], router['router'])
-            LOG.info("Subnets {}".format(subnets))
+            self.log_info("Subnets {}".format(subnets))
             vip_subnet_id = subnets[0]['subnet']['id']
             mem_subnet_id = subnets[1]['subnet']['id']
 
@@ -296,7 +293,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                                                    description=router['router']['id'],
                                                    admin_state=True)
             lb_id = lb["id"]
-            LOG.info("Waiting for the lb {} to be active".format(lb["id"]))
+            self.log_info("Waiting for the lb {} to be active".format(lb["id"]))
             self.octavia.wait_for_loadbalancer_prov_status(lb)
             time.sleep(90)
 
@@ -310,7 +307,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 protocol_port = protocol_port + 1
             self.check_connection(lb, jump_ssh, num_pools, num_clients)
             self._delete_server_with_fip(jump_host, jump_host_ip)
-            LOG.info("Deleted Jump_host {}".format(jump_host_ip))
+            self.log_info("Deleted Jump_host {}".format(jump_host_ip))
 
     def delete_loadbalancers(self, delete_num_lbs):
         """Deletes <delete_num_lbs> loadbalancers randomly
@@ -324,7 +321,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             random_lb = random.choice(lb_list["loadbalancers"])
             # delete the lb
             self.octavia._clients.octavia().load_balancer_delete(random_lb["id"], cascade=True)
-            LOG.info("Random LB deleted {}".format(random_lb["id"]))
+            self.log_info("Random LB deleted {}".format(random_lb["id"]))
             time.sleep(15)
             # delete vm's that were added as members to lb
             tag = "client:"+str(random_lb['vip_network_id'])
@@ -348,10 +345,10 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
 
         lb_list = self.octavia.load_balancer_list()
         random_lb = random.choice(lb_list["loadbalancers"])
-        LOG.info("Random LB selected {}".format(random_lb))
+        self.log_info("Random LB selected {}".format(random_lb))
         self.octavia.wait_for_loadbalancer_prov_status(random_lb)
         random_lb_pool = random.choice(random_lb["pools"])
-        LOG.info("Random pool {}".format(random_lb_pool))
+        self.log_info("Random pool {}".format(random_lb_pool))
         members_list = self.octavia.member_list(random_lb_pool['id'])
         for i in range(delete_num_members):
             attempts = 0
@@ -361,7 +358,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 try:
                     self.octavia._clients.octavia().member_delete(random_lb_pool['id'],
                                                                   random_member['id'])
-                    LOG.info("Member-{} deleted {}".format(i, random_member['id']))
+                    self.log_info("Member-{} deleted {}".format(i, random_member['id']))
                     break
                 except exceptions.OctaviaClientException as e:
                     # retry for 409 return code

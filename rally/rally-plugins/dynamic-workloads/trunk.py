@@ -12,12 +12,9 @@
 
 import random
 
-from rally.common import logging
 from rally.common import sshutils
 
 import dynamic_utils
-
-LOG = logging.getLogger(__name__)
 
 # This test simulates trunk subports using vlan interfaces inside the VM.
 # It creates vlan interface for the subport and then adds it's MAC and ip.
@@ -318,7 +315,7 @@ class TrunkDynamicScenario(
             num_operations_completed += 1
 
         if num_operations_completed == 0:
-            LOG.info("""No trunks which are not under lock, so
+            self.log_info("""No trunks which are not under lock, so
                      cannot add subports to any trunks.""")
 
     def delete_subports_from_random_trunks(self, num_trunks, subport_count):
@@ -394,7 +391,7 @@ class TrunkDynamicScenario(
             num_operations_completed += 1
 
         if num_operations_completed == 0:
-            LOG.info("""No trunks which are not under lock, so
+            self.log_info("""No trunks which are not under lock, so
                      cannot delete subports from any trunks.""")
 
     def swap_floating_ips_between_random_subports(self):
@@ -403,7 +400,7 @@ class TrunkDynamicScenario(
         trunks = [trunk for trunk in self._list_trunks() if len(trunk["sub_ports"]) > 0]
 
         if len(trunks) < 2:
-            LOG.info("""Number of eligible trunks not sufficient
+            self.log_info("""Number of eligible trunks not sufficient
                      for swapping floating IPs between trunk subports""")
             return
 
@@ -416,7 +413,7 @@ class TrunkDynamicScenario(
                 break
 
         if len(trunks_for_swapping) < 2:
-            LOG.info("""Number of unlocked trunks not sufficient
+            self.log_info("""Number of unlocked trunks not sufficient
                      for swapping floating IPs between trunk subports""")
             return
 
@@ -455,13 +452,14 @@ class TrunkDynamicScenario(
         self.clients("neutron").update_floatingip(
             subport2_fip["id"], {"floatingip": fip_update_dict})
 
-        LOG.info("Ping until failure after dissociating subports' floating IPs, before swapping")
+        msg = "Ping until failure after dissociating subports' floating IPs, before swapping"
+        self.log_info(msg)
         self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport1_fip,
                                             subport1["port"], True)
         self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport2_fip,
                                             subport2["port"], True)
 
-        LOG.info("Ping until success by swapping subports' floating IPs")
+        self.log_info("Ping until success by swapping subports' floating IPs")
         self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport2_fip,
                                             subport1["port"])
         self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport1_fip,
