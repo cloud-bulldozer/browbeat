@@ -42,7 +42,9 @@ LOG = logging.getLogger(__name__)
 # 3. Swap floating IPs between 2 random subports from 2 randomly chosen trunks
 
 class TrunkDynamicScenario(
-    dynamic_utils.NovaUtils, dynamic_utils.NeutronUtils
+    dynamic_utils.NovaUtils,
+    dynamic_utils.NeutronUtils,
+    dynamic_utils.LockUtils
 ):
     def add_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
                                       subport_number, gateway):
@@ -284,10 +286,20 @@ class TrunkDynamicScenario(
         trunks = self._list_trunks()
 
         random.shuffle(trunks)
-        num_trunks = min(num_trunks, len(trunks))
+        initial_num_trunks = num_trunks
+        num_trunks = min(2*num_trunks, len(trunks))
         trunks_to_add_subports = [trunks[i] for i in range(num_trunks)]
 
-        for trunk in trunks_to_add_subports:
+        loop_counter = 0
+        num_operations_completed = 0
+
+        while loop_counter < num_trunks and num_operations_completed < initial_num_trunks:
+            trunk = trunks_to_add_subports[loop_counter]
+
+            loop_counter += 1
+            if not self.acquire_lock(trunk["id"]):
+                continue
+
             subnets, subports = self.create_subnets_and_subports(subport_count)
 
             trunk_server_fip = self.get_server_by_trunk(trunk)
@@ -302,6 +314,12 @@ class TrunkDynamicScenario(
                                               vm_ssh, len(trunk["sub_ports"])+1)
 
             self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
+            self.release_lock(trunk["id"])
+            num_operations_completed += 1
+
+        if num_operations_completed == 0:
+            LOG.info("""No trunks which are not under lock, so
+                     cannot add subports to any trunks.""")
 
     def delete_subports_from_random_trunks(self, num_trunks, subport_count):
         """Delete <<subport_count>> subports from <<num_trunks>> randomly chosen trunks
@@ -311,7 +329,8 @@ class TrunkDynamicScenario(
         trunks = self._list_trunks()
 
         eligible_trunks = [trunk for trunk in trunks if len(trunk['sub_ports']) >= subport_count]
-        num_trunks = min(num_trunks, len(trunks))
+        initial_num_trunks = num_trunks
+        num_trunks = min(2*num_trunks, len(trunks))
         random.shuffle(eligible_trunks)
 
         if len(eligible_trunks) >= num_trunks:
@@ -321,7 +340,16 @@ class TrunkDynamicScenario(
                                                key=lambda k:-len(k['sub_ports']))[:num_trunks]
             subport_count = len(trunks_to_delete_subports[-1]['sub_ports'])
 
-        for trunk in trunks_to_delete_subports:
+        loop_counter = 0
+        num_operations_completed = 0
+
+        while loop_counter < num_trunks and num_operations_completed < initial_num_trunks:
+            trunk = trunks_to_delete_subports[loop_counter]
+
+            loop_counter += 1
+            if not self.acquire_lock(trunk["id"]):
+                continue
+
             trunk_server_fip = self.get_server_by_trunk(trunk)
             jump_fip = self.get_jumphost_by_trunk(trunk)
 
@@ -362,8 +390,15 @@ class TrunkDynamicScenario(
             if len(self.clients("neutron").show_trunk(trunk["id"])["trunk"]["sub_ports"]) > 0:
                 self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
 
+            self.release_lock(trunk["id"])
+            num_operations_completed += 1
+
+        if num_operations_completed == 0:
+            LOG.info("""No trunks which are not under lock, so
+                     cannot delete subports from any trunks.""")
+
     def swap_floating_ips_between_random_subports(self):
-        """Swap floating IPs between 2 randomly chosen subports from 2 randomly chosen trunks
+        """Swap floating IPs between 2 randomly chosen subports from 2 trunks
         """
         trunks = [trunk for trunk in self._list_trunks() if len(trunk["sub_ports"]) > 0]
 
@@ -372,7 +407,18 @@ class TrunkDynamicScenario(
                      for swapping floating IPs between trunk subports""")
             return
 
-        trunks_for_swapping = random.sample(trunks, 2)
+        trunks_for_swapping = []
+        for trunk in trunks:
+            if not self.acquire_lock(trunk["id"]):
+                continue
+            trunks_for_swapping.append(trunk)
+            if len(trunks_for_swapping) == 2:
+                break
+
+        if len(trunks_for_swapping) < 2:
+            LOG.info("""Number of unlocked trunks not sufficient
+                     for swapping floating IPs between trunk subports""")
+            return
 
         jumphost1_fip = self.get_jumphost_by_trunk(trunks_for_swapping[0])
         jumphost2_fip = self.get_jumphost_by_trunk(trunks_for_swapping[1])
@@ -433,3 +479,7 @@ class TrunkDynamicScenario(
         # again later.
         self.dissociate_and_delete_floating_ip(subport1_fip["id"])
         self.dissociate_and_delete_floating_ip(subport2_fip["id"])
+
+        # Release lock from trunks
+        self.release_lock(trunks_for_swapping[0]["id"])
+        self.release_lock(trunks_for_swapping[1]["id"])
