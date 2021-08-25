@@ -74,6 +74,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                                        network_create_args, subnet_create_args, **kwargs)
             self.migrate_servers_with_fip(num_vms_to_migrate)
 
+        if workloads == "all" or "swap_floating_ips_between_servers" in workloads_list:
+            self.swap_floating_ips_between_servers()
+
         if workloads == "all" or "pod_fip_simulation" in workloads_list:
             self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor, smallest_image,
                                     smallest_flavor, num_initial_subports, num_trunk_vms)

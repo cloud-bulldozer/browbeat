@@ -9,6 +9,7 @@ Functions:
 - _create_router: Create neutron router.
 - get_servers_migration_list: Generate list of servers to migrate between computes.
 - migrate_servers_with_fip: Migrate servers between computes
+- swap_floating_ips_between_servers: Swap floating IPs between 2 servers
 - create_loadbalancers: Create 'N' loadbalancers
 - delete_loadbalancers: Deletes 'M' loadbalancers randomly from 'N' loadbalancers
 - create_clients: Create 'N' clients
@@ -20,10 +21,11 @@ Functions:
 - build_jump_host: Builds Jump host
 - _run_command_with_attempts: Run command over ssh connection with multiple attempts
 - _run_command_until_failure: Run command over ssh connection until failure
+- _wait_for_ping_failure: Wait for ping failure to floating IP of server
 - add_route_from_vm_to_jumphost: Add route from trunk vm to jumphost via trunk subport
 - delete_route_from_vm_to_jumphost: Delete route from trunk vm to jumphost via trunk subport
 - get_jumphost_by_trunk: Get jumphost details for a given trunk
-- ping_subport_fip_from_jumphost: Ping subport floating ip from jumphost
+- assign_ping_fip_from_jumphost: Assign floating IP to port(optional), and ping floating ip from jumphost
 - create_subnets_and_subports: Create N subnets and subports
 - add_subports_to_trunk_and_vm: Add subports to trunk and create vlan interfaces for subport inside trunk VM
 - simulate_subport_connection: Simulate connection from jumphost to random subport of trunk VM

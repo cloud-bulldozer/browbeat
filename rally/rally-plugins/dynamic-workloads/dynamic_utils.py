@@ -14,6 +14,8 @@ import logging
 import time
 
 from rally.common import cfg
+from rally.common import sshutils
+
 from rally_openstack.scenarios.vm import utils as vm_utils
 from rally_openstack.scenarios.neutron import utils as neutron_utils
 from rally.task import atomic
@@ -30,10 +32,16 @@ logging.getLogger("paramiko").setLevel(logging.WARNING)
 class NovaUtils(vm_utils.VMScenario):
 
     def log_info(self, msg):
+        """Log information with iteration number
+        :param msg: str, message to log
+        """
         log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
         LOG.info(log_msg)
 
     def log_error(self, msg):
+        """Log error with iteration number
+        :param msg: str, message to log
+        """
         log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
         LOG.error(log_msg)
 
@@ -76,26 +84,44 @@ class NovaUtils(vm_utils.VMScenario):
             else:
                 break
 
-    def _create_sec_group_rule(self, security_group, protocol):
-        security_group_rule_args = {}
-        security_group_rule_args["security_group_id"] = security_group["security_group"]["id"]
-        security_group_rule_args["direction"] = "ingress"
-        security_group_rule_args["remote_ip_prefix"] = "0.0.0.0/0"
-        security_group_rule_args["protocol"] = protocol
-        if protocol == "tcp":
-            security_group_rule_args["port_range_min"] = 22
-            security_group_rule_args["port_range_max"] = 22
-        self.clients("neutron").create_security_group_rule(
-            {"security_group_rule": security_group_rule_args})
+    def assign_ping_fip_from_jumphost(self, jumphost_fip, jumphost_user,
+                                      fip, port_id, success_on_ping_failure=False):
+        """Ping floating ip from jumphost
+        :param jumphost_fip: floating ip of jumphost
+        :param jumphost_user: str, ssh user for jumphost
+        :param fip: floating ip of port
+        :param port_id: id of port to ping from jumphost
+        :param success_on_ping_failure: bool, flag to ping till failure/success
+        """
+        keypair = self.context["user"]["keypair"]
+        if not(success_on_ping_failure):
+            fip_update_dict = {"port_id": port_id}
+            self.clients("neutron").update_floatingip(
+                fip["id"], {"floatingip": fip_update_dict}
+            )
 
-    def create_sec_group_with_icmp_ssh(self):
-        security_group_args = {}
-        security_group_args["name"] = self.generate_random_name()
-        security_group = self.clients("neutron").create_security_group(
-            {"security_group": security_group_args})
-        self._create_sec_group_rule(security_group, "icmp")
-        self._create_sec_group_rule(security_group, "tcp")
-        return security_group["security_group"]
+        address = fip["floating_ip_address"]
+        jumphost_ssh = sshutils.SSH(jumphost_user, jumphost_fip, pkey=keypair["private"])
+        self._wait_for_ssh(jumphost_ssh)
+        cmd = f"ping -c1 -w1 {address}"
+        if success_on_ping_failure:
+            self._run_command_until_failure(jumphost_ssh, cmd)
+        else:
+            self._run_command_with_attempts(jumphost_ssh, cmd)
+
+    @atomic.action_timer("vm.wait_for_ping_failure")
+    def _wait_for_ping_failure(self, server_ip):
+        """Wait for ping failure to floating IP of server
+        :param server_ip: floating IP of server
+        """
+        server = vm_utils.Host(server_ip)
+        utils.wait_for_status(
+            server,
+            ready_statuses=[vm_utils.Host.ICMP_DOWN_STATUS],
+            update_resource=vm_utils.Host.update_status,
+            timeout=CONF.openstack.vm_ping_timeout,
+            check_interval=CONF.openstack.vm_ping_poll_interval
+        )
 
     def _boot_server_with_tag(self, image, flavor, tag,
                               auto_assign_nic=False, **kwargs):
@@ -201,10 +227,16 @@ class NovaUtils(vm_utils.VMScenario):
 class NeutronUtils(neutron_utils.NeutronScenario):
 
     def log_info(self, msg):
+        """Log information with iteration number
+        :param msg: str, message to log
+        """
         log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
         LOG.info(log_msg)
 
     def log_error(self, msg):
+        """Log error with iteration number
+        :param msg: str, message to log
+        """
         log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
         LOG.error(log_msg)
 
@@ -240,6 +272,34 @@ class NeutronUtils(neutron_utils.NeutronScenario):
             port_fip["id"], {"floatingip": fip_update_dict}
         )
         return port_fip
+
+    def _create_sec_group_rule(self, security_group, protocol):
+        """Create rule for security group
+        :param security_group: security group object to create rule
+        :param protocol: str, protocol of rule to create
+        """
+        security_group_rule_args = {}
+        security_group_rule_args["security_group_id"] = security_group["security_group"]["id"]
+        security_group_rule_args["direction"] = "ingress"
+        security_group_rule_args["remote_ip_prefix"] = "0.0.0.0/0"
+        security_group_rule_args["protocol"] = protocol
+        if protocol == "tcp":
+            security_group_rule_args["port_range_min"] = 22
+            security_group_rule_args["port_range_max"] = 22
+        self.clients("neutron").create_security_group_rule(
+            {"security_group_rule": security_group_rule_args})
+
+    def create_sec_group_with_icmp_ssh(self):
+        """Create security group with icmp and ssh rules
+        :returns: security group dict
+        """
+        security_group_args = {}
+        security_group_args["name"] = self.generate_random_name()
+        security_group = self.clients("neutron").create_security_group(
+            {"security_group": security_group_args})
+        self._create_sec_group_rule(security_group, "icmp")
+        self._create_sec_group_rule(security_group, "tcp")
+        return security_group["security_group"]
 
 class LockUtils:
 

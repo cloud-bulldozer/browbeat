@@ -75,30 +75,6 @@ class TrunkDynamicScenario(
         self._wait_for_ssh(source_ssh)
         self._run_command_with_attempts(source_ssh, script)
 
-    def ping_subport_fip_from_jumphost(self, dest_vm, dest_vm_user,
-                                       fip, port, success_on_ping_failure=False):
-        """Ping subport floating ip from jumphost
-        :param dest_vm: floating ip of destination VM
-        :param dest_vm_user: str, ssh user for destination VM
-        :param fip: floating ip of subport
-        :param port: subport to ping from jumphost
-        :param success_on_ping_failure: bool, flag to ping till failure/success
-        """
-        if not(success_on_ping_failure):
-            fip_update_dict = {"port_id": port["id"]}
-            self.clients("neutron").update_floatingip(
-                fip["id"], {"floatingip": fip_update_dict}
-            )
-
-        address = fip["floating_ip_address"]
-        dest_ssh = sshutils.SSH(dest_vm_user, dest_vm, pkey=self.keypair["private"])
-        self._wait_for_ssh(dest_ssh)
-        cmd = f"ping -c1 -w1 {address}"
-        if success_on_ping_failure:
-            self._run_command_until_failure(dest_ssh, cmd)
-        else:
-            self._run_command_with_attempts(dest_ssh, cmd)
-
     def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
         """Simulate connection from jumphost to random subport of trunk VM
         :param trunk_id: id of trunk on which subport is present
@@ -120,8 +96,8 @@ class TrunkDynamicScenario(
               " with fip: {}".format(subport_for_route["port"], subport_fip, trunk["trunk"],
                                      vm_fip, jump_fip)
         self.log_info(msg)
-        self.ping_subport_fip_from_jumphost(jump_fip, self.jumphost_user, subport_fip,
-                                            subport_for_route["port"])
+        self.assign_ping_fip_from_jumphost(jump_fip, self.jumphost_user, subport_fip,
+                                           subport_for_route["port"]["id"])
         # We delete the route from vm to jumphost through the randomly
         # chosen subport after simulate subport connection is executed,
         # as additional subports can be tested for connection in the
@@ -467,16 +443,16 @@ class TrunkDynamicScenario(
 
         msg = "Ping until failure after dissociating subports' floating IPs, before swapping"
         self.log_info(msg)
-        self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport1_fip,
-                                            subport1["port"], True)
-        self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport2_fip,
-                                            subport2["port"], True)
+        self.assign_ping_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport1_fip,
+                                           subport1["port"]["id"], True)
+        self.assign_ping_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport2_fip,
+                                           subport2["port"]["id"], True)
 
         self.log_info("Ping until success by swapping subports' floating IPs")
-        self.ping_subport_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport2_fip,
-                                            subport1["port"])
-        self.ping_subport_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport1_fip,
-                                            subport2["port"])
+        self.assign_ping_fip_from_jumphost(jumphost1_fip, self.jumphost_user, subport2_fip,
+                                           subport1["port"]["id"])
+        self.assign_ping_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport1_fip,
+                                           subport2["port"]["id"])
 
         self.delete_route_from_vm_to_jumphost(trunk_vm1_fip, jumphost1_fip, self.trunk_vm_user,
                                               subport1_number_for_route,

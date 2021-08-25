@@ -81,11 +81,13 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         network = self._create_network(network_create_args or {})
         subnet = self._create_subnet(network, subnet_create_args or {})
         self._add_interface_router(subnet["subnet"], router["router"])
-        for i in range(num_vms):
+        keypair = self.context["user"]["keypair"]
+
+        for _ in range(num_vms):
             kwargs["nics"] = [{"net-id": network["network"]["id"]}]
             guest = self._boot_server_with_fip_and_tag(
                 image, flavor, "migrate_or_swap",
-                True, ext_net_name, **kwargs
+                True, ext_net_name, key_name=keypair["name"], **kwargs
             )
             self._wait_for_ping(guest[1]["ip"])
 
@@ -133,3 +135,65 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         if num_migrated == 0:
             self.log_info("""No servers which are not under lock, so
                       cannot migrate any servers.""")
+
+    def swap_floating_ips_between_servers(self):
+        """Swap floating IPs between servers
+        """
+        eligible_servers = self._get_servers_by_tag("migrate_or_swap")
+
+        servers_for_swapping = []
+        for server in eligible_servers:
+            if not self.acquire_lock(server.id):
+                continue
+            servers_for_swapping.append(server)
+            if len(servers_for_swapping) == 2:
+                break
+
+        if len(servers_for_swapping) < 2:
+            self.log_info("""Number of unlocked servers not sufficient
+                          for swapping floating IPs between servers""")
+            return
+
+        kwargs = {"floating_ip_address": list(servers_for_swapping[0].addresses.values())
+                  [0][1]['addr']}
+        server1_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
+
+        kwargs = {"floating_ip_address": list(servers_for_swapping[1].addresses.values())
+                  [0][1]['addr']}
+        server2_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
+
+        server1_port = server1_fip["port_id"]
+        server2_port = server2_fip["port_id"]
+
+        fip_update_dict = {"port_id": None}
+        self.clients("neutron").update_floatingip(
+            server1_fip["id"], {"floatingip": fip_update_dict})
+        self.clients("neutron").update_floatingip(
+            server2_fip["id"], {"floatingip": fip_update_dict})
+
+        self.log_info("""Ping until failure after dissociating servers' floating IPs,
+                      before swapping""")
+        self.log_info("Ping server 1 {} until failure".format(server1_fip["floating_ip_address"]))
+        self._wait_for_ping_failure(server1_fip["floating_ip_address"])
+        self.log_info("Ping server 2 {} until failure".format(server2_fip["floating_ip_address"]))
+        self._wait_for_ping_failure(server2_fip["floating_ip_address"])
+
+        # Swap floating IPs between server1 and server2
+        fip_update_dict = {"port_id": server2_port}
+        self.clients("neutron").update_floatingip(
+            server1_fip["id"], {"floatingip": fip_update_dict}
+        )
+        fip_update_dict = {"port_id": server1_port}
+        self.clients("neutron").update_floatingip(
+            server2_fip["id"], {"floatingip": fip_update_dict}
+        )
+
+        self.log_info("Ping until success by swapping servers' floating IPs")
+        self.log_info("Ping server 1 {} until success".format(server1_fip["floating_ip_address"]))
+        self._wait_for_ping(server1_fip["floating_ip_address"])
+        self.log_info("Ping server 2 {} until success".format(server2_fip["floating_ip_address"]))
+        self._wait_for_ping(server2_fip["floating_ip_address"])
+
+        # Release locks from servers
+        self.release_lock(servers_for_swapping[0].id)
+        self.release_lock(servers_for_swapping[1].id)
