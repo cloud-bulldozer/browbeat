@@ -24,6 +24,7 @@ from oslo_db import exception as db_exc
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
+logging.getLogger("paramiko").setLevel(logging.WARNING)
 
 
 class NovaUtils(vm_utils.VMScenario):
