@@ -47,7 +47,7 @@ class NovaUtils(vm_utils.VMScenario):
         attempts = 0
         while attempts < max_attempts:
             status, out, err = ssh_connection.execute(cmd)
-            LOG.info("attempt: {} cmd: {}, status:{}".format(
+            self.log_info("attempt: {} cmd: {}, status:{}".format(
                 attempts, cmd, status))
             if status != 0:
                 attempts += 1
@@ -55,12 +55,12 @@ class NovaUtils(vm_utils.VMScenario):
             else:
                 break
         if (attempts == max_attempts) and (status != 0):
-            LOG.info(
+            self.log_info(
                 "Error running command %(command)s. "
                 "Error %(code)s: %(error)s" %
                 {"command": cmd, "code": status, "error": err})
         else:
-            LOG.info("Command executed successfully: %(command)s" % {"command": cmd})
+            self.log_info("Command executed successfully: %(command)s" % {"command": cmd})
 
     def _run_command_until_failure(self, ssh_connection, cmd, timeout=2):
         """Run command over ssh connection until failure
@@ -70,11 +70,32 @@ class NovaUtils(vm_utils.VMScenario):
         """
         while True:
             status, out, err = ssh_connection.execute(cmd)
-            LOG.info("cmd: {}, status:{}".format(cmd, status))
+            self.log_info("cmd: {}, status:{}".format(cmd, status))
             if status == 0:
                 time.sleep(timeout)
             else:
                 break
+
+    def _create_sec_group_rule(self, security_group, protocol):
+        security_group_rule_args = {}
+        security_group_rule_args["security_group_id"] = security_group["security_group"]["id"]
+        security_group_rule_args["direction"] = "ingress"
+        security_group_rule_args["remote_ip_prefix"] = "0.0.0.0/0"
+        security_group_rule_args["protocol"] = protocol
+        if protocol == "tcp":
+            security_group_rule_args["port_range_min"] = 22
+            security_group_rule_args["port_range_max"] = 22
+        self.clients("neutron").create_security_group_rule(
+            {"security_group_rule": security_group_rule_args})
+
+    def create_sec_group_with_icmp_ssh(self):
+        security_group_args = {}
+        security_group_args["name"] = self.generate_random_name()
+        security_group = self.clients("neutron").create_security_group(
+            {"security_group": security_group_args})
+        self._create_sec_group_rule(security_group, "icmp")
+        self._create_sec_group_rule(security_group, "tcp")
+        return security_group["security_group"]
 
     def _boot_server_with_tag(self, image, flavor, tag,
                               auto_assign_nic=False, **kwargs):
@@ -90,8 +111,17 @@ class NovaUtils(vm_utils.VMScenario):
         :returns: nova Server instance
         """
         server_name = self.generate_random_name()
+
+        # Each iteration has a unique security group for its resources
+        if self.security_group:
+            if "security_groups" not in kwargs:
+                kwargs["security_groups"] = [self.security_group["name"]]
+            elif self.security_group["name"] not in kwargs["security_groups"]:
+                kwargs["security_groups"].append(self.security_group["name"])
+
+        # Let every 5th iteration add default security group of the tenant/user
         secgroup = self.context.get("user", {}).get("secgroup")
-        if secgroup:
+        if secgroup and (self.context["iteration"] % 5):
             if "security_groups" not in kwargs:
                 kwargs["security_groups"] = [secgroup["name"]]
             elif secgroup["name"] not in kwargs["security_groups"]:

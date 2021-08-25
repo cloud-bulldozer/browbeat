@@ -116,6 +116,10 @@ class TrunkDynamicScenario(
                                            subport_number_for_route,
                                            subnet_for_route["subnet"]["gateway_ip"])
         subport_fip = self._create_floatingip(self.ext_net_name)["floatingip"]
+        msg = "ping subport: {} with fip: {} of trunk: {} with fip: {} from jumphost" \
+              " with fip: {}".format(subport_for_route["port"], subport_fip, trunk["trunk"],
+                                     vm_fip, jump_fip)
+        self.log_info(msg)
         self.ping_subport_fip_from_jumphost(jump_fip, self.jumphost_user, subport_fip,
                                             subport_for_route["port"])
         # We delete the route from vm to jumphost through the randomly
@@ -155,6 +159,7 @@ class TrunkDynamicScenario(
         """
         subnets = []
         subports = []
+        sg_id = self.security_group["id"]
         for _ in range(subport_count):
             net, subnet = self._create_network_and_subnets(network_create_args={})
             subnets.append(subnet[0])
@@ -163,7 +168,7 @@ class TrunkDynamicScenario(
                     net,
                     {
                         "fixed_ips": [{"subnet_id": subnet[0]["subnet"]["id"]}],
-                        "security_groups": [self.security_group["id"]],
+                        "security_groups": [sg_id],
                     },
                 )
             )
@@ -188,6 +193,8 @@ class TrunkDynamicScenario(
                     "segmentation_id": seg_id,
                 }
             ]
+            self.log_info("Adding subport: {} with seg_id: {} to trunk {}".format(
+                subport["port"], seg_id, trunk_id))
             self._add_subports_to_trunk(trunk_id, subport_payload)
 
             mac = subport["port"]["mac_address"]
@@ -249,8 +256,8 @@ class TrunkDynamicScenario(
         for _ in range(num_vms):
             kwargs = {}
             # create parent and trunk, boot the VM
-            self.security_group = self.context["tenant"]["users"][0]["secgroup"]
-            port_creates_args = {"security_groups": [self.security_group["id"]]}
+            port_creates_args = {"security_groups": [
+                self.security_group["id"]]}
             parent = self._create_port(network, port_creates_args)
             # Using tags for trunk returns an error,
             # so we instead use description.
@@ -267,9 +274,15 @@ class TrunkDynamicScenario(
 
             subnets, subports = self.create_subnets_and_subports(subport_count)
 
+            msg = "Trunk VM: {} with Trunk: {} Port: {} Subports: {} Jumphost: {}" \
+                  "created".format(vm, trunk["trunk"], parent["port"],
+                                   subports, jump_host)
+            self.log_info(msg)
             vm_ssh = sshutils.SSH(self.trunk_vm_user,
                                   vm_fip, pkey=self.keypair["private"])
-            self._wait_for_ssh(vm_ssh)
+            # centos7 image is taking 2 minutes for cloud-init and 4 minutes
+            # for the ssh availability
+            self._wait_for_ssh(vm_ssh, timeout=240, interval=5)
 
             self.add_subports_to_trunk_and_vm(subports, trunk["trunk"]["id"], vm_ssh, 1)
 

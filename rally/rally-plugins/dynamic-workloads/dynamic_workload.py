@@ -57,6 +57,12 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         workloads_list = workloads.split(",")
 
+        # Let this security group to be used by resources created in this iteration.
+        # _boot_server_with_tag additionally add's tenant/user's default security group
+        # for the resources created in every 5th iteration for scale testing of decurity groups
+        self.security_group = self.create_sec_group_with_icmp_ssh()
+        self.log_info("security group {} created for this iteration".format(self.security_group))
+
         if workloads == "all" or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
                               subnet_create_args=subnet_create_args)
