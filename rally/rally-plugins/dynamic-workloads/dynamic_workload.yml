@@ -83,6 +83,8 @@ BrowbeatPlugin.dynamic_workload:
           router: -1
           subnet: -1
           floatingip: -1
+          security_group: -1
+          security_group_rule: -1
           trunk: -1
         nova:
           instances: -1
