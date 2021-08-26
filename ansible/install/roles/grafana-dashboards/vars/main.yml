@@ -136,6 +136,7 @@ per_process_panels:
         - dnsmasq-ironic
         - dnsmasq-ironicinspector
         - ironic_wsgi
+        - ironic-neutron-agent
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -310,12 +311,14 @@ per_process_panels:
         - nova-novncproxy
         - nova-scheduler
         - placement_wsgi
+        - nova_metadata_w
     - name: "Octavia"
       processes:
         - octavia-worker
         - octavia-housekeeping
         - octavia-health-manager
         - octavia-api
+        - octavia_wsgi
     - name: "Open vSwitch"
       processes:
         - ovs-vswitchd
@@ -547,6 +550,7 @@ per_process_panels:
         - dnsmasq-ironic
         - dnsmasq-ironicinspector
         - ironic_wsgi
+        - ironic-neutron-agent
     - name: "Keystone"
       processes:
         - keystone-admin
@@ -582,13 +586,14 @@ per_process_panels:
         - novajoin-server
         - placement_wsgi
         - privsep-helper
+        - nova_metadata_w
     - name: "Octavia"
       processes:
         - octavia-worker
         - octavia-housekeeping
         - octavia-health-manager
         - octavia-api
-
+        - octavia_wsgi
     - name: "Open vSwitch"
       processes:
         - ovs-vswitchd

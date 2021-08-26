@@ -388,11 +388,14 @@ PreCacheChain "PreCache"
   ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # 10,11,12,13
   ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11,12,13
   ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11,12,13
+  ProcessMatch "nova_metadata_w" "nova_metadata_w.*-DFOREGROUND"                        # 16
 
+  # Octavia (OpenStack Installed)
   ProcessMatch "octavia-housekeeping" "python.+octavia-housekeeping"                    # 13
   ProcessMatch "octavia-health-manager" "python.+octavia-health-manager"                # 13
   ProcessMatch "octavia-api" "python.+octavia-api"                                      # 13
   ProcessMatch "octavia-worker" "octavia-worker --config-file"                          # 13
+  ProcessMatch "octavia_wsgi" "octavia_wsgi.*-DFOREGROUND"                              # 16
 
   # OVS (OpenStack Installed)
   ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12,13
