@@ -240,6 +240,7 @@ class TrunkDynamicScenario(
             trunk_payload = {"port_id": parent["port"]["id"],
                              "description": "jumphost:"+str(jump_fip)}
             trunk = self._create_trunk(trunk_payload)
+            self.acquire_lock(trunk["trunk"]["id"])
             kwargs["nics"] = [{"port-id": parent["port"]["id"]}]
             vm = self._boot_server_with_fip_and_tag(trunk_image, trunk_flavor,
                                                     "trunk:"+str(trunk["trunk"]["id"]), True,
@@ -264,6 +265,8 @@ class TrunkDynamicScenario(
 
             self.simulate_subport_connection(trunk["trunk"]["id"], vm_fip, jump_fip)
 
+            self.release_lock(trunk["trunk"]["id"])
+
     def add_subports_to_random_trunks(self, num_trunks, subport_count):
         """Add <<subport_count>> subports to <<num_trunks>> randomly chosen trunks
         :param num_trunks: int, number of trunks to be randomly chosen
@@ -285,6 +288,10 @@ class TrunkDynamicScenario(
             loop_counter += 1
             if not self.acquire_lock(trunk["id"]):
                 continue
+
+            # Get updated trunk object, as the trunk may have
+            # been changed in other iterations
+            trunk = self.clients("neutron").show_trunk(trunk["id"])["trunk"]
 
             subnets, subports = self.create_subnets_and_subports(subport_count)
 
@@ -335,6 +342,10 @@ class TrunkDynamicScenario(
             loop_counter += 1
             if not self.acquire_lock(trunk["id"]):
                 continue
+
+            # Get updated trunk object, as the trunk may have
+            # been changed in other iterations
+            trunk = self.clients("neutron").show_trunk(trunk["id"])["trunk"]
 
             trunk_server_fip = self.get_server_by_trunk(trunk)
             jump_fip = self.get_jumphost_by_trunk(trunk)
@@ -405,6 +416,11 @@ class TrunkDynamicScenario(
             self.log_info("""Number of unlocked trunks not sufficient
                      for swapping floating IPs between trunk subports""")
             return
+
+        # Get updated trunk object, as the trunk may have
+        # been changed in other iterations
+        trunks_for_swapping = [self.clients("neutron").show_trunk(trunk["id"])["trunk"]
+                               for trunk in trunks_for_swapping]
 
         jumphost1_fip = self.get_jumphost_by_trunk(trunks_for_swapping[0])
         jumphost2_fip = self.get_jumphost_by_trunk(trunks_for_swapping[1])
