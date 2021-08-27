@@ -49,6 +49,14 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         for server in servers_to_delete:
             server_id = server.id
             self.acquire_lock(server_id)
+            # Check that the server has not been
+            # deleted already in another iteration.
+            try:
+                self.show_server(server)
+            except Exception as e:
+                self.log_info("Server deletion failed as {}".format(e.message))
+                self.release_lock(server_id)
+                continue
             self.log_info("Deleting server {}".format(server))
             self._delete_server(server, force=True)
             self.release_lock(server_id)
@@ -97,7 +105,8 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         :param num_migrate_vms: int, number of servers to migrate between computes
         :returns: list of server objects to migrate between computes
         """
-        eligible_servers = self._get_servers_by_tag("migrate_or_swap")
+        eligible_servers = list(filter(lambda server: self._get_fip_by_server(server) is not False,
+                                       self._get_servers_by_tag("migrate_or_swap")))
 
         num_servers_to_migrate = min(2*num_migrate_vms, len(eligible_servers))
         list_of_servers_to_migrate = random.sample(eligible_servers, num_servers_to_migrate)
@@ -122,7 +131,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             if not self.acquire_lock(server_to_migrate.id):
                 continue
 
-            fip = list(server_to_migrate.addresses.values())[0][1]['addr']
+            fip = self._get_fip_by_server(server_to_migrate)
             self.log_info("ping {} before server migration".format(fip))
             self._wait_for_ping(fip)
             self._migrate(server_to_migrate)
@@ -139,7 +148,8 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
     def swap_floating_ips_between_servers(self):
         """Swap floating IPs between servers
         """
-        eligible_servers = self._get_servers_by_tag("migrate_or_swap")
+        eligible_servers = list(filter(lambda server: self._get_fip_by_server(server) is not False,
+                                       self._get_servers_by_tag("migrate_or_swap")))
 
         servers_for_swapping = []
         for server in eligible_servers:
@@ -154,12 +164,10 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
                           for swapping floating IPs between servers""")
             return
 
-        kwargs = {"floating_ip_address": list(servers_for_swapping[0].addresses.values())
-                  [0][1]['addr']}
+        kwargs = {"floating_ip_address": self._get_fip_by_server(servers_for_swapping[0])}
         server1_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
 
-        kwargs = {"floating_ip_address": list(servers_for_swapping[1].addresses.values())
-                  [0][1]['addr']}
+        kwargs = {"floating_ip_address": self._get_fip_by_server(servers_for_swapping[1])}
         server2_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
 
         server1_port = server1_fip["port_id"]

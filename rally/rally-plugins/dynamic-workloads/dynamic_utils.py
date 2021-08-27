@@ -223,6 +223,24 @@ class NovaUtils(vm_utils.VMScenario):
         return self.clients("nova", version="2.52").servers.list(
             search_opts={'tags': tag, 'status': "ACTIVE"})
 
+    def _get_fip_by_server(self, server):
+        """Check if server has floating IP, and retrieve it if it does
+        :param server: server object to check for floating IP
+        :returns: floating IP address of server, or False
+        """
+        try:
+            fip = list(server.addresses.values())[0][1]['addr']
+            return fip
+        except IndexError:
+            return False
+
+    def show_server(self, server):
+        """Show server details
+        :param server: server object to get details for
+        :returns: server details
+        """
+        return self.clients("nova", version="2.52").servers.get(server)
+
 
 class NeutronUtils(neutron_utils.NeutronScenario):
 

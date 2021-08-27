@@ -37,6 +37,8 @@ Functions:
 -  _boot_server_with_tag: Boot a server with a tag
 -  _boot_server_with_fip_and_tag: Boot server prepared for SSH actions, with tag
 - _get_servers_by_tag: Retrieve list of servers based on tag
+- _get_fip_by_server: Check if server has floating IP, and retrieve it if it does
+- show_server: Show server details
 - dissociate_and_delete_floating_ip: Dissociate and delete floating IP of port
 - create_floating_ip_and_associate_to_port: Create and associate floating IP for port
 - acquire_lock: Acquire lock on object
