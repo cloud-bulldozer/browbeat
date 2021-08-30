@@ -46,9 +46,11 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         num_vms = min(num_vms, len(eligible_servers))
 
         servers_to_delete = random.sample(eligible_servers, num_vms)
+        num_servers_deleted = 0
         for server in servers_to_delete:
             server_id = server.id
-            self.acquire_lock(server_id)
+            if not self.acquire_lock(server_id):
+                continue
             # Check that the server has not been
             # deleted already in another iteration.
             try:
@@ -59,7 +61,12 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
                 continue
             self.log_info("Deleting server {}".format(server))
             self._delete_server(server, force=True)
+            num_servers_deleted += 1
             self.release_lock(server_id)
+
+        if num_servers_deleted == 0:
+            self.log_info("""No servers which are not under lock,
+                          so cannot perform deletion on any server""")
 
     def boot_servers_with_fip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
                               network_create_args=None, subnet_create_args=None, **kwargs):
