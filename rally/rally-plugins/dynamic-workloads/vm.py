@@ -69,7 +69,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             self.log_info("""No servers which are not under lock,
                           so cannot perform deletion on any server""")
 
-    def boot_servers_with_fip(self, image, flavor, ext_net_id, num_vms=1, router_create_args=None,
+    def boot_servers_with_fip(self, image, flavor, ext_net_id, num_vms=1,
                               network_create_args=None, subnet_create_args=None, **kwargs):
         """Create <num_vms> servers with floating IPs
 
@@ -77,7 +77,6 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         :param flavor: int, flavor ID or instance for server creation
         :param ext_net_id: external network ID for floating IP creation
         :param num_vms: int, number of servers to create
-        :param router_create_args: dict, arguments for router creation
         :param network_create_args: dict, arguments for network creation
         :param subnet_create_args: dict, arguments for subnet creation
         :param kwargs: dict, Keyword arguments to function
@@ -87,16 +86,18 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
                 "name"
             ]
-        router_create_args["name"] = self.generate_random_name()
-        router_create_args["tenant_id"] = self.context["tenant"]["id"]
-        router_create_args.setdefault(
-            "external_gateway_info", {"network_id": ext_net_id, "enable_snat": True}
-        )
-        router = self._create_router(router_create_args)
 
-        network = self._create_network(network_create_args or {})
-        subnet = self._create_subnet(network, subnet_create_args or {})
-        self._add_interface_router(subnet["subnet"], router["router"])
+        # Let every 5th iteration use router, network and subnet from context
+        if (self.context["iteration"] % 5 == 0):
+            router = self.get_router_from_context()
+            network = self.get_network_from_context()
+            subnet = self.get_subnet_from_context()
+        else:
+            router = self.router_for_vm_workloads
+            network = self._create_network(network_create_args or {})
+            subnet = self._create_subnet(network, subnet_create_args or {})
+            self._add_interface_router(subnet["subnet"], router["router"])
+
         keypair = self.context["user"]["keypair"]
 
         for _ in range(num_vms):

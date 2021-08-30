@@ -23,6 +23,7 @@
 {% set num_add_subports = num_add_subports or 1 %}
 {% set num_delete_subports_trunks = num_delete_subports_trunks or 1 %}
 {% set num_delete_subports = num_delete_subports or 1 %}
+{% set router_external = router_external or True %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
@@ -92,6 +93,11 @@ BrowbeatPlugin.dynamic_workload:
           instances: -1
           cores: -1
           ram: -1
+      network:
+        router:
+          external: {{router_external}}
+          external_gateway_info:
+            network_id: {{ext_net_id}}
     sla:
       max_avg_duration: {{sla_max_avg_duration}}
       max_seconds_per_iteration: {{sla_max_seconds}}

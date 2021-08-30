@@ -63,6 +63,16 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         self.security_group = self.create_sec_group_with_icmp_ssh()
         self.log_info("security group {} created for this iteration".format(self.security_group))
 
+        # Let this router be used by resources created by VM dynamic workloads in this iteration,
+        # if the iteration is not divisible by 5.
+        router_create_args["name"] = self.generate_random_name()
+        router_create_args["tenant_id"] = self.context["tenant"]["id"]
+        router_create_args.setdefault(
+            "external_gateway_info", {"network_id": ext_net_id, "enable_snat": True}
+        )
+        self.router_for_vm_workloads = self._create_router(router_create_args)
+        self.log_info("router {} created for this iteration".format(self.router_for_vm_workloads))
+
         if workloads == "all" or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
                               subnet_create_args=subnet_create_args)
@@ -72,7 +82,7 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
            "swap_floating_ips_between_servers" in workloads_list or
            "stop_start_servers" in workloads_list):
             self.boot_servers_with_fip(smallest_image, smallest_flavor, ext_net_id,
-                                       num_vms_to_create_with_fip, router_create_args,
+                                       num_vms_to_create_with_fip,
                                        network_create_args, subnet_create_args, **kwargs)
 
         if workloads == "all" or "migrate_servers" in workloads_list:

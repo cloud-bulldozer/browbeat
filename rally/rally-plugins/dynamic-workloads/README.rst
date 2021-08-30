@@ -77,6 +77,12 @@ Neutron Utils:
 - create_floating_ip_and_associate_to_port: Create and associate floating IP for port
 - _create_sec_group_rule: Create rule for security group
 - create_sec_group_with_icmp_ssh: Create security group with icmp and ssh rules
+- show_router: Show information of a given router
+- show_network: Show information of a given network
+- show_subnet: Show information of a given subnet
+- get_router_from_context: Retrieve router that was created as part of Rally context
+- get_network_from_context: Retrieve network that was created as part of Rally context
+- get_subnet_from_context: Retrieve subnet that was created as part of Rally context
 
 Lock Utils:
 

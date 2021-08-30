@@ -319,6 +319,47 @@ class NeutronUtils(neutron_utils.NeutronScenario):
         self._create_sec_group_rule(security_group, "tcp")
         return security_group["security_group"]
 
+    def show_router(self, router_id, **kwargs):
+        """Show information of a given router
+        :param router_id: ID of router to look up
+        :kwargs: dict, POST /v2.0/routers show options
+        :returns: details of the router
+        """
+        return self.admin_clients("neutron").show_router(router_id, **kwargs)
+
+    def show_network(self, network_id, **kwargs):
+        """Show information of a given network
+        :param network_id: ID of network to look up
+        :kwargs: dict, POST /v2.0/networks show options
+        :returns: details of the network
+        """
+        return self.admin_clients("neutron").show_network(network_id, **kwargs)
+
+    def show_subnet(self, subnet_id):
+        """Show information of a given subnet
+        :param subnet_id: ID of subnet to look up
+        :returns: details of the subnet
+        """
+        return self.admin_clients("neutron").show_subnet(subnet_id)
+
+    def get_router_from_context(self):
+        """Retrieve router that was created as part of Rally context
+        :returns: router object that is part of Rally context
+        """
+        return self.show_router(self.context["tenant"]["networks"][0]["router_id"])
+
+    def get_network_from_context(self):
+        """Retrieve network that was created as part of Rally context
+        :returns: network object that is part of Rally context
+        """
+        return self.show_network(self.context["tenant"]["networks"][0]["id"])
+
+    def get_subnet_from_context(self):
+        """Retrieve subnet that was created as part of Rally context
+        :returns: subnet object that is part of Rally context
+        """
+        return self.show_subnet(self.context["tenant"]["networks"][0]["subnets"][0])
+
 class LockUtils:
 
     def acquire_lock(self, object_id):
