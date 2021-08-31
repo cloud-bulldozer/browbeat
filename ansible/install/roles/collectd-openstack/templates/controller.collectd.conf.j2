@@ -38,7 +38,7 @@ LoadPlugin conntrack
 {% if collectd_prometheus %}
 LoadPlugin network
 {% endif %}
-{% if keystone_overcloud_collectd_plugin %}
+{% if keystone_overcloud_collectd_plugin or osp_resources_collectd_plugin %}
 {%if inventory_hostname == groups['Controller'][0] %}
 LoadPlugin dbi
 {% endif %}
@@ -166,6 +166,213 @@ PreCacheChain "PreCache"
     CephPoolStatsInterval {{ceph_controller_collectd_pool_interval}}
   </Module>
 </Plugin>
+{% endif %}
+{% endif %}
+
+{% if osp_resources_collectd_plugin %}
+{%if inventory_hostname == groups['Controller'][0] %}
+
+<Plugin dbi>
+  <Query instances_count>
+    Statement "select count(*) as instances from instances where deleted=0"
+    <Result>
+      Type gauge
+      InstancePrefix "instances"
+      ValuesFrom "instances"
+    </Result>
+  </Query>
+  <Query instance_faults_count>
+    Statement "select count(*) as instance_faults from instance_faults"
+    <Result>
+      Type gauge
+      InstancePrefix "instance_faults"
+      ValuesFrom "instance_faults"
+    </Result>
+  </Query>
+  <Database "nova">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "dbname" "nova"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password.stdout}}"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query instances_count
+    Query instance_faults_count
+  </Database>
+
+  <Query network_count>
+    Statement "select count(*) as network from networks"
+    <Result>
+      Type gauge
+      InstancePrefix "network"
+      ValuesFrom "network"
+    </Result>
+  </Query>
+  <Query subnet_count>
+    Statement "select count(*) as subnet from subnets"
+    <Result>
+      Type gauge
+      InstancePrefix "subnet"
+      ValuesFrom "subnet"
+    </Result>
+  </Query>
+  <Query port_others_count>
+    Statement "select count(*) as port_others from ports where device_owner not in ('network:dhcp','compute:nova')"
+    <Result>
+      Type gauge
+      InstancePrefix "port_others"
+      ValuesFrom "port_others"
+    </Result>
+  </Query>
+  <Query port_dhcp_count>
+   Statement "select count(*) as port_dhcp from ports where device_owner='network:dhcp'"
+    <Result>
+      Type gauge
+      InstancePrefix "port_dhcp"
+      ValuesFrom "port_dhcp"
+    </Result>
+  </Query>
+  <Query port_compute_count>
+   Statement "select count(*) as port_compute from ports where device_owner='compute:nova'"
+    <Result>
+      Type gauge
+      InstancePrefix "port_compute"
+      ValuesFrom "port_compute"
+    </Result>
+  </Query>
+  <Query floatingips_count>
+   Statement "select count(*) as floatingips from floatingips"
+    <Result>
+      Type gauge
+      InstancePrefix "floatingips"
+      ValuesFrom "floatingips"
+    </Result>
+  </Query>
+  <Query router_count>
+   Statement "select count(*) as router from routers"
+    <Result>
+      Type gauge
+      InstancePrefix "router"
+      ValuesFrom "router"
+    </Result>
+  </Query>
+  <Query router_iface_count>
+   Statement "select count(*) as router_iface from routerports where port_type='network:router_interface'"
+    <Result>
+      Type gauge
+      InstancePrefix "router_iface"
+      ValuesFrom "router_iface"
+    </Result>
+  </Query>
+  <Query router_gw_count>
+   Statement "select count(*) as router_gw from routerports where port_type='network:router_gateway'"
+    <Result>
+      Type gauge
+      InstancePrefix "router_gw"
+      ValuesFrom "router_gw"
+    </Result>
+  </Query>
+  <Query sg_count>
+   Statement "select count(*) as sg from securitygroups"
+    <Result>
+      Type gauge
+      InstancePrefix "sg"
+      ValuesFrom "sg"
+    </Result>
+  </Query>
+  <Query sgr_count>
+   Statement "select count(*) as sgr from securitygrouprules"
+    <Result>
+      Type gauge
+      InstancePrefix "sgr"
+      ValuesFrom "sgr"
+    </Result>
+  </Query>
+  <Query trunk_count>
+   Statement "select count(*) as trunk from trunks"
+    <Result>
+      Type gauge
+      InstancePrefix "trunk"
+      ValuesFrom "trunk"
+    </Result>
+  </Query>
+  <Query subports_count>
+   Statement "select count(*) as subports from subports"
+    <Result>
+      Type gauge
+      InstancePrefix "subports"
+      ValuesFrom "subports"
+    </Result>
+  </Query>
+  <Database "ovs_neutron">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "dbname" "ovs_neutron"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password.stdout}}"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query network_count
+    Query port_others_count
+    Query subnet_count
+    Query port_dhcp_count
+    Query port_compute_count
+    Query floatingips_count
+    Query router_count
+    Query router_iface_count
+    Query router_gw_count
+    Query sg_count
+    Query sgr_count
+    Query trunk_count
+    Query subports_count
+  </Database>
+
+  <Query load_balancer_count>
+    Statement "select count(*) as load_balancer from load_balancer"
+    <Result>
+      Type gauge
+      InstancePrefix "load_balancer"
+      ValuesFrom "load_balancer"
+    </Result>
+  </Query>
+  <Query amphora_count>
+    Statement "select count(*) as amphora from amphora"
+    <Result>
+      Type gauge
+      InstancePrefix "amphora"
+      ValuesFrom "amphora"
+    </Result>
+  </Query>
+  <Query pool_count>
+    Statement "select count(*) as pool from pool"
+    <Result>
+      Type gauge
+      InstancePrefix "pool"
+      ValuesFrom "pool"
+    </Result>
+  </Query>
+  <Query member_count>
+    Statement "select count(*) as member from member"
+    <Result>
+      Type gauge
+      InstancePrefix "member"
+      ValuesFrom "member"
+    </Result>
+  </Query>
+  <Database "octavia">
+    Driver "mysql"
+    DriverOption "host" "localhost"
+    DriverOption "dbname" "octavia"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password.stdout}}"
+    DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query load_balancer_count
+    Query amphora_count
+    Query pool_count
+    Query member_count
+  </Database>
+</Plugin>
+{% else %}
+# Neutron Nova Octavia Count plugin installed and enabled on {{groups['Controller'][0]}}
 {% endif %}
 {% endif %}
 {% if keystone_overcloud_collectd_plugin %}
@@ -503,6 +710,102 @@ PreCacheChain "PreCache"
 
 # Tail plugin configuration
 <Plugin "tail">
+{%if inventory_hostname == groups['Controller'][0] or inventory_hostname == groups['Controller'][1] or inventory_hostname == groups['Controller'][2] %}
+  <File "/var/log/containers/openvswitch/ovsdb-server-nb.log">
+  Instance "ovnnbdb"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+  <File "/var/log/containers/openvswitch/ovsdb-server-sb.log">
+  Instance "ovnsbdb"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+  <File "/var/log/containers/openvswitch/ovn-northd.log">
+  Instance "ovnnorthd"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+  <File "/var/log/containers/openvswitch/ovn-controller.log">
+  Instance "ovncontroller"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+{% endif %}
+
+{%if inventory_hostname == groups['Controller'][0] or inventory_hostname == groups['Controller'][1] or inventory_hostname == groups['Controller'][2] %}
+  <File "/var/log/containers/httpd/nova-api/nova_api_wsgi_access.log">
+  Instance "nova_resources"
+    <Match>
+      Regex "POST /v2.1"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "/var/log/containers/neutron/server.log">
+  Instance "neutron_resources"
+    <Match>
+      Regex "POST /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "delete"
+    </Match>
+  </File>
+{% endif %}
 
 # Tail httpd request time
 {%if apache_controller_collectd_request_time %}

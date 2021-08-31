@@ -204,6 +204,15 @@ PreCacheChain "PreCache"
 # Tail plugin configuration
 <Plugin "tail">
 
+  <File "/var/log/containers/openvswitch/ovn-controller.log">
+  Instance "ovncontroller"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
 
   {% for item in collectd_logs[config_type] %}
   <File "{{ item.log_path }}">

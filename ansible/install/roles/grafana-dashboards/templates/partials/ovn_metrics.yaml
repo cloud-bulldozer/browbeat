@@ -1,0 +1,23 @@
+    - title: OVN Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OVN Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.tail-ovnnbdb.count-poll, 'ovnnbdb_poll')
+            - target: alias($Cloud.$Node.tail-ovnsbdb.count-poll, 'ovnsbdb_poll')
+            - target: alias($Cloud.$Node.tail-ovnnorthd.count-poll, 'ovnnorthd_poll')
+            - target: alias($Cloud.$Node.tail-ovncontroller.count-poll, 'ovncontroller_poll')

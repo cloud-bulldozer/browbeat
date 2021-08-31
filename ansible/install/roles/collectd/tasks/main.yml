@@ -69,6 +69,19 @@
   template:
     src:  "{{ config_type }}.collectd.conf.j2"
     dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
+  when: "config_type != 'compute'"
+
+- name: Configure compute collectd.conf
+  template:
+    src:  "{{ config_type }}.collectd.conf.j2"
+    dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
+  when: "config_type == 'compute' and not ovn_compute_collectd_plugin"
+
+- name: Configure compute collectd.conf
+  template:
+    src:  "{{ config_type }}.collectd.conf.j2"
+    dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
+  when: "config_type == 'compute' and ovn_compute_collectd_plugin"
 
 - name: Build and Run container
   block:
