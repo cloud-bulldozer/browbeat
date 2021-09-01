@@ -11,6 +11,7 @@
 #   limitations under the License.
 
 import random
+import time
 
 import dynamic_utils
 
@@ -101,31 +102,31 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         for _ in range(num_vms):
             kwargs["nics"] = [{"net-id": network["network"]["id"]}]
             guest = self._boot_server_with_fip_and_tag(
-                image, flavor, "migrate_or_swap",
+                image, flavor, "migrate_swap_or_stopstart",
                 True, ext_net_name, key_name=keypair["name"], **kwargs
             )
             self._wait_for_ping(guest[1]["ip"])
 
-    def get_servers_migration_list(self, num_migrate_vms):
-        """Generate list of servers to migrate between computes
+    def get_servers_list_for_migration_or_stop_start(self, num_vms):
+        """Generate list of servers to migrate between computes, or to stop and start
 
-        :param num_migrate_vms: int, number of servers to migrate between computes
-        :returns: list of server objects to migrate between computes
+        :param num_vms: int, number of servers to migrate between computes, or to stop and start
+        :returns: list of server objects
         """
         eligible_servers = list(filter(lambda server: self._get_fip_by_server(server) is not False,
-                                       self._get_servers_by_tag("migrate_or_swap")))
+                                       self._get_servers_by_tag("migrate_swap_or_stopstart")))
 
-        num_servers_to_migrate = min(2*num_migrate_vms, len(eligible_servers))
-        list_of_servers_to_migrate = random.sample(eligible_servers, num_servers_to_migrate)
+        num_servers = min(2*num_vms, len(eligible_servers))
+        list_of_servers = random.sample(eligible_servers, num_servers)
 
-        return list_of_servers_to_migrate
+        return list_of_servers
 
     def migrate_servers_with_fip(self, num_migrate_vms):
         """Migrate servers between computes
 
         :param num_migrate_vms: int, number of servers to migrate between computes
         """
-        server_migration_list = self.get_servers_migration_list(num_migrate_vms)
+        server_migration_list = self.get_servers_list_for_migration_or_stop_start(num_migrate_vms)
 
         loop_counter = 0
         num_migrated = 0
@@ -156,7 +157,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         """Swap floating IPs between servers
         """
         eligible_servers = list(filter(lambda server: self._get_fip_by_server(server) is not False,
-                                       self._get_servers_by_tag("migrate_or_swap")))
+                                       self._get_servers_by_tag("migrate_swap_or_stopstart")))
 
         servers_for_swapping = []
         for server in eligible_servers:
@@ -212,3 +213,46 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         # Release locks from servers
         self.release_lock(servers_for_swapping[0].id)
         self.release_lock(servers_for_swapping[1].id)
+
+    def stop_start_servers_with_fip(self, num_vms):
+        """Stop and start random servers
+
+        :param num_vms: int, number of servers to stop and start
+        """
+        server_list = self.get_servers_list_for_migration_or_stop_start(num_vms)
+
+        loop_counter = 0
+        num_operations_completed = 0
+        total_time_for_start_and_ping = 0
+        length_server_list = len(server_list)
+
+        while loop_counter < length_server_list and num_operations_completed < num_vms:
+            server = server_list[loop_counter]
+
+            loop_counter += 1
+            if not self.acquire_lock(server.id):
+                continue
+
+            fip = self._get_fip_by_server(server)
+
+            self._stop_server(server)
+            self.log_info("ping {} until failure after stopping server".format(fip))
+            self._wait_for_ping_failure(fip)
+
+            start = time.time()
+            self._start_server(server)
+            self.log_info("ping {} until success after starting server".format(fip))
+            self._wait_for_ping(fip)
+            end = time.time()
+            self.log_info("{} took {} seconds to start and ping".format(server, end-start))
+            total_time_for_start_and_ping += end-start
+
+            self.release_lock(server.id)
+            num_operations_completed += 1
+
+        if num_operations_completed == 0:
+            self.log_info("""No servers which are not under lock, so
+                          cannot stop and start any servers.""")
+        else:
+            self.log_info("Average time for start and ping : {} seconds".format(
+                          total_time_for_start_and_ping/num_operations_completed))

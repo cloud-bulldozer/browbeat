@@ -2,8 +2,9 @@
 {% set smallest_flavor_name = smallest_flavor_name or 'm1.xtiny' %}
 {% set num_create_vms = num_create_vms or 2 %}
 {% set num_delete_vms = num_delete_vms or 1 %}
-{% set num_vms_to_create_for_migration = num_vms_to_create_for_migration or 1 %}
+{% set num_vms_to_create_with_fip = num_vms_to_create_with_fip or 1 %}
 {% set num_vms_to_migrate = num_vms_to_migrate or 1 %}
+{% set num_stop_start_vms = num_stop_start_vms or 1 %}
 {% set workloads = workloads or 'all' %}
 {% set octavia_image_name = octavia_image_name or 'custom-cirros' %}
 {% set octavia_flavor_name = octavia_flavor_name or 'm1.tiny-cirros' %}
@@ -60,8 +61,9 @@ BrowbeatPlugin.dynamic_workload:
       subnet_create_args: {}
       num_create_vms: {{num_create_vms}}
       num_delete_vms: {{num_delete_vms}}
-      num_vms_to_create_for_migration: {{num_vms_to_create_for_migration}}
+      num_vms_to_create_with_fip: {{num_vms_to_create_with_fip}}
       num_vms_to_migrate: {{num_vms_to_migrate}}
+      num_stop_start_vms: {{num_stop_start_vms}}
       provider_phys_net: '{{ provider_phys_net }}'
       iface_name: '{{ iface_name }}'
       iface_mac: '{{ iface_mac }}'

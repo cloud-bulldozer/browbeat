@@ -46,12 +46,12 @@ import provider_network
 class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase, provider_network.DynamicProviderNetworkBase):
     def run(
-        self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_for_migration,
-        num_vms_to_migrate, trunk_image, trunk_flavor, num_initial_subports, num_trunk_vms,
-        num_add_subports, num_add_subports_trunks, num_delete_subports, num_delete_subports_trunks,
-        octavia_image, octavia_flavor, user, user_data_file, num_lbs, num_pools, num_clients,
-        delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms, provider_phys_net,
-        iface_name, iface_mac, num_vms_provider_net, workloads="all",
+        self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_with_fip,
+        num_vms_to_migrate, num_stop_start_vms, trunk_image, trunk_flavor, num_initial_subports,
+        num_trunk_vms, num_add_subports, num_add_subports_trunks, num_delete_subports,
+        num_delete_subports_trunks, octavia_image, octavia_flavor, user, user_data_file, num_lbs,
+        num_pools, num_clients, delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms,
+        provider_phys_net, iface_name, iface_mac, num_vms_provider_net, workloads="all",
         router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
@@ -68,14 +68,21 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                               subnet_create_args=subnet_create_args)
             self.delete_random_servers(num_delete_vms)
 
-        if workloads == "all" or "migrate_servers" in workloads_list:
+        if(workloads == "all" or "migrate_servers" in workloads_list or
+           "swap_floating_ips_between_servers" in workloads_list or
+           "stop_start_servers" in workloads_list):
             self.boot_servers_with_fip(smallest_image, smallest_flavor, ext_net_id,
-                                       num_vms_to_create_for_migration, router_create_args,
+                                       num_vms_to_create_with_fip, router_create_args,
                                        network_create_args, subnet_create_args, **kwargs)
+
+        if workloads == "all" or "migrate_servers" in workloads_list:
             self.migrate_servers_with_fip(num_vms_to_migrate)
 
         if workloads == "all" or "swap_floating_ips_between_servers" in workloads_list:
             self.swap_floating_ips_between_servers()
+
+        if workloads == "all" or "stop_start_servers" in workloads_list:
+            self.stop_start_servers_with_fip(num_stop_start_vms)
 
         if workloads == "all" or "pod_fip_simulation" in workloads_list:
             self.pod_fip_simulation(ext_net_id, trunk_image, trunk_flavor, smallest_image,

@@ -91,8 +91,9 @@ VM:
 - delete_random_servers: Delete 'N' randomly chosen VMs(without floating IP)
 - boot_servers_with_fip: Create 'N' VMs with floating IPs.
 - _create_router: Create neutron router.
-- get_servers_migration_list: Generate list of servers to migrate between computes.
+- get_servers_list_for_migration_or_stop_start: Generate list of servers to migrate between computes, or to stop and start
 - migrate_servers_with_fip: Migrate servers between computes
+- stop_start_servers_with_fip: Stop and start random servers
 - swap_floating_ips_between_servers: Swap floating IPs between 2 servers
 
 Octavia:
