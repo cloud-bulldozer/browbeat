@@ -93,7 +93,7 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             network = self.get_network_from_context()
             subnet = self.get_subnet_from_context()
         else:
-            router = self.router_for_vm_workloads
+            router = self.router
             network = self._create_network(network_create_args or {})
             subnet = self._create_subnet(network, subnet_create_args or {})
             self._add_interface_router(subnet["subnet"], router["router"])

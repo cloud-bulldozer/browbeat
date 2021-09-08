@@ -56,6 +56,8 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         subnet_create_args=None, **kwargs):
 
         workloads_list = workloads.split(",")
+        self.trunk_vm_user = "centos"
+        self.jumphost_user = "cirros"
 
         # Let this security group to be used by resources created in this iteration.
         # _boot_server_with_tag additionally add's tenant/user's default security group
@@ -70,8 +72,8 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         router_create_args.setdefault(
             "external_gateway_info", {"network_id": ext_net_id, "enable_snat": True}
         )
-        self.router_for_vm_workloads = self._create_router(router_create_args)
-        self.log_info("router {} created for this iteration".format(self.router_for_vm_workloads))
+        self.router = self._create_router(router_create_args)
+        self.log_info("router {} created for this iteration".format(self.router))
 
         if workloads == "all" or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,

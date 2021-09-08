@@ -203,18 +203,6 @@ class TrunkDynamicScenario(
                 "name"
             ]
 
-        self.trunk_vm_user = "centos"
-        self.jumphost_user = "cirros"
-
-        router_create_args = {}
-        router_create_args["name"] = self.generate_random_name()
-        router_create_args["tenant_id"] = self.context["tenant"]["id"]
-        router_create_args.setdefault(
-            "external_gateway_info", {"network_id": ext_net_id, "enable_snat": True}
-        )
-        self.router = self.admin_clients("neutron").create_router(
-            {"router": router_create_args}
-        )
         network = self._create_network({})
         subnet = self._create_subnet(network, {})
         self._add_interface_router(subnet["subnet"], self.router["router"])
