@@ -72,6 +72,9 @@ iptables_file: /etc/sysconfig/iptables
 # Install Browbeat workloads
 install_browbeat_workloads: false
 
+# Install e2e-benchmarking for shift-on-stack workloads
+install_e2e_benchmarking: false
+
 # Network ID which has external access
 browbeat_network:
 

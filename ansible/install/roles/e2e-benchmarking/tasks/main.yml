@@ -1,0 +1,8 @@
+---
+
+- name: Clone e2e-benchmarking
+  git:
+    repo: 'http://github.com/cloud-bulldozer/e2e-benchmarking.git'
+    dest: "{{ browbeat_path }}/ansible/gather/e2e-benchmarking"
+    version: master
+    force: yes
