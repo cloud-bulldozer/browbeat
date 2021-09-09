@@ -6,3 +6,9 @@
     dest: "{{ browbeat_path }}/ansible/gather/e2e-benchmarking"
     version: master
     force: yes
+
+- name: Deploy benchmark operator and make changes to scripts
+  shell: |
+    ./install_e2e_benchmarking.sh
+  args:
+    chdir: "{{ browbeat_path }}/ansible"

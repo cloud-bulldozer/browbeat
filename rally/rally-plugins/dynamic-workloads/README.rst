@@ -43,6 +43,12 @@ Provider network:
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network
 
+Shift on Stack:
+
+- shift_on_stack: Runs specified kube-burner workload through e2e-benchmarking. e2e-benchmarking
+  is a repository that contains scripts to stress Openshift clusters. This workload uses e2e-benchmarking
+  to test Openshift on Openstack.
+
 How to run the workloads?
 -------------------------
 - cd to the base directory(browbeat).
@@ -133,3 +139,7 @@ Provider Network:
 - provider_netcreate_nova_boot_ping: Creates a provider Network and Boots VM and ping
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network
+
+Shift on Stack:
+
+- run_kube_burner_workload: Run kube-burner workloads through e2e-benchmarking
