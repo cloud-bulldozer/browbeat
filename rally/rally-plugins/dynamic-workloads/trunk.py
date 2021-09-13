@@ -197,19 +197,12 @@ class TrunkDynamicScenario(
         :param subport_count: int, number of subports to create per trunk
         :param num_vms: int, number of servers to create
         """
-        self.ext_net_name = None
-        if ext_net_id:
-            self.ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
-                "name"
-            ]
-
         network = self._create_network({})
         subnet = self._create_subnet(network, {})
         self._add_interface_router(subnet["subnet"], self.router["router"])
 
         kwargs = {}
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
-        self.keypair = self.context["user"]["keypair"]
         jump_host = self._boot_server_with_fip_and_tag(jumphost_image, jumphost_flavor,
                                                        "jumphost_trunk", True,
                                                        self.ext_net_name,

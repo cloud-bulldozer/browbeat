@@ -75,6 +75,11 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         self.router = self._create_router(router_create_args)
         self.log_info("router {} created for this iteration".format(self.router))
 
+        self.keypair = self.context["user"]["keypair"]
+
+        self.ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
+            "name"]
+
         if workloads == "all" or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
                               subnet_create_args=subnet_create_args)
