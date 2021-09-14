@@ -55,13 +55,16 @@ On the Undercloud
    internet. Some useful documentation can be found at:
    https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
 
-(Optional) Clone e2e-benchmarking repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Optional) Clone e2e-benchmarking repository and deploy benchmark-operator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 e2e-benchmarking is a repository that is used to run workloads to stress an Openshift
 cluster, and is needed to run shift-on-stack workloads in Browbeat.
 
-To enable the e2e-benchmarking repository to be cloned, set install_e2e_benchmarking: true
-in ansible/install/group_vars/all.yml before running the command mentioned below.
+To enable the e2e-benchmarking repository to be cloned and benchmark-operator to be deployed,
+set install_e2e_benchmarking: true in ansible/install/group_vars/all.yml.
+After that, add the kubeconfig paths of all your Openshift clusters in the ansible/kubeconfig_paths
+file. Move the default kubeconfig file(/home/stack/.kube/config) to another location so that it isn't
+used for all Openshift clusters. After that, run the command mentioned below.
 
   [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/browbeat.yml
 

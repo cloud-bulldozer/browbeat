@@ -10,6 +10,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+import os
+
 from rally_openstack import consts
 from rally.task import scenario
 from rally.task import types
@@ -55,7 +57,8 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         num_pools, num_clients, delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms,
         provider_phys_net, iface_name, iface_mac, num_vms_provider_net,
         shift_on_stack_job_iterations, shift_on_stack_qps, shift_on_stack_burst,
-        shift_on_stack_workload, workloads="all", router_create_args=None, network_create_args=None,
+        shift_on_stack_workload, shift_on_stack_kubeconfig_paths, workloads="all",
+        router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
         workloads_list = workloads.split(",")
@@ -82,6 +85,11 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         self.ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
             "name"]
+
+        try:
+            self.browbeat_dir = DynamicWorkload.browbeat_dir
+        except AttributeError:
+            DynamicWorkload.browbeat_dir = os.getcwd()
 
         if workloads == "all" or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
@@ -141,6 +149,10 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
             self.provider_net_nova_delete(provider_phys_net)
 
         if "shift_on_stack" in workloads_list:
+            num_openshift_clusters = len(shift_on_stack_kubeconfig_paths)
             self.run_kube_burner_workload(shift_on_stack_workload,
                                           shift_on_stack_job_iterations,
-                                          shift_on_stack_qps, shift_on_stack_burst)
+                                          shift_on_stack_qps, shift_on_stack_burst,
+                                          shift_on_stack_kubeconfig_paths[
+                                              ((self.context["iteration"] - 1)
+                                               % num_openshift_clusters)])

@@ -9,6 +9,8 @@
 
 - name: Deploy benchmark operator and make changes to scripts
   shell: |
+    export KUBECONFIG={{item}}
     ./install_e2e_benchmarking.sh
+  loop: "{{ lookup('file', '{{ browbeat_path }}/ansible/kubeconfig_paths').splitlines() }}"
   args:
     chdir: "{{ browbeat_path }}/ansible"
