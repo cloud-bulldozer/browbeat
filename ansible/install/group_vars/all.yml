@@ -350,6 +350,23 @@ regex_info: false
 ping_plugin: false
 ping_interval: 1
 
+########################################################
+# OSP resources collectd plugin on controllers
+########################################################
+# Monitors OSP resources (networks, instances ..) created in DB.
+osp_resources_collectd_plugin: true
+
+########################################################
+# OVN compute Plugin for OVN monitoring on computes
+########################################################
+# Usually we avoid running collectd on computes as cluster
+# will have large number of compute nodes and the metrics
+# from these nodes will saturate the graphite host.
+# This plugin allows to collect only OVN statistics on
+# compute nodes. Turn it off when you want to collect
+# all metrics on all compute nodes
+ovn_compute_collectd_plugin: false
+
 ############################################
 # Prometheus/Collectd-Exporter Configuration
 ############################################

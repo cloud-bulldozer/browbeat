@@ -1,0 +1,72 @@
+# Installed by Browbeat Ansible Installer
+# Config type: {{config_type}}
+
+# Interval default is 10s
+Interval {{collectd_interval}}
+
+# Hostname for this machine, if not defined, use gethostname(2) system call
+{% if not collectd_prometheus %}
+Hostname "{{inventory_hostname}}"
+{% endif %}
+
+{% if collectd_prometheus %}
+Hostname "{{prometheus_prefix}}_{{inventory_hostname}}"
+{% endif %}
+
+# Loaded Plugins:
+LoadPlugin "logfile"
+<Plugin "logfile">
+File "/var/log/collectd.log"
+  LogLevel "info"
+  PrintSeverity true
+  Timestamp true
+</Plugin>
+
+LoadPlugin write_graphite
+LoadPlugin tail
+
+# Graphite Host Configuration
+{% if collectd_graphite %}
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{graphite_host}}"
+    Port "{{collectd_write_graphite_port}}"
+    Prefix "{{graphite_prefix}}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>
+{% endif %}
+
+# Prometheus Host Configuration
+{% if collectd_prometheus %}
+<Plugin network>
+  Server "{{prometheus_host}}" "{{prometheus_port}}"
+</Plugin>
+{% endif %}
+
+
+{% if ovs_flows_monitoring %}
+<Plugin exec>
+  Exec stack "/usr/local/bin/ovs_flows.sh"
+</Plugin>
+{% endif %}
+
+# Tail plugin configuration
+<Plugin "tail">
+  <File "/var/log/containers/openvswitch/ovn-controller.log">
+  Instance "ovncontroller"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+</Plugin>
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"

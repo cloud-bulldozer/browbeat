@@ -344,6 +344,27 @@
     group: root
     mode: 0644
   become: true
+  when: "config_type != 'compute'"
+
+- name: Configure compute collectd.conf
+  template:
+    src: "{{config_type}}.collectd.conf.j2"
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: "config_type == 'compute' and not ovn_compute_collectd_plugin"
+
+- name: Configure compute collectd.conf
+  template:
+    src: "ovn_compute.collectd.conf.j2"
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: "config_type == 'compute' and ovn_compute_collectd_plugin"
 
 #
 # Configure selinux bits

@@ -9,6 +9,7 @@
 {% set ovsagent_groups = ['controller', 'compute', '*'] %}
 {% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {% set swift_stat_groups = ['controller', '*'] %}
+{% set controller_groups = ['controller', '*'] %}
 ---
 dashboard:
   title: {{item.process_list_name}} General System Performance
@@ -158,5 +159,11 @@ dashboard:
 {% if item.template_node_type in ovsagent_groups %}
   {% include 'partials/neutron_resources.yaml' %}
 {% endif %}
+
+{% if item.template_node_type in controller_groups %}
+  {% include 'partials/osp_resources.yaml' %}
+{% endif %}
+
+{% include 'partials/ovn_metrics.yaml' %}
 
 {% include 'partials/tail.yaml' %}

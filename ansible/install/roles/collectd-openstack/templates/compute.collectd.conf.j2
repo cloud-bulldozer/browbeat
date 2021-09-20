@@ -212,6 +212,16 @@ PreCacheChain "PreCache"
 # Tail plugin configuration
 <Plugin "tail">
 
+  <File "/var/log/containers/openvswitch/ovn-controller.log">
+  Instance "ovncontroller"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+
   {%if 'Queens' in osp_version['content'] | b64decode or 'Pike' in osp_version['content'] | b64decode %}
   <File "/var/log/containers/ceilometer/compute.log">
   {% else %}

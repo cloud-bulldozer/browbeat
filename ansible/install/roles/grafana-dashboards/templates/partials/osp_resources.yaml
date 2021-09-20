@@ -1,0 +1,76 @@
+    - title: OSP Resources
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OSP DB resources
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.dbi-nova.gauge-instances, 'instances')
+            - target: alias($Cloud.$Node.dbi-nova.gauge-instance_faults, 'instance_faults')
+            - target: alias($Cloud.$Node.dbi-nova.gauge-virtual_interfaces, 'virtual_interfaces')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-network, 'network')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-subnet, 'subnet')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_dhcp, 'port_dhcp')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_compute, 'port_compute')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_others, 'port_others')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-floatingips, 'floatingips')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-router, 'router')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-router_iface, 'router_iface')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-router_gw, 'router_gw')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-sg, 'sg')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-sgr, 'sgr')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-trunk, 'trunk')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-subports, 'subports')
+            - target: alias($Cloud.$Node.dbi-octavia.gauge-load_balancer, 'load_balancer')
+            - target: alias($Cloud.$Node.dbi-octavia.gauge-amphora, 'amphora')
+            - target: alias($Cloud.$Node.dbi-octavia.gauge-pool, 'pool')
+            - target: alias($Cloud.$Node.dbi-octavia.gauge-member, 'member')
+        - title: $Cloud - $Node - OSP Additional DB resources
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.dbi-nova.gauge-instance_faults, 'instance_faults')
+        - title: $Cloud - $Node - OSP REST API
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.tail-nova_resources.counter-get, 'nova_get')
+            - target: alias($Cloud.$Node.tail-nova_resources.counter-post, 'nova_post')
+            - target: alias($Cloud.$Node.tail-nova_resources.counter-put, 'nova_put')
+            - target: alias($Cloud.$Node.tail-nova_resources.counter-delete, 'nova_delete')
+            - target: alias($Cloud.$Node.tail-neutron_resources.counter-get, 'neutron_get')
+            - target: alias($Cloud.$Node.tail-neutron_resources.counter-post, 'neutron_post')
+            - target: alias($Cloud.$Node.tail-neutron_resources.counter-put, 'neutron_put')
+            - target: alias($Cloud.$Node.tail-neutron_resources.counter-delete, 'neutron_delete')
