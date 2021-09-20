@@ -18,12 +18,13 @@
           nullPointMode: 'null'
           targets:
             - target: alias($Cloud.$Node.dbi-nova.gauge-instances, 'instances')
+            - target: alias($Cloud.$Node.dbi-nova.gauge-instances_del, 'instances_del')
             - target: alias($Cloud.$Node.dbi-nova.gauge-instance_faults, 'instance_faults')
             - target: alias($Cloud.$Node.dbi-nova.gauge-virtual_interfaces, 'virtual_interfaces')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-network, 'network')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-subnet, 'subnet')
-            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_dhcp, 'port_dhcp')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_compute, 'port_compute')
+            - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_dhcp, 'port_dhcp')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-port_others, 'port_others')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-floatingips, 'floatingips')
             - target: alias($Cloud.$Node.dbi-ovs_neutron.gauge-router, 'router')
@@ -37,7 +38,7 @@
             - target: alias($Cloud.$Node.dbi-octavia.gauge-amphora, 'amphora')
             - target: alias($Cloud.$Node.dbi-octavia.gauge-pool, 'pool')
             - target: alias($Cloud.$Node.dbi-octavia.gauge-member, 'member')
-        - title: $Cloud - $Node - OSP Additional DB resources
+        - title: $Cloud - $Node - OSP VM distribution across nodes
           type: graph
           legend:
             alignAsTable: true
@@ -51,7 +52,7 @@
             values: true
           nullPointMode: 'null'
           targets:
-            - target: alias($Cloud.$Node.dbi-nova.gauge-instance_faults, 'instance_faults')
+            - target: aliasByNode(consolidateBy(scale(aliasSub(aliasSub($Cloud.$Node.dbi-nova.gauge-c*, 'dbi-nova.gauge-', ''), 'counter-', ''), 1), 'max'), 2)
         - title: $Cloud - $Node - OSP REST API
           type: graph
           legend:

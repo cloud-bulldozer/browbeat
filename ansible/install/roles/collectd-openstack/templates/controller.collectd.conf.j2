@@ -173,6 +173,22 @@ PreCacheChain "PreCache"
 {%if inventory_hostname == groups['Controller'][0] %}
 
 <Plugin dbi>
+  <Query host_vms_count>
+    Statement "select  host, running_vms from compute_nodes"
+    <Result>
+      Type gauge
+      InstancesFrom "host"
+      ValuesFrom "running_vms"
+    </Result>
+  </Query>
+  <Query instances_del_count>
+    Statement "select count(*) as instances_del from instances where deleted!=0"
+    <Result>
+      Type gauge
+      InstancePrefix "instances_del"
+      ValuesFrom "instances_del"
+    </Result>
+  </Query>
   <Query instances_count>
     Statement "select count(*) as instances from instances where deleted=0"
     <Result>
@@ -196,7 +212,9 @@ PreCacheChain "PreCache"
     DriverOption "username" "root"
     DriverOption "password" "{{mysql_root_password.stdout}}"
     DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
+    Query host_vms_count
     Query instances_count
+    Query instances_del_count
     Query instance_faults_count
   </Database>
 
