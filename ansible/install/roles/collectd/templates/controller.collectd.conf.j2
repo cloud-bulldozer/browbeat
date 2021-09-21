@@ -818,6 +818,540 @@ PreCacheChain "PreCache"
       Instance "delete"
     </Match>
   </File>
+
+  <File "/var/log/containers/neutron/server.log">
+  Instance "neutron_avg_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+
+  <File "/var/log/containers/neutron/server.log">
+  Instance "neutron_min_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+
+  <File "/var/log/containers/neutron/server.log">
+  Instance "neutron_max_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+    {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+
+  <File "/var/log/containers/nova/nova-api.log">
+  Instance "nova_avg_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "/var/log/containers/nova/nova-api.log">
+  Instance "nova_min_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "/var/log/containers/nova/nova-api.log">
+  Instance "nova_max_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
 {% endif %}
 
 

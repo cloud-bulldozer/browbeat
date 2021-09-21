@@ -356,6 +356,12 @@ ping_interval: 1
 # Monitors OSP resources (networks, instances ..) created in DB.
 osp_resources_collectd_plugin: true
 
+#######################################################################
+# OSP individual resources collectd response time plugin on controllers
+#######################################################################
+# Monitors response time for individual OSP resources (networks, subnets, routers ..) created in DB.
+osp_individual_resources_response_time: false
+
 ########################################################
 # OVN compute Plugin for OVN monitoring on computes
 ########################################################

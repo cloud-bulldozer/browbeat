@@ -162,6 +162,8 @@ dashboard:
 
 {% if item.template_node_type in controller_groups %}
   {% include 'partials/osp_resources.yaml' %}
+
+  {% include 'partials/osp_response_times.yaml' %}
 {% endif %}
 
 {% include 'partials/ovn_metrics.yaml' %}

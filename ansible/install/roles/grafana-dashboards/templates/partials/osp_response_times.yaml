@@ -1,0 +1,131 @@
+    - title: OSP Resource Response Times
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OSP REST API Average Response Times
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.tail-nova_avg_response_time.response_time-get, 'nova_get')
+            - target: alias($Cloud.$Node.tail-nova_avg_response_time.response_time-post, 'nova_post')
+            - target: alias($Cloud.$Node.tail-nova_avg_response_time.response_time-put, 'nova_put')
+            - target: alias($Cloud.$Node.tail-nova_avg_response_time.response_time-delete, 'nova_delete')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get, 'neutron_get')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post, 'neutron_post')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put, 'neutron_put')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete, 'neutron_delete')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get_networks, 'neutron_get_networks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post_networks, 'neutron_post_networks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put_networks, 'neutron_put_networks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete_networks, 'neutron_delete_networks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get_routers, 'neutron_get_routers')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post_routers, 'neutron_post_routers')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put_routers, 'neutron_put_routers')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete_routers, 'neutron_delete_routers')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get_subnets, 'neutron_get_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post_subnets, 'neutron_post_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put_subnets, 'neutron_put_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete_subnets, 'neutron_delete_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get_ports, 'neutron_get_ports')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post_ports, 'neutron_post_ports')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put_ports, 'neutron_put_ports')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete_ports, 'neutron_delete_ports')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-get_trunks, 'neutron_get_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-post_trunks, 'neutron_post_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-put_trunks, 'neutron_put_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_avg_response_time.response_time-delete_trunks, 'neutron_delete_trunks')
+        - title: $Cloud - $Node - OSP REST API Minimum Response Times
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.tail-nova_min_response_time.response_time-get, 'nova_get')
+            - target: alias($Cloud.$Node.tail-nova_min_response_time.response_time-post, 'nova_post')
+            - target: alias($Cloud.$Node.tail-nova_min_response_time.response_time-put, 'nova_put')
+            - target: alias($Cloud.$Node.tail-nova_min_response_time.response_time-delete, 'nova_delete')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get, 'neutron_get')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post, 'neutron_post')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put, 'neutron_put')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete, 'neutron_delete')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get_networks, 'neutron_get_networks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post_networks, 'neutron_post_networks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put_networks, 'neutron_put_networks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete_networks, 'neutron_delete_networks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get_routers, 'neutron_get_routers')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post_routers, 'neutron_post_routers')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put_routers, 'neutron_put_routers')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete_routers, 'neutron_delete_routers')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get_subnets, 'neutron_get_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post_subnets, 'neutron_post_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put_subnets, 'neutron_put_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete_subnets, 'neutron_delete_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get_ports, 'neutron_get_ports')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post_ports, 'neutron_post_ports')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put_ports, 'neutron_put_ports')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete_ports, 'neutron_delete_ports')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-get_trunks, 'neutron_get_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-post_trunks, 'neutron_post_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-put_trunks, 'neutron_put_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_min_response_time.response_time-delete_trunks, 'neutron_delete_trunks')
+        - title: $Cloud - $Node - OSP REST API Maximum Response Times
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.tail-nova_max_response_time.response_time-get, 'nova_get')
+            - target: alias($Cloud.$Node.tail-nova_max_response_time.response_time-post, 'nova_post')
+            - target: alias($Cloud.$Node.tail-nova_max_response_time.response_time-put, 'nova_put')
+            - target: alias($Cloud.$Node.tail-nova_max_response_time.response_time-delete, 'nova_delete')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get, 'neutron_get')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post, 'neutron_post')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put, 'neutron_put')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete, 'neutron_delete')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get_networks, 'neutron_get_networks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post_networks, 'neutron_post_networks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put_networks, 'neutron_put_networks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete_networks, 'neutron_delete_networks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get_routers, 'neutron_get_routers')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post_routers, 'neutron_post_routers')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put_routers, 'neutron_put_routers')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete_routers, 'neutron_delete_routers')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get_subnets, 'neutron_get_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post_subnets, 'neutron_post_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put_subnets, 'neutron_put_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete_subnets, 'neutron_delete_subnets')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get_ports, 'neutron_get_ports')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post_ports, 'neutron_post_ports')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put_ports, 'neutron_put_ports')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete_ports, 'neutron_delete_ports')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-get_trunks, 'neutron_get_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-post_trunks, 'neutron_post_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-put_trunks, 'neutron_put_trunks')
+            - target: alias($Cloud.$Node.tail-neutron_max_response_time.response_time-delete_trunks, 'neutron_delete_trunks')
