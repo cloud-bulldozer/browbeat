@@ -1,0 +1,33 @@
+    - title: OVN DB Tables Rows Count
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OVN DB Tables Rows Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovn-ACL.gauge-ovn_ACL, 'ovn_ACL')
+            - target: alias($Cloud.$Node.ovn-Address_Set.gauge-ovn_Address_Set, 'ovn_Address_Set')
+            - target: alias($Cloud.$Node.ovn-Datapath_Binding.gauge-ovn_Datapath_Binding, 'ovn_Datapath_Binding')
+            - target: alias($Cloud.$Node.ovn-Load_Balancer.gauge-ovn_Load_Balancer, 'ovn_Load_Balancer')
+            - target: alias($Cloud.$Node.ovn-Logical_Flow.gauge-ovn_Logical_Flow, 'ovn_Logical_Flow')
+            - target: alias($Cloud.$Node.ovn-Logical_Router.gauge-ovn_Logical_Router, 'ovn_Logical_Router')
+            - target: alias($Cloud.$Node.ovn-Logical_Router_Port.gauge-ovn_Logical_Router_Port, 'ovn_Logical_Router_Port')
+            - target: alias($Cloud.$Node.ovn-Logical_Router_Static_Route.gauge-ovn_Logical_Router_Static_Route, 'ovn_Logical_Router_Static_Route')
+            - target: alias($Cloud.$Node.ovn-Logical_Switch.gauge-ovn_Logical_Switch, 'ovn_Logical_Switch')
+            - target: alias($Cloud.$Node.ovn-Logical_Switch_Port.gauge-ovn_Logical_Switch_Port, 'ovn_Logical_Switch_Port')
+            - target: alias($Cloud.$Node.ovn-MAC_Binding.gauge-ovn_MAC_Binding, 'ovn_MAC_Binding')
+            - target: alias($Cloud.$Node.ovn-Multicast_Group.gauge-ovn_Multicast_Group, 'ovn_Multicast_Group')
+            - target: alias($Cloud.$Node.ovn-Port_Binding.gauge-ovn_Port_Binding, 'ovn_Port_Binding')
+            - target: alias($Cloud.$Node.ovn-Port_Group.gauge-ovn_Port_Group, 'ovn_Port_Group')

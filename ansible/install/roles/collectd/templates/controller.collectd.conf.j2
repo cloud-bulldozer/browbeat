@@ -454,6 +454,73 @@ PreCacheChain "PreCache"
 </Plugin>
 {% endif %}
 
+{% if ovn_monitoring %}
+<Plugin exec>
+  Instance "ovn_sbdb_Address_Set"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Address_Set"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Port_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Port_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Logical_Flow"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Logical_Flow"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Multicast_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Multicast_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Datapath_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Datapath_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Port_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Port_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_MAC_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "MAC_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Switch"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Switch"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Switch_Port"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Switch_Port"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Address_Set"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Address_Set"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Port_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Port_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Load_Balancer"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Load_Balancer"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_ACL"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "ACL"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router_Port"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router_Port"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router_Static_Route"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router_Static_Route"
+</Plugin>
+{% endif %}
+
 {%if iostat_controller_collectd_plugin %}
 <Plugin python>
   ModulePath "/usr/local/bin/"

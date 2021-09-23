@@ -311,6 +311,14 @@ ovsagent_controller_monitor: false
 ovsagent_networker_monitor: false
 ovs_flows_monitoring: false
 
+######################################
+# OVN DB Tables Rows Count Monitoring
+######################################
+# Monitors OVN DB Tables rows count on controller.
+# You have to add wheel to sudo list with no password prompt on the controller host,
+# before enabling this plugin.
+ovn_monitoring: false
+
 controller_monitored_ints:
   - "tap"
 

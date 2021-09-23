@@ -256,6 +256,8 @@
   with_items:
     - src: ovs_flows.sh
       dest: /usr/local/bin/ovs_flows.sh
+    - src: ovn_monitoring.sh
+      dest: /usr/local/bin/ovn_monitoring.sh
   when: "('Controller' in group_names ) or ('Compute' in group_names)"
 
 # Rabbitmq monitoring
