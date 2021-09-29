@@ -83,13 +83,6 @@
     dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
   when: "config_type == 'compute' and ovn_compute_collectd_plugin"
 
-- name: Add stack user to wheel
-  shell: |
-    podman exec -it -u root collectd-controller usermod -G wheel stack
-  become: yes
-  become_user: root
-  when: "config_type == 'controller' and ovn_monitoring"
-
 - name: Build and Run container
   block:
     - name: Build collectd-openstack container
@@ -118,3 +111,10 @@
           {% endif %}
           collectd-openstack
       become: yes
+
+- name: Add stack user to wheel
+  shell: |
+    podman exec -it -u root collectd-controller usermod -G wheel stack
+  become: yes
+  become_user: root
+  when: "config_type == 'controller' and ovn_monitoring"
