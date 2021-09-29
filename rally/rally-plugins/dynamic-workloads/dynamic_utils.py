@@ -45,6 +45,15 @@ class NovaUtils(vm_utils.VMScenario):
         log_msg = " DYNAMIC_WORKLOADS ITER: {} {} ".format(self.context["iteration"], msg)
         LOG.error(log_msg)
 
+    def get_ssh(self, user, ip, password=None, timeout=300, interval=5):
+        if password:
+            ssh = sshutils.SSH(user, ip, password=password)
+        else:
+            ssh = sshutils.SSH(user, ip, pkey=self.context["user"]["keypair"]["private"])
+
+        self._wait_for_ssh(ssh, timeout=timeout, interval=interval)
+        return ssh
+
     def _run_command_with_attempts(self, ssh_connection, cmd, max_attempts=120, timeout=2):
         """Run command over ssh connection with multiple attempts
         :param ssh_connection: ssh connection to run command
@@ -93,7 +102,6 @@ class NovaUtils(vm_utils.VMScenario):
         :param port_id: id of port to ping from jumphost
         :param success_on_ping_failure: bool, flag to ping till failure/success
         """
-        keypair = self.context["user"]["keypair"]
         if not(success_on_ping_failure):
             fip_update_dict = {"port_id": port_id}
             self.clients("neutron").update_floatingip(
@@ -101,8 +109,7 @@ class NovaUtils(vm_utils.VMScenario):
             )
 
         address = fip["floating_ip_address"]
-        jumphost_ssh = sshutils.SSH(jumphost_user, jumphost_fip, pkey=keypair["private"])
-        self._wait_for_ssh(jumphost_ssh)
+        jumphost_ssh = self.get_ssh(jumphost_user, jumphost_fip)
         cmd = f"ping -c1 -w1 {address}"
         if success_on_ping_failure:
             self._run_command_until_failure(jumphost_ssh, cmd)

@@ -92,6 +92,10 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             router = self.get_router_from_context()
             network = self.get_network_from_context()
             subnet = self.get_subnet_from_context()
+            self.log_info("Re-use iteration: {} tenant: {} network: {} router: {}".format(
+                self.context["iteration"], self.context["tenant"]["id"],
+                self.context["tenant"]["networks"][0]["id"],
+                self.context["tenant"]["networks"][0]["router_id"]))
         else:
             router = self.router
             network = self._create_network(network_create_args or {})
