@@ -325,3 +325,16 @@ Example output from running this CLI command
 
 We can see from the output above that we also provide the user with some metadata regarding the two runs, like the amount version and the number of runs each UUID
 contained.
+
+Cleanup Rally resources
+------------------------------------------
+Rally cleans up resources automatically at the end of testing. However, we disable cleanup in rally sometimes during testing and later try to manually delete these resources. Cleaning up the resources at scale is very time consuming, so we came up with a python process to speed up this activity.
+
+
+To cleanup :
+
+::
+
+    $ source browbeat/.rally-venv/bin/activate
+    $ source ~/overcloudrc
+    $ python browbeat/rally_cleanup.py
