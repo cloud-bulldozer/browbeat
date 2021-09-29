@@ -442,7 +442,7 @@ environment is different and thus your configuration options will vary.
 
 ::
 
-  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/shaker_build.yml
+  [browbeatuser1@browbeat-vm ansible]$ ansible-playbook -i hosts install/shaker_build.yml
 
 .. note:: Your default network might not work for you depending on your
    underlay/overlay network setup. In such cases, user needs to create
@@ -455,7 +455,7 @@ environment is different and thus your configuration options will vary.
 
 ::
 
-  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/collectd-openstack.yml
+  [browbeatuser1@browbeat-vm ansible]$ ansible-playbook -i hosts install/collectd-openstack.yml
 
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -466,7 +466,7 @@ the below playbook.
 
 ::
 
-  [browbeatuser1@browbeat-vm ~]$ ansible-playbook -i hosts install/grafana-dashboards.yml
+  [browbeatuser1@browbeat-vm ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
 
 
 Considerations for additional Browbeat Installs
