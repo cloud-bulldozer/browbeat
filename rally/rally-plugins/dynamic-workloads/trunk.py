@@ -12,8 +12,6 @@
 
 import random
 
-from rally.common import sshutils
-
 import dynamic_utils
 
 # This test simulates trunk subports using vlan interfaces inside the VM.
@@ -53,10 +51,7 @@ class TrunkDynamicScenario(
         :param gateway: network gateway
         """
         script = f"sudo ip r a {dest_vm} via {gateway} dev eth0.{subport_number}"
-        source_ssh = sshutils.SSH(
-            local_vm_user, local_vm, pkey=self.keypair["private"]
-        )
-        self._wait_for_ssh(source_ssh)
+        source_ssh = self.get_ssh(local_vm_user, local_vm)
         self._run_command_with_attempts(source_ssh, script)
 
     def delete_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
@@ -69,10 +64,7 @@ class TrunkDynamicScenario(
         :param gateway: network gateway
         """
         script = f"sudo ip r d {dest_vm} via {gateway} dev eth0.{subport_number}"
-        source_ssh = sshutils.SSH(
-            local_vm_user, local_vm, pkey=self.keypair["private"]
-        )
-        self._wait_for_ssh(source_ssh)
+        source_ssh = self.get_ssh(local_vm_user, local_vm)
         self._run_command_with_attempts(source_ssh, script)
 
     def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
@@ -236,11 +228,7 @@ class TrunkDynamicScenario(
                   "created".format(vm, trunk["trunk"], parent["port"],
                                    subports, jump_host)
             self.log_info(msg)
-            vm_ssh = sshutils.SSH(self.trunk_vm_user,
-                                  vm_fip, pkey=self.keypair["private"])
-            # centos7 image is taking 2 minutes for cloud-init and 4 minutes
-            # for the ssh availability
-            self._wait_for_ssh(vm_ssh, timeout=240, interval=5)
+            vm_ssh = self.get_ssh(self.trunk_vm_user, vm_fip)
 
             self.add_subports_to_trunk_and_vm(subports, trunk["trunk"]["id"], vm_ssh, 1)
 
@@ -279,10 +267,7 @@ class TrunkDynamicScenario(
             trunk_server_fip = self.get_server_by_trunk(trunk)
             jump_fip = self.get_jumphost_by_trunk(trunk)
 
-            vm_ssh = sshutils.SSH(
-                self.trunk_vm_user, trunk_server_fip, pkey=self.keypair["private"]
-            )
-            self._wait_for_ssh(vm_ssh)
+            vm_ssh = self.get_ssh(self.trunk_vm_user, trunk_server_fip)
 
             self.add_subports_to_trunk_and_vm(subports, trunk["id"],
                                               vm_ssh, len(trunk["sub_ports"])+1)
@@ -331,9 +316,7 @@ class TrunkDynamicScenario(
             trunk_server_fip = self.get_server_by_trunk(trunk)
             jump_fip = self.get_jumphost_by_trunk(trunk)
 
-            vm_ssh = sshutils.SSH(self.trunk_vm_user,
-                                  trunk_server_fip, pkey=self.keypair["private"])
-            self._wait_for_ssh(vm_ssh)
+            vm_ssh = self.get_ssh(self.trunk_vm_user, trunk_server_fip)
 
             trunk_subports = trunk['sub_ports']
             num_trunk_subports = len(trunk_subports)
