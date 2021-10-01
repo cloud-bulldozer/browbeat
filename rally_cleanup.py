@@ -28,6 +28,7 @@ CONF.openstack_client_http_timeout = 180.0
 osclient = osclients.Clients.create_from_env()
 nova_client = osclient.nova(version="2.73")
 neutron_client = osclient.neutron()
+keystone_client = osclient.keystone()
 
 # Currently we only check and delete router_interface
 # and not DVR or HA interface
@@ -80,6 +81,22 @@ def delete_network(resource):
         time.sleep(5)
     return resource
 
+def delete_security_group(resource):
+    sg = neutron_client.show_security_group(resource.id)["security_group"]
+    print("pid {} deleting security_group id {} name {}".format(
+        os.getpid(), resource.id, sg["name"]))
+    # delete security_group
+    neutron_client.delete_security_group(sg["id"])
+    # check if security_group got deleted or not
+    for i in range(0, MAX_CHECK):
+        try:
+            neutron_client.show_security_group(resource.id)["security_group"]
+            print("pid {} security_group {} still exists".format(os.getpid(), resource.id))
+        except Exception:
+            print("pid {} security_group {} succesfully deleted".format(os.getpid(), resource.id))
+            break
+        time.sleep(5)
+    return resource
 
 def delete_floatingip(resource):
     floatingip = neutron_client.show_floatingip(resource.id)["floatingip"]
@@ -179,14 +196,13 @@ def cleanup_with_concurrency(cleanup_fun, resources):
 
 
 def cleanup_nova_vms():
-    for i in range(0, MAX_ATTEMPTS):
-        servers = nova_client.servers.list(detailed=True, search_opts={"all_tenants": 1})
+    while True:
+        servers = nova_client.servers.list(detailed=True, search_opts={"all_tenants": 1}, limit=100)
         if (len(servers) == 0):
             break
         print("Deleting {} servers".format(len(servers)))
         ids = [Resource(server.id) for server in servers]
-        if cleanup_with_concurrency(delete_server, ids):
-            break
+        cleanup_with_concurrency(delete_server, ids)
         time.sleep(5)
 
 
@@ -195,16 +211,42 @@ def cleanup_neutron_networks():
         networks = neutron_client.list_networks()["networks"]
         if (len(networks) == 0):
             break
-        print("Deleting {} networks".format(len(networks)))
         ids = [Resource(network["id"]) for network in networks
                if network["name"] not in NETWORK_EXCLUDE]
+        if (len(ids) == 0):
+            break
+        print("Deleting {} networks".format(len(ids)))
         if cleanup_with_concurrency(delete_network, ids):
             break
         time.sleep(5)
 
 
+def get_admin_security_group():
+    projects = keystone_client.projects.list()
+    admin_project = [project.id for project in projects if project.name == "admin"][0]
+    sgs = neutron_client.list_security_groups(project=admin_project)["security_groups"]
+    return [sg["id"] for sg in sgs if sg["name"] == "default"][0]
+
+
+def cleanup_neutron_security_groups():
+    # we shouldn't cleanup default security group created by admin
+    default_sg = get_admin_security_group()
+    while True:
+        sgs = neutron_client.list_security_groups()["security_groups"]
+        if (len(sgs) == 0):
+            break
+        ids = [Resource(sg["id"]) for sg in sgs
+               if sg["id"] != default_sg]
+        if (len(ids) == 0):
+            break
+        print("Deleting {} security_groups".format(len(ids)))
+        if cleanup_with_concurrency(delete_security_group, ids):
+            break
+        time.sleep(5)
+
+
 def cleanup_neutron_floatingips():
-    for i in range(0, MAX_ATTEMPTS):
+    while True:
         floatingips = neutron_client.list_floatingips()["floatingips"]
         if (len(floatingips) == 0):
             break
@@ -216,7 +258,7 @@ def cleanup_neutron_floatingips():
 
 
 def _cleanup_neutron_router_ports():
-    for i in range(0, MAX_ATTEMPTS):
+    while True:
         ports = neutron_client.list_ports(device_owner='network:router_interface')["ports"]
         if (len(ports) == 0):
             break
@@ -229,7 +271,7 @@ def _cleanup_neutron_router_ports():
 
 def cleanup_neutron_routers():
     _cleanup_neutron_router_ports()
-    for i in range(0, MAX_ATTEMPTS):
+    while True:
         routers = neutron_client.list_routers()["routers"]
         if (len(routers) == 0):
             break
@@ -244,6 +286,7 @@ def cleanup_resources():
     cleanup_nova_vms()
     cleanup_neutron_floatingips()
     cleanup_neutron_routers()
+    cleanup_neutron_security_groups()
     cleanup_neutron_networks()
 
 
