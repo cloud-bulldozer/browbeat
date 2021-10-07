@@ -1,7 +1,7 @@
 # to avoid dependency conflicts, try to use ranges, eventually banning a
 # buggy minor version (!=) or capping (<) once you have proof it breaks.
 ansible>=2.4.1
-elasticsearch
+elasticsearch==7.13
 pyrsistent==0.16.0;python_version<'3'
 pyrsistent>=0.17.0;python_version>='3'
 grafyaml>=0.0.7
