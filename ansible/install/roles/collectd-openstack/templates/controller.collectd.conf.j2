@@ -546,6 +546,19 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {% endif %}
+
+{%if pacemaker_monitoring %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_pacemaker_monitoring"
+
+  <Module collectd_pacemaker_monitoring>
+    Interval {{pacemaker_controller_collectd_interval}}
+  </Module>
+</Plugin>
+
+{% endif %}
+
 {%if gnocchi_status_controller_collectd_plugin %}
 {%if inventory_hostname == groups['Controller'][0] %}
 <Plugin python>

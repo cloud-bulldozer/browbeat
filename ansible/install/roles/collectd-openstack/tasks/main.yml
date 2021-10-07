@@ -230,6 +230,8 @@
       dest: /usr/local/bin/collectd_rabbitmq_monitoring.py
     - src: collectd_swift_stat.py
       dest: /usr/local/bin/collectd_swift_stat.py
+    - src: collectd_pacemaker_monitoring.py
+      dest: /usr/local/bin/collectd_pacemaker_monitoring.py
   when: "('Controller' in group_names and inventory_hostname == groups['Controller'][0]) or ('Undercloud' in group_names)"
 
 - name: Copy python plugins

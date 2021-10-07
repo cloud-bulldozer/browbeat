@@ -83,6 +83,45 @@
     dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
   when: "config_type == 'compute' and ovn_compute_collectd_plugin"
 
+- name: Create pipe for to use pcs cli inside collectd container
+  shell: |
+    sudo mkfifo /home/"{{ host_remote_user }}"/collectd_pipe
+  become: yes
+  become_user: root
+  ignore_errors: yes
+  when: "config_type == 'controller' and pacemaker_monitoring"
+
+- name: Create script to run eval on pcs pipe
+  file:
+    path: "/home/{{ host_remote_user }}/collectd_pipe_eval.sh"
+    state: touch
+    mode: 0775
+    owner: root
+  become: yes
+  become_user: root
+  ignore_errors: yes
+  when: "config_type == 'controller' and pacemaker_monitoring"
+
+- name: Add content to script to run eval on pcs pipe
+  copy:
+    dest: "/home/{{ host_remote_user }}/collectd_pipe_eval.sh"
+    content: |
+      while true; do eval "$(cat /home/{{ host_remote_user }}/collectd_pipe)"; done
+  become: yes
+  become_user: root
+  ignore_errors: yes
+  when: "config_type == 'controller' and pacemaker_monitoring"
+
+- name: Run script to run eval on pcs pipe
+  shell: |
+    nohup ./collectd_pipe_eval.sh > /var/log/containers/stdouts/collectd_pacemaker.out 2>&1 &
+  become: yes
+  become_user: root
+  ignore_errors: yes
+  args:
+    chdir: "/home/{{ host_remote_user }}"
+  when: "config_type == 'controller' and pacemaker_monitoring"
+
 - name: Build and Run container
   block:
     - name: Build collectd-openstack container
@@ -104,9 +143,14 @@
           {% if ovs_flows_monitoring %}
           -v /etc/openvswitch/:/etc/openvswitch/ -v /var/run/openvswitch/:/var/run/openvswitch/ \
           {% endif %}
+          {% endif %}
+          {% if config_type == 'controller' %}
           {% if ovn_monitoring %}
           -v /var/lib/openvswitch/ovn/ovnnb_db.sock:/var/lib/openvswitch/ovn/ovnnb_db.sock \
           -v /var/lib/openvswitch/ovn/ovnsb_db.sock:/var/lib/openvswitch/ovn/ovnsb_db.sock \
+          {% endif %}
+          {% if pacemaker_monitoring %}
+          -v /home/{{ host_remote_user }}/collectd_pipe:/collectd_pipe \
           {% endif %}
           {% endif %}
           collectd-openstack

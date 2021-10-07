@@ -319,6 +319,13 @@ ovs_flows_monitoring: false
 # before enabling this plugin.
 ovn_monitoring: false
 
+#######################
+# Pacemaker Monitoring
+#######################
+# Monitors pcs status metrics on controller.
+pacemaker_monitoring: true
+pacemaker_controller_collectd_interval: 15
+
 controller_monitored_ints:
   - "tap"
 
