@@ -1,0 +1,102 @@
+    - title: Pacemaker Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Pacemaker General Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-total_nodes, 'total_nodes')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-online_nodes, 'online_hosts')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-online_guests, 'online_guests')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-resource_instances, 'resource_instances')
+        - title: $Cloud - $Node - Pacemaker Resource Total Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-cinder_resource_total_count, 'cinder_resource_total_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-galera_resource_total_count, 'galera_resource_total_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-haproxy_resource_total_count, 'haproxy_resource_total_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-ovn_resource_total_count, 'ovn_resource_total_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-rabbitmq_resource_total_count, 'rabbitmq_resource_total_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-redis_resource_total_count, 'redis_resource_total_count')
+        - title: $Cloud - $Node - Pacemaker Resource Master Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-cinder_resource_master_count, 'cinder_resource_master_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-galera_resource_master_count, 'galera_resource_master_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-haproxy_resource_master_count, 'haproxy_resource_master_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-ovn_resource_master_count, 'ovn_resource_master_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-rabbitmq_resource_master_count, 'rabbitmq_resource_master_count')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-redis_resource_master_count, 'redis_resource_master_count')
+        - title: $Cloud - $Node - Pacemaker Resource Failures
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-cinder_resource_failures, 'cinder_resource_failures')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-galera_resource_failures, 'galera_resource_failures')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-haproxy_resource_failures, 'haproxy_resource_failures')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-ovn_resource_failures, 'ovn_resource_failures')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-rabbitmq_resource_failures, 'rabbitmq_resource_failures')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-redis_resource_failures, 'redis_resource_failures')
+        - title: $Cloud - $Node - Pacemaker Daemon Status
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-corosync_daemon_status, 'corosync_daemon_status')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-pacemaker_daemon_status, 'pacemaker_daemon_status')
+            - target: alias($Cloud.$Node.pacemaker_monitoring.gauge-pcsd_daemon_status, 'pcsd_daemon_status')
+
+

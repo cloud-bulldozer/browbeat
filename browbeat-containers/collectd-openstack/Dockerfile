@@ -26,6 +26,7 @@ ADD files/collectd_ceph_storage.py /usr/local/bin/collectd_ceph_storage.py
 ADD files/collectd_gnocchi_status.py /usr/local/bin/collectd_gnocchi_status.py
 ADD files/collectd_rabbitmq_monitoring.py /usr/local/bin/collectd_rabbitmq_monitoring.py
 ADD files/collectd_swift_stat.py /usr/local/bin/collectd_swift_stat.py
+ADD files/collectd_pacemaker_monitoring.py /usr/local/bin/collectd_pacemaker_monitoring.py
 ADD files/ovs_flows.sh /usr/local/bin/ovs_flows.sh
 ADD files/ovn_monitoring.sh /usr/local/bin/ovn_monitoring.sh
 
