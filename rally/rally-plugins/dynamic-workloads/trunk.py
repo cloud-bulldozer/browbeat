@@ -74,6 +74,10 @@ class TrunkDynamicScenario(
         :param jump_fip: floating ip of jumphost
         """
         trunk = self.clients("neutron").show_trunk(trunk_id)
+        trunk_ext_net_id = self.get_ext_net_id_by_trunk(trunk["trunk"])
+        trunk_ext_net_name = self.clients("neutron").show_network(trunk_ext_net_id)[
+            "network"]["name"]
+
         subport_count = len(trunk["trunk"]["sub_ports"])
         subport_number_for_route = random.randint(1, subport_count)
         subport_for_route = self.clients("neutron").show_port(
@@ -83,7 +87,7 @@ class TrunkDynamicScenario(
         self.add_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
                                            subport_number_for_route,
                                            subnet_for_route["subnet"]["gateway_ip"])
-        subport_fip = self._create_floatingip(self.ext_net_name)["floatingip"]
+        subport_fip = self._create_floatingip(trunk_ext_net_name)["floatingip"]
         msg = "ping subport: {} with fip: {} of trunk: {} with fip: {} from jumphost" \
               " with fip: {}".format(subport_for_route["port"], subport_fip, trunk["trunk"],
                                      vm_fip, jump_fip)
@@ -116,13 +120,35 @@ class TrunkDynamicScenario(
         :param trunk: dict, trunk details
         :returns: floating ip of jumphost
         """
-        if trunk["description"].startswith("jumphost:"):
-            jumphost_fip = trunk["description"][9:]
+        trunk_details = trunk["description"].split("&&")
+        if trunk_details[0].startswith("jumphost:"):
+            jumphost_fip = trunk_details[0][9:]
         return jumphost_fip
 
-    def create_subnets_and_subports(self, subport_count):
+    def get_ext_net_id_by_trunk(self, trunk):
+        """Get external network id for a given trunk
+        :param trunk: dict, trunk details
+        :returns: external network id
+        """
+        trunk_details = trunk["description"].split("&&")
+        if trunk_details[1].startswith("ext_net_id:"):
+            ext_net_id = trunk_details[1][11:]
+        return ext_net_id
+
+    def get_router_by_trunk(self, trunk):
+        """Get router for a given trunk
+        :param trunk: dict, trunk details
+        :returns: router object
+        """
+        trunk_details = trunk["description"].split("&&")
+        if trunk_details[2].startswith("router:"):
+            router = self.show_router(trunk_details[2][7:])
+        return router
+
+    def create_subnets_and_subports(self, subport_count, router):
         """Create <<subport_count>> subnets and subports
         :param subport_count: int, number of subports to create
+        :param router: router object
         :returns: list of subnets, list of subports
         """
         subnets = []
@@ -140,7 +166,7 @@ class TrunkDynamicScenario(
                     },
                 )
             )
-            self._add_interface_router(subnet[0]["subnet"], self.router["router"])
+            self._add_interface_router(subnet[0]["subnet"], router["router"])
         return subnets, subports
 
     def add_subports_to_trunk_and_vm(self, subports, trunk_id, vm_ssh, start_seg_id):
@@ -192,6 +218,7 @@ class TrunkDynamicScenario(
         network = self._create_network({})
         subnet = self._create_subnet(network, {})
         self._add_interface_router(subnet["subnet"], self.router["router"])
+        self.ext_net_id = ext_net_id
 
         kwargs = {}
         kwargs["nics"] = [{"net-id": network["network"]["id"]}]
@@ -211,7 +238,9 @@ class TrunkDynamicScenario(
             # Using tags for trunk returns an error,
             # so we instead use description.
             trunk_payload = {"port_id": parent["port"]["id"],
-                             "description": "jumphost:"+str(jump_fip)}
+                             "description": ("jumphost:" + str(jump_fip) +
+                                             "&&ext_net_id:" + str(self.ext_net_id) +
+                                             "&&router:" + str(self.router["router"]["id"]))}
             trunk = self._create_trunk(trunk_payload)
             self.acquire_lock(trunk["trunk"]["id"])
             kwargs["nics"] = [{"port-id": parent["port"]["id"]}]
@@ -222,7 +251,7 @@ class TrunkDynamicScenario(
                                                     **kwargs)
             vm_fip = vm[1]["ip"]
 
-            subnets, subports = self.create_subnets_and_subports(subport_count)
+            subnets, subports = self.create_subnets_and_subports(subport_count, self.router)
 
             msg = "Trunk VM: {} with Trunk: {} Port: {} Subports: {} Jumphost: {}" \
                   "created".format(vm, trunk["trunk"], parent["port"],
@@ -261,8 +290,9 @@ class TrunkDynamicScenario(
             # Get updated trunk object, as the trunk may have
             # been changed in other iterations
             trunk = self.clients("neutron").show_trunk(trunk["id"])["trunk"]
+            trunk_router = self.get_router_by_trunk(trunk)
 
-            subnets, subports = self.create_subnets_and_subports(subport_count)
+            subnets, subports = self.create_subnets_and_subports(subport_count, trunk_router)
 
             trunk_server_fip = self.get_server_by_trunk(trunk)
             jump_fip = self.get_jumphost_by_trunk(trunk)
@@ -361,7 +391,9 @@ class TrunkDynamicScenario(
     def swap_floating_ips_between_random_subports(self):
         """Swap floating IPs between 2 randomly chosen subports from 2 trunks
         """
-        trunks = [trunk for trunk in self._list_trunks() if len(trunk["sub_ports"]) > 0]
+        trunks = [trunk for trunk in self._list_trunks() if (len(trunk["sub_ports"]) > 0 and
+                                                             self.ext_net_id ==
+                                                             self.get_ext_net_id_by_trunk(trunk))]
 
         if len(trunks) < 2:
             self.log_info("""Number of eligible trunks not sufficient
@@ -376,9 +408,13 @@ class TrunkDynamicScenario(
             if len(trunks_for_swapping) == 2:
                 break
 
+        self.log_info("Trunks for swapping : {}".format(trunks_for_swapping))
+
         if len(trunks_for_swapping) < 2:
             self.log_info("""Number of unlocked trunks not sufficient
                      for swapping floating IPs between trunk subports""")
+            for trunk in trunks_for_swapping:
+                self.release_lock(trunk["id"])
             return
 
         # Get updated trunk object, as the trunk may have

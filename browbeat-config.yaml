@@ -591,6 +591,10 @@ workloads:
         shift_on_stack_workload: poddensity
         shift_on_stack_kubeconfig_paths:
           - /home/stack/.kube/config
+        # num_external_networks are the number of the external networks to be
+        # created as part of rally context for dynamic workloads. These external
+        # networks will be used in a round robin fashion by the iterations.
+        num_external_networks: 16
         # workloads can be 'all', a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers

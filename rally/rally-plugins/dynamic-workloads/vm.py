@@ -82,6 +82,9 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         :param kwargs: dict, Keyword arguments to function
         """
         ext_net_name = None
+
+        self.ext_net_id = ext_net_id
+
         if ext_net_id:
             ext_net_name = self.clients("neutron").show_network(ext_net_id)["network"][
                 "name"
@@ -161,30 +164,33 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
     def swap_floating_ips_between_servers(self):
         """Swap floating IPs between servers
         """
-        eligible_servers = list(filter(lambda server: self._get_fip_by_server(server) is not False,
-                                       self._get_servers_by_tag("migrate_swap_or_stopstart")))
+        kwargs = {"floating_network_id": self.ext_net_id}
+        eligible_floating_ips = self._list_floating_ips(**kwargs)["floatingips"]
 
-        servers_for_swapping = []
-        for server in eligible_servers:
-            if not self.acquire_lock(server.id):
-                continue
-            servers_for_swapping.append(server)
-            if len(servers_for_swapping) == 2:
+        floating_ips_to_swap = []
+        servers_to_swap = []
+
+        for floatingip in eligible_floating_ips:
+            fip_port_id = floatingip["port_id"]
+            port = self.show_port(fip_port_id)["port"]
+            if port["device_owner"] == "compute:nova":
+                server = self.show_server(port["device_id"])
+                if "migrate_swap_or_stopstart" in server.tags and self.acquire_lock(server.id):
+                    floating_ips_to_swap.append(floatingip)
+                    servers_to_swap.append(server)
+            if len(servers_to_swap) == 2:
                 break
 
-        if len(servers_for_swapping) < 2:
+        if len(servers_to_swap) < 2:
             self.log_info("""Number of unlocked servers not sufficient
                           for swapping floating IPs between servers""")
             return
 
-        kwargs = {"floating_ip_address": self._get_fip_by_server(servers_for_swapping[0])}
-        server1_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
+        server1_fip = floating_ips_to_swap[0]
+        server2_fip = floating_ips_to_swap[1]
 
-        kwargs = {"floating_ip_address": self._get_fip_by_server(servers_for_swapping[1])}
-        server2_fip = self._list_floating_ips(**kwargs)["floatingips"][0]
-
-        server1_port = server1_fip["port_id"]
-        server2_port = server2_fip["port_id"]
+        server1_port_id = server1_fip["port_id"]
+        server2_port_id = server2_fip["port_id"]
 
         fip_update_dict = {"port_id": None}
         self.clients("neutron").update_floatingip(
@@ -200,11 +206,11 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         self._wait_for_ping_failure(server2_fip["floating_ip_address"])
 
         # Swap floating IPs between server1 and server2
-        fip_update_dict = {"port_id": server2_port}
+        fip_update_dict = {"port_id": server2_port_id}
         self.clients("neutron").update_floatingip(
             server1_fip["id"], {"floatingip": fip_update_dict}
         )
-        fip_update_dict = {"port_id": server1_port}
+        fip_update_dict = {"port_id": server1_port_id}
         self.clients("neutron").update_floatingip(
             server2_fip["id"], {"floatingip": fip_update_dict}
         )
@@ -216,8 +222,8 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         self._wait_for_ping(server2_fip["floating_ip_address"])
 
         # Release locks from servers
-        self.release_lock(servers_for_swapping[0].id)
-        self.release_lock(servers_for_swapping[1].id)
+        self.release_lock(servers_to_swap[0].id)
+        self.release_lock(servers_to_swap[1].id)
 
     def stop_start_servers_with_fip(self, num_vms):
         """Stop and start random servers
