@@ -72,32 +72,46 @@ def read_func():
         elif "resource_total_count" in component:
             resource = component.split("_")[0]
             val = 0
-            for line in latest_output:
+            # Flag to make sure that failures are not counted
+            # in resource total count.
+            is_failures_total = False
+            for line in latest_output[-1::-1]:
+                if "Failed" in line:
+                    is_failures_total = True
                 if (resource == "haproxy" or resource == "galera"
                     or resource == "rabbitmq" or resource == "redis"):
-                    if resource+"-bundle-" in line and "Guest" not in line:
+                    if resource+"-bundle-" in line and "Guest" not in line and not is_failures_total:
                         val += 1
                 if resource == "ovn":
-                    if "ovn-dbs-bundle-" in line and "Guest" not in line:
+                    if "ovn-dbs-bundle-" in line and "Guest" not in line and not is_failures_total:
                         val += 1
                 if resource == "cinder":
-                    if "openstack-cinder-volume-" in line and "Guest" not in line:
+                    if "openstack-cinder-volume-" in line and "Guest" not in line and not is_failures_total:
                         val += 1
+                if is_failures_total and "Daemon Status" in line:
+                    is_failures_total = False
 
         elif "resource_master_count" in component:
             resource = component.split("_")[0]
             val = 0
-            for line in latest_output:
+            # Flag to make sure that failures are not counted
+            # in resource master count
+            is_failures_master = False
+            for line in latest_output[-1::-1]:
+                if "Failed" in line:
+                    is_failures_master = True
                 if (resource == "haproxy" or resource == "galera"
                     or resource == "rabbitmq" or resource == "redis"):
-                    if resource+"-bundle-" in line and "Master" in line:
+                    if resource+"-bundle-" in line and "Master" in line and not is_failures_master:
                         val += 1
                 if resource == "ovn":
-                    if "ovn-dbs-bundle-" in line and "Master" in line:
+                    if "ovn-dbs-bundle-" in line and "Master" in line and not is_failures_master:
                         val += 1
                 if resource == "cinder":
-                    if "openstack-cinder-volume-" in line and "Master" in line:
+                    if "openstack-cinder-volume-" in line and "Master" in line and not is_failures_master:
                         val += 1
+                if is_failures_master and "Daemon Status" in line:
+                    is_failures_master = False
 
         if "daemon_status" in component:
             daemon = component.split("_")[0]
