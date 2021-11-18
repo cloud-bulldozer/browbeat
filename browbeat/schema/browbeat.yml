@@ -19,6 +19,9 @@ mapping:
         type: str
         enum: ['iteration', 'complete']
         required: True
+      start_stop_collectd:
+        type: bool
+        required: True
   ansible:
     required: True
     type: map
@@ -30,6 +33,15 @@ mapping:
         type: str
         required: True
       logging_playbook:
+         type: str
+         required: True
+      start_collectd_playbook:
+         type: str
+         required: True
+      stop_collectd_playbook:
+         type: str
+         required: True
+      check_collectd_config_playbook:
          type: str
          required: True
       ssh_config:

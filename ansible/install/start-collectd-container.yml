@@ -1,0 +1,122 @@
+
+#
+# Playbook to start collectd on undercloud/overcloud
+#
+# Start collectd on all undercloud/overcloud machines:
+# ansible-playbook -i hosts.yaml install/start-collectd-container.yml
+#
+# Or use tags:
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "undercloud"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "controller"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "networker"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "blockstorage"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "objectstorage"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "cephstorage"
+# ansible-playbook -i hosts.yml install/start-collectd-container.yml --tag "compute"
+#
+
+
+- hosts: Undercloud
+  remote_user: "{{ local_remote_user }}"
+  vars:
+    config_type: undercloud
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: undercloud
+
+- hosts: Controller
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: controller
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: controller
+
+- hosts: Networker
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: networker
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: networker
+
+- hosts: BlockStorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: blockstorage
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: blockstorage
+
+- hosts: ObjectStorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: objectstorage
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: objectstorage
+
+- hosts: CephStorage
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: cephstorage
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: cephstorage
+
+- hosts: Compute
+  remote_user: "{{ host_remote_user }}"
+  vars:
+    config_type: compute
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+  tasks:
+    - name: Start Collectd on {{ config_type }}
+      shell: |
+          {{ container_cli }} start collectd-{{ config_type }}
+      become: yes
+      ignore_errors: true
+  tags: compute

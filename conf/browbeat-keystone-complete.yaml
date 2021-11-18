@@ -4,10 +4,14 @@ browbeat:
   cloud_name: openstack
   rerun: 3
   rerun_type: iteration
+  start_stop_collectd: false
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml
   logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: false

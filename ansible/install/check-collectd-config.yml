@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Check if graphite_host is empty in group_vars/all.yml
+      include_vars:
+        file: "group_vars/all.yml"
+        name: group_vars
+      failed_when: group_vars['graphite_host'] is none

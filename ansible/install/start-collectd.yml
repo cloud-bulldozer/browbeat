@@ -1,0 +1,11 @@
+---
+- name: set fact collectd_container
+  import_playbook: pre-collectd.yml
+
+- name: Start containerized collectd (Stein and greater recommended)
+  import_playbook: start-collectd-container.yml
+  when: hostvars['undercloud']['collectd_container']
+
+- name: Start collectd installed through RPMs
+  import_playbook: start-collectd-baremetal.yml
+  when: not hostvars['undercloud']['collectd_container']
