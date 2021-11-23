@@ -104,18 +104,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         if(workloads == "all" or "migrate_servers" in workloads_list or
            "swap_floating_ips_between_servers" in workloads_list or
            "stop_start_servers" in workloads_list):
-            if self.context["iteration"] % 5 != 0:
-                self.boot_servers_with_fip(smallest_image, smallest_flavor, context_ext_net_id,
-                                           num_vms_to_create_with_fip,
-                                           network_create_args, subnet_create_args, **kwargs)
-            else:
-                # Every 5th iteration uses the router from rally context, which uses
-                # the default external network provided in browbeat-config.yaml as
-                # gateway. So we pass this default external network as a parameter
-                # for every 5th iteration.
-                self.boot_servers_with_fip(smallest_image, smallest_flavor, ext_net_id,
-                                           num_vms_to_create_with_fip,
-                                           network_create_args, subnet_create_args, **kwargs)
+            self.boot_servers_with_fip(smallest_image, smallest_flavor, context_ext_net_id,
+                                       num_vms_to_create_with_fip,
+                                       network_create_args, subnet_create_args, **kwargs)
 
         if workloads == "all" or "migrate_servers" in workloads_list:
             self.migrate_servers_with_fip(num_vms_to_migrate)

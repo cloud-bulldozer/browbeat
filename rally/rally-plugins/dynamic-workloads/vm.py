@@ -90,20 +90,10 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
                 "name"
             ]
 
-        # Let every 5th iteration use router, network and subnet from context
-        if (self.context["iteration"] % 5 == 0):
-            router = self.get_router_from_context()
-            network = self.get_network_from_context()
-            subnet = self.get_subnet_from_context()
-            self.log_info("Re-use iteration: {} tenant: {} network: {} router: {}".format(
-                self.context["iteration"], self.context["tenant"]["id"],
-                self.context["tenant"]["networks"][0]["id"],
-                self.context["tenant"]["networks"][0]["router_id"]))
-        else:
-            router = self.router
-            network = self._create_network(network_create_args or {})
-            subnet = self._create_subnet(network, subnet_create_args or {})
-            self._add_interface_router(subnet["subnet"], router["router"])
+        router = self.router
+        network = self._create_network(network_create_args or {})
+        subnet = self._create_subnet(network, subnet_create_args or {})
+        self._add_interface_router(subnet["subnet"], router["router"])
 
         keypair = self.context["user"]["keypair"]
 
