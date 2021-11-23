@@ -349,6 +349,13 @@ class NeutronUtils(neutron_utils.NeutronScenario):
         """
         return self.admin_clients("neutron").show_subnet(subnet_id)
 
+    def show_port(self, port_id):
+        """Show information of a given port
+        :param port_id: ID of subnet to look up
+        :returns: details of the port
+        """
+        return self.admin_clients("neutron").show_port(port_id)
+
     def get_router_from_context(self):
         """Retrieve router that was created as part of Rally context
         :returns: router object that is part of Rally context
