@@ -1,10 +1,10 @@
-FROM registry.centos.org/centos:7
+FROM registry.centos.org/centos:8
 
-RUN yum update -y && \
-    yum clean all && \
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    yum install -y centos-release-opstools && \
-    yum install -y collectd
+RUN dnf update -y && \
+    dnf clean all && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    dnf install -y centos-release-opstools && \
+    dnf install -y collectd
 
 ADD config/collectd.conf /etc/collectd.conf
 

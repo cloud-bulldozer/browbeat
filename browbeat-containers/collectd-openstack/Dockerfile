@@ -1,20 +1,21 @@
-FROM registry.centos.org/centos:7
+FROM registry.centos.org/centos:8
 
-RUN yum update -y && \
-    yum clean all && \
-    yum groupinstall -y development tools && \
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    yum install -y centos-release-opstools && \
-    yum install -y collectd collectd-turbostat collectd-disk collectd-apache collectd-ceph \
+RUN dnf clean all && \
+    dnf group install -y "Development Tools" && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
+    dnf install -y centos-release-opstools && \
+    dnf install -y collectd collectd-turbostat collectd-disk collectd-apache collectd-ceph \
      collectd-mysql collectd-python collectd-ping && \
-    yum install -y sysstat && \
-    yum install -y python2-pip python2-devel && \
-    pip install --upgrade 'pip<20' && \
-    pip install pyrabbit && \
-    yum install -y libdbi-dbd-mysql collectd-dbi && \
-    yum install -y https://cbs.centos.org/kojifiles/packages/openvswitch/2.11.0/4.el7/x86_64/openvswitch-2.11.0-4.el7.x86_64.rpm && \
-    yum install -y libibverbs && \
-    yum install -y sudo
+    dnf install -y sysstat && \
+    dnf install -y python3-pip python3-devel && \
+    pip3 install --upgrade pip && \
+    pip3 install pyrabbit && \
+    dnf install -y libdbi-dbd-mysql collectd-dbi && \
+    dnf install -y centos-release-openstack-train && \
+    dnf install -y openvswitch libibverbs && \
+    dnf install -y passwd && \
+    dnf install -y ceph-common && \
+    dnf install -y sudo
 
 RUN useradd stack
 RUN echo stack | passwd stack --stdin
