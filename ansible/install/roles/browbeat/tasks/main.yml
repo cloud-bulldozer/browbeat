@@ -165,7 +165,7 @@
     - name: Add regex option in grafyaml
       lineinfile:
         path: "{{ browbeat_path }}/.browbeat-venv/lib/python{{installed_python_version}}/site-packages/grafana_dashboards/schema/template/query.py"
-        insertafter: "self.validate_refresh"
+        insertafter: "hide"
         line: "            v.Optional('regex',default=''): v.All(str),"
 
   when: collectd_prometheus
