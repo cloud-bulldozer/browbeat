@@ -79,7 +79,7 @@ per_process_panels:
   OpenStack:
     - name: "Ansible"
       processes:
-        - ansible
+        - ansible-playbook
     - name: "Aodh"
       processes:
         - aodh-evaluator
