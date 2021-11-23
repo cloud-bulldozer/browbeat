@@ -182,6 +182,10 @@ def main():
                      " with browbeat_uuid {}".format(browbeat_uuid))
         tools.common_logging(browbeat_uuid, logging_status=True)
 
+    if _config['browbeat']['start_stop_collectd'] and tools.check_collectd_config():
+        _logger.info("Starting collectd")
+        tools.start_collectd()
+
     _logger.info("Running workload(s): {}".format(','.join(_cli_args.workloads)))
 
     # Iteration rerun_type pushes rerun logic down to the workload itself.  This allows the workload
@@ -191,6 +195,9 @@ def main():
     elif _config["browbeat"]["rerun_type"] == "complete":
         # Complete rerun_type, reruns after all workloads have been run.
         run_complete(_config, _cli_args, result_dir_ts, _logger, tools)
+    if _config["browbeat"]["start_stop_collectd"] and tools.check_collectd_config():
+        _logger.info("Stopping collectd")
+        tools.stop_collectd()
     if terminate:
         _logger.info("Browbeat execution halting due to user intervention")
         sys.exit(1)

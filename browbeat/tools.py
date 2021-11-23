@@ -92,6 +92,46 @@ class Tools(object):
             self.logger.info("Metadata about cloud has been gathered")
             return True
 
+    def check_collectd_config(self):
+        ansible_cmd = \
+            'ansible-playbook {}' \
+            .format(self.config['ansible']['check_collectd_config_playbook'])
+        returncode = self.run_cmd(ansible_cmd)['rc']
+        if returncode > 0:
+            self.logger.warning("""graphite_host is empty in all.yml. Please fill it and run the command
+                                (cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml)
+                                in order to install collectd.""")
+            return False
+        else:
+            self.logger.info("Collectd config in all.yml validated")
+            return True
+
+    def start_collectd(self):
+        ansible_cmd = \
+            'ansible-playbook -i {} {}' \
+            .format(self.config['ansible']['hosts'],
+                    self.config['ansible']['start_collectd_playbook'])
+        returncode = self.run_cmd(ansible_cmd)['rc']
+        if returncode > 0:
+            self.logger.warning("Collectd could not be started")
+            return False
+        else:
+            self.logger.info("Collectd started successfully")
+            return True
+
+    def stop_collectd(self):
+        ansible_cmd = \
+            'ansible-playbook -i {} {}' \
+            .format(self.config['ansible']['hosts'],
+                    self.config['ansible']['stop_collectd_playbook'])
+        returncode = self.run_cmd(ansible_cmd)['rc']
+        if returncode > 0:
+            self.logger.warning("Collectd could not be stopped")
+            return False
+        else:
+            self.logger.info("Collectd stopped successfully")
+            return True
+
     def common_logging(self, browbeat_uuid, logging_status):
         os.putenv("ANSIBLE_SSH_ARGS", " -F {}".format(self.config['ansible']['ssh_config']))
         ansible_cmd = \

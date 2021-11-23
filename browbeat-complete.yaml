@@ -3,10 +3,20 @@ browbeat:
   cloud_name: openstack
   rerun: 3
   rerun_type: iteration
+  # This option enables starting collectd before running workloads,
+  # and stopping collectd after running workloads. It should be enabled
+  # when it is required to store collectd data only when workloads
+  # are running. Please install collectd by running the command
+  # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
+  # setting this option to true.
+  start_stop_collectd: false
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml
   logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
   ssh_config: ansible/ssh-config
 elasticsearch:
   enabled: true
