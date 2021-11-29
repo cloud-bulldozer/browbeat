@@ -22,7 +22,7 @@ def read_func():
     os.system('''echo "pcs status" > '''+PIPE_FILE_PATH)
 
     with open(LOG_FILE_PATH, 'rb') as f:
-        full_output = f.readlines()
+        full_output = [line.decode("utf-8") for line in f.readlines()]
 
     latest_output = []
 
