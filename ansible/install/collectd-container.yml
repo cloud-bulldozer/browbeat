@@ -6,7 +6,7 @@
 #
 # ansible-playbook -i hosts install/collectd.yml --tags="undercloud"
 # ansible-playbook -i hosts install/collectd.yml --tags="controller"
-# ansible-playbook -i hosts install/collectd.yml --tags="compute"
+# ansible-playbook -i hosts install/collectd.yml --tags="compute" -f 10
 
 
 - hosts: Undercloud
@@ -22,6 +22,7 @@
   environment: "{{proxy_env}}"
 
 - hosts: Controller
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: controller
@@ -32,7 +33,8 @@
     - { role: collectd, when: collectd_controller|bool }
   tags: controller
 
-- hosts: Compute
+- hosts: Compute*
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: compute

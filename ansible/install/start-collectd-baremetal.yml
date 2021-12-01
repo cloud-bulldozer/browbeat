@@ -12,7 +12,7 @@
 # ansible-playbook -i hosts.yml install/start-collectd-baremetal.yml --tag "blockstorage"
 # ansible-playbook -i hosts.yml install/start-collectd-baremetal.yml --tag "objectstorage"
 # ansible-playbook -i hosts.yml install/start-collectd-baremetal.yml --tag "cephstorage"
-# ansible-playbook -i hosts.yml install/start-collectd-baremetal.yml --tag "compute"
+# ansible-playbook -i hosts.yml install/start-collectd-baremetal.yml --tag "compute" -f 10
 #
 
 
@@ -26,6 +26,7 @@
   tags: undercloud
 
 - hosts: Controller
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   tasks:
     - name: Start Collectd on controller
@@ -70,7 +71,8 @@
       ignore_errors: true
   tags: cephstorage
 
-- hosts: Compute
+- hosts: Compute*
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   tasks:
     - name: Start Collectd on compute
