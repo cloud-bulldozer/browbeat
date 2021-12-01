@@ -9,12 +9,10 @@
     check:
       jobs:
         - openstack-tox-linters
-        - openstack-tox-py27
         - openstack-tox-molecule
     gate:
       jobs:
         - openstack-tox-linters
-        - openstack-tox-py27
         - openstack-tox-molecule
     post:
       jobs:
