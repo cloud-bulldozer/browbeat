@@ -88,7 +88,7 @@
 
 - name: Configure compute collectd.conf
   template:
-    src:  "{{ config_type }}.collectd.conf.j2"
+    src:  "ovn_compute.collectd.conf.j2"
     dest: "{{ browbeat_containers_path }}/collectd-openstack/config/collectd.conf"
   when: "config_type == 'compute' and ovn_compute_collectd_plugin"
 
