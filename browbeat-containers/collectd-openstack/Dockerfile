@@ -5,7 +5,7 @@ RUN dnf clean all && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     dnf install -y centos-release-opstools && \
     dnf install -y collectd collectd-turbostat collectd-disk collectd-apache collectd-ceph \
-     collectd-mysql collectd-python collectd-ping && \
+     collectd-mysql collectd-python collectd-ping python3-sqlalchemy-collectd && \
     dnf install -y sysstat && \
     dnf install -y python3-pip python3-devel && \
     pip3 install --upgrade pip && \

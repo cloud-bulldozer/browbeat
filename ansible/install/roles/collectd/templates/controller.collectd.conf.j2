@@ -539,6 +539,31 @@ PreCacheChain "PreCache"
 
 {% endif %}
 
+{% if sqlalchemy_collectd_plugin %}
+LoadPlugin python
+<Plugin python>
+   LogTraces true
+   Import "sqlalchemy_collectd.server.plugin"
+
+   <Module "sqlalchemy_collectd.server.plugin">
+      # ipv4 only for the moment
+      listen "localhost" 25827
+
+      # set to "debug" to show messages received
+      loglevel "info"
+
+   </Module>
+
+   Import "sqlalchemy_collectd.connmon.plugin"
+   <Module "sqlalchemy_collectd.connmon.plugin">
+      monitor "localhost" 25828
+
+      # set to "debug" to show messaging
+      #loglevel "debug"
+   </Module>
+</Plugin>
+{% endif %}
+
 {%if pacemaker_monitoring %}
 <Plugin python>
   ModulePath "/usr/local/bin/"

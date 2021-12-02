@@ -60,6 +60,49 @@
     version: master
   when: not (directory_exists.stat.isdir is defined and directory_exists.stat.isdir)
 
+- name: Get mysql string
+  shell: "crudini --get {{item.value.path}} database connection"
+  become: true
+  register: db_connections
+  with_dict: "{{mysql_svcs}}"
+  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
+  ignore_errors: true
+
+- name: Append to mysql string
+  ini_file:
+    backup: true
+    dest: "{{ item.item.value.path }}"
+    section: database
+    option: connection
+    value: "{{ item.stdout }}&plugin=collectd&collectd_program_name={{ item.item.key }}"
+  when: (('Controller' in group_names) and ('plugin=collectd' not in item.stdout) and sqlalchemy_collectd_plugin)
+  with_items: "{{ db_connections.results }}"
+  become: true
+
+- name: restart containers
+  shell: podman restart {{ item }}
+  become: true
+  with_items:
+    - cinder_api
+    - cinder_api_cron
+    - cinder_scheduler
+    - nova_conductor
+    - nova_api_cron
+    - nova_scheduler
+    - nova_vnc_proxy
+    - nova_api
+    - nova_metadata
+    - neutron_api
+    - gnocchi_api
+    - keystone
+    - heat_api
+    - heat_engine
+    - heat_api_cron
+    - heat_api_cfn
+  ignore_errors: yes
+  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
+
+
 # CephStorage OSD monitoring
 # Only Monitors a single OSD on each CephStorage Node
 - name: Get 1st OSD socket

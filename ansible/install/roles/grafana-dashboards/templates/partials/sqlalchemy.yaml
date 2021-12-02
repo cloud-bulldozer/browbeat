@@ -1,0 +1,165 @@
+    - title: SQLAlchemy Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: SQLAlchemy Checkedin
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-checkedin, 2, 3)
+        - title: SQLAlchemy Count Checkouts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-checkedout, 2, 3)
+        - title: SQLAlchemy Connections
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-connections, 2, 3)
+        - title: SQLAlchemy Count Detached
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-detached, 2, 3)
+        - title: SQLAlchemy Count NumPools
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-numpools, 2, 3)
+        - title: SQLAlchemy Count NumProcs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.count-numprocs, 2, 3)
+        - title: SQLAlchemy Derive Checkouts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.derive-checkouts, 2, 3)
+        - title: SQLAlchemy Derive Connects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.derive-connects, 2, 3)
+        - title: SQLAlchemy Derive Disconnects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.derive-disconnects, 2, 3)
+        - title: SQLAlchemy Derive Invalidated
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.sqlalchemy-*.derive-invalidated, 2, 3)

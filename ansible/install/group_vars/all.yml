@@ -231,6 +231,11 @@ ceph_controller_collectd_pool_interval: 10
 ceph_controller_collectd_plugin: false
 ceph_storage_collectd_plugin: false
 
+############################
+# sqlalchemy plugin
+###########################
+sqlalchemy_collectd_plugin: false
+
 ########################
 # Gnocchi Status plugin
 ########################
