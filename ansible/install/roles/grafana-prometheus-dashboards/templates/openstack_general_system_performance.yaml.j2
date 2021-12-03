@@ -8,6 +8,7 @@
 {% set ovsagent_groups = ['controller', 'compute', '*'] %}
 {% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {% set swift_stat_groups = ['controller', '*'] %}
+{% set controller_groups = ['controller', '*'] %}
 ---
 dashboard:
   title: {{item.process_list_name}} General System Performance Browbeat
@@ -103,6 +104,10 @@ dashboard:
 
 {% if item.template_node_type in mariadb_groups %}
   {% include 'partials/mariadb.yaml' %}
+{% endif %}
+
+{% if item.template_node_type in controller_groups %}
+  {% include 'partials/pacemaker_monitoring.yaml' %}
 {% endif %}
 
 {% include 'partials/tail.yaml' %}

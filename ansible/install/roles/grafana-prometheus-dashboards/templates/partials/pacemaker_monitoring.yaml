@@ -1,0 +1,150 @@
+    - title: Pacemaker Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Pacemaker General Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='total_nodes'}
+              legendFormat: total_nodes
+              refId: A
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='online_hosts'}
+              legendFormat: online_hosts
+              refId: B
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='online_guests'}
+              legendFormat: online_guests
+              refId: C
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='resource_instances'}
+              legendFormat: resource_instances
+              refId: D
+        - title: $Cloud - $Node - Pacemaker Resource Total Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='cinder_resource_total_count'}
+              legendFormat: cinder_resource_total_count
+              refId: A
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='galera_resource_total_count'}
+              legendFormat: galera_resource_total_count
+              refId: B
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='haproxy_resource_total_count'}
+              legendFormat: haproxy_resource_total_count
+              refId: C
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='ovn_resource_total_count'}
+              legendFormat: ovn_resource_total_count
+              refId: D
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='rabbitmq_resource_total_count'}
+              legendFormat: rabbitmq_resource_total_count
+              refId: E
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='redis_resource_total_count'}
+              legendFormat: redis_resource_total_count
+              refId: F
+        - title: $Cloud - $Node - Pacemaker Resource Master Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='cinder_resource_master_count'}
+              legendFormat: cinder_resource_master_count
+              refId: A
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='galera_resource_master_count'}
+              legendFormat: galera_resource_master_count
+              refId: B
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='haproxy_resource_master_count'}
+              legendFormat: haproxy_resource_master_count
+              refId: C
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='ovn_resource_master_count'}
+              legendFormat: ovn_resource_master_count
+              refId: D
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='rabbitmq_resource_master_count'}
+              legendFormat: rabbitmq_resource_master_count
+              refId: E
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='redis_resource_master_count'}
+              legendFormat: redis_resource_master_count
+              refId: F
+        - title: $Cloud - $Node - Pacemaker Resource Failures
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='cinder_resource_failures'}
+              legendFormat: cinder_resource_failures
+              refId: A
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='galera_resource_failures'}
+              legendFormat: galera_resource_failures
+              refId: B
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='haproxy_resource_failures'}
+              legendFormat: haproxy_resource_failures
+              refId: C
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='ovn_resource_failures'}
+              legendFormat: ovn_resource_failures
+              refId: D
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='rabbitmq_resource_failures'}
+              legendFormat: rabbitmq_resource_failures
+              refId: E
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='redis_resource_failures'}
+              legendFormat: redis_resource_failures
+              refId: F
+        - title: $Cloud - $Node - Pacemaker Daemon Status
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='corosync_daemon_status'}
+              legendFormat: corosync_daemon_status
+              refId: A
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='pacemaker_daemon_status'}
+              legendFormat: pacemaker_daemon_status
+              refId: B
+            - expr: collectd_pacemaker_monitoring_gauge{exported_instance=~"[[Cloud]]_[[Node]]", pacemaker_monitoring='pcsd_daemon_status'}
+              legendFormat: pcsd_daemon_status
+              refId: C
