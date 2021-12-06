@@ -107,7 +107,10 @@ dashboard:
 {% endif %}
 
 {% if item.template_node_type in controller_groups %}
+  {% include 'partials/osp_resources.yaml' %}
   {% include 'partials/pacemaker_monitoring.yaml' %}
 {% endif %}
+
+{% include 'partials/ovn_metrics.yaml' %}
 
 {% include 'partials/tail.yaml' %}

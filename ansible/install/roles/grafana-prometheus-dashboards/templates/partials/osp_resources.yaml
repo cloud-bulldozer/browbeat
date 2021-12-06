@@ -1,0 +1,139 @@
+    - title: OSP Resources
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OSP DB resources
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='nova', type='instances'}
+              legendFormat: instances
+              refId: A
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='nova', type='instance_faults'}
+              legendFormat: instance_faults
+              refId: B
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='nova', type='instances_del'}
+              legendFormat: instances_del
+              refId: C
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='nova', type='virtual_interfaces'}
+              legendFormat: virtual_interfaces
+              refId: D
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='network'}
+              legendFormat: network
+              refId: E
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='subnet'}
+              legendFormat: subnet
+              refId: F
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='port_dhcp'}
+              legendFormat: port_dhcp
+              refId: G
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='port_compute'}
+              legendFormat: port_compute
+              refId: H
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='port_others'}
+              legendFormat: port_others
+              refId: I
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='floatingips'}
+              legendFormat: floatingips
+              refId: J
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='router'}
+              legendFormat: router
+              refId: K
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='router_iface'}
+              legendFormat: router_iface
+              refId: L
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='router_gw'}
+              legendFormat: router_gw
+              refId: M
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='sg'}
+              legendFormat: sg
+              refId: N
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='sgr'}
+              legendFormat: sgr
+              refId: O
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='trunk'}
+              legendFormat: trunk
+              refId: P
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='ovs_neutron', type='subports'}
+              legendFormat: subports
+              refId: Q
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='octavia', type='load_balancer'}
+              legendFormat: load_balancer
+              refId: R
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='octavia', type='amphora'}
+              legendFormat: amphora
+              refId: S
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='octavia', type='pool'}
+              legendFormat: pool
+              refId: T
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='octavia', type='member'}
+              legendFormat: member
+              refId: U
+
+        - title: $Cloud - $Node - OSP Additional DB resources
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_dbi_gauge{exported_instance=~"[[Cloud]]_[[Node]]", dbi='nova', type='instance_faults'}
+              legendFormat: instance_faults
+              refId: A
+
+        - title: $Cloud - $Node - OSP REST API
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="nova_resources", type='get'}
+              legendFormat: nova_get
+              refId: A
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="nova_resources", type='post'}
+              legendFormat: nova_post
+              refId: B
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="nova_resources", type='put'}
+              legendFormat: nova_put
+              refId: C
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="nova_resources", type='delete'}
+              legendFormat: nova_delete
+              refId: D
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="neutron_resources", type='get'}
+              legendFormat: neutron_get
+              refId: E
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="neutron_resources", type='post'}
+              legendFormat: neutron_post
+              refId: F
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="neutron_resources", type='put'}
+              legendFormat: neutron_put
+              refId: G
+            - expr: collectd_tail_counter_total{exported_instance=~"[[Cloud]]_[[Node]]", tail="neutron_resources", type='delete'}
+              legendFormat: neutron_delete
+              refId: H

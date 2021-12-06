@@ -1,0 +1,32 @@
+    - title: OVN Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OVN Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_tail_count{exported_instance=~"[[Cloud]]_[[Node]]", tail="ovncontroller", type="poll"}
+              legendFormat: ovncontroller_poll
+              refId: A
+            - expr: collectd_tail_count{exported_instance=~"[[Cloud]]_[[Node]]", tail="ovnnbdb", type="poll"}
+              legendFormat: ovnnbdb_poll
+              refId: B
+            - expr: collectd_tail_count{exported_instance=~"[[Cloud]]_[[Node]]", tail="ovnsbdb", type="poll"}
+              legendFormat: ovnsbdb_poll
+              refId: C
+            - expr: collectd_tail_count{exported_instance=~"[[Cloud]]_[[Node]]", tail="ovnnorthd", type="poll"}
+              legendFormat: ovnnorthd_poll
+              refId: D
+
