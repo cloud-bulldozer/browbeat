@@ -1,0 +1,67 @@
+    - title: OVN DB Tables Rows Count
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OVN DB Tables Rows Count
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="sbdb-Address_Set", type="ovn_sbdb_Address_Set"}
+              legendFormat: ovn_sbdb_Address_Set
+              refId: A
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_MAC_Binding", type="ovn_sbdb_MAC_Binding"}
+              legendFormat: ovn_sbdb_MAC_Binding
+              refId: B
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_Multicast_Group", type="ovn_sbdb_Multicast_Group"}
+              legendFormat: ovn_sbdb_Multicast_Group
+              refId: C
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_Port_Binding", type="ovn_sbdb_Port_Binding"}
+              legendFormat: ovn_sbdb_Port_Binding
+              refId: D
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_Port_Group", type="ovn_sbdb_Port_Group"}
+              legendFormat: ovn_sbdb_Port_Group
+              refId: E
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_Datapath_Binding", type="ovn_sbdb_Datapath_Binding"}
+              legendFormat: ovn_sbdb_Datapath_Binding
+              refId: F
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_sbdb_Logical_Flow", type="ovn_sbdb_Logical_Flow"}
+              legendFormat: ovn_sbdb_Logical_Flow
+              refId: G
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Load_Balancer", type="ovn_nbdb_Load_Balancer"}
+              legendFormat: ovn_nbdb_Load_Balancer
+              refId: H
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_ACL", type="ovn_nbdb_ACL"}
+              legendFormat: ovn_nbdb_ACL
+              refId: I
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Address_Set", type="ovn_nbdb_Address_Set"}
+              legendFormat: ovn_nbdb_Address_Set
+              refId: J
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Logical_Router", type="ovn_nbdb_Logical_Router"}
+              legendFormat: ovn_nbdb_Logical_Router
+              refId: K
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Logical_Router_Port", type="ovn_nbdb_Logical_Router_Port"}
+              legendFormat: ovn_nbdb_Logical_Router_Port
+              refId: L
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Logical_Router_Static_Route", type="ovn_nbdb_Logical_Router_Static_Route"}
+              legendFormat: ovn_nbdb_Logical_Router_Static_Route
+              refId: M
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Logical_Switch", type="ovn_nbdb_Logical_Switch"}
+              legendFormat: ovn_nbdb_Logical_Switch
+              refId: N
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Logical_Switch_Port", type="ovn_nbdb_Logical_Switch_Port"}
+              legendFormat: ovn_nbdb_Logical_Switch_Port
+              refId: O
+            - expr: collectd_ovn_gauge{exported_instance=~"[[Cloud]]_[[Node]]", ovn="ovn_nbdb_Port_Group", type="ovn_nbdb_Port_Group"}
+              legendFormat: ovn_nbdb_Port_Group
+              refId: P
