@@ -57,6 +57,7 @@ rally:
     - browbeat: rally/rally-plugins/browbeat
     - workloads: rally/rally-plugins/workloads
     - dynamic-workloads: rally/rally-plugins/dynamic-workloads
+    - reports: rally/rally-plugins/reports
 shaker:
   server: 1.1.1.1
   port: 5555

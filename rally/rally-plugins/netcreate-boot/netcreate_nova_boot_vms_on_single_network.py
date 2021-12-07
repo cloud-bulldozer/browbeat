@@ -17,6 +17,11 @@ from rally.task import scenario
 from rally.task import types
 from rally.task import validation
 
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../reports')))
+from generate_scenario_duration_charts import ScenarioDurationChartsGenerator  # noqa: E402
 
 @types.convert(image={"type": "glance_image"}, flavor={"type": "nova_flavor"})
 @validation.add("image_valid_on_flavor", flavor_param="flavor", image_param="image")
@@ -38,3 +43,8 @@ class CreateVMsOnSingleNetwork(neutron_utils.NeutronScenario,
             port = self._create_port(network, port_create_args or {})
             kwargs["nics"].append({'port-id': port['port']['id']})
             self._boot_server(image, flavor, **kwargs)
+
+        self.duration_charts_generator = ScenarioDurationChartsGenerator()
+        self.duration_charts_generator.add_per_iteration_complete_data(self)
+        self.duration_charts_generator.add_duplicate_atomic_actions_iteration_additive_data(self)
+        self.duration_charts_generator.add_all_resources_additive_data(self)
