@@ -12,7 +12,7 @@
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "blockstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "objectstorage"
 # ansible-playbook -i hosts install/collectd-openstack.yml --tag "cephstorage"
-# ansible-playbook -i hosts install/collectd-openstack.yml --tag "compute"
+# ansible-playbook -i hosts install/collectd-openstack.yml --tag "compute" -f 10
 #
 
 
@@ -35,6 +35,7 @@
   environment: "{{proxy_env}}"
 
 - hosts: Controller
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: controller
@@ -125,7 +126,8 @@
   tags: cephstorage
   environment: "{{proxy_env}}"
 
-- hosts: Compute
+- hosts: Compute*
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: compute

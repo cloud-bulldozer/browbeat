@@ -12,7 +12,7 @@
 # ansible-playbook -i hosts.yml install/stop-collectd-container.yml --tag "blockstorage"
 # ansible-playbook -i hosts.yml install/stop-collectd-container.yml --tag "objectstorage"
 # ansible-playbook -i hosts.yml install/stop-collectd-container.yml --tag "cephstorage"
-# ansible-playbook -i hosts.yml install/stop-collectd-container.yml --tag "compute"
+# ansible-playbook -i hosts.yml install/stop-collectd-container.yml --tag "compute" -f 10
 #
 
 
@@ -32,6 +32,7 @@
   tags: undercloud
 
 - hosts: Controller
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: controller
@@ -106,7 +107,8 @@
       ignore_errors: true
   tags: cephstorage
 
-- hosts: Compute
+- hosts: Compute*
+  strategy: free
   remote_user: "{{ host_remote_user }}"
   vars:
     config_type: compute
