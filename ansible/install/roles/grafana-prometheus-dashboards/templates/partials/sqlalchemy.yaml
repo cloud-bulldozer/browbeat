@@ -1,0 +1,344 @@
+    - title: SQLAlchemy Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: SQLAlchemy Checkedin
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="checkedin"}
+              legendFormat: cinder_checkedin
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="checkedin"}
+              legendFormat: heat_checkedin
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="checkedin"}
+              legendFormat: keystone_checkedin
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="checkedin"}
+              legendFormat: neutron_checkedin
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="checkedin"}
+              legendFormat: nova_checkedin
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="checkedin"}
+              legendFormat: host_checkedin
+              refId: F
+
+        - title: SQLAlchemy Count Checkouts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="checkedout"}
+              legendFormat: cinder_checkedout
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="checkedout"}
+              legendFormat: heat_checkedout
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="checkedout"}
+              legendFormat: keystone_checkedout
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="checkedout"}
+              legendFormat: neutron_checkedout
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="checkedout"}
+              legendFormat: nova_checkedout
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="checkedout"}
+              legendFormat: host_checkedout
+              refId: F
+
+        - title: SQLAlchemy Connections
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="connections"}
+              legendFormat: cinder_connections
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="connections"}
+              legendFormat: heat_connections
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="connections"}
+              legendFormat: keystone_connections
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="connections"}
+              legendFormat: neutron_connections
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="connections"}
+              legendFormat: nova_connections
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="connections"}
+              legendFormat: host_connections
+              refId: F
+
+        - title: SQLAlchemy Count Detached
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[[Node]]", sqlalchemy="cinder", type="detached"}
+              legendFormat: cinder_detached
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="detached"}
+              legendFormat: heat_detached
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="detached"}
+              legendFormat: keystone_detached
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="detached"}
+              legendFormat: neutron_detached
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="detached"}
+              legendFormat: nova_detached
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="detached"}
+              legendFormat: host_detached
+              refId: F
+
+        - title: SQLAlchemy Count NumPools
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="numpools"}
+              legendFormat: cinder_numpools
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="numpools"}
+              legendFormat: heat_numpools
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="numpools"}
+              legendFormat: keystone_numpools
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="numpools"}
+              legendFormat: neutron_numpools
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="numpools"}
+              legendFormat: nova_numpools
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="numpools"}
+              legendFormat: host_numpools
+              refId: F
+
+        - title: SQLAlchemy Count NumProcs
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="numprocs"}
+              legendFormat: cinder_numprocs
+              refId: A
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="heat", type="numprocs"}
+              legendFormat: heat_numprocs
+              refId: B
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="numprocs"}
+              legendFormat: keystone_numprocs
+              refId: C
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[[Node]]", sqlalchemy="neutron", type="numprocs"}
+              legendFormat: neutron_numprocs
+              refId: D
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="nova", type="numprocs"}
+              legendFormat: nova_numprocs
+              refId: E
+            - expr: collectd_sqlalchemy_count{exported_instance=~"[[Node]]", sqlalchemy="host", type="numprocs"}
+              legendFormat: host_numprocs
+              refId: F
+
+        - title: SQLAlchemy Derive Checkouts
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="checkouts"}
+              legendFormat: cinder_checkouts
+              refId: A
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="heat", type="checkouts"}
+              legendFormat: heat_checkouts
+              refId: B
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="checkouts"}
+              legendFormat: keystone_checkouts
+              refId: C
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="checkouts"}
+              legendFormat: neutron_checkouts
+              refId: D
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="nova", type="checkouts"}
+              legendFormat: nova_checkouts
+              refId: E
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="host", type="checkouts"}
+              legendFormat: host_checkouts
+              refId: F
+
+        - title: SQLAlchemy Derive Connects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="connects"}
+              legendFormat: cinder_connects
+              refId: A
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="heat", type="connects"}
+              legendFormat: heat_connects
+              refId: B
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="connects"}
+              legendFormat: keystone_connects
+              refId: C
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="connects"}
+              legendFormat: neutron_connects
+              refId: D
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="nova", type="connects"}
+              legendFormat: nova_connects
+              refId: E
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="host", type="connects"}
+              legendFormat: host_connects
+              refId: F
+
+        - title: SQLAlchemy Derive Disconnects
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="disconnects"}
+              legendFormat: cinder_disconnects
+              refId: A
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="heat", type="disconnects"}
+              legendFormat: heat_disconnects
+              refId: B
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="disconnects"}
+              legendFormat: keystone_disconnects
+              refId: C
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="disconnects"}
+              legendFormat: neutron_disconnects
+              refId: D
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="nova", type="disconnects"}
+              legendFormat: nova_disconnects
+              refId: E
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="host", type="disconnects"}
+              legendFormat: host_disconnects
+              refId: F
+ 
+        - title: SQLAlchemy Derive Invalidated
+          type: graph
+          fill: 0
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="cinder", type="invalidated"}
+              legendFormat: cinder_invalidated
+              refId: A
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="heat", type="invalidated"}
+              legendFormat: heat_invalidated
+              refId: B
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="keystone", type="invalidated"}
+              legendFormat: keystone_invalidated
+              refId: C
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="neutron", type="invalidated"}
+              legendFormat: neutron_invalidated
+              refId: D
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="nova", type="invalidated"}
+              legendFormat: nova_invalidated
+              refId: E
+            - expr: collectd_sqlalchemy_derive_total{exported_instance=~"[[Node]]", sqlalchemy="host", type="invalidated"}
+              legendFormat: host_invalidated
+              refId: F

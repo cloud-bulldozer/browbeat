@@ -9,6 +9,7 @@
 {% set rabbitmq_groups = ['undercloud', 'controller', '*'] %}
 {% set swift_stat_groups = ['controller', '*'] %}
 {% set controller_groups = ['controller', '*'] %}
+{% set sqlalchemy_groups = ['controller','*'] %}
 ---
 dashboard:
   title: {{item.process_list_name}} General System Performance Browbeat
@@ -114,3 +115,7 @@ dashboard:
 {% include 'partials/ovn_metrics.yaml' %}
 
 {% include 'partials/tail.yaml' %}
+
+{% if item.template_node_type in sqlalchemy_groups %}
+  {% include 'partials/sqlalchemy.yaml' %}
+{% endif %}
