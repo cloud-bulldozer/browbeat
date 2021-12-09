@@ -356,7 +356,7 @@ PreCacheChain "PreCache"
   Import "collectd_rabbitmq_monitoring"
   <Module collectd_rabbitmq_monitoring>
     interval {{rabbitmq_undercloud_collectd_interval}}
-    host "{{undercloud_ctlplane_ip_address.stdout}}"
+    host 127.0.0.1
     port 15672
     username {{undercloud_rabbitmq_username.stdout}}
     password {{undercloud_rabbitmq_password.stdout}}
