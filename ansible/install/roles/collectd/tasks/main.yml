@@ -75,7 +75,7 @@
     section: database
     option: connection
     value: "{{ item.stdout }}&plugin=collectd&collectd_program_name={{ item.item.key }}"
-  when: (('Controller' in group_names) and ('plugin=collectd' not in item.stdout) and sqlalchemy_collectd_plugin)
+  when: (('Controller' in group_names) and sqlalchemy_collectd_plugin and ('plugin=collectd' not in item.stdout))
   with_items: "{{ db_connections.results }}"
   become: true
 
