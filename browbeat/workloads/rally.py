@@ -55,12 +55,12 @@ class Rally(base.WorkloadBase):
                 for plugin in self.config['rally']['plugins']:
                     for name in plugin:
                         plugins.append(plugin[name])
-        plugin_string = ""
+        self.plugin_string = ""
         if len(plugins) > 0:
-            plugin_string = "--plugin-paths {}".format(",".join(plugins))
+            self.plugin_string = "--plugin-paths {}".format(",".join(plugins))
         cmd = "source {}; ".format(get_workload_venv('rally', True))
         cmd += "rally {} task start {} --task-args \'{}\' 2>&1 | tee {}.log".format(
-            plugin_string, task_file, task_args, test_name)
+            self.plugin_string, task_file, task_args, test_name)
         from_time = time.time()
         self.tools.run_cmd(cmd)['stdout']
         to_time = time.time()
@@ -79,18 +79,19 @@ class Rally(base.WorkloadBase):
     def gen_scenario_html(self, task_ids, test_name):
         all_task_ids = ' '.join(task_ids)
         cmd = "source {}; ".format(get_workload_venv('rally', True))
-        cmd += "rally task report --uuid {} --out {}.html".format(
-            all_task_ids, test_name)
+        cmd += "rally {} task report --uuid {} --out {}.html".format(
+            self.plugin_string, all_task_ids, test_name)
         return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json(self, task_id):
         cmd = "source {}; ".format(get_workload_venv('rally', True))
-        cmd += "rally task results --uuid {}".format(task_id)
+        cmd += "rally {} task results --uuid {}".format(self.plugin_string, task_id)
         return self.tools.run_cmd(cmd)['stdout']
 
     def gen_scenario_json_file(self, task_id, test_name):
         cmd = "source {}; ".format(get_workload_venv('rally', True))
-        cmd += "rally task results --uuid {} > {}.json".format(task_id, test_name)
+        cmd += "rally {} task results --uuid {} > {}.json".format(self.plugin_string,
+                                                                  task_id, test_name)
         return self.tools.run_cmd(cmd)['stdout']
 
     def rally_metadata(self, result, meta):
