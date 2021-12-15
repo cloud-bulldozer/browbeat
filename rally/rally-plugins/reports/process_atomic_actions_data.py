@@ -36,13 +36,13 @@ class AtomicActionsDurationDataProcessor:
         :returns: list of strings representing duplicate action names
         """
         actions_set = set()
-        duplicate_actions_list = []
+        duplicate_actions_set = set()
         for action in atomic_actions:
             if action["name"] not in actions_set:
                 actions_set.add(action["name"])
             else:
-                duplicate_actions_list.append(action["name"])
-        return duplicate_actions_list
+                duplicate_actions_set.add(action["name"])
+        return list(duplicate_actions_set)
 
     def process_atomic_action_additive_data(self, action_name, atomic_actions):
         """Generate duration data in additive format for aggregate chart
