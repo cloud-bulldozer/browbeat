@@ -618,3 +618,26 @@ workloads:
         # by default, and have to be included separately.
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
+
+  - name: dynamic-workloads-min
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: dynamic-workload-min
+        enabled: false
+        # smallest image name and smallest flavor name are used for
+        # vm dynamic scenarios.
+        smallest_image_name: cirros
+        smallest_flavor_name: m1.xtiny
+        ext_net_id:
+        num_create_vms: 10
+        num_delete_vms: 5
+        num_vms_to_create_with_fip: 10
+        num_vms_to_migrate: 5
+        num_stop_start_vms: 5
+        workloads: all
+        file: rally/rally-plugins/dynamic-workloads/dynamic_workload_min.yml

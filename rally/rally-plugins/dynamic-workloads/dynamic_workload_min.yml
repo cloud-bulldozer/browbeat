@@ -1,0 +1,58 @@
+{% set smallest_image_name = smallest_image_name or 'cirros' %}
+{% set smallest_flavor_name = smallest_flavor_name or 'm1.xtiny' %}
+{% set num_create_vms = num_create_vms or 2 %}
+{% set num_delete_vms = num_delete_vms or 1 %}
+{% set num_vms_to_create_with_fip = num_vms_to_create_with_fip or 1 %}
+{% set num_vms_to_migrate = num_vms_to_migrate or 1 %}
+{% set num_stop_start_vms = num_stop_start_vms or 1 %}
+{% set workloads = workloads or 'all' %}
+{% set user = user or 'cirros' %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatPlugin.dynamic_workload_min:
+-
+    args:
+      floating: True
+      smallest_flavor:
+        name: '{{smallest_flavor_name}}'
+      smallest_image:
+        name: '{{smallest_image_name}}'
+      ext_net_id: '{{ext_net_id}}'
+      network_create_args: {}
+      router_create_args: {}
+      subnet_create_args: {}
+      num_create_vms: {{num_create_vms}}
+      num_delete_vms: {{num_delete_vms}}
+      num_vms_to_create_with_fip: {{num_vms_to_create_with_fip}}
+      num_vms_to_migrate: {{num_vms_to_migrate}}
+      num_stop_start_vms: {{num_stop_start_vms}}
+      workloads: '{{workloads}}'
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: "constant"
+    context:
+      users:
+        tenants: 1
+        users_per_tenant: 1
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+          floatingip: -1
+          security_group: -1
+          security_group_rule: -1
+          trunk: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
