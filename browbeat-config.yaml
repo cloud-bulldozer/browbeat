@@ -641,3 +641,28 @@ workloads:
         num_stop_start_vms: 5
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload_min.yml
+
+  - name: manila
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: create-share-network-and-list
+        enabled: true
+        file: rally/manila/create-share-network-and-list.yaml
+      - name: create-share-network-and-delete
+        enabled: true
+        file: rally/manila/create-share-network-and-delete.yaml
+      - name: create-share-and-shrink
+        enabled: true
+        share_type: default
+        share_proto: "nfs"
+        file: rally/manila/create-share-and-shrink.yaml
+      - name: create-share-and-extend
+        enabled: true
+        share_type: default
+        share_proto: "nfs"
+        file: rally/manila/create-share-and-extend.yaml
