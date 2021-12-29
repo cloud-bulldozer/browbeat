@@ -13,6 +13,9 @@
 
 import os
 import time
+import argparse
+import subprocess
+import yaml
 from multiprocessing import Pool
 from rally.common import cfg
 from rally.common import logging
@@ -47,6 +50,8 @@ MAX_ATTEMPTS = 7
 # number of times we check if the resource still exist after giving a delete request
 MAX_CHECK = 6
 
+# default config file for browbeat
+_config_file = 'browbeat-config.yaml'
 
 def delete_server(resource):
     server = nova_client.servers.get(resource.id)
@@ -282,12 +287,56 @@ def cleanup_neutron_routers():
         time.sleep(5)
 
 
+# browbeat/config.py cannot be accessed from rally-venv as it
+# requires modules from browbeat-venv. This function loads the
+# config file without validation, as the config file would have
+# already been validated while running the workloads.
+def load_browbeat_config(path):
+    with open(path, "r") as config_file:
+        browbeat_config = yaml.safe_load(config_file)
+    return browbeat_config
+
+
+def cleanup_external_network_links(_config):
+    for workload in _config["workloads"][::-1]:
+        if workload["name"] == "dynamic-workloads" and workload["enabled"]:
+            dynamic_workload = workload["scenarios"][0]
+            if dynamic_workload["enabled"]:
+                iface_name = dynamic_workload["iface_name"]
+                num_external_networks = dynamic_workload["num_external_networks"]
+                for link_num in range(num_external_networks):
+                    cmd = ["sudo", "ip", "link", "delete", "{}.{}".format(iface_name,
+                                                                          link_num + 1)]
+                    proc = subprocess.Popen(cmd)
+                    proc.wait()
+                    if proc.returncode == 0:
+                        print("Deleting vlan {}.{} was successful".format(
+                              iface_name, link_num + 1))
+                    else:
+                        print("Deleting vlan {}.{} failed".format(
+                              iface_name, link_num + 1))
+
+
 def cleanup_resources():
     cleanup_nova_vms()
     cleanup_neutron_floatingips()
     cleanup_neutron_routers()
     cleanup_neutron_security_groups()
     cleanup_neutron_networks()
+    parser = argparse.ArgumentParser(
+        description="Rally cleanup script")
+    # Dynamic workloads creates link files for each
+    # vlan external network from rally context. This flag
+    # cleans up the link files.
+    parser.add_argument(
+        '-e', '--cleanup_external_network_links', action='store_true',
+        help='Flag to cleanup rally context external network NICs')
+    if parser.parse_args().cleanup_external_network_links:
+        parser.add_argument(
+            '-s', '--setup', nargs='?', default=_config_file,
+            help='Provide Browbeat YAML configuration file. Default is ./{}'.format(_config_file))
+        _config = load_browbeat_config(parser.parse_args().setup)
+        cleanup_external_network_links(_config)
 
 
 cleanup_resources()
