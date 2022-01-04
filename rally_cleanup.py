@@ -55,6 +55,8 @@ _config_file = 'browbeat-config.yaml'
 
 def delete_server(resource):
     server = nova_client.servers.get(resource.id)
+    if "rally" not in server.name:
+        return resource
     print("pid {} deleting server id {} name {}".format(
         os.getpid(), resource.id, server.name))
     nova_client.servers.delete(server)
@@ -71,6 +73,8 @@ def delete_server(resource):
 
 def delete_network(resource):
     network = neutron_client.show_network(resource.id)["network"]
+    if "rally" not in network["name"]:
+        return resource
     print("pid {} deleting network id {} name {}".format(
         os.getpid(), resource.id, network["name"]))
     # delete network
@@ -122,7 +126,8 @@ def delete_floatingip(resource):
 
 def delete_router(resource):
     router = neutron_client.show_router(resource.id)["router"]
-    print(router)
+    if "rally" not in router["name"]:
+        return resource
     print("pid {} deleting router id {} name {}".format(
         os.getpid(), resource.id, router["name"]))
     try:
@@ -145,8 +150,7 @@ def delete_router(resource):
 
 def delete_router_ports(resource):
     port = neutron_client.show_port(resource.id)["port"]
-    print(port)
-    if (port["device_owner"] not in ROUTER_INTERFACE_OWNERS):
+    if (port["device_owner"] not in ROUTER_INTERFACE_OWNERS or "rally" not in port["name"]):
         return resource
     print("pid {} deleting router {} port id {}".format(
         os.getpid(), port["device_id"], resource.id))
