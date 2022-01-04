@@ -95,11 +95,11 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         :param kwargs: dict, Keyword arguments to function
         """
 
+        provider_network = self._create_provider_network(provider_phys_net)
+        subnet = self._create_subnet(provider_network, subnet_create_args or {})
+        kwargs["nics"] = [{'net-id': provider_network['network']['id']}]
+        tag = "provider_network:"+str(provider_network['network']['id'])
         for _ in range(num_vms_provider_net):
-            provider_network = self._create_provider_network(provider_phys_net)
-            subnet = self._create_subnet(provider_network, subnet_create_args or {})
-            kwargs["nics"] = [{'net-id': provider_network['network']['id']}]
-            tag = "provider_network:"+str(provider_network['network']['id'])
             server = self._boot_server_with_tag(image, flavor, tag, **kwargs)
             self.log_info(" Server {} created on provider network {}".format(
                 server, provider_network))
