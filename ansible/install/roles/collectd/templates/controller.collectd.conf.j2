@@ -767,7 +767,7 @@ LoadPlugin python
   Import "collectd_rabbitmq_monitoring"
   <Module collectd_rabbitmq_monitoring>
     interval {{rabbitmq_controller_collectd_interval}}
-    host "{{inventory_hostname}}.internalapi.localdomain"
+    host 127.0.0.1
     port 15672
     username {{controller0_rabbitmq_username.stdout}}
     password {{controller0_rabbitmq_password.stdout}}

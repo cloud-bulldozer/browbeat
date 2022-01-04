@@ -31,8 +31,8 @@
       when: "('Undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
     - name: (Undercloud) Get Rabbitmq password
-      shell: |
-        grep undercloud_rabbit_password /home/stack/undercloud-passwords.conf | sed 's/undercloud_rabbit_password: //g'
+      command:  hiera -c /etc/puppet/hiera.yaml rabbitmq::default_pass
+      become: true
       register: undercloud_rabbitmq_password
       when: "('Undercloud' in group_names and rabbitmq_undercloud_collectd_plugin)"
 
