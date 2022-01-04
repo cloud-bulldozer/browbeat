@@ -33,7 +33,7 @@ class CreateExternalNetworksContext(context.Context):
         "properties": {
             "num_external_networks": {
                 "type": "integer",
-                "minimum": 1
+                "minimum": 0
             },
             "interface_name": {
                 "type": "string"
