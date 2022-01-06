@@ -338,3 +338,24 @@ To cleanup :
     $ source browbeat/.rally-venv/bin/activate
     $ source ~/overcloudrc
     $ python browbeat/rally_cleanup.py
+
+Generate CSV file/Google Sheets from Rally json file
+--------------------------------------------
+Rally generates a json file with data about atomic actions duration from each iteration. These atomic actions often occur multiple times within one iteration.
+Browbeat has a script which allows a user to generate a CSV file and also has an option to generate a Google Sheet about individual resource
+duration through the Rally json file. To use the script to upload the CSV file to Google Sheets, a Google Drive service account is required.
+The script sends an email to the email id of the user with the Google sheet if the --uploadgooglesheet option is enabled.
+
+To generate only a CSV file and not upload to Google Sheets :
+
+::
+
+    $ source .browbeat-venv/bin/activate && cd utils
+    $ python rally_google_sheet_gen.py -c <path to csv file to write locally> -j <path to rally json file> -a <atomic action(Eg.: nova.boot_server>
+
+To generate a CSV file and upload to Google Sheets :
+
+::
+    $ source .browbeat-venv/bin/activate && cd utils
+    $ python rally_google_sheet_gen.py -c <path to csv file to write locally> -j <path to rally json file> -a <atomic action(Eg.: nova.boot_server>
+      -g -s <path to google service account json credentials file> -e <email id of user> -n <name of google sheet to be created>

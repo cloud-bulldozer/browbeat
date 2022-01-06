@@ -11,4 +11,6 @@ python-openstackclient==3.11.0;python_version<'3'
 python-openstackclient>=3.11.0;python_version>='3'
 pykwalify==1.7.0;python_version<'3'
 pykwalify>=1.8.0;python_version>='3'
-
+gspread
+oauth2client
+gspread_formatting
