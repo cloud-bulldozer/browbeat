@@ -51,12 +51,10 @@ MAX_ATTEMPTS = 7
 MAX_CHECK = 6
 
 # default config file for browbeat
-_config_file = 'browbeat-config.yaml'
+_config_file = '../browbeat-config.yaml'
 
 def delete_server(resource):
     server = nova_client.servers.get(resource.id)
-    if "rally" not in server.name:
-        return resource
     print("pid {} deleting server id {} name {}".format(
         os.getpid(), resource.id, server.name))
     nova_client.servers.delete(server)
@@ -73,8 +71,6 @@ def delete_server(resource):
 
 def delete_network(resource):
     network = neutron_client.show_network(resource.id)["network"]
-    if "rally" not in network["name"]:
-        return resource
     print("pid {} deleting network id {} name {}".format(
         os.getpid(), resource.id, network["name"]))
     # delete network
@@ -126,8 +122,6 @@ def delete_floatingip(resource):
 
 def delete_router(resource):
     router = neutron_client.show_router(resource.id)["router"]
-    if "rally" not in router["name"]:
-        return resource
     print("pid {} deleting router id {} name {}".format(
         os.getpid(), resource.id, router["name"]))
     try:
@@ -150,7 +144,7 @@ def delete_router(resource):
 
 def delete_router_ports(resource):
     port = neutron_client.show_port(resource.id)["port"]
-    if (port["device_owner"] not in ROUTER_INTERFACE_OWNERS or "rally" not in port["name"]):
+    if (port["device_owner"] not in ROUTER_INTERFACE_OWNERS):
         return resource
     print("pid {} deleting router {} port id {}".format(
         os.getpid(), port["device_id"], resource.id))
@@ -206,7 +200,8 @@ def cleanup_with_concurrency(cleanup_fun, resources):
 
 def cleanup_nova_vms():
     while True:
-        servers = nova_client.servers.list(detailed=True, search_opts={"all_tenants": 1}, limit=100)
+        servers = [server for server in nova_client.servers.list(detailed=True,
+                   search_opts={"all_tenants": 1}, limit=100) if "rally" in server.name]
         if (len(servers) == 0):
             break
         print("Deleting {} servers".format(len(servers)))
@@ -221,7 +216,7 @@ def cleanup_neutron_networks():
         if (len(networks) == 0):
             break
         ids = [Resource(network["id"]) for network in networks
-               if network["name"] not in NETWORK_EXCLUDE]
+               if network["name"] not in NETWORK_EXCLUDE and "rally" in network["name"]]
         if (len(ids) == 0):
             break
         print("Deleting {} networks".format(len(ids)))
@@ -241,7 +236,8 @@ def cleanup_neutron_security_groups():
     # we shouldn't cleanup default security group created by admin
     default_sg = get_admin_security_group()
     while True:
-        sgs = neutron_client.list_security_groups()["security_groups"]
+        sgs = [sg for sg in neutron_client.list_security_groups()["security_groups"]
+               if "rally" in sg["name"]]
         if (len(sgs) == 0):
             break
         ids = [Resource(sg["id"]) for sg in sgs
@@ -268,7 +264,9 @@ def cleanup_neutron_floatingips():
 
 def _cleanup_neutron_router_ports():
     while True:
-        ports = neutron_client.list_ports(device_owner='network:router_interface')["ports"]
+        ports = [port for port in neutron_client.list_ports(
+                 device_owner='network:router_interface')["ports"]
+                 if "rally" in port["name"]]
         if (len(ports) == 0):
             break
         print("Deleting {} router ports".format(len(ports)))
@@ -281,7 +279,8 @@ def _cleanup_neutron_router_ports():
 def cleanup_neutron_routers():
     _cleanup_neutron_router_ports()
     while True:
-        routers = neutron_client.list_routers()["routers"]
+        routers = [router for router in neutron_client.list_routers()["routers"]
+                   if "rally" in router["name"]]
         if (len(routers) == 0):
             break
         print("Deleting {} routers".format(len(routers)))
