@@ -53,6 +53,7 @@ class TrunkDynamicScenario(
         script = f"sudo ip r a {dest_vm} via {gateway} dev eth0.{subport_number}"
         source_ssh = self.get_ssh(local_vm_user, local_vm)
         self._run_command_with_attempts(source_ssh, script)
+        source_ssh.close()
 
     def delete_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
                                          subport_number, gateway):
@@ -66,6 +67,7 @@ class TrunkDynamicScenario(
         script = f"sudo ip r d {dest_vm} via {gateway} dev eth0.{subport_number}"
         source_ssh = self.get_ssh(local_vm_user, local_vm)
         self._run_command_with_attempts(source_ssh, script)
+        source_ssh.close()
 
     def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
         """Simulate connection from jumphost to random subport of trunk VM
@@ -265,6 +267,8 @@ class TrunkDynamicScenario(
 
             self.release_lock(trunk["trunk"]["id"])
 
+            vm_ssh.close()
+
     def add_subports_to_random_trunks(self, num_trunks, subport_count):
         """Add <<subport_count>> subports to <<num_trunks>> randomly chosen trunks
         :param num_trunks: int, number of trunks to be randomly chosen
@@ -305,6 +309,8 @@ class TrunkDynamicScenario(
             self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
             self.release_lock(trunk["id"])
             num_operations_completed += 1
+
+            vm_ssh.close()
 
         if num_operations_completed == 0:
             self.log_info("""No trunks which are not under lock, so
@@ -372,6 +378,7 @@ class TrunkDynamicScenario(
                 self.clients("neutron").trunk_remove_subports(trunk["id"],
                                                               {"sub_ports": subport_payload})
                 self.clients("neutron").delete_port(subport_to_delete["port"]["id"])
+                vm_ssh.close()
 
             # Check the number of subports present in trunk after deletion,
             # and simulate subport connection if it is > 0. We use the

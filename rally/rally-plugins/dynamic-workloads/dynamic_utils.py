@@ -115,6 +115,7 @@ class NovaUtils(vm_utils.VMScenario):
             self._run_command_until_failure(jumphost_ssh, cmd)
         else:
             self._run_command_with_attempts(jumphost_ssh, cmd)
+        jumphost_ssh.close()
 
     @atomic.action_timer("vm.wait_for_ping_failure")
     def _wait_for_ping_failure(self, server_ip):
