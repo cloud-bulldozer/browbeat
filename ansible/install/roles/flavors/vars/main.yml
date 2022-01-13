@@ -16,6 +16,10 @@ browbeat_flavors:
     cpu: 1
     memory: 192
     disk: 8
+  - name: m1.tiny-centos84
+    cpu: 1
+    memory: 285
+    disk: 12
   - name: m1.tiny
     cpu: 1
     memory: 512
