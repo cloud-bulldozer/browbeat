@@ -181,6 +181,14 @@ PreCacheChain "PreCache"
       ValuesFrom "instances"
     </Result>
   </Query>
+  <Query instance_active_count>
+    Statement "select count(*) as instances from instances where deleted=0 and vm_state = 'active'"
+    <Result>
+      Type gauge
+      InstancePrefix "instances_active"
+      ValuesFrom "instances"
+    </Result>
+  </Query>
   <Query instance_faults_count>
     Statement "select count(*) as instance_faults from instance_faults"
     <Result>
@@ -198,6 +206,7 @@ PreCacheChain "PreCache"
     DriverOption "mysql_unix_socket" "/var/lib/mysql/mysql.sock"
     Query host_vms_count
     Query instances_count
+    Query instance_active_count
     Query instances_del_count
     Query instance_faults_count
   </Database>
