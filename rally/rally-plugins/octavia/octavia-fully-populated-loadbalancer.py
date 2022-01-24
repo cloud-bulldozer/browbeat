@@ -136,7 +136,7 @@ class OctaviaFullyPopulatedLoadbalancer(vm_utils.VMScenario, neutron_utils.Neutr
             while attempts < max_attempts:
                 test_exitcode, stdout_test, stderr = jump_ssh.execute(cmd, timeout=60)
                 LOG.info("cmd: {}, stdout:{}".format(cmd, stdout_test))
-                if test_exitcode != 0 and stdout_test != 1:
+                if stdout_test != '1':
                     LOG.error("ERROR with HTTP response {}".format(cmd))
                     attempts += 1
                     time.sleep(30)
