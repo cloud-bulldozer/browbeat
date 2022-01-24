@@ -1,0 +1,48 @@
+{% set image_name = image_name or "centos7" %}
+{% set flavor_name = flavor_name or "m1.small" %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  BrowbeatPlugin.create_share_boot_vm_access_share:
+    -
+      args:
+        size: 1
+        share_type: {{share_type}}
+        flavor:
+            name: {{flavor_name}}
+        image:
+            name: {{image_name}}
+        username: {{user}}
+        provider_net_id: "{{ provider_net_id }}"
+        ext_net_id: "{{ ext_net_id }}"
+        router_create_args: {}
+        network_create_args: {}
+        subnet_create_args: {}
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        quotas:
+          manila:
+            shares: -1
+            gigabytes: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
+          neutron:
+            network: -1
+            port: -1
+            router: -1
+            subnet: -1
+            floatingip: -1
+        users:
+          tenants: 1
+          users_per_tenant: 1
+      sla:
+        max_avg_duration: {{ sla_max_avg_duration }}
+        max_seconds_per_iteration: {{ sla_max_seconds }}
+        failure_rate:
+          max: {{ sla_max_failure }}

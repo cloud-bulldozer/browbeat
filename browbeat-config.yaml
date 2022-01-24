@@ -58,6 +58,7 @@ rally:
     - workloads: rally/rally-plugins/workloads
     - dynamic-workloads: rally/rally-plugins/dynamic-workloads
     - reports: rally/rally-plugins/reports
+    - manila: rally/rally-plugins/manila
 shaker:
   server: 1.1.1.1
   port: 5555
@@ -698,3 +699,12 @@ workloads:
         access: "127.0.0.1"
         access_type: "ip"
         file: rally/manila/create-share-allow-and-deny-access.yml
+      - name: create-share-boot-vm-mount-share-write-delete-vm-share
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        user: centos
+        share_type: default
+        provider_net_id:
+        ext_net_id:
+        file: rally/rally-plugins/manila/create-share-boot-vm-mount-share-write-delete-vm-share.yml
