@@ -1,0 +1,29 @@
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  ManilaShares.create_share_then_allow_and_deny_access:
+    -
+      args:
+        share_proto: "{{ share_proto }}"
+        share_type: {{ share_type }}
+        size: 1
+        access: "{{ access }}"
+        access_type: "{{ access_type }}"
+      runner:
+        type: "constant"
+        times: {{ times }}
+        concurrency: {{ concurrency }}
+      context:
+        quotas:
+          manila:
+            shares: -1
+            gigabytes: -1
+        users:
+          tenants: 2
+          users_per_tenant: 1
+      sla:
+        max_avg_duration: {{ sla_max_avg_duration }}
+        max_seconds_per_iteration: {{ sla_max_seconds }}
+        failure_rate:
+          max: {{ sla_max_failure }}

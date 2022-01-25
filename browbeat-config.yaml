@@ -666,3 +666,10 @@ workloads:
         share_type: default
         share_proto: "nfs"
         file: rally/manila/create-share-and-extend.yaml
+      - name: create-share-allow-and-deny-access
+        enabled: true
+        share_type: default
+        share_proto: "nfs"
+        access: "127.0.0.1"
+        access_type: "ip"
+        file: rally/manila/create-share-allow-and-deny-access.yml
