@@ -56,17 +56,39 @@ class ResourceDurationOutputLinesChart(charts.OutputStackedAreaChart):
             if name not in self._data:
                 self._data[name] = utils.GraphZipper(self.base_size*self.max_count,
                                                      self.zipped_size)
-            self._data[name].add_point(value)
+            try:
+                self._data[name].add_point(value)
+            except Exception as e:
+                # increase base size for GraphZipper object when
+                # GraphZipper object becomes full.
+                if "GraphZipper is already full." in str(e):
+                    self._data[name].base_size = self._data[name].point_order
+                    self._data[name].point_order -= 1
+                    self._data[name].add_point(value)
+                else:
+                    raise RuntimeError(str(e))
 
     def zeropad_duration_data(self):
         """Some actions might have been executed more times than other actions
         in the same iteration. Zeroes are appended to make the numbers equal.
         """
+        max_base_size = 0
+        for key in self._data:
+            max_base_size = max(max_base_size, self._data[key].base_size)
+
         for key in self._data:
             i = len(self._data[key].get_zipped_graph())
-            while i < self.base_size*self.max_count:
+            while i < max_base_size:
                 i += 1
-                self._data[key].add_point(0)
+                try:
+                    self._data[key].add_point(0)
+                except Exception as e:
+                    if "GraphZipper is already full." in str(e):
+                        self._data[key].base_size = self._data[key].point_order
+                        self._data[key].point_order -= 1
+                        self._data[key].add_point(0)
+                    else:
+                        raise RuntimeError(str(e))
 
     def render(self):
         """Render HTML from resource duration data"""
