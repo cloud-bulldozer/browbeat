@@ -1,0 +1,35 @@
+---
+  HeatStacks.create_and_delete_stack:
+    -
+      args:
+        template_path: "rally/heat/templates/resource-group-server-with-volume.yaml.template"
+        parameters:
+           num_instances: {{num_instances}}
+           instance_image: {{instance_image}}
+           instance_volume_size: {{instance_volume_size}}
+           instance_flavor: {{instance_flavor}}
+           instance_availability_zone: {{instance_availability_zone}}
+        files: ["rally/heat/templates/server-with-volume.yaml.template"]
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        users:
+          tenants: 2
+          users_per_tenant: 3
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
+          cinder:
+            gigabytes: -1
+            volumes: -1
+
+      sla:
+        failure_rate:
+          max: 0
