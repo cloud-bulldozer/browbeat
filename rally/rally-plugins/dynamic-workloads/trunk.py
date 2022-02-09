@@ -41,39 +41,34 @@ class TrunkDynamicScenario(
     dynamic_utils.NeutronUtils,
     dynamic_utils.LockUtils
 ):
-    def add_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
+    def add_route_from_vm_to_jumphost(self, local_vm_ssh, dest_vm,
                                       subport_number, gateway):
         """Add route from trunk vm to jumphost via trunk subport
-        :param local_vm: floating ip of local VM
+        :param local_vm_ssh: ssh connection to trunk VM
         :param dest_vm: floating ip of destination VM
-        :param local_vm_user: str, ssh user for local VM
         :param subport_number: int, trunk subport on which route is created
         :param gateway: network gateway
         """
         script = f"sudo ip r a {dest_vm} via {gateway} dev eth0.{subport_number}"
-        source_ssh = self.get_ssh(local_vm_user, local_vm)
-        self._run_command_with_attempts(source_ssh, script)
-        source_ssh.close()
+        self._run_command_with_attempts(local_vm_ssh, script)
 
-    def delete_route_from_vm_to_jumphost(self, local_vm, dest_vm, local_vm_user,
+    def delete_route_from_vm_to_jumphost(self, local_vm_ssh, dest_vm,
                                          subport_number, gateway):
         """Delete route from trunk vm to jumphost via trunk subport
-        :param local_vm: floating ip of local VM
+        :param local_vm_ssh: ssh connection to trunk VM
         :param dest_vm: floating ip of destination VM
-        :param local_vm_user: str, ssh user for local VM
         :param subport_number: int, trunk subport on which route is created
         :param gateway: network gateway
         """
         script = f"sudo ip r d {dest_vm} via {gateway} dev eth0.{subport_number}"
-        source_ssh = self.get_ssh(local_vm_user, local_vm)
-        self._run_command_with_attempts(source_ssh, script)
-        source_ssh.close()
+        self._run_command_with_attempts(local_vm_ssh, script)
 
-    def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip):
+    def simulate_subport_connection(self, trunk_id, vm_fip, jump_fip, vm_ssh):
         """Simulate connection from jumphost to random subport of trunk VM
         :param trunk_id: id of trunk on which subport is present
         :param vm_fip: floating ip of trunk VM
         :param jump_fip: floating ip of jumphost
+        :param vm_ssh: ssh connection to trunk VM
         """
         trunk = self.clients("neutron").show_trunk(trunk_id)
         trunk_ext_net_id = self.get_ext_net_id_by_trunk(trunk["trunk"])
@@ -86,7 +81,7 @@ class TrunkDynamicScenario(
             trunk["trunk"]["sub_ports"][subport_number_for_route-1]["port_id"])
         subnet_for_route = self.clients("neutron").show_subnet(
             subport_for_route["port"]["fixed_ips"][0]["subnet_id"])
-        self.add_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
+        self.add_route_from_vm_to_jumphost(vm_ssh, jump_fip,
                                            subport_number_for_route,
                                            subnet_for_route["subnet"]["gateway_ip"])
         subport_fip = self._create_floatingip(trunk_ext_net_name)["floatingip"]
@@ -101,7 +96,7 @@ class TrunkDynamicScenario(
         # as additional subports can be tested for connection in the
         # add_subports_random_trunks function, and we would not want the
         # existing route created here to be used for those subports.
-        self.delete_route_from_vm_to_jumphost(vm_fip, jump_fip, self.trunk_vm_user,
+        self.delete_route_from_vm_to_jumphost(vm_ssh, jump_fip,
                                               subport_number_for_route,
                                               subnet_for_route["subnet"]["gateway_ip"])
         # Dissociate and delete floating IP as the same subport can be used
@@ -263,7 +258,7 @@ class TrunkDynamicScenario(
 
             self.add_subports_to_trunk_and_vm(subports, trunk["trunk"]["id"], vm_ssh, 1)
 
-            self.simulate_subport_connection(trunk["trunk"]["id"], vm_fip, jump_fip)
+            self.simulate_subport_connection(trunk["trunk"]["id"], vm_fip, jump_fip, vm_ssh)
 
             self.release_lock(trunk["trunk"]["id"])
 
@@ -306,7 +301,7 @@ class TrunkDynamicScenario(
             self.add_subports_to_trunk_and_vm(subports, trunk["id"],
                                               vm_ssh, len(trunk["sub_ports"])+1)
 
-            self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
+            self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip, vm_ssh)
             self.release_lock(trunk["id"])
             num_operations_completed += 1
 
@@ -386,7 +381,7 @@ class TrunkDynamicScenario(
             # trunk, as the trunk loop variable will have whatever information
             # was valid at the beginning of the loop.
             if len(self.clients("neutron").show_trunk(trunk["id"])["trunk"]["sub_ports"]) > 0:
-                self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip)
+                self.simulate_subport_connection(trunk["id"], trunk_server_fip, jump_fip, vm_ssh)
 
             self.release_lock(trunk["id"])
             num_operations_completed += 1
@@ -441,7 +436,8 @@ class TrunkDynamicScenario(
             trunks_for_swapping[0]["sub_ports"][subport1_number_for_route-1]["port_id"])
         subnet1 = self.clients("neutron").show_subnet(
             subport1["port"]["fixed_ips"][0]["subnet_id"])
-        self.add_route_from_vm_to_jumphost(trunk_vm1_fip, jumphost1_fip, self.trunk_vm_user,
+        trunk_vm1_ssh = self.get_ssh(self.trunk_vm_user, trunk_vm1_fip)
+        self.add_route_from_vm_to_jumphost(trunk_vm1_ssh, jumphost1_fip,
                                            subport1_number_for_route,
                                            subnet1["subnet"]["gateway_ip"])
 
@@ -451,7 +447,8 @@ class TrunkDynamicScenario(
             trunks_for_swapping[1]["sub_ports"][subport2_number_for_route-1]["port_id"])
         subnet2 = self.clients("neutron").show_subnet(
             subport2["port"]["fixed_ips"][0]["subnet_id"])
-        self.add_route_from_vm_to_jumphost(trunk_vm2_fip, jumphost2_fip, self.trunk_vm_user,
+        trunk_vm2_ssh = self.get_ssh(self.trunk_vm_user, trunk_vm2_fip)
+        self.add_route_from_vm_to_jumphost(trunk_vm2_ssh, jumphost2_fip,
                                            subport2_number_for_route,
                                            subnet2["subnet"]["gateway_ip"])
 
@@ -477,11 +474,11 @@ class TrunkDynamicScenario(
         self.assign_ping_fip_from_jumphost(jumphost2_fip, self.jumphost_user, subport1_fip,
                                            subport2["port"]["id"])
 
-        self.delete_route_from_vm_to_jumphost(trunk_vm1_fip, jumphost1_fip, self.trunk_vm_user,
+        self.delete_route_from_vm_to_jumphost(trunk_vm1_ssh, jumphost1_fip,
                                               subport1_number_for_route,
                                               subnet1["subnet"]["gateway_ip"])
 
-        self.delete_route_from_vm_to_jumphost(trunk_vm2_fip, jumphost2_fip, self.trunk_vm_user,
+        self.delete_route_from_vm_to_jumphost(trunk_vm2_ssh, jumphost2_fip,
                                               subport2_number_for_route,
                                               subnet2["subnet"]["gateway_ip"])
 
@@ -489,6 +486,9 @@ class TrunkDynamicScenario(
         # again later.
         self.dissociate_and_delete_floating_ip(subport1_fip["id"])
         self.dissociate_and_delete_floating_ip(subport2_fip["id"])
+
+        trunk_vm1_ssh.close()
+        trunk_vm2_ssh.close()
 
         # Release lock from trunks
         self.release_lock(trunks_for_swapping[0]["id"])
