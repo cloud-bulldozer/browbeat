@@ -1,0 +1,17 @@
+---
+  HeatStacks.create_update_delete_stack:
+    -
+      args:
+        template_path: "rally/heat/templates/random-strings.yaml.template"
+        updated_template_path: {{updated_template_path}}
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        users:
+          tenants: 2
+          users_per_tenant: 3
+      sla:
+        failure_rate:
+          max: 0

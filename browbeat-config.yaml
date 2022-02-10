@@ -267,6 +267,31 @@ workloads:
         batches: 5
         file: rally/neutron/neutron-boot-server-and-batch-add-subports.yml
 
+  - name: heat
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 8
+    times: 16
+    scenarios:
+      - name: create-and-delete-stack-resource-group
+        enabled: false
+        num_instances: 2
+        instance_image: cirros
+        instance_volume_size: 1
+        instance_flavor: m1.tiny
+        instance_availability_zone: nova
+        file: rally/heat/create-and-delete-stack-resource-group.yaml
+      # specify the updated_template_path as per the use case from "rally/heat/templates/"
+      # use 'updated-random-strings-add.yaml.template' for adding resources to the existing stack
+      # use 'updated-random-strings-delete.yaml.template' for delete
+      # use 'updated-random-strings-replace.yaml.template' for replace
+      - name: create-update-delete-stack
+        enabled: false
+        updated_template_path: rally/heat/templates/updated-random-strings-replace.yaml.template
+        file: rally/heat/create-update-delete-stack.yaml
+
   - name: nova
     enabled: false
     type: rally
