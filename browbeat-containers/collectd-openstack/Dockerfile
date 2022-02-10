@@ -1,4 +1,4 @@
-FROM registry.centos.org/centos:8
+FROM quay.io/centos/centos:stream8
 
 RUN dnf clean all && \
     dnf group install -y "Development Tools" && \
@@ -11,7 +11,8 @@ RUN dnf clean all && \
     pip3 install --upgrade pip && \
     pip3 install pyrabbit && \
     dnf install -y libdbi-dbd-mysql collectd-dbi && \
-    dnf install -y centos-release-openstack-train && \
+    dnf install -y centos-release-openstack-ussuri && \
+    dnf config-manager --set-enabled powertools && \
     dnf install -y openvswitch libibverbs && \
     dnf install -y passwd && \
     dnf install -y ceph-common && \
