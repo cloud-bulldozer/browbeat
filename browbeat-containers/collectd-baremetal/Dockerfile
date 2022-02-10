@@ -1,4 +1,4 @@
-FROM registry.centos.org/centos:8
+FROM quay.io/centos/centos:stream8
 
 RUN dnf update -y && \
     dnf clean all && \
