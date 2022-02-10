@@ -11,8 +11,10 @@ python-openstackclient==3.11.0;python_version<'3'
 python-openstackclient>=3.11.0;python_version>='3'
 pykwalify==1.7.0;python_version<'3'
 pykwalify>=1.8.0;python_version>='3'
-gspread
-oauth2client
+gspread==3.7.0;python_version<'3'
+gspread>=4.0.0;python_version>='3'
+oauth2client==1.4.1;python_version<'3'
+oauth2client;python_version>='3'
 gspread_formatting
 pandas
 gspread_dataframe
