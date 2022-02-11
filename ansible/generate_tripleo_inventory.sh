@@ -12,6 +12,7 @@ function usage
 }
 
 user="stack"
+overcloud_stack_name=overcloud
 uncomment_localhost=false
 tripleo_ip_address=
 
@@ -44,9 +45,9 @@ fi
 out_file="hosts.yml"
 if [ $uncomment_localhost ]; then
   source ~/stackrc
-  tripleo-ansible-inventory --static-yaml-inventory ${out_file}
+  tripleo-ansible-inventory --stack ${overcloud_stack_name} --static-yaml-inventory ${out_file}
 else
-  file_path=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" ${user}@${tripleo_ip_address} ". ~/stackrc; tripleo-ansible-inventory --static-yaml-inventory ${out_file}; pwd ${out_file}")
+  file_path=$(ssh -tt -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" ${user}@${tripleo_ip_address} ". ~/stackrc; tripleo-ansible-inventory --stack ${overcloud_stack_name} --static-yaml-inventory ${out_file}; pwd ${out_file}")
   scp -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" ${user}@${tripleo_ip_address}:${file_path}/${out_file} .
 fi
 
