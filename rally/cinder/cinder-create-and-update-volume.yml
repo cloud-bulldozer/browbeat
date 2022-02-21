@@ -18,6 +18,10 @@
         users:
           tenants: 10
           users_per_tenant: 20
+        quotas:
+          cinder:
+            gigabytes: -1
+            volumes: -1
       sla:
         max_avg_duration: {{ sla_max_avg_duration }}
         max_seconds_per_iteration: {{ sla_max_seconds }}
