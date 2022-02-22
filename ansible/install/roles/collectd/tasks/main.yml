@@ -132,8 +132,14 @@
   shell: ls /var/run/ceph/ceph-osd.*.asok | head -n 1 | egrep -o '[0-9]+'
   register: cephstorage_osd_socket
   become: true
-  when:  "('CephStorage' in group_names and ceph_storage_collectd_plugin)"
+  when:  "('CephStorage' in group_names and ceph_storage_collectd_plugin) and (rhosp_version is version('17.0', '<'))"
 # End CephStorage OSD monitoring
+
+- name: Get 1st OSD socket
+  shell: cephadm shell -- ls /var/run/ceph/ | head -n 1 | egrep -o '[0-9]+'
+  register: cephstorage_osd_socket
+  become: true
+  when:  "('CephStorage' in group_names and ceph_storage_collectd_plugin) and (rhosp_version is version('17.0', '>='))"
 
 - name: Create configuration directory
   file:
@@ -228,10 +234,11 @@
           -v /home/{{ host_remote_user }}/collectd_pipe:/collectd_pipe \
           {% endif %}
           {% endif %}
-          {% if config_type == 'controller' or config_type == 'cephstorage' %}
-          {% if ceph_controller_collectd_plugin or ceph_storage_collectd_plugin %}
-          -v /etc/ceph/:/etc/ceph/ -v /var/run/ceph/:/var/run/ceph/ \
+          {% if config_type == 'controller' and ceph_controller_collectd_plugin and inventory_hostname == groups['Controller'][0] %}
+          -v /etc/ceph/:/etc/ceph/ -v /var/run/ceph/:/var/run/ceph \
           {% endif %}
+          {% if config_type == 'cephstorage' and ceph_storage_collectd_plugin and inventory_hostname == groups['CephStorage'][0]  %}
+          -v /var/run/ceph/:/var/run/ceph \
           {% endif %}
           collectd-openstack
       become: yes
