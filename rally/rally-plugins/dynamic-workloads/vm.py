@@ -155,7 +155,8 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         """Swap floating IPs between servers
         """
         kwargs = {"floating_network_id": self.ext_net_id}
-        eligible_floating_ips = self._list_floating_ips(**kwargs)["floatingips"]
+        eligible_floating_ips = [fip for fip in self._list_floating_ips(**kwargs)["floatingips"]
+                                 if fip["port_id"] is not None]
 
         floating_ips_to_swap = []
         servers_to_swap = []
