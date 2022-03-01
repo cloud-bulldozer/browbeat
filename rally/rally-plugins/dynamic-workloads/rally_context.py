@@ -59,8 +59,10 @@ class CreateExternalNetworksContext(context.Context):
                 "name": self.net_wrapper.owner.generate_random_name(),
                 "ip_version": 4,
                 "cidr": "172.31.{}.0/23".format(network_number),
-                "enable_dhcp": True,
-                "dns_nameservers": ["8.8.8.8", "8.8.4.4"]
+                "enable_dhcp": False,
+                "gateway_ip": "172.31.{}.1".format(network_number),
+                "allocation_pools": [{"start": "172.31.{}.2".format(network_number),
+                                      "end": "172.31.{}.254".format(network_number+1)}]
             }
         }
         return self.net_wrapper.client.create_subnet(subnet_args)["subnet"]
@@ -112,8 +114,8 @@ class CreateExternalNetworksContext(context.Context):
                     has_error_occured = True
                     break
 
-                cmd = ["sudo", "ip", "a", "a", "172.31.{}.0/23".format(
-                       num_external_networks_created*2 + 1), "dev",
+                cmd = ["sudo", "ip", "a", "a", "172.31.{}.1/23".format(
+                       num_external_networks_created*2), "dev",
                        "{}.{}".format(self.interface_name, num_external_networks_created + 1)]
                 proc = subprocess.Popen(cmd)
                 proc.wait()
@@ -155,7 +157,7 @@ class CreateExternalNetworksContext(context.Context):
                 try:
                     subnet = self._create_subnet(tenant_id,
                                                  self.context["external_networks"][-1]["id"],
-                                                 (num_external_networks_created - 1) * 2 + 1)
+                                                 (num_external_networks_created - 1) * 2)
                     self.context["external_subnets"][
                         self.context["external_networks"][-1]["id"]] = subnet
                     LOG.debug(
