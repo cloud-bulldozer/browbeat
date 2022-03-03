@@ -65,7 +65,7 @@
   become: true
   register: db_connections
   with_dict: "{{mysql_svcs}}"
-  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
+  when: (rhosp_version is version('16.2', '<') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
   ignore_errors: true
 
 - name: Append to mysql string
@@ -75,7 +75,7 @@
     section: database
     option: connection
     value: "{{ item.stdout }}&plugin=collectd&collectd_program_name={{ item.item.key }}"
-  when: (('Controller' in group_names) and sqlalchemy_collectd_plugin and ('plugin=collectd' not in item.stdout))
+  when: (rhosp_version is version('16.2', '<') and ('Controller' in group_names) and sqlalchemy_collectd_plugin and ('plugin=collectd' not in item.stdout))
   with_items: "{{ db_connections.results }}"
   become: true
 
@@ -100,7 +100,7 @@
     - heat_api_cron
     - heat_api_cfn
   ignore_errors: yes
-  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
+  when: (rhosp_version is version('16.2', '<') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
 
 
 # CephStorage OSD monitoring
