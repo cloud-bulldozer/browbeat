@@ -3,7 +3,7 @@
 # Playbook to adjust Nova Scheduler settings to avoid over-scheduling hosts
 # with greater memory in uneven memory environments.
 #
-# Versions tested: Newton, Ocata, Pike
+# Versions tested: Newton, Ocata, Pike, Train
 #
 # Examples:
 # ansible-playbook -i hosts browbeat/adjustment-nova-scheduler.yml -e 'max_instances_per_host=350'
@@ -54,10 +54,20 @@
         nova_config_file: /etc/nova/nova.conf
       when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-    - name: (Pike) Set Config File based on OpenStack Version
+    - name: (Pike, Train) Set Config File based on OpenStack Version
       set_fact:
         nova_config_file: /var/lib/config-data/puppet-generated/nova/etc/nova/nova.conf
-      when: "'Pike' in osp_version['content'] | b64decode"
+      when: "('Pike' in osp_version['content'] | b64decode or 'Train' in osp_version['content'] | b64decode)"
+
+    - name: (Pike) Set container cli based on Openstack Version
+      set_fact:
+        container_cli: docker
+      when: "('Pike' in osp_version['content'] | b64decode)"
+
+    - name: (Train) Set container cli based on Openstack Version
+      set_fact:
+        container_cli: podman
+      when: "('Train' in osp_version['content'] | b64decode)"
 
     - name: Set default max_instances_per_host, ram_weight_multiplier, enabled_filters, and host_subset_size
       set_fact:
@@ -130,9 +140,9 @@
         - httpd
       when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode) and (restart_nova)"
 
-    - name: (Pike) Restart Nova Scheduler Container
+    - name: (Pike, Train) Restart Nova Scheduler Container
       become: true
-      command: "docker restart {{item}}"
+      command: "{{container_cli}} restart {{item}}"
       with_items:
         - nova_scheduler
-      when: "('Pike' in osp_version['content'] | b64decode) and (restart_nova)"
+      when: "('Pike' in osp_version['content'] | b64decode or 'Train' in osp_version['content'] | b64decode) and (restart_nova)"
