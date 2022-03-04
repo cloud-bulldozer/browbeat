@@ -43,7 +43,7 @@ rally_openstack_version: 1.6.0
 shaker_venv: "{{browbeat_path}}/.shaker-venv"
 
 # Shaker version to Install
-shaker_version: 1.3.2
+shaker_version: 1.4.2
 
 # Custom name to use for the cloud
 cloud_prefix: openstack
