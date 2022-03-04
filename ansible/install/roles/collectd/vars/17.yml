@@ -1,0 +1,112 @@
+---
+collectd_logs:
+    undercloud:
+       - log_path: /var/log/containers/ironic/ironic-conductor.log
+         instance: ironic-conductor
+       - log_path: /var/log/containers/ironic/ironic-dbsync.log
+         instance: ironic-dbsync
+       - log_path: /var/log/containers/ironic-inspector/ironic-inspector.log
+         instance: ironic-inspector
+       - log_path: /var/log/containers/keystone/keystone.log
+         instance: keystone
+       - log_path: /var/log/containers/mysql/mariadb.log
+         instance: mysql
+       - log_path: /var/log/containers/neutron/dhcp-agent.log
+         instance: neutron-dhcp-agent
+       - log_path: /var/log/containers/neutron/ironic-neutron-agent.log
+         instance: neutron-ironic-agent
+       - log_path: /var/log/containers/neutron/l3-agent.log
+         instance: neutron-l3-agent
+       - log_path: /var/log/containers/neutron/openvswitch-agent.log
+         instance: neutron-openvswitch-agent
+       - log_path: /var/log/containers/neutron/server.log
+         instance: neutron-server
+       - log_path: /var/log/containers/httpd/ironic-api/ironic_wsgi_error.log
+         instance: ironic-api-wsgi
+       - log_path: /var/log/containers/httpd/ironic-pxe/ipxe_vhost_error.log
+         instance: ironic-pxe-wsgi
+       - log_path: /var/log/containers/httpd/keystone/keystone_wsgi_error.log
+         instance: keystone-wsgi
+    controller:
+        - log_path: /var/log/containers/cinder/cinder-api.log
+          instance: cinder-api
+        - log_path: /var/log/containers/cinder/cinder-scheduler.log
+          instance: cinder-scheduler
+        - log_path: /var/log/containers/cinder/cinder-volume.log
+          instance: cinder-volume
+        - log_path: /var/log/containers/cinder/cinder-manage.log
+          instance: cinder-manage
+        - log_path: /var/log/containers/glance/api.log
+          instance: glance-api
+        - log_path: /var/log/containers/heat/heat_api_cfn.log
+          instance: heat-api-cfn
+        - log_path: /var/log/containers/heat/heat_api.log
+          instance: heat-api
+        - log_path: /var/log/containers/heat/heat-engine.log
+          instance: heat-engine
+        - log_path: /var/log/containers/keystone/keystone.log
+          instance: keystone
+        - log_path: /var/log/containers/mysql/mysqld.log
+          instance: mysql
+        - log_path: /var/log/containers/neutron/server.log
+          instance: neutron-server
+        - log_path: /var/log/containers/nova/nova-api.log
+          instance: nova-api
+        - log_path: /var/log/containers/nova/nova-conductor.log
+          instance: nova-conductor
+        - log_path: /var/log/containers/nova/nova-scheduler.log
+          instance: nova-scheduler
+        - log_path: /var/log/containers/nova/nova-metadata-api.log
+          instance: nova-metadata-api
+        - log_path: /var/log/containers/nova/nova-novncproxy.log
+          instance: nova-novncproxy
+        - log_path: /var/log/containers/openvswitch/ovn-controller.log
+          instance: ovn-controller
+        - log_path: /var/log/containers/openvswitch/ovsdb-server-nb.log
+          instance: ovsdb-server-nb
+        - log_path: /var/log/containers/openvswitch/ovsdb-server-sb.log
+          instance: ovsdb-server-sb
+        - log_path: /var/log/containers/placement/placement.log
+          instance: nova-placement
+        - log_path: /var/log/containers/httpd/heat-api/heat_api_wsgi_error.log
+          instance: heat-api-wsgi
+        - log_path: /var/log/containers/httpd/keystone/keystone_wsgi_error.log
+          instance: keystone-wsgi
+        - log_path: /var/log/containers/httpd/nova-api/nova_api_wsgi_error.log
+          instance: nova-api-wsgi
+        - log_path: /var/log/containers/httpd/placement/placement_wsgi_error.log
+          instance: nova-placement-wsgi
+        - log_path: /var/log/containers/httpd/heat-api-cfn/heat_api_cfn_wsgi_error.log
+          instance: heat-api-cfn-wsgi
+        - log_path: /var/log/containers/httpd/nova-metadata/nova_metadata_wsgi_error.log
+          instance: nova-metadata-wsgi
+        - log_path: /var/log/containers/swift/swift.log
+          instance: swift
+    compute:
+        - log_path: /var/log/containers/libvirt/libvirtd.log
+          instance: libvirtd
+        - log_path: /var/log/containers/neutron/ovn-metadata-agent.log
+          instance: ovn-metadata-agent
+        - log_path: /var/log/containers/nova/nova-compute.log
+          instance: nova-compute
+        - log_path: /var/log/containers/openvswitch/ovn-controller.log
+          instance: ovn-controller
+mysql_svcs:
+  cinder:
+    path: "/var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf"
+  glance:
+    path: "/var/lib/config-data/puppet-generated/glance_api/etc/glance/glance-api.conf"
+  heat:
+    path: "/var/lib/config-data/puppet-generated/heat/etc/heat/heat.conf"
+  heat_api:
+    path: "/var/lib/config-data/puppet-generated/heat_api/etc/heat/heat.conf"
+  heat_api_cnf:
+    path: "/var/lib/config-data/puppet-generated/heat_api_cfn/etc/heat/heat.conf"
+  keystone:
+    path: "/var/lib/config-data/puppet-generated/keystone/etc/keystone/keystone.conf"
+  neutron:
+    path: "/var/lib/config-data/puppet-generated/neutron/etc/neutron/neutron.conf"
+  nova:
+    path: "/var/lib/config-data/puppet-generated/nova/etc/nova/nova.conf"
+  nova_metadata:
+    path: "/var/lib/config-data/puppet-generated/nova_metadata/etc/nova/nova.conf"
