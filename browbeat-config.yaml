@@ -13,7 +13,7 @@ browbeat:
   # are running. Please install collectd by running the command
   # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
   # setting this option to true.
-  start_stop_collectd: false
+  start_stop_collectd: true
 ansible:
   hosts: ansible/hosts.yml
   metadata_playbook: ansible/gather/stockpile.yml
