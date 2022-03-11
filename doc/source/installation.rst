@@ -42,31 +42,10 @@ On the Undercloud
   [stack@undercloud ~]$ git clone https://github.com/openstack/browbeat.git
   [stack@undercloud ~]$ source stackrc
   [stack@undercloud ~]$ cd browbeat/ansible
-  [stack@undercloud ansible]$ ./generate_tripleo_inventory.sh -l
-  [stack@undercloud ansible]$ sudo easy_install pip
-  [stack@undercloud ansible]$ sudo pip install ansible
   [stack@undercloud ansible]$ vi install/group_vars/all.yml # Make sure to edit the dns_server to the correct ip address
+  [stack@undercloud ansible]$ ./generate_tripleo_inventory.sh -l
   [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/browbeat.yml
-  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/shaker_build.yml
 
-.. note:: Your default network might not work for you depending on your
-   underlay/overlay network setup. In such cases, user needs to create
-   appropriate networks for instances to allow them to reach the
-   internet. Some useful documentation can be found at:
-   https://access.redhat.com/documentation/en/red-hat-openstack-platform/11/single/networking-guide/
-
-(Optional) Clone e2e-benchmarking repository and deploy benchmark-operator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-e2e-benchmarking is a repository that is used to run workloads to stress an Openshift
-cluster, and is needed to run shift-on-stack workloads in Browbeat.
-
-To enable the e2e-benchmarking repository to be cloned and benchmark-operator to be deployed,
-set install_e2e_benchmarking: true in ansible/install/group_vars/all.yml.
-After that, add the kubeconfig paths of all your Openshift clusters in the ansible/kubeconfig_paths
-file. Move the default kubeconfig file(/home/stack/.kube/config) to another location so that it isn't
-used for all Openshift clusters. After that, run the command mentioned below.
-
-  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/browbeat.yml
 
 (Optional) Install Browbeat instance workloads
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +79,7 @@ has been installed. To skip directly to this task execute:
 
 ::
 
-    $ ansible-playbook -i hosts install/browbeat.yml --start-at-task "Check browbeat_network"
+    $ ansible-playbook -i hosts.yml install/browbeat.yml --start-at-task "Check browbeat_network"
 
 
 
@@ -111,28 +90,8 @@ has been installed. To skip directly to this task execute:
 
 ::
 
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/collectd.yml
+  [stack@undercloud-0 ansible]$ ansible-playbook -i hosts.yml  install/collectd.yml
 
-(Optional) Install Rsyslogd logging with aggregation (not maintained)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-First configure the values rsyslog values and elasticsearch parameters in
-`ansible/install/group_vars/all.yml`. If you have a large number of hosts
-deploying an aggregator using `ansible/install/rsyslog-aggregator.yml`
-is strongly suggested. If you have a small scale, change the value
-rsyslog_forwarding in `all.yml` to `false`. Once things are configured
-to your liking deploy logging on the cloud using the `rsyslog-logging.yml`
-playbook.
-
-Firewall configuration for the aggregator is left up to the user. The logging
-install playbook will check that the aggregator is up and the port is open if
-you deploy with aggregation.
-
-::
-
-  [stack@ospd ansible]$ vim install/group_vars/all.yml
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/rsyslog-aggregator.yml
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/rsyslog-logging.yml
 
 (Optional) Install Browbeat Grafana dashboards
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -144,16 +103,16 @@ http://docs.grafana.org/http_api/auth/#create-api-token
 
 ::
 
-  [stack@ospd ansible]$ # update the vars and make sure to update grafana_apikey with value
-  [stack@ospd ansible]$ vi install/group_vars/all.yml
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/browbeat.yml # if not run before.
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-dashboards.yml
+  [stack@undercloud ansible]$ # update the vars and make sure to update grafana_apikey with value
+  [stack@undercloud ansible]$ vi install/group_vars/all.yml
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/browbeat.yml # if not run before.
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/grafana-dashboards.yml
 
 (Optional) Install Browbeat Prometheus/Grafana/Collectd
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
-  [stack@ospd ansible]$ ansible-playbook -i hosts install/grafana-prometheus-dashboards.yml
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml install/grafana-prometheus-dashboards.yml
 
 Make sure grafana-api-key is added in the `install/group_vars/all.yml`
 
@@ -166,24 +125,31 @@ client side and Elasticsearch on the server side. Set the `cloud_prefix` and `es
 
 ::
 
-  [stack@ospd ansible]$ # update the vars
-  [stack@ospd ansible]$ vi install/group_vars/all.yml
-  [stack@ospd ansible]$ # install filebeat
-  [stack@ospd ansible]$ ansible-playbook -i hosts common_logging/install_logging.yml
-  [stack@ospd ansible]$ # install and start filebeat
-  [stack@ospd ansible]$ ansible-playbook -i hosts common_logging/install_logging.yml -e "start_filebeat=True"
+  [stack@undercloud ansible]$ # update the vars
+  [stack@undercloud ansible]$ vi install/group_vars/all.yml
+  [stack@undercloud ansible]$ # install filebeat
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml common_logging/install_logging.yml
+  [stack@undercloud ansible]$ # install and start filebeat
+  [stack@undercloud ansible]$ ansible-playbook -i hosts.yml common_logging/install_logging.yml -e "start_filebeat=True"
 
-Not mantained (Pre-Pike): Run Overcloud checks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+(Optional) Install Kibana Visualizations
+----------------------------------------
+
+1. Update install/group_vars/all.yml (es_ip) to identify your ELK host.
+2. Install Kibana Visualizations via Ansible playbook
 
 ::
 
-  [stack@ospd ansible]$ ansible-playbook -i hosts check/site.yml
+  [stack@undercloud ansible]# ansible-playbook -i hosts.yml install/kibana-visuals.yml
+  ...
 
-Your Overcloud check output is located in results/bug_report.log
+Now navigate to http://elk-host-address to verify Kibana is
+installed and custom visualizations are uploaded.
 
-Install Browbeat from your local machine
-----------------------------------------
+
+Install Browbeat from your local machine (Not Manintained)
+----------------------------------------------------------
 
 This installs Browbeat onto your Undercloud but the playbook is run from your
 local machine rather than directly on the Undercloud machine.
@@ -651,17 +617,3 @@ entirely on the number of metrics and your environments capacity.  There is a
 Graphite dashboard included and it is recommended to install collectd on your
 monitoring host such that you can see if you hit resource issues with your
 monitoring host.
-
-(Optional) Install Kibana Visualizations
-----------------------------------------
-
-1. Update install/group_vars/all.yml (es_ip) to identify your ELK host.
-2. Install Kibana Visualizations via Ansible playbook
-
-::
-
-  [root@dhcp23-93 ansible]# ansible-playbook -i hosts install/kibana-visuals.yml
-  ...
-
-Now navigate to http://elk-host-address to verify Kibana is
-installed and custom visualizations are uploaded.

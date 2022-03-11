@@ -15,7 +15,7 @@ Contents:
    installation
    usage
    plugins
-   ci
+   charts
    developing
    contributing
 

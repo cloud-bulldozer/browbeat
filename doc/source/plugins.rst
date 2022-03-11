@@ -5,6 +5,50 @@ Plugins
 Rally
 ~~~~~
 
+Scenario - dynamic-workloads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Dynamic workloads are workloads that aim to simulate a realistic Openstack customer environment, by introducing elements of randomness into the simulation. A list of the different workloads that are part of this Browbeat Rally Plugin is mentioned below.
+
+VM:
+
+- create_delete_servers: Create 'N' VMs(without floating IP), and delete 'M'
+  randomly chosen VMs from this list of VMs.
+- migrate_servers: Create 'N' VMs(with floating IP), and migrate 'M' randomly
+  chosen VMs from this list of VMs across computes, before resizing them.
+- swap_floating_ips_between_servers: Swap floating IPs between 2 servers. Ping
+  until failure after dissociating floating IPs, before swapping them. Ping until
+  success after swapping floating IPs between 2 servers.
+
+Octavia:
+
+- create_loadbalancers: Create 'N' loadbalancers with specified 'M' pools and 'K'
+  clients per Loadbalancer.
+- delete_loadbalancers: Deletes 'M' loadbalancers randomly from 'N' loadbalancers
+- delete_members_random_lb: Deletes 'M' members from a random loadbalancer
+
+Trunk(pod simulation):
+
+- pod_fip_simulation: Simulate pods with floating ips using subports on trunks and
+  VMs. Create 'N' trunks and VMs and 'M' subports per trunk/VM. Ping a random subport
+  of each trunk/VM from a jumphost.
+- add_subports_to_random_trunks: Add 'M' subports to 'N' randomly chosen trunks. This
+  is to simulate pods being added to an existing VM.
+- delete_subports_from_random_trunks: Delete 'M' subports from 'N' randomly chosen
+  trunks. This is is to simulate pods being destroyed.
+- swap_floating_ips_between_random_subports: Swap floating IPs between 2 randomly
+  chosen subports from 2 trunks.
+
+Provider network:
+
+- provider_netcreate_nova_boot_ping: Creates a provider Network and Boots VM and ping
+- provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
+- provider_net_nova_delete: Delete all VM's and provider network
+
+Shift on Stack:
+
+shift_on_stack: Runs specified kube-burner workload through e2e-benchmarking. e2e-benchmarking is a [repository](https://github.com/cloud-bulldozer/e2e-benchmarking.git) that contains scripts to stress Openshift clusters. This workload uses e2e-benchmarking to test Openshift on Openstack.
+
 Context - browbeat_delay
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -44,77 +88,3 @@ Scenario - nova_boot_persist_with_network_volume_fip
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This scenario creates instances with a nic, a volume and associates a floating ip that persist upon completion of a rally run.  It is used as a workload with Telemetry by spawning many instances that have many metrics for the Telemetry subsystem to collect upon.
-
-Charts
-^^^^^^
-
-To include any of the custom charts from Browbeat in a scenario, the following lines will have to be included in the python file of the program.
-.. code-block:: python
-
-   import sys
-   import os
-
-   sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../reports')))
-   from generate_scenario_duration_charts import ScenarioDurationChartsGenerator  # noqa: E402
-
-The customc charts will appear in the "Scenario Data" section of the Rally HTML report.
-
-Chart - add_per_iteration_complete_data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This plugin generates a stacked area graph for duration trend for each atomic action in an iteration.
-To include this chart in any scenario, add the following lines at the end of the run() function of the scenario in the python file.
-
-.. code-block:: python
-
-   self.duration_charts_generator = ScenarioDurationChartsGenerator()
-   self.duration_charts_generator.add_per_iteration_complete_data(self)
-
-The graphs will appear under the "Per iteration" section of "Scenario Data" in the Rally HTML report.
-The resulting graphs will look like the images below.
-
-.. image:: images/Per_Iteration_Duration_Stacked_Area_Chart/Iteration1.png
-   :alt: Iteration 1 Chart
-
-.. image:: images/Per_Iteration_Duration_Stacked_Area_Chart/Iteration2.png
-   :alt: Iteration 2 Chart
-
-.. image:: images/Per_Iteration_Duration_Stacked_Area_Chart/Iteration3.png
-   :alt: Iteration 3 Chart
-
-.. image:: images/Per_Iteration_Duration_Stacked_Area_Chart/Iteration4.png
-   :alt: Iteration 4 Chart
-
-Chart - add_duplicate_atomic_actions_iteration_additive_data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This plugin generates line graphs for atomic actions that have been executed more than once in the same iteration.
-To include this chart in any scenario, add the following lines at the end of the run() function of the scenario in the python file.
-
-.. code-block:: python
-
-   self.duration_charts_generator = ScenarioDurationChartsGenerator()
-   self.duration_charts_generator.add_duplicate_atomic_actions_iteration_additive_data(self)
-
-The graphs will	appear under the "Aggregated" section of "Scenario Data" in the Rally HTML report.
-The resulting graphs will look like the	images below.
-
-.. image:: images/Duplicate_Atomic_Actions_Duration_Line_Chart.png
-   :alt: Duplicate Atomic Actions Duration Line Chart
-
-Chart - add_all_resources_additive_data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This plugin generates a line graph for duration data from each resource created by Rally.
-To include this chart in any scenario, add the following lines at the end of the run() function of the scenario in the python file.
-
-.. code-block:: python
-
-   self.duration_charts_generator = ScenarioDurationChartsGenerator()
-   self.duration_charts_generator.add_all_resources_additive_data(self)
-
-The graphs will appear under the "Aggregated" section of "Scenario Data" in the Rally HTML report.
-The resulting graphs will look like the images below.
-
-.. image:: images/Resource_Atomic_Actions_Duration_Line_Chart.png
-   :alt: Resource Atomic Actions Duration Line Chart

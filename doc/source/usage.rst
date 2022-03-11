@@ -4,15 +4,16 @@ Usage
 
 Run Browbeat performance tests from Undercloud
 ----------------------------------------------
+For Running the workloads from Undercloud
 
 ::
 
     $ ssh undercloud-root
-    [root@ospd ~]# su - stack
-    [stack@ospd ~]$ cd browbeat/
-    [stack@ospd browbeat]$ . .browbeat-venv/bin/activate
-    (browbeat-venv)[stack@ospd browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
-    (browbeat-venv)[stack@ospd browbeat]$ ./browbeat.py <workload> #rally, shaker or "all"
+    [root@undercloud ~]# su - stack
+    [stack@undercloud ~]$ cd browbeat/
+    [stack@undercloud browbeat]$ . .browbeat-venv/bin/activate
+    (.browbeat-venv)[stack@undercloud browbeat]$ vi browbeat-config.yaml # Edit browbeat-config.yaml to control how many stress tests are run.
+    (.browbeat-venv)[stack@undercloud browbeat]$ ./browbeat.py <workload> #rally, shaker or "all"
 
 Running Shaker
 ---------------
@@ -77,7 +78,7 @@ you:
 
 ::
 
-    $ ansible-playbook -i hosts install/kibana-visuals.yml
+    $ ansible-playbook -i hosts.yml install/kibana-visuals.yml
 
 Alternatively you can create your own visualizations of specific shaker runs
 using some simple searches such as:
@@ -94,7 +95,7 @@ If filebeat is enabled in the browbeat configuration file and filebeat was previ
 
 ::
 
-    $ ansible-playbook -i hosts common_logging/install_logging.yml
+    $ ansible-playbook -i hosts.yml common_logging/install_logging.yml
 
 as explained in the installation documentation, then
 
