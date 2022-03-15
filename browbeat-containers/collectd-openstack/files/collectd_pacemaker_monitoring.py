@@ -42,6 +42,8 @@ def read_func():
                        "redis_resource_failures", "ovn_resource_failures", "cinder_resource_failures"]
 
     for component in components_list:
+        val = 0
+
         if component == "total_nodes":
             for line in latest_output[-1::-1]:
                 if "nodes configured" in line:
@@ -71,7 +73,6 @@ def read_func():
 
         elif "resource_total_count" in component:
             resource = component.split("_")[0]
-            val = 0
             # Flag to make sure that failures are not counted
             # in resource total count.
             is_failures_total = False
@@ -93,7 +94,6 @@ def read_func():
 
         elif "resource_master_count" in component:
             resource = component.split("_")[0]
-            val = 0
             # Flag to make sure that failures are not counted
             # in resource master count
             is_failures_master = False
@@ -115,7 +115,6 @@ def read_func():
 
         if "daemon_status" in component:
             daemon = component.split("_")[0]
-            val = 0
             for line in latest_output:
                 if daemon+":" in line and "active/enabled" in line:
                     val = 1
@@ -123,7 +122,6 @@ def read_func():
 
         if "resource_failures" in component:
             resource = component.split("_")[0]
-            val = 0
             is_failures = False
             for line in latest_output[-1::-1]:
                 if "Failed" in line:
