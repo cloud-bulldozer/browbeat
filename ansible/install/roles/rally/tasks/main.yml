@@ -67,13 +67,13 @@
   args:
     executable: /bin/bash
     chdir: "{{ role_path }}/files/browbeat-rally"
-  when: rhosp_version is version('15.0', '>=')
+  when: rhosp_version is version('13.0', '>=')
 
 - name: create lock table in rally db for dynamic workloads
   shell: |
     source {{ rally_venv }}/bin/activate
     python {{ role_path }}/files/create_lock_table.py
-  when: rhosp_version is version('15.0', '>=')
+  when: rhosp_version is version('13.0', '>=')
 
 - block:
     - name: copy of stackrc
