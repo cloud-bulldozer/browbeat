@@ -23,7 +23,7 @@ LoadPlugin "logfile"
 </Plugin>
 
 LoadPlugin write_graphite
-{% if apache_controller_collectd_plugin %}
+{% if rhosp_version is version ('16', '<') and apache_controller_collectd_plugin %}
 LoadPlugin apache
 {% endif %}
 {% if collectd_prometheus %}
@@ -106,7 +106,7 @@ PreCacheChain "PreCache"
 </Plugin>
 {% endif %}
 
-{% if apache_controller_collectd_plugin %}
+{% if rhosp_version is version ('16', '<') and apache_controller_collectd_plugin %}
 
 <Plugin apache>
   <Instance "status">

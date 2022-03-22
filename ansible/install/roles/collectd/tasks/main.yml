@@ -102,6 +102,29 @@
   ignore_errors: yes
   when: (rhosp_version is version('16.2', '<') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
 
+# Apache Monitoring
+- name: Deploy Apache mod_status conf
+  template:
+    src: 00-browbeat_mod_status.conf.j2
+    dest: /etc/httpd/conf.d/00-browbeat_mod_status.conf
+    owner: root
+    group: root
+  become: true
+  when: "('Undercloud' in group_names and apache_undercloud_collectd_plugin)"
+
+- name: (Undercloud) Allow httpd to listen to port ({{apache_undercloud_mod_status_port}})
+  command: "/usr/sbin/semanage port -m -t http_port_t -p tcp {{apache_undercloud_mod_status_port}}"
+  become: true
+  when: "('Undercloud' in group_names and apache_undercloud_collectd_plugin)"
+
+- name: Restart Apache
+  service:
+    name: httpd
+    state: restarted
+    enabled: true
+  become: true
+  when: "('Undercloud' in group_names and apache_undercloud_collectd_plugin)"
+# End Apache Monitoring
 
 # CephStorage OSD monitoring
 # Only Monitors a single OSD on each CephStorage Node
