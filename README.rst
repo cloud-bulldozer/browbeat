@@ -16,10 +16,10 @@ Browbeat documentation is available at https://browbeat.readthedocs.io/
 Resources
 =========
 
-* `Blog <https://browbeatproject.org>`_
+* `Blog <https://browbeatproject.wordpress.com>`_
 * `Twitter <https://twitter.com/browbeatproject>`_
-* `Code Review <https://review.openstack.org/#/q/project:openstack/browbeat>`_
+* `Code Review <https://review.opendev.org/#/q/status:open+project:x/browbeat>`_
 * `Git Web <https://opendev.org/x/browbeat>`_
-* `IRC <http://webchat.freenode.net/?nick=browbeat_user&channels=openstack-browbeat>`_ -- **#openstack-browbeat** (irc.freenode.net)
+* `IRC <https://web.libera.chat/?channels=#browbeat`_ -- **#browbeat** (irc.libera.chat)
 * `Issue tracker <https://bugs.launchpad.net/openstack-browbeat>`_
 * `Browse code <https://github.com/openstack/browbeat>`_
