@@ -18,7 +18,7 @@
 
     - name: (Undercloud) Get mysql root password
       shell: |
-        grep undercloud_mysql_root_password: undercloud-passwords.conf | sed 's/undercloud_mysql_root_password: //g'
+        grep undercloud_mysql_root_password: ~/undercloud-passwords.conf | sed 's/undercloud_mysql_root_password: //g'
       register: undercloud_mysql_password
       when: "'Undercloud' in group_names"
 
