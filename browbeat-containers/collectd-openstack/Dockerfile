@@ -1,7 +1,7 @@
 FROM quay.io/centos/centos:stream8
 
 RUN dnf clean all && \
-    dnf group install -y "Development Tools" && \
+    dnf group install -y "Development Tools" --nobest && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     dnf install -y centos-release-opstools && \
     dnf install -y collectd collectd-turbostat collectd-disk collectd-apache collectd-ceph \
