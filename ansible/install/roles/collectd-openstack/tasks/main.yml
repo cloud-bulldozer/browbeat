@@ -53,12 +53,12 @@
   become: true
   ignore_errors: true
 
-- name: (Keystone Token Count) Install libdbi mysql driver
+- name: Install libdbi mysql driver
   yum:
     name: "{{item}}"
     state: present
   become: true
-  when: "(('Controller' in group_names and keystone_overcloud_collectd_plugin and inventory_hostname == groups['Controller'][0]) or ('Undercloud' in group_names and keystone_undercloud_collectd_plugin))"
+  when: "(('Controller' in group_names and (keystone_overcloud_collectd_plugin or osp_resources_collectd_plugin) and inventory_hostname == groups['Controller'][0]) or ('Undercloud' in group_names and keystone_undercloud_collectd_plugin))"
   with_items:
     - libdbi-dbd-mysql
     - collectd-dbi
