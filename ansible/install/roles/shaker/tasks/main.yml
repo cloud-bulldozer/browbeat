@@ -5,6 +5,11 @@
 
 - name: Create shaker virtualenv
   command: virtualenv {{ shaker_venv }} creates={{ shaker_venv }}
+  when: ansible_distribution_major_version <= '8'
+
+- name: Create shaker virtualenv
+  command: python3 -m venv {{ shaker_venv }} creates={{ shaker_venv }}
+  when: ansible_distribution_major_version == '9'
 
 - name: Setup shaker-venv CA certificate path
   lineinfile:

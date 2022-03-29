@@ -5,6 +5,11 @@
 
 - name: Create rally virtualenv
   command: virtualenv --python=python3 {{ rally_venv }} creates={{ rally_venv }}
+  when: ansible_distribution_major_version <= '8'
+
+- name: Create rally virtualenv
+  command: python3 -m venv {{ rally_venv }} creates={{ rally_venv }}
+  when: ansible_distribution_major_version == '9'
 
 - name: Rally Add browbeat to Python path
   shell: echo 'export PYTHONPATH=$PYTHONPATH:{{ browbeat_path }}' >> {{ rally_venv }}/bin/activate

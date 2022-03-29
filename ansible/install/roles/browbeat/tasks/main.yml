@@ -24,7 +24,7 @@
   when: ansible_distribution_major_version < '8'
   ignore_errors: yes
 
-- name: Install dependencies for RHEL8
+- name: Install dependencies for RHEL8 and RHEL9
   yum:
     name:
       - gcc
@@ -36,6 +36,13 @@
       - python3-policycoreutils
       - python3-devel
       - python3-pip
+    state: present
+  become: true
+  when: ansible_distribution_major_version >= '8'
+
+- name: Install dependency virtualenv for RHEL8
+  yum:
+    name:
       - python3-virtualenv
     state: present
   become: true
@@ -98,6 +105,11 @@
 
 - name: Create browbeat virtualenv
   command: virtualenv {{ browbeat_venv }} creates={{ browbeat_venv }}
+  when: ansible_distribution_major_version <= '8'
+
+- name: Create browbeat virtualenv
+  command: python3 -m venv {{ browbeat_venv }} creates={{ browbeat_venv }}
+  when: ansible_distribution_major_version == '9'
 
 - name: Setup browbeat-venv CA certificate path
   lineinfile:
