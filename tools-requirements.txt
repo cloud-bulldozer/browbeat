@@ -3,4 +3,4 @@ elasticsearch
 scapy
 pyrsistent==0.16.0;python_version<'3'
 pyrsistent>=0.17.0;python_version>='3'
-paramiko==2.7.2
+paramiko==2.10.1
