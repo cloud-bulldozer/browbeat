@@ -21,7 +21,7 @@
   shell:  source {{ overcloudrc }} ; nova console-log {{ item.stdout }}
   register: guest_output
   until: guest_output.stdout.find("Browbeat workload installed") != -1
-  retries: 30
+  retries: 60
   with_items: "{{ workload_ids.results }}"
   when: item.changed
 

@@ -123,6 +123,13 @@ browbeat_workloads:
      image: cirro5
      enabled: false
      flavor: m1.tiny-cirros
+  stress_ng:
+    name: browbeat-stress-ng
+    src: stress-ng-user.file
+    dest: "{{ browbeat_path }}/stress-ng-user.file"
+    image: centos7
+    enabled: false
+    flavor: m1.small
 
 ########################################
 # Other Install Configuration Items
