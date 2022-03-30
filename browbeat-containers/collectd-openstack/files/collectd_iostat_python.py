@@ -96,7 +96,7 @@ class IOStat(object):
         See I{man iostat} for more details.
         """
         dstats = {}
-        dsi = input.rfind('Device:')
+        dsi = input.rfind('Device')
         if dsi == -1:
             raise ParseError('Unknown input format: %r' % input)
 
@@ -178,12 +178,12 @@ class IOStat(object):
             extdoptions.remove('N')
         dstats = self._run(options)
         extdstats = self._run(extdoptions)
-        dsd = self._get_childs_data(dstats)
-        edd = self._get_childs_data(extdstats)
+        dsd = self._get_childs_data(dstats).decode("utf-8")
+        edd = self._get_childs_data(extdstats).decode("utf-8")
         ds = self.parse_diskstats(dsd)
         eds = self.parse_diskstats(edd)
 
-        for dk, dv in ds.iteritems():
+        for dk, dv in ds.items():
             if dk in eds:
                 ds[dk].update(eds[dk])
 
@@ -366,7 +366,7 @@ class IOMon(object):
                         value *= self.names[name]['m']
                 else:
                     val_type = 'gauge'
-                    tbl = string.maketrans('/-%', '___')
+                    tbl = str.maketrans('/-%', '___')
                     type_instance = name.translate(tbl)
                     value = ds[disk][name]
                 self.dispatch_value(
@@ -388,7 +388,7 @@ if __name__ == '__main__':
 
     for disk in ds:
         for metric in ds[disk]:
-            tbl = string.maketrans('/-%', '___')
+            tbl = str.maketrans('/-%', '___')
             metric_name = metric.translate(tbl)
             print("%s.%s:%s" % (disk, metric_name, ds[disk][metric]))
 
