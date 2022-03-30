@@ -1573,7 +1573,10 @@ LoadPlugin python
       Instance "account-server-info"
     </Match>
     <Match>
-      Regex "container-server-info
+      Regex "container-server-info: INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "container-server-info"
     </Match>
     <Match>
       Regex "object-server: INFO "
