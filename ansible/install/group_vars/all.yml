@@ -208,6 +208,8 @@ collectd_prometheus: false
 apache_undercloud_collectd_plugin: false
 apache_undercloud_mod_status_port: 5001
 # Overcloud Controller
+# Apache is not installed on controllers from RHOSP 16(Train) onwards.
+# This option can be enabled only for RHOSP<16.
 apache_controller_collectd_plugin: false
 apache_controller_mod_status_port: 5001
 
