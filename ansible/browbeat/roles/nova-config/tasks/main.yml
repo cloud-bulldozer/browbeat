@@ -3,7 +3,7 @@
 # Configure nova.conf tasks
 #
 
-- name: (Newton, Ocata, Pike) Configure nova.conf
+- name: (Newton, Ocata, Pike, Train) Configure nova.conf
   become: true
   ini_file:
     dest: "{{nova_config_file}}"

@@ -2,24 +2,24 @@
 #
 # Playbook to adjust Nova allocation ratios
 #
-# Versions tested: Newton, Ocata, Pike
+# Versions tested: Newton, Ocata, Pike, Train
 #
 # Newton, Ocata apply changes to the Controllers as Pike applies changes to the Computes
 #
 # Examples:
-# ansible-playbook -i hosts browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0"
-# ansible-playbook -i hosts browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0"
-# ansible-playbook -i hosts browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0 disk_allocation_ratio=100.0"
+# ansible-playbook -i hosts.yml browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0"
+# ansible-playbook -i hosts.yml browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0"
+# ansible-playbook -i hosts.yml browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0 disk_allocation_ratio=100.0"
 #
 # In order for new settings to take affect, you need to restart the Nova services
 # by adding variable restart_nova=true into the extra vars.
 #
-# ansible-playbook -i hosts browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0 disk_allocation_ratio=100.0 restart_nova=true"
+# ansible-playbook -i hosts.yml browbeat/adjust-nova-allocation.yml -e "cpu_allocation_ratio=100.0 ram_allocation_ratio=100.0 disk_allocation_ratio=100.0 restart_nova=true"
 #
 # * Note not setting a variable does not change that configuration item then. Setting no variables
 #   and running the playbook sets all configuration items to defaults (cpu/ram/disk - 16/1/1)
 #
-# ansible-playbook -i hosts browbeat/adjust-nova-allocation.yml
+# ansible-playbook -i hosts.yml browbeat/adjust-nova-allocation.yml
 #
 
 - hosts: Controller,Compute
@@ -51,10 +51,20 @@
         nova_config_file: /etc/nova/nova.conf
       when: "('Newton' in osp_version['content'] | b64decode or 'Ocata' in osp_version['content'] | b64decode)"
 
-    - name: (Pike, Queens) Set Config File based on OpenStack Version
+    - name: (Pike, Queens, Train) Set Config File based on OpenStack Version
       set_fact:
         nova_config_file: /var/lib/config-data/puppet-generated/nova_libvirt/etc/nova/nova.conf
+      when: "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode or 'Train' in osp_version['content'] | b64decode)"
+
+    - name: (Pike, Queens) Set container cli based on Openstack Version
+      set_fact:
+        container_cli: docker
       when: "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode)"
+
+    - name: (Train) Set container cli based on Openstack Version
+      set_fact:
+        container_cli: podman
+      when: "('Train' in osp_version['content'] | b64decode)"
 
     - name: Set default cpu_allocation_ratio/ram_allocation_ratio/disk_allocation_ratio configuration for Nova
       set_fact:
@@ -120,10 +130,10 @@
         - "'Controller' in group_names"
         - restart_nova
 
-    - name: (Pike, Queens) Restart Nova Compute Container
+    - name: (Pike, Queens, Train) Restart Nova Compute Container
       become: true
-      command: docker restart nova_compute
+      command: "{{container_cli}} restart nova_compute"
       when:
-        - "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode)"
+        - "('Pike' in osp_version['content'] | b64decode or 'Queens' in osp_version['content'] | b64decode or 'Train' in osp_version['content'] | b64decode)"
         - "'Compute' in group_names"
         - restart_nova
