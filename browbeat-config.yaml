@@ -144,6 +144,13 @@ workloads:
         size: 1
         file: rally/cinder/cinder-create-and-update-volume.yml
 
+      - name: create-attach-and-detach-volume
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny
+        ext_net_id:
+        file: rally/rally-plugins/cinder/boot_vm_attach_detach_volume.yml
+
   - name: keystonebasic
     enabled: false
     type: rally
