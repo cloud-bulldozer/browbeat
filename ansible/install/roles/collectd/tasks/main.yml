@@ -60,12 +60,42 @@
     version: master
   when: not (directory_exists.stat.isdir is defined and directory_exists.stat.isdir)
 
+- name: install sqlalchemy collectd package inside the containers
+  block:
+    - name: packages needed for installing sqlalchemy collectd
+      vars:
+        rhos_release: http://download-node-02.eng.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
+      set_fact:
+        packages_sqlalchemy_collectd: dnf install -y {{ rhos_release }} && rhos-release {{ rhosp_major }} &&  dnf install -y python3-sqlalchemy-collectd
+
+    - name: install python3-sqlalchemy-collectd
+      become: true
+      shell: |
+        podman exec -it -u root {{ item }} /bin/bash -c "{{ packages_sqlalchemy_collectd }}"
+      with_items:
+        - cinder_api
+        - cinder_api_cron
+        - cinder_scheduler
+        - nova_conductor
+        - nova_api_cron
+        - nova_scheduler
+        - nova_vnc_proxy
+        - nova_api
+        - nova_metadata
+        - neutron_api
+        - keystone
+        - heat_api
+        - heat_engine
+        - heat_api_cron
+        - heat_api_cfn
+  when: (rhosp_version is version('16.2', '>=') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
+
 - name: Get mysql string
   shell: "crudini --get {{item.value.path}} database connection"
   become: true
   register: db_connections
   with_dict: "{{mysql_svcs}}"
-  when: (rhosp_version is version('16.2', '<') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
+  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
   ignore_errors: true
 
 - name: Append to mysql string
@@ -75,7 +105,7 @@
     section: database
     option: connection
     value: "{{ item.stdout }}&plugin=collectd&collectd_program_name={{ item.item.key }}"
-  when: (rhosp_version is version('16.2', '<') and ('Controller' in group_names) and sqlalchemy_collectd_plugin and ('plugin=collectd' not in item.stdout))
+  when: (('Controller' in group_names) and sqlalchemy_collectd_plugin and ('plugin=collectd' not in item.stdout))
   with_items: "{{ db_connections.results }}"
   become: true
 
@@ -93,14 +123,13 @@
     - nova_api
     - nova_metadata
     - neutron_api
-    - gnocchi_api
     - keystone
     - heat_api
     - heat_engine
     - heat_api_cron
     - heat_api_cfn
   ignore_errors: yes
-  when: (rhosp_version is version('16.2', '<') and 'Controller' in group_names and sqlalchemy_collectd_plugin)
+  when: ('Controller' in group_names and sqlalchemy_collectd_plugin)
 
 # Apache Monitoring
 - name: Deploy Apache mod_status conf
