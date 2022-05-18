@@ -20,7 +20,7 @@
     - { role: e2e-benchmarking, when: install_e2e_benchmarking}
   environment: "{{proxy_env}}"
 
-- hosts: Controller, Compute
+- hosts: Controller*, Compute*
   remote_user: "{{ host_remote_user }}"
   roles:
     - no-sshd-dns
