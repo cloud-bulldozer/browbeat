@@ -1,0 +1,19 @@
+mysql_svcs:
+  cinder:
+    path: "/var/lib/config-data/puppet-generated/cinder/etc/cinder/cinder.conf"
+  glance:
+    path: "/var/lib/config-data/puppet-generated/glance_api/etc/glance/glance-api.conf"
+  heat:
+    path: "/var/lib/config-data/puppet-generated/heat/etc/heat/heat.conf"
+  heat_api:
+    path: "/var/lib/config-data/puppet-generated/heat_api/etc/heat/heat.conf"
+  heat_api_cnf:
+    path: "/var/lib/config-data/puppet-generated/heat_api_cfn/etc/heat/heat.conf"
+  keystone:
+    path: "/var/lib/config-data/puppet-generated/keystone/etc/keystone/keystone.conf"
+  neutron:
+    path: "/var/lib/config-data/puppet-generated/neutron/etc/neutron/neutron.conf"
+  nova:
+    path: "/var/lib/config-data/puppet-generated/nova/etc/nova/nova.conf"
+  nova_metadata:
+    path: "/var/lib/config-data/puppet-generated/nova_metadata/etc/nova/nova.conf"
