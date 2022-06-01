@@ -36,6 +36,18 @@
 #      -s <path to google service account json credentials file>
 #      -e <email id of user> -n <name of google sheet to be created>
 
+# To only upload to Google Sheets along with SLA failures and not generate CSV files :
+
+#    $ source .browbeat-venv/bin/activate && cd utils
+#    $ python rally_google_sheet_gen.py
+#      -j <path to rally json file>
+#      -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g
+#      -v <space separated list of max durations as per SLA criteria(Eg.: 10 20 120)>
+#         Note: The ordering of the max durations must match the ordering of atomic actions.
+#      -s <path to google service account json credentials file>
+#      -e <email id of user> -n <name of google sheet to be created>
+
+
 # To generate a CSV file and upload to Google Sheets :
 
 #    $ source .browbeat-venv/bin/activate && cd utils
@@ -55,16 +67,23 @@ from gspread_formatting import set_column_width
 from gspread_dataframe import set_with_dataframe
 import argparse
 
-def add_atomic_action_data_to_df(json_file_path, atomic_action, df_dict):
+def add_atomic_action_data_to_df(json_file_path, atomic_action, df_dict, df_sla_fail_dict,
+                                 sla_duration, sla_enabled):
     """Convert rally json data to csv file containing atomic action data
     :param json_file_path: str, path to rally json file
     :param atomic_action: str, atomic action to generate duration data
     :param df_dict: dict, dict of dataframes from different atomic actions
+    :param df_sla_fail_dict: dict, dict of dataframes from different atomic actions that fails sla
+    :param sla_duration: int, max duration allowed as per sla
+    :param sla_enabled: bool, variable that determines whether sla criteria should be considered
     """
     json_file = open(json_file_path)
     json_data = json.load(json_file)
 
     df = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
+
+    if sla_enabled:
+        df_sla_fail = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
 
     resource_number = 1
 
@@ -75,10 +94,20 @@ def add_atomic_action_data_to_df(json_file_path, atomic_action, df_dict):
                 df = df.append({"Resource Number": resource_number,
                                 "Duration(in seconds)": atomic_action_duration},
                                ignore_index=True)
+                if sla_enabled and atomic_action_duration > sla_duration:
+                    df_sla_fail = df_sla_fail.append({"Resource Number": resource_number,
+                                                      "Duration(in seconds)":
+                                                      atomic_action_duration},
+                                                     ignore_index=True)
                 resource_number += 1
 
     df_dict[atomic_action] = df
+
+    if sla_enabled:
+        df_sla_fail_dict[atomic_action] = df_sla_fail
+
     print("Pandas DF for atomic action {} generated successfully.".format(atomic_action))
+
 
 def generate_csv_from_df(csv_files_path, df_dict):
     """Generate csv files from pandas dataframe
@@ -89,11 +118,14 @@ def generate_csv_from_df(csv_files_path, df_dict):
         df_dict[atomic_action].to_csv("{}/{}.csv".format(csv_files_path, atomic_action))
         print("{}/{}.csv created succesfully".format(csv_files_path, atomic_action))
 
-def push_to_gsheet(df_dict, google_svc_acc_key, email_id):
+def push_to_gsheet(df_dict, df_sla_fail_dict, google_svc_acc_key, email_id, sheetname, sla_enabled):
     """Push csv file to Google Sheets
     :param df_dict: dict, dict of dataframes from different atomic actions
+    :param df_sla_fail_dict: dict, dict of dataframes from different atomic actions that fails sla
     :param google_svc_acc_key: str, path to json credentials for google service account
     :param email_id: str, email id of user who will be given edit access to google sheet
+    :param sheetname: str, used as the name of the sheet that's going to be generated
+    :param sla_enabled: bool, variable that determines whether sla criteria should be considered
     """
     fmt = cellFormat(
         horizontalAlignment="RIGHT"
@@ -105,7 +137,7 @@ def push_to_gsheet(df_dict, google_svc_acc_key, email_id):
     credentials = ServiceAccountCredentials.from_json_keyfile_name(google_svc_acc_key, scope)
     gc = gspread.authorize(credentials)
 
-    sh = gc.create(params.sheetname)
+    sh = gc.create(sheetname)
 
     for atomic_action in df_dict:
         ws = sh.add_worksheet(atomic_action, rows=len(df_dict[atomic_action]), cols=2)
@@ -113,6 +145,15 @@ def push_to_gsheet(df_dict, google_svc_acc_key, email_id):
         format_cell_range(ws, "1:1000", fmt)
         set_column_width(ws, "A", 290)
         set_column_width(ws, "B", 190)
+
+        if sla_enabled:
+            ws_name = atomic_action + "_sla_fail"
+            ws = sh.add_worksheet(ws_name,
+                                  rows=len(df_sla_fail_dict[atomic_action]), cols=2)
+            set_with_dataframe(ws, df_sla_fail_dict[atomic_action])
+            format_cell_range(ws, "1:1000", fmt)
+            set_column_width(ws, "A", 290)
+            set_column_width(ws, "B", 190)
 
     sh.share(email_id, perm_type="user", role="writer")
     spreadsheet_url = f"https://docs.google.com/spreadsheets/d/{sh.id}"
@@ -153,6 +194,10 @@ if __name__ == "__main__":
         "-e", "--emailid", help="Email id to send result sheet",
         nargs='?', required=False, dest="emailid",
     )
+    parser.add_argument(
+        "-v", "--sladuration", help="sla criteria for max duration",
+        nargs='+', required=False, dest="sladuration",
+    )
     params = parser.parse_args()
 
     if(params.generatecsvfiles and params.csvfilespath is None):
@@ -160,6 +205,9 @@ if __name__ == "__main__":
                                               "--csvfilespath"))
 
     df_dict = {}
+    sla_durations = []
+    sla_enabled = True
+    df_sla_fail_dict = {}
 
     if(params.uploadtogooglesheets and
        (params.sheetname is None or params.googlesvcacckey is None or params.emailid is None)):
@@ -168,12 +216,28 @@ if __name__ == "__main__":
                                                             "--googlesvcacckey",
                                                             "--emailid"))
 
-    for atomic_action in params.atomicactions:
+    if params.sladuration is None:
+        sla_enabled = False
+
+    if sla_enabled:
+        if len(params.sladuration) != len(params.atomicactions):
+            errmsg = ' '.join(("Invalid arguments passed.",
+                               "The number of Atomic actions and SLA durations doesn't match."))
+            raise Exception(errmsg)
+
+        for sla_duration in params.sladuration:
+            sla_durations.append(int(sla_duration))
+
+    for i, atomic_action in enumerate(params.atomicactions):
+        sla_duration = -1
+        if sla_enabled:
+            sla_duration = sla_durations[i]
         add_atomic_action_data_to_df(params.jsonfilepath, atomic_action,
-                                     df_dict)
+                                     df_dict, df_sla_fail_dict, sla_duration, sla_enabled)
 
     if params.generatecsvfiles:
         generate_csv_from_df(params.csvfilespath, df_dict)
 
     if params.uploadtogooglesheets:
-        push_to_gsheet(df_dict, params.googlesvcacckey, params.emailid)
+        push_to_gsheet(df_dict, df_sla_fail_dict, params.googlesvcacckey, params.emailid,
+                       params.sheetname, sla_enabled)
