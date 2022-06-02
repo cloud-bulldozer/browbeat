@@ -373,9 +373,20 @@ To only upload to Google Sheets and not generate CSV files :
     $ source .browbeat-venv/bin/activate && cd utils
     $ python rally_google_sheet_gen.py
       -j <path to rally json file>
-      -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g                                                           
+      -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g
       -s <path to google service account json credentials file>
       -e <email id of user> -n <name of google sheet to be created>
+
+To only upload to Google Sheets along with SLA failures and not generate CSV files :
+
+::
+    $ source .browbeat-venv/bin/activate && cd utils
+        $ python rally_google_sheet_gen.py
+          -j <path to rally json file>
+          -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g
+          -v <space separated list of max durations as per SLA criteria(Eg.: 10 20 120). The ordering must match the ordering of atomic actions>
+          -s <path to google service account json credentials file>
+          -e <email id of user> -n <name of google sheet to be created>
 
 
 To generate a CSV file and upload to Google Sheets :
@@ -384,6 +395,6 @@ To generate a CSV file and upload to Google Sheets :
     $ source .browbeat-venv/bin/activate && cd utils
     $ python rally_google_sheet_gen.py -c -f <path to directory to write csv file locally>
       -j <path to rally json file>
-      -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g                                                           
+      -a <space separated list of atomic actions(Eg.: boot_server create_network)> -g
       -s <path to google service account json credentials file>
       -e <email id of user> -n <name of google sheet to be created>
