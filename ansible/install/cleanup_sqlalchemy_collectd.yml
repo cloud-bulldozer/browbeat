@@ -1,0 +1,15 @@
+---
+#
+# Playbook to clean up sqlalchemy collectd configuration on controller hosts.
+# The sqlalchemy collectd configuration on containers from a previous deployment
+# causes issues in the next overcloud deployment.
+
+- hosts: Controller
+  strategy: free
+  remote_user: "{{ host_remote_user }}"
+
+  roles:
+    - { role: osp_version }
+    - { role: containers }
+    - { role: common }
+    - { role: cleanup_sqlalchemy_collectd }

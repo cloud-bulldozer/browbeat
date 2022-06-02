@@ -25,7 +25,7 @@ convenience they are being mentioned here as well.
 
 ::
 
-    $ ansible-playbook -i hosts install/shaker_build.yml
+    $ ansible-playbook -i hosts.yml install/shaker_build.yml
 
 .. note:: The playbook to setup networking is provided as an example only and
     might not work for you based on your underlay/overlay network setup. In such
@@ -339,6 +339,17 @@ To cleanup :
     $ source browbeat/.rally-venv/bin/activate
     $ source ~/overcloudrc
     $ python browbeat/rally_cleanup.py
+
+Cleanup sqlalchemy collectd configuration
+------------------------------------------
+Browbeat adds configuration for sqlalchemy collectd on the configuration files of many Openstack API containers on controller hosts. This causes issues in the
+next overcloud deployment. There is a playbook to clean up sqlalchemy collectd configuration installed by Browbeat from Openstack API containers.
+
+To cleanup :
+
+::
+    $ cd ansible
+    $ ansible-playbook -i hosts.yml install/cleanup_sqlalchemy_collectd.yml
 
 Generate CSV file/Google Sheets from Rally json file
 --------------------------------------------

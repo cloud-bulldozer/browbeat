@@ -1,0 +1,39 @@
+- name: Fetch mysql svc file paths
+  include_vars:
+    file: "vars/{{ rhosp_major }}.yml"
+
+- name: Get mysql string
+  shell: "crudini --get {{item.value.path}} database connection"
+  become: true
+  register: db_connections
+  with_dict: "{{ mysql_svcs }}"
+
+- name: Remove collectd configuration from mysql string
+  ini_file:
+    backup: true
+    dest: "{{ item.item.value.path }}"
+    section: database
+    option: connection
+    value: "{{ item.stdout[:item.stdout.index('&plugin=collectd')] }}"
+  with_items: "{{ db_connections.results }}"
+  become: true
+
+- name: restart containers
+  shell: podman restart {{ item }}
+  become: true
+  with_items:
+    - cinder_api
+    - cinder_api_cron
+    - cinder_scheduler
+    - nova_conductor
+    - nova_api_cron
+    - nova_scheduler
+    - nova_vnc_proxy
+    - nova_api
+    - nova_metadata
+    - neutron_api
+    - keystone
+    - heat_api
+    - heat_engine
+    - heat_api_cron
+    - heat_api_cfn
