@@ -93,7 +93,7 @@ workloads:
     scenarios:
       - name: nova-boot-persist-with-network-1000
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         network_start_cidr: 10.1.0.0/22
         cleanup_delay: 1800

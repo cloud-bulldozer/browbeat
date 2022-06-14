@@ -73,6 +73,6 @@ workloads:
         file: rally/neutron/neutron-create-list-network-cc.yml
       - name: boot-list-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-list-cc.yml
         flavor_name: m1.xtiny

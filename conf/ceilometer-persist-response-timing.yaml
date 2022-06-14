@@ -87,6 +87,6 @@ workloads:
     scenarios:
       - name: nova-boot-20
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         file: rally/rally-plugins/nova/nova_boot_persist.yml

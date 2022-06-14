@@ -65,7 +65,7 @@ workloads:
     scenarios:
       - name: nova-boot-persist-with-network-volume-100-01
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -73,7 +73,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-02
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -81,7 +81,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-03
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -89,7 +89,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-04
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -97,7 +97,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-05
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -105,7 +105,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-06
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -113,7 +113,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-07
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -121,7 +121,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-08
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -129,7 +129,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-09
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800
@@ -137,7 +137,7 @@ workloads:
         file: rally/rally-plugins/nova/nova_boot_persist_with_network_volume.yml
       - name: nova-boot-persist-with-network-volume-100-10
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         volume_size: 1
         cleanup_delay: 1800

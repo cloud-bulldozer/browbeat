@@ -125,7 +125,7 @@ workloads:
     scenarios:
       - name: create-attach-volume-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.tiny
         file: rally/cinder/cinder-create-and-attach-volume-cc.yml
 
@@ -279,7 +279,7 @@ workloads:
       - name: create-and-delete-stack-resource-group
         enabled: false
         num_instances: 2
-        instance_image: cirros
+        instance_image: cirro5
         instance_volume_size: 1
         instance_flavor: m1.tiny
         instance_availability_zone: nova
@@ -304,31 +304,31 @@ workloads:
       - name: boot-snapshot-delete-cirros
         enabled: true
         file: rally/nova/nova-boot-snapshot-cc.yml
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
       - name: boot-list-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-list-cc.yml
         flavor_name: m1.xtiny
       - name: boot-show-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-show-cc.yml
         flavor_name: m1.xtiny
       - name: boot-bounce-delete-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-bounce-delete-cc.yml
         flavor_name: m1.xtiny
       - name: boot-lock-unlock-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-lock-unlock-cc.yml
         flavor_name: m1.xtiny
       - name: boot_server_from_volume_and_resize
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-from-volume-and-resize.yml
         initial_flavor_name: m1.tiny
         final_flavor_name: m1.small
@@ -404,20 +404,20 @@ workloads:
       - name: netcreate-boot
         enabled: true
         enable_dhcp: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.tiny
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
       - name: netcreate-boot-one-network
         enabled: true
         enable_dhcp: true
         num_vms: 4
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.tiny
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_vms_on_single_network.yml
       - name: netcreate-boot-ping
         enabled: true
         num_vms: 4
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         ext_net_id:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
@@ -426,13 +426,13 @@ workloads:
         num_vms: 4
         num_sg: 2
         num_sgr: 3
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         ext_net_id:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping_sec_groups.yml
       - name: netcreate-boot-test-metadata
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         username: cirros
         ssh_timeout: 120
@@ -457,7 +457,7 @@ workloads:
         file: rally/rally-plugins/cinder/boot_vm_attach_volume_list.yml
       - name: octavia-create-loadbalancer-resources
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         user: cirros
         ext_net_id:
@@ -604,9 +604,9 @@ workloads:
     scenarios:
       - name: dynamic-workload
         enabled: false
-        # smallest image name and smallest flavor name are used for 
+        # smallest image name and smallest flavor name are used for
         # vm dynamic scenarios and for jumphost in trunk dynamic scenario.
-        smallest_image_name: cirros
+        smallest_image_name: cirro5
         smallest_flavor_name: m1.small
         ext_net_id:
         num_create_vms: 10
@@ -672,7 +672,7 @@ workloads:
         enabled: false
         # smallest image name and smallest flavor name are used for
         # vm dynamic scenarios.
-        smallest_image_name: cirros
+        smallest_image_name: cirro5
         smallest_flavor_name: m1.xtiny
         ext_net_id:
         num_create_vms: 10

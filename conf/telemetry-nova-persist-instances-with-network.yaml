@@ -67,70 +67,70 @@ workloads:
     scenarios:
       - name: nova-boot-persist-with-network-100-01
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.0.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-02
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.2.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-03
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.4.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-04
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.6.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-05
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.8.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-06
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.10.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-07
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.12.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-08
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.14.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-09
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.16.0/23
         file: rally/rally-plugins/nova/nova_boot_persist_with_network.yml
       - name: nova-boot-persist-with-network-100-10
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
         cleanup_delay: 1800
         network_start_cidr: 10.1.18.0/23

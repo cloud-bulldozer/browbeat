@@ -112,7 +112,7 @@ workloads:
         sla_max_failure: 0
       - name: create-attach-volume-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/cinder/cinder-create-and-attach-volume-cc.yml
         flavor_name: m1.tiny
         sla_max_seconds: 30
@@ -209,31 +209,31 @@ workloads:
       - name: boot-snapshot-delete-cirros
         enabled: true
         file: rally/nova/nova-boot-snapshot-cc.yml
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.xtiny
       - name: boot-list-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-list-cc.yml
         flavor_name: m1.xtiny
       - name: boot-show-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-show-cc.yml
         flavor_name: m1.xtiny
       - name: boot-bounce-delete-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-bounce-delete-cc.yml
         flavor_name: m1.xtiny
       - name: boot-lock-unlock-cirros
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-lock-unlock-cc.yml
         flavor_name: m1.xtiny
       - name: boot_server_from_volume_and_resize
         enabled: true
-        image_name: cirros
+        image_name: cirro5
         file: rally/nova/nova-boot-from-volume-and-resize.yml
         initial_flavor_name: m1.tiny
         final_flavor_name: m1.small
@@ -277,7 +277,7 @@ workloads:
       - name: netcreate-boot
         enabled: true
         enable_dhcp: true
-        image_name: cirros
+        image_name: cirro5
         flavor_name: m1.tiny
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
         sla_max_avg_duration: 12
