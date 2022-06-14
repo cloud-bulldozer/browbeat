@@ -31,6 +31,9 @@ class CreateExternalNetworksContext(context.Context):
         "$schema": consts.JSON_SCHEMA,
         "additionalProperties": False,
         "properties": {
+            "cidr_prefix": {
+                "type": "string",
+            },
             "num_external_networks": {
                 "type": "integer",
                 "minimum": 0
@@ -58,11 +61,12 @@ class CreateExternalNetworksContext(context.Context):
                 "network_id": network_id,
                 "name": self.net_wrapper.owner.generate_random_name(),
                 "ip_version": 4,
-                "cidr": "172.31.{}.0/23".format(network_number),
+                "cidr": "{}.{}.0/23".format(self.cidr_prefix, network_number),
                 "enable_dhcp": False,
-                "gateway_ip": "172.31.{}.1".format(network_number),
-                "allocation_pools": [{"start": "172.31.{}.2".format(network_number),
-                                      "end": "172.31.{}.254".format(network_number+1)}]
+                "gateway_ip": "{}.{}.1".format(self.cidr_prefix, network_number),
+                "allocation_pools": [{"start": "{}.{}.2".format(self.cidr_prefix, network_number),
+                                      "end": "{}.{}.254".format(
+                                      self.cidr_prefix, network_number+1)}]
             }
         }
         return self.net_wrapper.client.create_subnet(subnet_args)["subnet"]
@@ -78,6 +82,7 @@ class CreateExternalNetworksContext(context.Context):
         self.context["external_subnets"] = {}
         self.num_external_networks = self.config.get("num_external_networks", 16)
         self.interface_name = self.config.get("interface_name", "ens7f1")
+        self.cidr_prefix = self.config.get("cidr_prefix", "172.31")
 
         num_external_networks_created = 0
 
@@ -114,8 +119,8 @@ class CreateExternalNetworksContext(context.Context):
                     has_error_occured = True
                     break
 
-                cmd = ["sudo", "ip", "a", "a", "172.31.{}.1/23".format(
-                       num_external_networks_created*2), "dev",
+                cmd = ["sudo", "ip", "a", "a", "{}.{}.1/23".format(
+                       self.cidr_prefix, num_external_networks_created*2), "dev",
                        "{}.{}".format(self.interface_name, num_external_networks_created + 1)]
                 proc = subprocess.Popen(cmd)
                 proc.wait()
