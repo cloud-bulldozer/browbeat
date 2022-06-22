@@ -643,6 +643,9 @@ workloads:
         shift_on_stack_workload: poddensity
         shift_on_stack_kubeconfig_paths:
           - /home/stack/.kube/config
+        # External networks with /23 ranges will be created by dynamic workloads.
+        # All these external networks will share the first 16 bits.
+        cidr_prefix: "172.31"
         # num_external_networks are the number of the external networks to be
         # created as part of rally context for dynamic workloads. These external
         # networks will be used in a round robin fashion by the iterations.

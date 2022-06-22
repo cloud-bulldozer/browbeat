@@ -28,6 +28,7 @@
 {% set shift_on_stack_burst = shift_on_stack_burst or 20 %}
 {% set shift_on_stack_workload = shift_on_stack_workload or 'poddensity' %}
 {% set shift_on_stack_kubeconfig_paths = shift_on_stack_kubeconfig_paths or ['/home/stack/.kube/config'] %}
+{% set cidr_prefix = cidr_prefix or '172.31' %}
 {% set num_external_networks = num_external_networks or 16 %}
 {% set router_external = router_external or True %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
@@ -114,6 +115,7 @@ BrowbeatPlugin.dynamic_workload:
         num_external_networks: {{ num_external_networks }}
         interface_name: '{{ iface_name }}'
         provider_phys_net: '{{ provider_phys_net }}'
+        cidr_prefix: '{{ cidr_prefix }}'
     sla:
       max_avg_duration: {{sla_max_avg_duration}}
       max_seconds_per_iteration: {{sla_max_seconds}}
