@@ -1,0 +1,73 @@
+    - title: OVN RAFT Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - OVN RAFT Northbound DB Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_disconnections, 'disconnections')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_election_timer, 'election_timer')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_entries_not_applied, 'entries_not_yet_applied')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_entries_not_committed, 'entries_not_yet_committed')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_term, 'term')
+        - title: $Cloud - $Node - OVN RAFT Northbound DB Leader Data
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-nb_is_leader, 'is_selected_controller_leader')
+        - title: $Cloud - $Node - OVN RAFT Southbound DB Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_disconnections, 'disconnections')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_election_timer, 'election_timer')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_entries_not_applied, 'entries_not_yet_applied')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_entries_not_committed, 'entries_not_yet_committed')
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_term, 'term')
+        - title: $Cloud - $Node - OVN RAFT Southbound DB Leader Data
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.ovn_raft_monitoring.gauge-sb_is_leader, 'is_selected_controller_leader')

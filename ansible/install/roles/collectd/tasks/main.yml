@@ -259,6 +259,10 @@
           -v /var/lib/openvswitch/ovn/ovnnb_db.sock:/var/lib/openvswitch/ovn/ovnnb_db.sock \
           -v /var/lib/openvswitch/ovn/ovnsb_db.sock:/var/lib/openvswitch/ovn/ovnsb_db.sock \
           {% endif %}
+          {% if ovn_raft_monitoring %}
+          -v /var/lib/openvswitch/ovn/ovnnb_db.ctl:/var/lib/openvswitch/ovn/ovnnb_db.ctl \
+          -v /var/lib/openvswitch/ovn/ovnsb_db.ctl:/var/lib/openvswitch/ovn/ovnsb_db.ctl \
+          {% endif %}
           {% if pacemaker_monitoring %}
           -v /home/{{ host_remote_user }}/collectd_pipe:/collectd_pipe \
           {% endif %}
@@ -277,4 +281,4 @@
     podman exec -it -u root collectd-controller usermod -G wheel stack
   become: yes
   become_user: root
-  when: "config_type == 'controller' and ovn_monitoring"
+  when: "config_type == 'controller' and (ovn_monitoring or ovn_raft_monitoring)"

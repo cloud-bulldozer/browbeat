@@ -30,6 +30,7 @@ ADD files/collectd_rabbitmq_monitoring.py /usr/local/bin/collectd_rabbitmq_monit
 ADD files/collectd_swift_stat.py /usr/local/bin/collectd_swift_stat.py
 ADD files/collectd_pacemaker_monitoring.py /usr/local/bin/collectd_pacemaker_monitoring.py
 ADD files/collectd_iostat_python.py /usr/local/bin/collectd_iostat_python.py
+ADD files/collectd_ovn_raft_monitoring.py /usr/local/bin/collectd_ovn_raft_monitoring.py
 ADD files/ovs_flows.sh /usr/local/bin/ovs_flows.sh
 ADD files/ovn_monitoring.sh /usr/local/bin/ovn_monitoring.sh
 

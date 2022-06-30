@@ -334,6 +334,13 @@ ovs_flows_monitoring: false
 ovn_monitoring: false
 
 #######################
+# OVN RAFT Monitoring
+#######################
+# Monitors OVN RAFT cluster status metrics on controllers.
+ovn_raft_monitoring: false
+ovn_raft_controller_collectd_interval: 30
+
+#######################
 # Pacemaker Monitoring
 #######################
 # Monitors pcs status metrics on controller.

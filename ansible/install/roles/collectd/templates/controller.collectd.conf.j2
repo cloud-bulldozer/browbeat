@@ -585,6 +585,17 @@ LoadPlugin python
 
 {% endif %}
 
+{%if ovn_raft_monitoring %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_ovn_raft_monitoring"
+  <Module collectd_ovn_raft_monitoring>
+    Interval {{ovn_raft_controller_collectd_interval}}
+  </Module>
+</Plugin>
+
+{% endif %}
+
 {%if gnocchi_status_controller_collectd_plugin %}
 {%if inventory_hostname == groups['Controller'][0] %}
 <Plugin python>
