@@ -126,7 +126,7 @@ workloads:
       - name: create-attach-volume-cirros
         enabled: true
         image_name: cirro5
-        flavor_name: m1.tiny
+        flavor_name: m1.tiny-cirros
         file: rally/cinder/cinder-create-and-attach-volume-cc.yml
 
       - name: create-and-list-snapshots
@@ -281,7 +281,7 @@ workloads:
         num_instances: 2
         instance_image: cirro5
         instance_volume_size: 1
-        instance_flavor: m1.tiny
+        instance_flavor: m1.tiny-cirros
         instance_availability_zone: nova
         file: rally/heat/create-and-delete-stack-resource-group.yaml
       # specify the updated_template_path as per the use case from "rally/heat/templates/"
@@ -305,32 +305,32 @@ workloads:
         enabled: true
         file: rally/nova/nova-boot-snapshot-cc.yml
         image_name: cirro5
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
       - name: boot-list-cirros
         enabled: true
         image_name: cirro5
         file: rally/nova/nova-boot-list-cc.yml
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
       - name: boot-show-cirros
         enabled: true
         image_name: cirro5
         file: rally/nova/nova-boot-show-cc.yml
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
       - name: boot-bounce-delete-cirros
         enabled: true
         image_name: cirro5
         file: rally/nova/nova-boot-bounce-delete-cc.yml
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
       - name: boot-lock-unlock-cirros
         enabled: true
         image_name: cirro5
         file: rally/nova/nova-lock-unlock-cc.yml
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
       - name: boot_server_from_volume_and_resize
         enabled: true
         image_name: cirro5
         file: rally/nova/nova-boot-from-volume-and-resize.yml
-        initial_flavor_name: m1.tiny
+        initial_flavor_name: m1.tiny-cirros
         final_flavor_name: m1.small
 
   - name: glance
@@ -405,20 +405,20 @@ workloads:
         enabled: true
         enable_dhcp: true
         image_name: cirro5
-        flavor_name: m1.tiny
+        flavor_name: m1.tiny-cirros
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
       - name: netcreate-boot-one-network
         enabled: true
         enable_dhcp: true
         num_vms: 4
         image_name: cirro5
-        flavor_name: m1.tiny
+        flavor_name: m1.tiny-cirros
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_vms_on_single_network.yml
       - name: netcreate-boot-ping
         enabled: true
         num_vms: 4
         image_name: cirro5
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
         ext_net_id:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
       - name: netcreate-boot-ping-sec-group
@@ -427,13 +427,13 @@ workloads:
         num_sg: 2
         num_sgr: 3
         image_name: cirro5
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
         ext_net_id:
         file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping_sec_groups.yml
       - name: netcreate-boot-test-metadata
         enabled: true
         image_name: cirro5
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
         username: cirros
         ssh_timeout: 120
         external_network:
@@ -458,7 +458,7 @@ workloads:
       - name: octavia-create-loadbalancer-resources
         enabled: true
         image_name: cirro5
-        flavor_name: m1.xtiny
+        flavor_name: m1.tiny-cirros
         user: cirros
         ext_net_id:
         protocol: HTTP
@@ -607,7 +607,7 @@ workloads:
         # smallest image name and smallest flavor name are used for
         # vm dynamic scenarios and for jumphost in trunk dynamic scenario.
         smallest_image_name: cirro5
-        smallest_flavor_name: m1.small
+        smallest_flavor_name: m1.tiny-cirros
         ext_net_id:
         num_create_vms: 10
         num_delete_vms: 5
@@ -676,7 +676,7 @@ workloads:
         # smallest image name and smallest flavor name are used for
         # vm dynamic scenarios.
         smallest_image_name: cirro5
-        smallest_flavor_name: m1.xtiny
+        smallest_flavor_name: m1.tiny-cirros
         ext_net_id:
         num_create_vms: 10
         num_delete_vms: 5
