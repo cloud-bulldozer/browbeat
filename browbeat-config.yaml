@@ -175,7 +175,6 @@ workloads:
         file: rally/neutron/neutron-create-update-network-cc.yml
         network_update_args:
           admin_state_up: False
-          name: "_updated"
       - name: create-delete-network
         enabled: false
         file: rally/neutron/neutron-create-delete-network-cc.yml
@@ -192,7 +191,6 @@ workloads:
           admin_state_up: False
           device_id: "dummy_id"
           device_owner: "dummy_owner"
-          name: "_port_updated"
       - name: create-delete-port
         enabled: false
         file: rally/neutron/neutron-create-delete-port-cc.yml
@@ -212,7 +210,6 @@ workloads:
         router_create_args: {}
         router_update_args:
           admin_state_up: False
-          name: "_router_updated"
       - name: create-delete-router
         enabled: false
         file: rally/neutron/neutron-create-delete-router-cc.yml
@@ -236,7 +233,6 @@ workloads:
         subnets_per_network: 2
         subnet_update_args:
           enable_dhcp: true
-          name: "_subnet_updated"
       - name: create-delete-subnets
         enabled: false
         file: rally/neutron/neutron-create-delete-subnet-cc.yml

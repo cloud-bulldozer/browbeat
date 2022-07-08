@@ -12,9 +12,9 @@
 
 import logging
 
-from rally_openstack import consts
-from rally_openstack.scenarios.vm import utils as vm_utils
-from rally.common import sshutils
+from rally_openstack.common import consts
+from rally_openstack.task.scenarios.vm import utils as vm_utils
+from rally.utils import sshutils
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation

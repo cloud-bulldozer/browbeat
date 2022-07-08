@@ -14,7 +14,7 @@ import random
 import os
 import subprocess
 
-from rally_openstack.scenarios.neutron import utils as neutron_utils
+from rally_openstack.task.scenarios.neutron import utils as neutron_utils
 import dynamic_utils
 from rally.task import atomic
 

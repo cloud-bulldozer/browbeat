@@ -14,11 +14,11 @@ import io
 import logging
 import time
 
-from rally_openstack import consts
-from rally.common import sshutils
-from rally_openstack.scenarios.vm import utils as vm_utils
-from rally_openstack.scenarios.neutron import utils as neutron_utils
-from rally_openstack.scenarios.octavia import utils as octavia_utils
+from rally_openstack.common import consts
+from rally.utils import sshutils
+from rally_openstack.task.scenarios.vm import utils as vm_utils
+from rally_openstack.task.scenarios.neutron import utils as neutron_utils
+from rally_openstack.task.scenarios.octavia import utils as octavia_utils
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation

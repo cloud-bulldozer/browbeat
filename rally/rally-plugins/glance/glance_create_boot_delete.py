@@ -10,11 +10,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally_openstack import consts
-from rally_openstack import scenario
-from rally_openstack.scenarios.glance.images import GlanceBasic
-from rally_openstack.scenarios.neutron import utils as neutron_utils
-from rally_openstack.scenarios.nova import utils as nova_utils
+from rally_openstack.common import consts
+from rally_openstack.task import scenario
+from rally_openstack.task.scenarios.glance.images import GlanceBasic
+from rally_openstack.task.scenarios.neutron import utils as neutron_utils
+from rally_openstack.task.scenarios.nova import utils as nova_utils
 from rally.task import types
 from rally.task import validation
 

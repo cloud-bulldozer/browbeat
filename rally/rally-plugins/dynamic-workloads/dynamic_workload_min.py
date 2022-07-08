@@ -10,7 +10,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from rally_openstack import consts
+from rally_openstack.common import consts
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation

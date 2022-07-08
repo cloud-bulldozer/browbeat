@@ -11,9 +11,9 @@
 #   limitations under the License.
 
 from random import randint
-from rally_openstack import consts
-from rally_openstack.scenarios.neutron import utils as neutron_utils
-from rally_openstack.scenarios.vm import utils as vm_utils
+from rally_openstack.common import consts
+from rally_openstack.task.scenarios.neutron import utils as neutron_utils
+from rally_openstack.task.scenarios.vm import utils as vm_utils
 from rally.task import atomic
 from rally.task import scenario
 from rally.task import types
@@ -140,3 +140,22 @@ class CreateNetworkNovaBootPingSecGroups(vm_utils.VMScenario,
         :returns: neutron router dict
         """
         return self.admin_clients("neutron").create_router({"router": router_create_args})
+
+    @atomic.action_timer("neutron.create_security_group_rule")
+    def _create_security_group_rule(self, security_group_id,
+                                    **security_group_rule_args):
+        """Create Neutron security-group-rule.
+
+        :param security_group_id: id of neutron security_group
+        :param security_group_rule_args: dict, POST
+              /v2.0/security-group-rules request options
+        :returns: dict, neutron security-group-rule
+        """
+        security_group_rule_args["security_group_id"] = security_group_id
+        if "direction" not in security_group_rule_args:
+            security_group_rule_args["direction"] = "ingress"
+        if "protocol" not in security_group_rule_args:
+            security_group_rule_args["protocol"] = "tcp"
+
+        return self.clients("neutron").create_security_group_rule(
+            {"security_group_rule": security_group_rule_args})

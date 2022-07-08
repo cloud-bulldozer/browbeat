@@ -13,9 +13,9 @@
 import io
 import time
 import random
-from rally.common import sshutils
+from rally.utils import sshutils
 
-from rally_openstack.scenarios.octavia import utils as octavia_utils
+from rally_openstack.task.scenarios.octavia import utils as octavia_utils
 from octaviaclient.api import exceptions
 import dynamic_utils
 

@@ -14,8 +14,8 @@ from rally.task import context
 from rally.common import logging
 from rally.common import utils
 from rally import consts
-from rally_openstack import osclients
-from rally_openstack.wrappers import network as network_wrapper
+from rally_openstack.common import osclients
+from rally_openstack.common.wrappers import network as network_wrapper
 
 import subprocess
 

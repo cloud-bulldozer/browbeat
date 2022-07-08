@@ -14,9 +14,9 @@ import logging
 import os
 import subprocess
 
-from rally_openstack import consts
-from rally_openstack.scenarios.neutron import utils as neutron_utils
-from rally_openstack.scenarios.vm import utils as vm_utils
+from rally_openstack.common import consts
+from rally_openstack.task.scenarios.neutron import utils as neutron_utils
+from rally_openstack.task.scenarios.vm import utils as vm_utils
 from rally.task import atomic
 from rally.task import scenario
 from rally.task import types

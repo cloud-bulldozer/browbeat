@@ -12,7 +12,7 @@
 
 import os
 
-from rally_openstack import consts
+from rally_openstack.common import consts
 from rally.task import scenario
 from rally.task import types
 from rally.task import validation
