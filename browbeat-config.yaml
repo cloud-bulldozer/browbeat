@@ -404,6 +404,23 @@ workloads:
       - 8
     times: 10
     scenarios:
+      - name: nova-boot-in-batches-with-delay
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        # Time to throttle VM boot in seconds
+        delay_time: 600
+        # Number of iterations that can run before delay is introduced
+        # iterations_per_batch should always be greater than concurrency.
+        iterations_per_batch: 10
+        # Number of iterations that should be delayed per batch.
+        # For example, if iterations_per_batch is 3000 and num_iterations_to_delay
+        # is 50, iterations 3000-3050, 6000-6050.... will be delayed.
+        # Setting this value to a small multiple(1x or 2x) of the concurrency is optimal.
+        # num_iterations_to_delay should always be lesser than iterations_per_batch.
+        num_iterations_to_delay: 8
+        num_tenant_networks: 1
+        file: rally/rally-plugins/nova/nova_boot_in_batches_with_delay.yml
       - name: netcreate-boot
         enabled: true
         enable_dhcp: true
