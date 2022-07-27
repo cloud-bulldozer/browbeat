@@ -43,7 +43,11 @@ if [ -z "$tripleo_ip_address" ]; then
 fi
 
 out_file="hosts.yml"
-if [ $uncomment_localhost ]; then
+version=$(grep -o 17 /etc/rhosp-release)
+
+if [ "$version" = "17" ]; then
+  cp ~/overcloud-deploy/overcloud/tripleo-ansible-inventory.yaml ${out_file}
+elif ([ $uncomment_localhost ] && [ "$version" != "17" ]); then
   source ~/stackrc
   tripleo-ansible-inventory --stack ${overcloud_stack_name} --static-yaml-inventory ${out_file}
 else
