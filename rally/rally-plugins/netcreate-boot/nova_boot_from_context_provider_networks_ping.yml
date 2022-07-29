@@ -1,0 +1,46 @@
+{% set flavor_name = flavor_name or "m1.xtiny" %}
+{% set image_name = image_name or "cirros" %}
+{% set num_provider_networks = num_provider_networks or 1 %}
+{% set ping_timeout = ping_timeout or 30 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  BrowbeatPlugin.nova_boot_from_context_provider_networks_ping:
+    -
+      args:
+        flavor:
+            name: "{{flavor_name}}"
+        image:
+            name: "{{image_name}}"
+        num_provider_networks: {{num_provider_networks}}
+        ping_timeout: {{ping_timeout}}
+      runner:
+        type: "constant"
+        times: {{times}}
+        concurrency: {{concurrency}}
+      context:
+        users:
+          tenants: 1
+          users_per_tenant: 1
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+            subnet: -1
+            floatingip: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
+        create_provider_networks:
+          num_provider_networks: {{ num_provider_networks }}
+          iface_name: '{{ iface_name }}'
+          iface_mac: '{{ iface_mac }}'
+          provider_phys_net: '{{ provider_phys_net }}'
+          cidr_prefix: '{{ cidr_prefix }}'
+      sla:
+        max_avg_duration: {{sla_max_avg_duration}}
+        max_seconds_per_iteration: {{sla_max_seconds}}
+        failure_rate:
+          max: {{sla_max_failure}}

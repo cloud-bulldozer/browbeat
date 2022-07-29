@@ -530,6 +530,19 @@ workloads:
         iface_name: "ens7f0"
         iface_mac: "3c:fd:fe:c1:8c:70"
         file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping.yml
+      - name: nova-boot-from-context-provider-networks-ping
+        # Creates provider networks as part of rally context. Number of VMs booted is equal to times.
+        # VMs are booted on the provider networks in round robin order.
+        enabled: true
+        num_provider_networks: 8
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        provider_phys_net: "provider"
+        iface_name: "ens7f0"
+        iface_mac: "3c:fd:fe:c1:8c:70"
+        cidr_prefix: "172.31"
+        ping_timeout: 30
+        file: rally/rally-plugins/netcreate-boot/nova_boot_from_context_provider_networks_ping.yml
 
   - name: plugin-workloads
     enabled: false
