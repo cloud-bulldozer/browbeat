@@ -67,56 +67,61 @@ from gspread_formatting import set_column_width
 from gspread_dataframe import set_with_dataframe
 import argparse
 
-def add_atomic_action_data_to_df(json_file_path, atomic_action, df_dict, df_sla_fail_dict,
+def add_atomic_action_data_to_df(json_file_paths, atomic_action, df_dict, df_sla_fail_dict,
                                  sla_duration, sla_enabled):
     """Convert rally json data to csv file containing atomic action data
-    :param json_file_path: str, path to rally json file
+    :param json_file_path: str, list containing paths to rally json files
     :param atomic_action: str, atomic action to generate duration data
     :param df_dict: dict, dict of dataframes from different atomic actions
     :param df_sla_fail_dict: dict, dict of dataframes from different atomic actions that fails sla
     :param sla_duration: int, max duration allowed as per sla
     :param sla_enabled: bool, variable that determines whether sla criteria should be considered
     """
-    json_file = open(json_file_path)
-    json_data = json.load(json_file)
+    for json_file_path in json_file_paths:
+        json_file = open(json_file_path)
+        json_data = json.load(json_file)
 
-    df = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
+        df = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
 
-    if sla_enabled:
-        df_sla_fail = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
+        if sla_enabled:
+            df_sla_fail = pd.DataFrame({"Resource Number": [], "Duration(in seconds)": []})
 
-    resource_number = 1
+        resource_number = 1
 
-    for iteration in json_data[0]["result"]:
-        for atomic_action_json in iteration["atomic_actions"]:
-            if atomic_action in atomic_action_json:
-                atomic_action_duration = iteration["atomic_actions"][atomic_action_json]
-                df = df.append({"Resource Number": resource_number,
-                                "Duration(in seconds)": atomic_action_duration},
-                               ignore_index=True)
-                if sla_enabled and atomic_action_duration > sla_duration:
-                    df_sla_fail = df_sla_fail.append({"Resource Number": resource_number,
-                                                      "Duration(in seconds)":
-                                                      atomic_action_duration},
-                                                     ignore_index=True)
-                resource_number += 1
+        for iteration in json_data[0]["result"]:
+            for atomic_action_json in iteration["atomic_actions"]:
+                if atomic_action in atomic_action_json:
+                    atomic_action_duration = iteration["atomic_actions"][atomic_action_json]
+                    df = df.append({"Resource Number": resource_number,
+                                    "Duration(in seconds)": atomic_action_duration},
+                                   ignore_index=True)
+                    if sla_enabled and atomic_action_duration > sla_duration:
+                        df_sla_fail = df_sla_fail.append({"Resource Number": resource_number,
+                                                          "Duration(in seconds)":
+                                                          atomic_action_duration},
+                                                         ignore_index=True)
+                    resource_number += 1
 
-    df_dict[atomic_action] = df
+        df_dict[(json_file_path, atomic_action)] = df
 
-    if sla_enabled:
-        df_sla_fail_dict[atomic_action] = df_sla_fail
+        if sla_enabled:
+            df_sla_fail_dict[(json_file_path, atomic_action)] = df_sla_fail
 
-    print("Pandas DF for atomic action {} generated successfully.".format(atomic_action))
+        print("Pandas DF for json file {} and atomic action {} generated successfully.".format(
+              json_file_path, atomic_action))
 
 
 def generate_csv_from_df(csv_files_path, df_dict):
     """Generate csv files from pandas dataframe
     :param csv_files_path: str, path of directory to generate csv files
-    :param df_dict: dict, dict of dataframes from different atomic actions
+    :param df_dict: dict, dict of dataframes from different json files
     """
-    for atomic_action in df_dict:
-        df_dict[atomic_action].to_csv("{}/{}.csv".format(csv_files_path, atomic_action))
-        print("{}/{}.csv created succesfully".format(csv_files_path, atomic_action))
+    for key in df_dict:
+        json_file_name = key[0].split("/")[-1].split(".")[0]
+        atomic_action = key[1]
+        df_dict[key].to_csv("{}/{}_{}.csv".format(csv_files_path, json_file_name, atomic_action))
+        print("{}/{}_{}.csv created successfully".format(csv_files_path,
+                                                         json_file_name, atomic_action))
 
 def push_to_gsheet(df_dict, df_sla_fail_dict, google_svc_acc_key, email_id, sheetname, sla_enabled):
     """Push csv file to Google Sheets
@@ -139,18 +144,21 @@ def push_to_gsheet(df_dict, df_sla_fail_dict, google_svc_acc_key, email_id, shee
 
     sh = gc.create(sheetname)
 
-    for atomic_action in df_dict:
-        ws = sh.add_worksheet(atomic_action, rows=len(df_dict[atomic_action]), cols=2)
-        set_with_dataframe(ws, df_dict[atomic_action])
+    for key in df_dict:
+        json_file_name = key[0].split("/")[-1].split(".")[0]
+        atomic_action = key[1]
+        ws_name = "{}_{}".format(json_file_name, atomic_action)
+        ws = sh.add_worksheet(ws_name, rows=len(df_dict[key]), cols=2)
+        set_with_dataframe(ws, df_dict[key])
         format_cell_range(ws, "1:1000", fmt)
         set_column_width(ws, "A", 290)
         set_column_width(ws, "B", 190)
 
         if sla_enabled:
-            ws_name = atomic_action + "_sla_fail"
-            ws = sh.add_worksheet(ws_name,
-                                  rows=len(df_sla_fail_dict[atomic_action]), cols=2)
-            set_with_dataframe(ws, df_sla_fail_dict[atomic_action])
+            ws_name_sla = ws_name + "_sla_fail"
+            ws = sh.add_worksheet(ws_name_sla,
+                                  rows=len(df_sla_fail_dict[key]), cols=2)
+            set_with_dataframe(ws, df_sla_fail_dict[key])
             format_cell_range(ws, "1:1000", fmt)
             set_column_width(ws, "A", 290)
             set_column_width(ws, "B", 190)
@@ -171,8 +179,8 @@ if __name__ == "__main__":
         nargs='?', required=False, dest="csvfilespath"
     )
     parser.add_argument(
-        "-j", "--jsonfilepath", help="Rally JSON file path to scrape output from",
-        nargs='?', required=True, dest="jsonfilepath",
+        "-j", "--jsonfilepaths", help="Rally JSON file paths to scrape output from",
+        nargs='+', required=True, dest="jsonfilepaths",
     )
     parser.add_argument(
         "-a", "--atomicactions", help="Atomic actions to generate duration data",
@@ -232,7 +240,7 @@ if __name__ == "__main__":
         sla_duration = -1
         if sla_enabled:
             sla_duration = sla_durations[i]
-        add_atomic_action_data_to_df(params.jsonfilepath, atomic_action,
+        add_atomic_action_data_to_df(params.jsonfilepaths, atomic_action,
                                      df_dict, df_sla_fail_dict, sla_duration, sla_enabled)
 
     if params.generatecsvfiles:
