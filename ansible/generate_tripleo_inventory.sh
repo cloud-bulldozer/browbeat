@@ -47,6 +47,7 @@ version=$(grep -o 17 /etc/rhosp-release)
 
 if [ "$version" = "17" ]; then
   cp ~/overcloud-deploy/overcloud/tripleo-ansible-inventory.yaml ${out_file}
+  sed -i '$aovercloud:\n  children:\n    allovercloud: {}' ${out_file}
 elif ([ $uncomment_localhost ] && [ "$version" != "17" ]); then
   source ~/stackrc
   tripleo-ansible-inventory --stack ${overcloud_stack_name} --static-yaml-inventory ${out_file}

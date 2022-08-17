@@ -21,7 +21,7 @@ ansible:
   start_collectd_playbook: ansible/install/start-collectd.yml
   stop_collectd_playbook: ansible/install/stop-collectd.yml
   check_collectd_config_playbook: ansible/install/check-collectd-config.yml
-  ssh_config: ansible/ssh-config
+  ssh_config: /home/stack/.ssh/config
 elasticsearch:
   enabled: false
   host: 1.1.1.1
