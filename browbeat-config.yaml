@@ -514,6 +514,32 @@ workloads:
         iface_mac: "3c:fd:fe:c1:8c:70"
         file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping.yml
 
+  - name: swift
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      # object_size: size of created swift objects in byte
+      - name: create-container-and-object-then-delete-all
+        enabled: false
+        objects_per_container: 10
+        object_size: 1024
+        file: rally/swift/create-container-and-object-then-delete-all.yaml
+      - name: create-container-and-object-then-list-objects
+        enabled: false
+        objects_per_container: 10
+        object_size: 1024
+        file: rally/swift/create-container-and-object-then-list-objects.yaml
+      - name: list-objects-in-containers
+        enabled: true
+        objects_per_container: 10
+        object_size: 1024
+        containers_per_tenant: 1
+        file: rally/swift/list-objects-in-containers.yaml
+
   - name: plugin-workloads
     enabled: false
     type: rally
