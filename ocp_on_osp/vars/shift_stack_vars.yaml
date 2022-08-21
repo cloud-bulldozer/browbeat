@@ -1,0 +1,45 @@
+ocp_release: 4.10.18
+ocp_dev_preview: false
+install_client: true
+ocp_base_domain: rdu2.scalelab.redhat.com
+
+public_net_name: public
+
+# by enabling random_ip, the ocp will choose randomly availble fips
+# for api and apps for ocp deployment.
+random_fip: true
+
+ocp_master_flavor: m4.xlarge
+ocp_worker_flavor: m4.xlarge
+ocp_cluster_id: "{{ ansible_date_time.epoch | to_uuid }}"
+master_nodes: 3
+worker_nodes: 3
+# specify the openshift SDN name, OpenShiftSDN or Kuryr
+ocp_network_type: OpenShiftSDN
+
+# if the master has a passthrough nvme, set to true to use this device for etcd
+ocp_master_etcd_nvme: false
+worker_nvme_ephemeral: false
+worker_nvme_var_lib_size: 512000
+worker_nvme_localstorage_tp_lv_count: 5
+worker_nvme_localstorage_tp_lv_size: 90G
+passthrough_nvme_device: /dev/nvme0n1
+
+ssh_key_file: '/home/stack/.ssh/id_rsa.pub'
+
+# when pull secret is not enabled it will try to read from the value
+# from OPENSHIFT_INSTALL_PULL_SECRET env variable
+pull_secret:
+
+ocp_create_infra_nodes: true
+ocp_create_workload_nodes: true
+ocp_post_install_poll_attempts: 50
+machineset_metadata_label_prefix: machine.openshift.io
+openshift_alertmanager_storage_size: 2Gi
+openshift_alertmanager_storage_class: standard
+openshift_prometheus_storage_size: 10Gi
+openshift_prometheus_storage_class: standard
+openshift_prometheus_retention_period: 15d
+openshift_workload_node_flavor: m4.xlarge
+openshift_infra_node_flavor: m4.xlarge
+dittybopper_enable: true

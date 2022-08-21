@@ -20,7 +20,7 @@ import vm
 import trunk
 import octavia
 import provider_network
-import shift_on_stack
+import ocp_on_osp
 
 
 @types.convert(octavia_image={"type": "glance_image"}, octavia_flavor={"type": "nova_flavor"})
@@ -48,7 +48,7 @@ import shift_on_stack
 )
 class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase, provider_network.DynamicProviderNetworkBase,
-                      shift_on_stack.ShiftStackDynamicScenario):
+                      ocp_on_osp.OcpOnOspDynamicScenario):
     def run(
         self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_with_fip,
         num_vms_to_migrate, num_stop_start_vms, trunk_image, trunk_flavor, num_initial_subports,
@@ -56,8 +56,8 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         num_delete_subports_trunks, octavia_image, octavia_flavor, user, user_data_file, num_lbs,
         num_pools, num_clients, delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms,
         provider_phys_net, iface_name, iface_mac, num_vms_provider_net, num_external_networks,
-        shift_on_stack_job_iterations, shift_on_stack_qps, shift_on_stack_burst,
-        shift_on_stack_workload, shift_on_stack_kubeconfig_paths, workloads="all",
+        e2e_kube_burner_job_iterations, e2e_kube_burner_qps, e2e_kube_burner_burst,
+        e2e_kube_burner_workload, ocp_kubeconfig_paths, workloads="all",
         router_create_args=None, network_create_args=None,
         subnet_create_args=None, **kwargs):
 
@@ -160,11 +160,14 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         if "provider_net_nova_delete" in workloads_list:
             self.provider_net_nova_delete(provider_phys_net)
 
-        if "shift_on_stack" in workloads_list:
-            num_openshift_clusters = len(shift_on_stack_kubeconfig_paths)
-            self.run_kube_burner_workload(shift_on_stack_workload,
-                                          shift_on_stack_job_iterations,
-                                          shift_on_stack_qps, shift_on_stack_burst,
-                                          shift_on_stack_kubeconfig_paths[
+        if "e2e_kube_burner" in workloads_list:
+            num_openshift_clusters = len(ocp_kubeconfig_paths)
+            self.run_kube_burner_workload(e2e_kube_burner_workload,
+                                          e2e_kube_burner_job_iterations,
+                                          e2e_kube_burner_qps, e2e_kube_burner_burst,
+                                          ocp_kubeconfig_paths[
                                               ((self.context["iteration"] - 1)
                                                % num_openshift_clusters)])
+
+        if "ocp_on_osp" in workloads_list:
+            self.install_ocp_cluster()

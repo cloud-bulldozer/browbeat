@@ -681,13 +681,13 @@ workloads:
         iface_name: "ens7f0"
         iface_mac: "3c:fd:fe:c1:73:40"
         num_vms_provider_net: 2
-        shift_on_stack_job_iterations: 100
-        shift_on_stack_qps: 20
-        shift_on_stack_burst: 20
-        # shift_on_stack_workload can be poddensity, clusterdensity, maxnamespaces,
+        e2e_kube_burner_job_iterations: 100
+        e2e_kube_burner_qps: 20
+        e2e_kube_burner_burst: 20
+        # e2e_kube_burner_workload can be poddensity, clusterdensity, maxnamespaces,
         # or maxservices
-        shift_on_stack_workload: poddensity
-        shift_on_stack_kubeconfig_paths:
+        e2e_kube_burner_workload: poddensity
+        ocp_kubeconfig_paths:
           - /home/stack/.kube/config
         # External networks with /23 ranges will be created by dynamic workloads.
         # All these external networks will share the first 16 bits.
@@ -703,9 +703,15 @@ workloads:
         # delete_loadbalancers, delete_members_random_lb, pod_fip_simulation,
         # add_subports_to_random_trunks, delete_subports_from_random_trunks,
         # swap_floating_ips_between_random_subports, provider_netcreate_nova_boot_ping,
-        # provider_net_nova_boot_ping, provider_net_nova_delete, shift_on_stack
-        # Note: Octavia, Provider and Shift-on-Stack scenarios are not included in 'all'
+        # provider_net_nova_boot_ping, provider_net_nova_delete, e2e_kube_burner, ocp_on_osp
+        # Note: Octavia, Provider, e2e_kube_burner and ocp_on_osp scenarios are not included in 'all'
         # by default, and have to be included separately.
+        # Steps for running ocp_on_osp workload, given that underlying openstack has been
+        # deployed with necessary dependencies:
+        # 1) Pass your pull secret in ocp_on_osp/vars/shift_stack_vars.yaml
+        # 2) If you want to change any default params(like ocp_version, worker count, master and worker flavors, etc), refer to ocp_on_osp/vars/shift_stack_vars.yml
+        # 3) Run "ansible-playbook -vvv ocp_on_osp/ocp_bootstrap.yml"
+        # 4) And then run ocp_on_osp workload. NOTE: use "ansible-playbook -vvv ocp_on_osp/ocp_cleanup.yml" for the clean up.
         workloads: all
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
 

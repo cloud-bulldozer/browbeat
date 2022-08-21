@@ -1,0 +1,122 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars/shift_stack_vars.yaml
+  environment:
+    KUBECONFIG: /home/stack/ocp_clusters/{{ ocp_cluster_name }}/auth/kubeconfig
+  tasks:
+    - name: Get cluster name
+      shell: |
+        {%raw%}oc get machineset -n openshift-machine-api -o=go-template='{{ (index (index .items 0).metadata.labels {%endraw%} "{{ machineset_metadata_label_prefix }}/cluster-api-cluster" {%raw%}) }}'{%endraw%}
+      register: cluster_name
+
+    - name: Get current ready node count
+      shell: oc get nodes | grep " Ready" -ic
+      register: current_node_count
+
+    - name: (OSP) Template out machineset yamls
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - src: osp-infra-node-machineset.yml.j2
+          dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/infra-node-machineset.yml"
+          toggle: "{{ ocp_create_infra_nodes }}"
+        - src: osp-workload-node-machineset.yml.j2
+          dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/workload-node-machineset.yml"
+          toggle: "{{ ocp_create_workload_nodes }}"
+      when:
+        - item.toggle|bool
+
+    - name: Create machinesets
+      shell: |
+        oc create -f {{ item.ms }}
+      when: item.toggle|bool
+      with_items:
+        - ms: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/infra-node-machineset.yml"
+          toggle: "{{ ocp_create_infra_nodes }}"
+        - ms: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/workload-node-machineset.yml"
+          toggle: "{{ ocp_create_workload_nodes }}"
+
+    - name: Set expected node count
+      set_fact:
+        expected_node_count: "{{ current_node_count.stdout|int }}"
+
+    - name: Increment expected node count with infra nodes
+      set_fact:
+        expected_node_count: "{{ expected_node_count|int + 3 }}"
+      when: ocp_create_infra_nodes|bool
+
+    - name: Increment expected node count with workload node
+      set_fact:
+        expected_node_count: "{{ expected_node_count|int + 1 }}"
+      when: ocp_create_workload_nodes|bool
+
+    - name: Poll nodes to see if creating nodes finished
+      shell: oc get nodes | grep " Ready" -ic
+      register: current_node_count
+      until: current_node_count.stdout|int >= (expected_node_count|int)
+      delay: 30
+      retries: "{{ ocp_post_install_poll_attempts|int }}"
+
+    - name: Relabel the infra nodes
+      shell: |
+        oc label nodes --overwrite -l 'node-role.kubernetes.io/infra=' node-role.kubernetes.io/worker-
+      when: ocp_create_infra_nodes|bool
+
+    - name: Relabel the workload node
+      shell: |
+        oc label nodes --overwrite -l 'node-role.kubernetes.io/workload=' node-role.kubernetes.io/worker-
+      when: ocp_create_workload_nodes|bool
+
+    - name: Add additional label to worker nodes to provide ablity to isolate workloads on workers
+      shell: |
+        oc label nodes --overwrite -l 'node-role.kubernetes.io/worker=' computenode=true
+
+    - name: Taint the workload node
+      shell: |
+        oc adm taint node -l node-role.kubernetes.io/workload= role=workload:NoSchedule --overwrite=true
+      when: ocp_create_workload_nodes|bool
+
+    - name: Copy new cluster-monitoring-config
+      template:
+        src: cluster-monitoring-config.yml.j2
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/cluster-monitoring-config.yml"
+      when: ocp_create_infra_nodes|bool
+
+    - name: Replace the cluster-monitoring-config ConfigMap
+      shell: |
+        oc create -f /home/stack/ocp_clusters/{{ ocp_cluster_name }}/cluster-monitoring-config.yml
+      ignore_errors: yes
+      when: ocp_create_infra_nodes|bool
+
+    - name: Apply new nodeSelector to infra workload components
+      shell: |
+        oc patch {{ item.object }} {{ item.type|default('',True) }} -n {{ item.namespace }} -p {{ item.patch }}
+      with_items:
+        - namespace: openshift-ingress-operator
+          object: ingresscontrollers/default
+          patch: |
+            '{"spec": {"nodePlacement": {"nodeSelector": {"matchLabels": {"node-role.kubernetes.io/infra": ""}}}}}'
+          type: "--type merge"
+        - namespace: openshift-image-registry
+          object: deployment.apps/image-registry
+          patch: |
+             '{"spec": {"template": {"spec": {"nodeSelector": {"node-role.kubernetes.io/infra": ""}}}}}'
+      when: ocp_create_infra_nodes|bool
+
+    - name: Deploy dittybopper
+      block:
+        - name: clone dittybopper
+          git:
+            repo: 'https://github.com/cloud-bulldozer/performance-dashboards.git'
+            dest: "{{ ansible_user_dir }}/ocp_clusters/{{ ocp_cluster_name }}/performance-dashboards"
+            force: yes
+
+        - name: Deploy mutable Grafana
+          command: ./deploy.sh
+          args:
+            chdir: "{{ ansible_user_dir }}/ocp_clusters/{{ ocp_cluster_name }}/performance-dashboards/dittybopper"
+          environment:
+            KUBECONFIG: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/auth/kubeconfig"
+      when: dittybopper_enable|bool

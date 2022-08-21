@@ -1,0 +1,15 @@
+flavors:
+  - { name: 'm4.xlarge', ram: 16384, vcpus: 4, disk: 40 }
+  - { name: 'm1.small', ram: 1740, vcpus: 1, disk: 71 }
+  - { name: 'm5.xlarge', ram: 16384, vcpus: 4, disk: 96 }
+  - { name: 'm5.4xlarge', ram: 65280, vcpus: 16, disk: 300 }
+  - { name: 'm5.2xlarge', ram: 31488, vcpus: 8, disk: 128 }
+  - { name: 'm5.large', ram: 7936, vcpus: 2, disk: 96 }
+  - { name: 'ci.master', ram: 124672, vcpus: 16, disk: 220 }
+  - { name: 'ci.worker', ram: 31488, vcpus: 8, disk: 100 }
+  - { name: 'ci.infra', ram: 124672, vcpus: 24, disk: 100 }
+  - { name: 'ci.workload', ram: 65280, vcpus: 16, disk: 300 }
+nvme_flavors:
+  - { name: 'r5.4xlarge-pci', ram: 124672, vcpus: 16, disk: 128 }
+  - { name: 'm5.10xlarge-pci', ram: 163584, vcpus: 40, disk: 256 }
+  - { name: 'm5.4xlarge-pci', ram: 65280, vcpus: 16, disk: 200 }
