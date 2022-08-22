@@ -1,0 +1,24 @@
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  SwiftObjects.create_container_and_object_then_list_objects:
+    -
+      args:
+        objects_per_container: {{ objects_per_container }}
+        object_size: {{ object_size }}
+      runner:
+        type: "constant"
+        times: {{ times }}
+        concurrency: {{ concurrency }}
+      context:
+        users:
+          tenants: 1
+          users_per_tenant: 1
+        roles:
+          - "admin"
+      sla:
+        max_avg_duration: {{ sla_max_avg_duration }}
+        max_seconds_per_iteration: {{ sla_max_seconds }}
+        failure_rate:
+          max: {{ sla_max_failure }}
