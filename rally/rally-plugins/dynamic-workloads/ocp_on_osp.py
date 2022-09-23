@@ -10,15 +10,29 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+
 import os
 import subprocess
 
-import dynamic_utils
+from rally.task import atomic
 
 
-class ShiftStackDynamicScenario(dynamic_utils.NovaUtils,
-                                dynamic_utils.NeutronUtils,
-                                dynamic_utils.LockUtils):
+class OcpOnOspDynamicScenario():
+    def install_ocp_cluster(self):
+        """Installs openshift cluster on openstack"""
+
+        ansible_log_file = "ocp_ansible_iter_{}.log".format(self.context["iteration"])
+        cmd = ("ansible-playbook -vvv /home/stack/browbeat/ocp_on_osp/ocp_on_osp.yml &> "
+               "/home/stack/ocp_ansible_logs/{}").format(ansible_log_file)
+
+        aname = "ocp_on_osp"
+        with atomic.ActionTimer(self, aname):
+            proc = subprocess.run(cmd, shell=True)
+
+            msg = "openshift cluster installation has failed"
+            if proc.returncode != 0:
+                self.assertTrue(False, err_msg=msg)
+
     def run_kube_burner_workload(self, workload, job_iterations, qps, burst, kubeconfig):
         """Run kube-burner workloads through e2e-benchmarking
         :param workload: str, kube-burner workload to run

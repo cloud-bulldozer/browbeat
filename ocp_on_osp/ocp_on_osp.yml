@@ -1,0 +1,256 @@
+---
+- name: Create OCP cluster
+  hosts: localhost
+  gather_facts: true
+  vars_files:
+    - vars/shift_stack_vars.yaml
+  vars:
+    random_str: "{{ lookup('password', '/dev/null length=9 chars=ascii_lowercase,digits') + 'rhocp' }}"
+  tasks:
+    - name: Set facts for OCP vars
+      set_fact:
+        osp_project_name: "{{ random_str }}"
+        osp_user_name: "{{ random_str }}"
+        ocp_cluster_name: "{{ random_str }}"
+
+    - name: Fail on cluster directory existing (Safeguard to prevent creating duplicate clusters)
+      stat:
+        path: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}"
+      register: cluster_dir_check
+      failed_when: cluster_dir_check.stat.exists
+
+    - name: Create ocp_clusters directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /home/stack/ocp_clusters
+        - "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/"
+
+    - name: create new user and project
+      vars:
+        project_name: "{{ osp_project_name }}"
+        user_name: "{{ osp_user_name }}"
+      include_tasks: tasks/create_project_and_user.yml
+
+    - name: Get shiftstack tenant id
+      shell: |
+        source /home/stack/overcloudrc
+        openstack project show {{ osp_project_name }} -f value -c id
+      register: shiftstack_id
+      args:
+        chdir: /home/stack
+
+    - name: set shiftstack quotas to unlimited
+      shell: |
+        source /home/stack/ocp_venvrc
+        openstack quota set --properties -1 --server-groups -1 --server-group-members -1 --ram -1 --key-pairs -1 --instances -1  --cores -1 --per-volume-gigabytes -1 --gigabytes -1 --backup-gigabytes -1 --snapshots -1 --volumes -1 --backups -1 --subnetpools -1 --ports -1 --subnets -1 --networks -1 --floating-ips -1 --secgroup-rules -1 --secgroups -1 --routers -1 --rbac-policies -1 {{ osp_project_name }}
+      args:
+        chdir: /home/stack
+
+    - name: Create shiftstackrc
+      shell: |
+        sed -e 's/OS_USERNAME=.*/OS_USERNAME={{ osp_user_name }}/' \
+        -e 's/OS_PROJECT_NAME=.*/OS_PROJECT_NAME={{ osp_project_name }}/' \
+        -e 's/OS_CLOUDNAME=.*/OS_CLOUDNAME={{ osp_project_name }}/' \
+        -e 's/OS_PASSWORD=.*/OS_PASSWORD=redhat/' overcloudrc > /home/stack/ocp_clusters/{{ocp_cluster_name}}/shiftstackrc
+      args:
+        chdir: /home/stack/
+
+    - name: Get cloud.yaml variables
+      shell: |
+        for key in $( set | awk '{FS="="}  /^OS_/ {print $1}' ); do unset $key ; done
+        source /home/stack/ocp_clusters/{{ocp_cluster_name}}/shiftstackrc
+        echo -n " {{ osp_project_name }}: \
+          {'auth': \
+            { 'auth_url': '$OS_AUTH_URL', \
+              'username': '$OS_USERNAME', \
+              'password': '$OS_PASSWORD', \
+              $(if [ -n "$OS_USER_DOMAIN_NAME" ]; then echo "'user_domain_name': '${OS_USER_DOMAIN_NAME}',"; fi) \
+              $(if [ -n "$OS_PROJECT_DOMAIN_NAME" ]; then echo "'project_domain_name': '${OS_PROJECT_DOMAIN_NAME}',"; fi) \
+              'project_name': '${OS_PROJECT_NAME:-$OS_TENANT_NAME}' \
+            } $(if [ -n "$OS_IDENTITY_API_VERSION" ]; then echo ",'identity_api_version': '${OS_IDENTITY_API_VERSION}'"; fi) }"
+      register: cloud_details
+
+    - name: Set clouds_yaml fact
+      set_fact:
+        clouds_yaml: "{{ cloud_details.stdout|from_yaml }}"
+
+    - name: Insert clouds.yaml parameters
+      blockinfile:
+        dest: "/home/stack/clouds.yaml"
+        block: |5
+              {{ clouds_yaml|to_nice_yaml(indent=4) }}
+        insertbefore: "EOF"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      throttle: 1
+
+    - name: Read ssh key file
+      slurp:
+        src: "{{ ssh_key_file }}"
+      register: ssh_key_content
+
+    - name: Set pull secret
+      set_fact:
+        ocp_pull_secret: "{{ pull_secret| to_yaml }}"
+      when: pull_secret is defined
+
+    - name: Set pull secret from environment variable
+      set_fact:
+        ocp_pull_secret: "{{ lookup('env', 'OPENSHIFT_INSTALL_PULL_SECRET') }}"
+      when: pull_secret is not defined
+
+    - name: Set ssh_public_key fact
+      set_fact:
+        ssh_public_key: "{{ ssh_key_content['content'] | b64decode }}"
+
+    - name: Use floating ips with DNS
+      block:
+        - name: Determine API and Ingress floating ips
+          set_fact:
+            api_floating_ip: "{{ external_net_cidr | next_nth_usable(3) }}"
+            ingress_floating_ip: "{{ external_net_cidr | next_nth_usable(4) }}"
+
+        - name: Create api floating ip
+          shell: |
+            source /home/stack/overcloudrc
+            openstack floating ip create --project {{ shiftstack_id.stdout }} --floating-ip-address {{ api_floating_ip }} {{ public_net_name }}
+
+        - name: Create ingress floating ip
+          shell: |
+            source /home/stack/overcloudrc
+            openstack floating ip create --project {{ shiftstack_id.stdout }} --floating-ip-address {{ ingress_floating_ip }} {{ public_net_name }}
+      when: random_fip == false
+
+    - name: Use random floating ips
+      block:
+        - name: Create random api floating ip
+          shell: |
+            source /home/stack/overcloudrc
+            openstack floating ip create --project {{ shiftstack_id.stdout }} {{ public_net_name }} -f value -c floating_ip_address
+          register: api_fip
+
+        - name: Create random ingress floating ip
+          shell: |
+            source /home/stack/overcloudrc
+            openstack floating ip create --project {{ shiftstack_id.stdout }} {{ public_net_name }} -f value -c floating_ip_address
+          register: ingress_fip
+
+        - name: Set floating ips for install-config.yaml
+          set_fact:
+            api_floating_ip: "{{ api_fip.stdout }}"
+            ingress_floating_ip: "{{ ingress_fip.stdout }}"
+      when: random_fip == true
+
+    - name: Add DNS detail in /etc/hosts
+      blockinfile:
+        path: "/etc/hosts"
+        backup: true
+        block: |
+            {{ api_floating_ip }} api.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} oauth-openshift.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} console-openshift-console.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} downloads-openshift-console.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} alertmanager-main-openshift-monitoring.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} grafana-openshift-monitoring.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} prometheus-k8s-openshift-monitoring.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+            {{ ingress_floating_ip }} thanos-querier-openshift-monitoring.apps.{{ ocp_cluster_name }}.{{ ocp_base_domain }}
+        insertafter: "EOF"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      become: yes
+      become_user: root
+      throttle: 1
+      when: random_fip == true
+
+    - name: Prepare install-config.yaml
+      template:
+        src: "{{ playbook_dir }}/templates/install-config.yaml.j2"
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/install-config.yaml"
+
+    - name: Backup the install-config.yaml
+      copy:
+        src: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/install-config.yaml"
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/install-config.yaml.orig"
+        remote_src: yes
+
+    - name: Create ignition-configs with openshift-installer
+      shell: |
+        ./openshift-install --log-level=debug create ignition-configs --dir=/home/stack/ocp_clusters/{{ ocp_cluster_name }}/ > /home/stack/ocp_clusters/{{ ocp_cluster_name }}/create_ignition_configs.log 2>&1
+      args:
+        chdir: /home/stack/
+
+    - name: Backup the ignition-configs
+      copy:
+        src: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/{{ item }}.ign"
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/{{ item }}.ign.orig"
+        remote_src: yes
+      with_items:
+        - master
+        - worker
+        - bootstrap
+
+    - name: Read original master.ign config file
+      slurp:
+        src: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/master.ign.orig"
+      register: master_ign
+      when: ocp_master_etcd_nvme
+
+    - name: Get master etcd on nvme ignition configuration
+      set_fact:
+        master_ign_config_base: "{{ master_ign['content'] | b64decode }}"
+        master_etcd_nvme_config: "{{ lookup('template', 'master-etcd.ign.json.j2') }}"
+      when: ocp_master_etcd_nvme
+
+    - name: Dump new version of master.ign file
+      copy:
+        content: "{{ master_ign_config_base | combine(master_etcd_nvme_config) | to_json }}"
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/{{ item }}"
+      with_items:
+        - master.ign
+        - master.ign.etcd
+      when: ocp_master_etcd_nvme
+
+    - name: Read original worker.ign config file
+      slurp:
+        src: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/worker.ign.orig"
+      register: worker_ign
+      when: worker_nvme_ephemeral
+
+    - name: Get worker nvme ephemeral storage ignition configuration
+      set_fact:
+        worker_ign_config_base: "{{ worker_ign['content'] | b64decode }}"
+        worker_nvme_config: "{{ lookup('template', 'worker-nvme.ign.json.j2') }}"
+      when: worker_nvme_ephemeral
+
+    - name: Dump new version of worker.ign file
+      copy:
+        content: "{{ worker_ign_config_base | combine(worker_nvme_config) | to_json }}"
+        dest: "/home/stack/ocp_clusters/{{ ocp_cluster_name }}/{{ item }}"
+      with_items:
+        - worker.ign
+        - worker.ign.nvme
+      when: worker_nvme_ephemeral
+
+    - name: Run openshift-installer
+      shell: |
+        ./openshift-install --log-level=debug create cluster --dir=/home/stack/ocp_clusters/{{ ocp_cluster_name }}/ > /home/stack/ocp_clusters/{{ ocp_cluster_name }}/ocp_install.log 2>&1
+      args:
+        chdir: /home/stack/
+
+    - name: create .kube dir on home
+      file:
+        path: /home/stack/.kube
+        state: directory
+        mode: a+rwx
+      when: random_fip == false
+
+    - name: copy the kubeconfig file
+      copy:
+        src: /home/stack/ocp_clusters/{{ ocp_cluster_name }}/auth/kubeconfig
+        dest: /home/stack/.kube/config
+        mode: a+rx
+        remote_src: yes
+      when: random_fip == false
+
+- import_playbook: create_ocp_infra_nodes.yml
+  when: (ocp_create_infra_nodes|bool == true or ocp_create_workload_nodes|bool == true)

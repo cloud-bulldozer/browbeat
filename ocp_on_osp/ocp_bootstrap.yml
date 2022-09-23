@@ -1,0 +1,75 @@
+---
+- hosts: localhost
+  gather_facts: true
+  vars_files:
+    - vars/shift_stack_vars.yaml
+  tasks:
+    - name: Get Binaries
+      block:
+      - name: Set url for installer
+        set_fact:
+          ocp_installer_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/
+        when: ocp_dev_preview == false
+
+      - name: Set url for installer
+        set_fact:
+          ocp_installer_url: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp-dev-preview/
+        when: ocp_dev_preview
+
+      - name: Get the latest installer
+        get_url:
+          validate_certs: no
+          force: true
+          url: "{{ ocp_installer_url }}{{ ocp_release }}/openshift-install-linux.tar.gz"
+          dest: /home/stack/openshift-install-linux.tar.gz
+
+      - name: Untar installer
+        unarchive:
+          src: /home/stack/openshift-install-linux.tar.gz
+          dest: /home/stack/
+          remote_src: yes
+
+      - name: Get the ocp client
+        get_url:
+          validate_certs: no
+          force: true
+          url: "{{ ocp_installer_url }}{{ ocp_release }}/openshift-client-linux.tar.gz"
+          dest: /home/stack/openshift-client-linux.tar.gz
+
+      - name: Untar ocp client
+        unarchive:
+          src: /home/stack/openshift-client-linux.tar.gz
+          dest: /home/stack/
+          remote_src: yes
+          mode: 0700
+
+      - name: Copy oc to bin
+        become: true
+        shell: |
+          cp /home/stack/oc /usr/local/bin
+          cp /home/stack/kubectl /usr/local/bin
+          chmod a+x /usr/local/bin/oc
+          chmod a+x /usr/local/bin/kubectl
+    # End block
+
+    - name: create flavors
+      include_tasks: tasks/create_flavors.yml
+
+    - name: create new overcloudrc file as ocp_venvrc, to be used while setting shiftstack quotas to unlimited
+      shell: |
+        sed 's/.*OS_COMPUTE_API_VERSION.*/export OS_COMPUTE_API_VERSION=2.79/' /home/stack/overcloudrc > /home/stack/ocp_venvrc
+
+    - name: create ansible log directory
+      shell: mkdir -p /home/stack/ocp_ansible_logs/
+
+    - name: flush iptables
+      shell: sudo iptables --flush
+
+    - name: get default route
+      shell: |
+        sudo ip r | grep default | cut -d ' ' -f5
+      register: default_route
+
+    - name: masquerade on public interface
+      shell: |
+        sudo iptables -t nat -A POSTROUTING -o {{ default_route.stdout }} -j MASQUERADE

@@ -43,9 +43,11 @@ Provider network:
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network
 
-Shift on Stack:
+Ocp on Osp:
 
-- shift_on_stack: Runs specified kube-burner workload through e2e-benchmarking. e2e-benchmarking
+- ocp_on_osp: Installs Openshift cluster on Openstack. Basically this workload uses an ansible-playbook
+  which triggers an Openshift Installer-provisioned installation.
+- e2e_kube_burner: Runs specified kube-burner workload through e2e-benchmarking. e2e-benchmarking
   is a repository that contains scripts to stress Openshift clusters. This workload uses e2e-benchmarking
   to test Openshift on Openstack.
 
@@ -140,6 +142,7 @@ Provider Network:
 - provider_net_nova_boot_ping: Boots a VM and ping on random existing provider network
 - provider_net_nova_delete: Delete all VM's and provider network
 
-Shift on Stack:
+Ocp on Osp:
 
+- install_ocp_cluster: Starts an ansible-playbook which triggers an Openshift Installer-provisioned installation.
 - run_kube_burner_workload: Run kube-burner workloads through e2e-benchmarking

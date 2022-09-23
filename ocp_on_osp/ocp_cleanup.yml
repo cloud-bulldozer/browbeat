@@ -1,0 +1,82 @@
+---
+- name: Determine undercloud and allocate inventory
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: list openstack projects for installed clusters
+      shell: |
+        source /home/stack/overcloudrc
+        openstack project list -c Name -f value | grep rhocp
+      register: osp_project_list
+
+    - name: Add undercloud host to inventory for each cluster, that are to be deleted
+      add_host:
+        name: "undercloud-{{item}}"
+        group: undercloud
+        ansible_connection: local
+        ansible_python_interpreter: "{{ansible_playbook_python}}"
+        osp_project_name: "{{item}}"
+      loop: "{{ osp_project_list.stdout_lines }}"
+
+
+- hosts: undercloud
+  gather_facts: true
+  vars:
+    ocp_cluster_name: "{{ osp_project_name }}"
+    osp_user_name: "{{ osp_project_name }}"
+  tasks:
+    - name: Run openshift-installer destroy cluster
+      shell: |
+        ./openshift-install --log-level=debug destroy cluster --dir=/home/stack/ocp_clusters/{{osp_project_name}}/ > /home/stack/ocp_clusters/{{osp_project_name}}/ocp_destroy.log 2>&1
+      args:
+        chdir: /home/stack/
+      ignore_errors: true
+
+    - name: Delete floating ips
+      shell: |
+        source /home/stack/overcloudrc
+        for i in $(openstack floating ip list --project {{ osp_project_name }} -c ID -f value); do openstack floating ip delete $i; done
+
+    - name: Delete security groups
+      shell: |
+        source /home/stack/overcloudrc
+        for i in $(openstack security group list --project {{ osp_project_name }} -c ID -f value); do openstack security group delete $i; done
+
+    - name: Delete shiftstack project
+      os_project:
+        cloud: "overcloud"
+        state: absent
+        name: "{{ osp_project_name }}"
+        domain: default
+
+    - name: Delete shiftstack user
+      os_user:
+        cloud: "overcloud"
+        state: absent
+        name: "{{ osp_user_name }}"
+        domain: default
+
+    - name: remove ocp_clusters directory
+      file:
+        path: /home/stack/ocp_clusters/{{ ocp_cluster_name }}
+        state: absent
+      ignore_errors: true
+
+    - name: remove ansible log files
+      shell: rm /home/stack/ocp_ansible_logs/*
+      ignore_errors: true
+
+    - name: Remove DNS detail in etc/hosts
+      blockinfile:
+        backup: true
+        path: "/etc/hosts"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      become: yes
+      become_user: root
+      throttle: 1
+
+    - name: Remove cloud parameters
+      blockinfile:
+        dest: "/home/stack/clouds.yaml"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      throttle: 1

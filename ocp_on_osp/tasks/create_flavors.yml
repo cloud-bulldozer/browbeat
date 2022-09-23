@@ -1,0 +1,25 @@
+---
+- name: import flavors data
+  include_vars:
+    dir: "{{ playbook_dir }}/vars"
+    files_matching: flavors.yaml
+- name: create flavors
+  os_nova_flavor:
+    cloud: "overcloud"
+    state: present
+    name: "{{ item.name }}"
+    ram: "{{ item.ram }}"
+    vcpus: "{{ item.vcpus }}"
+    disk: "{{ item.disk }}"
+  with_items: "{{ flavors }}"
+
+- name: create pci flavors
+  os_nova_flavor:
+    cloud: "overcloud"
+    state: present
+    name: "{{ item.name }}"
+    ram: "{{ item.ram }}"
+    vcpus: "{{ item.vcpus }}"
+    disk: "{{ item.disk }}"
+    extra_specs: "'pci_passthrough:alias'='nvme:1'"
+  with_items: "{{ nvme_flavors }}"

@@ -1,0 +1,66 @@
+apiVersion: v1
+items:
+- apiVersion: machine.openshift.io/v1beta1
+  kind: MachineSet
+  metadata:
+    creationTimestamp: null
+    labels:
+      {{ machineset_metadata_label_prefix }}/cluster-api-cluster: {{ cluster_name.stdout }}
+      {{ machineset_metadata_label_prefix }}/cluster-api-machine-role: workload
+      {{ machineset_metadata_label_prefix }}/cluster-api-machine-type: workload
+    name: {{ cluster_name.stdout }}-workload
+    namespace: openshift-machine-api
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        {{ machineset_metadata_label_prefix }}/cluster-api-cluster: {{ cluster_name.stdout }}
+        {{ machineset_metadata_label_prefix }}/cluster-api-machineset: {{ cluster_name.stdout }}-workload
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          {{ machineset_metadata_label_prefix }}/cluster-api-cluster: {{ cluster_name.stdout }}
+          {{ machineset_metadata_label_prefix }}/cluster-api-machine-role: workload
+          {{ machineset_metadata_label_prefix }}/cluster-api-machine-type: workload
+          {{ machineset_metadata_label_prefix }}/cluster-api-machineset: {{ cluster_name.stdout }}-workload
+      spec:
+        metadata:
+          creationTimestamp: null
+          labels:
+            node-role.kubernetes.io/workload: ""
+        providerSpec:
+          value:
+            apiVersion: openstackproviderconfig.openshift.io/v1alpha1
+            cloudName: openstack
+            cloudsSecret:
+              name: openstack-cloud-credentials
+              namespace: openshift-machine-api
+            flavor: "{{ openshift_workload_node_flavor }}"
+            image: {{ cluster_name.stdout }}-rhcos
+            kind: OpenstackProviderSpec
+            metadata:
+              creationTimestamp: null
+            networks:
+            - filter: {}
+              subnets:
+              - filter:
+                  name: {{ cluster_name.stdout }}-nodes
+                  tags: openshiftClusterID={{ cluster_name.stdout }}
+            securityGroups:
+            - filter: {}
+              name: {{ cluster_name.stdout }}-worker
+            serverMetadata:
+              Name: {{ cluster_name.stdout }}-worker
+              openshiftClusterID: {{ cluster_name.stdout }}
+            tags:
+            - openshiftClusterID={{ cluster_name.stdout }}
+            trunk: true
+            userDataSecret:
+              name: worker-user-data
+        versions:
+          kubelet: ""
+  status:
+    replicas: 0
+kind: List
+metadata: {}

@@ -1,0 +1,39 @@
+---
+- name: create shiftstack project
+  os_project:
+    cloud: "overcloud"
+    state: present
+    name: "{{ project_name }}"
+    domain: default
+
+- name: create user
+  os_user:
+    cloud: "overcloud"
+    state: present
+    name: "{{ user_name }}"
+    password: "redhat"
+    domain: default
+
+- name: add member role
+  os_user_role:
+    cloud: "overcloud"
+    state: present
+    project: "{{ project_name }}"
+    user: "{{ user_name }}"
+    role: "member"
+
+- name: add admin role
+  os_user_role:
+    cloud: "overcloud"
+    state: present
+    project: "{{ project_name }}"
+    user: "{{ user_name }}"
+    role: "admin"
+
+- name: add swiftoperator role
+  os_user_role:
+    cloud: "overcloud"
+    state: present
+    project: "{{ project_name }}"
+    user: "{{ user_name }}"
+    role: "swiftoperator"
