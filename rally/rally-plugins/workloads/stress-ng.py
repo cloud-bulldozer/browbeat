@@ -83,7 +83,8 @@ class BrowbeatStressNg(vm_utils.VMScenario, neutron_utils.NeutronScenario):
         for sip in _clients:
             cmd = " {} 'ssh {}@{}' ".format(command, username, sip)
             exitcode, stdout, stderr = ssh.execute(cmd)
-            LOG.error(" couldn't run the stress-ng command: {}".format(stderr))
+            if exitcode != 0:
+                raise Exception(" couldn't run the stress-ng command: {}".format(stderr))
 
     def create_clients(self, jump_ssh, num_clients, image, flavor, user, **kwargs):
         """Creates Client VM's
