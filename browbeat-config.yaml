@@ -663,6 +663,9 @@ workloads:
     scenarios:
       - name: dynamic-workload
         enabled: false
+        # nova_api_version >=2.52 is required for server tags,
+        # which are used by dynamic workloads.
+        nova_api_version: 2.52
         # smallest image name and smallest flavor name are used for
         # vm dynamic scenarios and for jumphost in trunk dynamic scenario.
         smallest_image_name: cirro5

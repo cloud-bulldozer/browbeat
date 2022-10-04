@@ -144,52 +144,8 @@ class NovaUtils(vm_utils.VMScenario):
         :param kwargs: other optional parameters to initialize the server
         :returns: nova Server instance
         """
-        server_name = self.generate_random_name()
-
-        # Each iteration has a unique security group for its resources
-        if self.security_group:
-            if "security_groups" not in kwargs:
-                kwargs["security_groups"] = [self.security_group["name"]]
-            elif self.security_group["name"] not in kwargs["security_groups"]:
-                kwargs["security_groups"].append(self.security_group["name"])
-
-        # Let every 5th iteration add default security group of the tenant/user
-        secgroup = self.context.get("user", {}).get("secgroup")
-        if secgroup and (self.context["iteration"] % 5):
-            if "security_groups" not in kwargs:
-                kwargs["security_groups"] = [secgroup["name"]]
-            elif secgroup["name"] not in kwargs["security_groups"]:
-                kwargs["security_groups"].append(secgroup["name"])
-
-        if auto_assign_nic and not kwargs.get("nics", False):
-            nic = self._pick_random_nic()
-            if nic:
-                kwargs["nics"] = nic
-
-        if "nics" not in kwargs and\
-                "tenant" in self.context and\
-                "networks" in self.context["tenant"]:
-            kwargs["nics"] = [
-                {"net-id": self.context["tenant"]["networks"][0]["id"]}]
-
-        for nic in kwargs.get("nics", []):
-            if not nic.get("net-id") and nic.get("net-name"):
-                nic["net-id"] = self._get_network_id(nic["net-name"])
-
         kwargs["tags"] = [tag]
-
-        with atomic.ActionTimer(self, "nova.boot_server"):
-            server = self.clients("nova", version="2.52").servers.create(
-                server_name, image, flavor, **kwargs)
-
-            self.sleep_between(CONF.openstack.nova_server_boot_prepoll_delay)
-            server = utils.wait_for_status(
-                server,
-                ready_statuses=["ACTIVE"],
-                update_resource=utils.get_from_manager(),
-                timeout=CONF.openstack.nova_server_boot_timeout,
-                check_interval=CONF.openstack.nova_server_boot_poll_interval
-            )
+        server = self._boot_server(image, flavor, auto_assign_nic, **kwargs)
         return server
 
     def _boot_server_with_fip_and_tag(self, image, flavor, tag, use_floating_ip=True,
@@ -228,7 +184,7 @@ class NovaUtils(vm_utils.VMScenario):
         :param tag: str, tag to search for
         :returns: list of server objects based on tag
         """
-        return self.clients("nova", version="2.52").servers.list(
+        return self.clients("nova").servers.list(
             search_opts={'tags': tag, 'status': "ACTIVE"})
 
     def _get_fip_by_server(self, server):
@@ -247,7 +203,7 @@ class NovaUtils(vm_utils.VMScenario):
         :param server: server object to get details for
         :returns: server details
         """
-        return self.clients("nova", version="2.52").servers.get(server)
+        return self.clients("nova").servers.get(server)
 
 
 class NeutronUtils(neutron_utils.NeutronScenario):
