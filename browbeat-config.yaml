@@ -718,6 +718,21 @@ workloads:
         e2e_kube_burner_workload: poddensity
         ocp_kubeconfig_paths:
           - /home/stack/.kube/config
+        # Run stress_ng inside VMs. To run this, the following steps have to be performed before running browbeat.yml to install browbeat.
+        # 1. In ansible/install/group_vars/all.yml
+        # (i) Set install_browbeat_workloads to true
+        # (ii) Fill browbeat_network
+        # (iii) Enable the stress_ng workload
+        stress_ng_username: centos
+        stress_ng_image_name: browbeat-stress-ng
+        stress_ng_flavor_name: m1.small
+        stress_ng_ssh_timeout: 120
+        stress_ng_num_clients: 2
+        stress_ng_cpu: 4
+        stress_ng_io: 2
+        stress_ng_vm: 1
+        stress_ng_vm_bytes: '1G'
+        stress_ng_timeout: '60s'
         # External networks with /23 ranges will be created by dynamic workloads.
         # All these external networks will share the first 16 bits.
         cidr_prefix: "172.31"
@@ -728,7 +743,8 @@ workloads:
         # workloads can contain a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
-        # swap_floating_ips_between_servers, stop_start_servers, create_loadbalancers,
+        # swap_floating_ips_between_servers, stop_start_servers,
+        # boot_clients_and_run_stress_ng_on_clients, create_loadbalancers,
         # delete_loadbalancers, delete_members_random_lb, pod_fip_simulation,
         # add_subports_to_random_trunks, delete_subports_from_random_trunks,
         # swap_floating_ips_between_random_subports,

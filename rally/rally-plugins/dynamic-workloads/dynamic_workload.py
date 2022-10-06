@@ -31,6 +31,10 @@ import ocp_on_osp
 @validation.add(
     "image_valid_on_flavor", flavor_param="smallest_flavor", image_param="smallest_image"
 )
+@types.convert(stress_ng_image={"type": "glance_image"}, stress_ng_flavor={"type": "nova_flavor"})
+@validation.add(
+    "image_valid_on_flavor", flavor_param="stress_ng_flavor", image_param="stress_ng_image"
+)
 @validation.add(
     "required_services", services=[consts.Service.NEUTRON,
                                    consts.Service.NOVA,
@@ -50,16 +54,17 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
                       octavia.DynamicOctaviaBase, provider_network.DynamicProviderNetworkBase,
                       ocp_on_osp.OcpOnOspDynamicScenario):
     def run(
-        self, smallest_image, smallest_flavor, ext_net_id, num_vms_to_create_with_fip,
-        num_vms_to_migrate, num_stop_start_vms, trunk_image, trunk_flavor, num_initial_subports,
-        num_trunk_vms, num_add_subports, num_add_subports_trunks, num_delete_subports,
-        num_delete_subports_trunks, octavia_image, octavia_flavor, user, user_data_file, num_lbs,
-        num_pools, num_clients, delete_num_lbs, delete_num_members, num_create_vms, num_delete_vms,
-        provider_phys_net, iface_name, iface_mac, num_vms_provider_net, num_external_networks,
+        self, nova_api_version, smallest_image, smallest_flavor, ext_net_id,
+        num_vms_to_create_with_fip, num_vms_to_migrate, num_stop_start_vms, trunk_image,
+        trunk_flavor, num_initial_subports, num_trunk_vms, num_add_subports,
+        num_add_subports_trunks, num_delete_subports, num_delete_subports_trunks, octavia_image,
+        octavia_flavor, user, user_data_file, num_lbs, num_pools, num_clients, delete_num_lbs,
+        delete_num_members, num_create_vms, num_delete_vms, provider_phys_net, iface_name,
+        iface_mac, num_vms_provider_net, stress_ng_username, stress_ng_image, stress_ng_flavor,
+        stress_ng_ssh_timeout, stress_ng_num_clients, stress_ng_command, num_external_networks,
         e2e_kube_burner_job_iterations, e2e_kube_burner_qps, e2e_kube_burner_burst,
-        e2e_kube_burner_workload, ocp_kubeconfig_paths, workloads="all",
-        router_create_args=None, network_create_args=None,
-        subnet_create_args=None, **kwargs):
+        e2e_kube_burner_workload, ocp_kubeconfig_paths, workloads="all", router_create_args=None,
+        network_create_args=None, subnet_create_args=None, **kwargs):
 
         if num_external_networks > 0:
             context_ext_net_id = self.context["external_networks"][((self.context["iteration"]-1)
@@ -87,7 +92,8 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
            "pod_fip_simulation" in workloads_list or
            "add_subports_to_random_trunks" in workloads_list or
            "delete_subports_from_random_trunks" in workloads_list or
-           "swap_floating_ips_between_random_subports" in workloads_list):
+           "swap_floating_ips_between_random_subports" in workloads_list or
+           "boot_clients_and_run_stress_ng_on_clients" in workloads_list):
             # Let this router be used by resources created by VM and trunk dynamic workloads
             # in this iteration.
             router_create_args["name"] = self.generate_random_name()
@@ -126,6 +132,13 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
 
         if run_all_vm_and_trunk_workloads or "stop_start_servers" in workloads_list:
             self.stop_start_servers_with_fip(num_stop_start_vms)
+
+        if(run_all_vm_and_trunk_workloads or
+           "boot_clients_and_run_stress_ng_on_clients" in workloads_list):
+            self.run_stress_ng_on_vms(stress_ng_flavor, stress_ng_username,
+                                      stress_ng_ssh_timeout, stress_ng_num_clients,
+                                      stress_ng_command, stress_ng_image,
+                                      self.ext_net_name, nova_api_version=nova_api_version)
 
         if run_all_vm_and_trunk_workloads or "pod_fip_simulation" in workloads_list:
             self.pod_fip_simulation(context_ext_net_id, trunk_image, trunk_flavor, smallest_image,

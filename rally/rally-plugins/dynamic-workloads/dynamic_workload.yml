@@ -30,6 +30,16 @@
 {% set e2e_kube_burner_workload = e2e_kube_burner_workload or 'poddensity' %}
 {% set ocp_kubeconfig_paths = ocp_kubeconfig_paths or ['/home/stack/.kube/config'] %}
 {% set cidr_prefix = cidr_prefix or '172.31' %}
+{% set stress_ng_username = stress_ng_username or 'centos' %}
+{% set stress_ng_image_name = stress_ng_image_name or 'browbeat-stress-ng' %}
+{% set stress_ng_flavor_name = stress_ng_flavor_name or 'm1.small' %}
+{% set stress_ng_ssh_timeout = stress_ng_ssh_timeout or 120 %}
+{% set stress_ng_num_clients = stress_ng_num_clients or 2 %}
+{% set stress_ng_cpu = stress_ng_cpu or 4 %}
+{% set stress_ng_io = stress_ng_io or 2 %}
+{% set stress_ng_vm = stress_ng_vm or 1 %}
+{% set stress_ng_vm_bytes = stress_ng_vm_bytes or '1G' %}
+{% set stress_ng_timeout = stress_ng_timeout or '60s' %}
 {% set num_external_networks = num_external_networks or 16 %}
 {% set router_external = router_external or True %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
@@ -40,6 +50,7 @@ BrowbeatPlugin.dynamic_workload:
 -
     args:
       floating: True
+      nova_api_version: {{ nova_api_version }}
       smallest_flavor:
         name: '{{smallest_flavor_name}}'
       smallest_image:
@@ -83,6 +94,14 @@ BrowbeatPlugin.dynamic_workload:
       iface_mac: '{{ iface_mac }}'
       num_vms_provider_net: {{ num_vms_provider_net }}
       ext_net_id: '{{ext_net_id}}'
+      stress_ng_username: '{{ stress_ng_username}}'
+      stress_ng_image:
+        name: '{{ stress_ng_image_name }}'
+      stress_ng_flavor:
+        name: '{{ stress_ng_flavor_name }}'
+      stress_ng_ssh_timeout: {{ stress_ng_ssh_timeout }}
+      stress_ng_num_clients: {{ stress_ng_num_clients }}
+      stress_ng_command: "stress-ng --cpu {{stress_ng_cpu}} --io {{stress_ng_io}} --vm {{stress_ng_vm}} --vm-bytes {{stress_ng_vm_bytes}} --timeout {{stress_ng_timeout}} --metrics-brief"
       num_external_networks: {{ num_external_networks }}
       workloads: '{{workloads}}'
     runner:

@@ -15,8 +15,14 @@ import time
 
 import dynamic_utils
 
+import sys
+import os
 
-class VMDynamicScenario(dynamic_utils.NovaUtils,
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../workloads')))
+import stress_ng_utils  # noqa: E402
+
+class VMDynamicScenario(stress_ng_utils.BrowbeatStressNgUtils,
+                        dynamic_utils.NovaUtils,
                         dynamic_utils.NeutronUtils,
                         dynamic_utils.LockUtils):
 
@@ -272,3 +278,33 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         else:
             self.log_info("Average time for start and ping : {} seconds".format(
                           total_time_for_start_and_ping/num_operations_completed))
+
+    def run_stress_ng_on_vms(self, flavor, username, ssh_timeout, num_clients,
+                             command, image=None, floating_network=None, port=22,
+                             use_floating_ip=True, nova_api_version=2.52, **kwargs):
+        """Create a jumphost on network with fip and all
+           other vm's on the same neutron network so that jumphost
+           can access the other vm's and run the stress tests
+
+        :param flavor: VM flavor name
+        :param username: ssh username on server
+        :param ssh_timeout: ssh timeout in seconds
+        :param num_clients: no.of clients
+        :param command: command that runs inside the client vm's
+        :param image: VM image name
+        :param floating_network: external network name, for floating ip
+        :param port: ssh port for SSH connection
+        :param use_floating_ip: bool, floating or fixed IP for SSH connection
+        :param kwargs: optional args to create a VM
+        :param nova_api_version: api microversion of nova
+        """
+        router = self.router
+        network = self._create_network({})
+        subnet = self._create_subnet(network, {})
+        self._add_interface_router(subnet["subnet"], router["router"])
+        kwargs["nics"] = [{"net-id": network["network"]["id"]}]
+
+        self.run_stress_ng_on_clients(flavor, username, ssh_timeout, num_clients,
+                                      command, image, floating_network, port,
+                                      use_floating_ip, "dynwklds_stressng",
+                                      nova_api_version, **kwargs)
