@@ -5,6 +5,7 @@ browbeat:
   rerun_type: complete
   invalid_flag: invalid
   start_stop_collectd: false
+  create_grafana_annotations: false
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/site.yml

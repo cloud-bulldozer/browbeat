@@ -37,7 +37,8 @@ class Rally(base.WorkloadBase):
         self.grafana = grafana.Grafana(self.config)
         self.elastic = elastic.Elastic(self.config, self.__class__.__name__.lower())
 
-    def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark):
+    def run_scenario(self, task_file, scenario_args, result_dir, test_name, benchmark,
+                     scenario_name):
         self.logger.debug("--------------------------------")
         self.logger.debug("task_file: {}".format(task_file))
         self.logger.info("Running with scenario_args: {}".format(json.dumps(scenario_args)))
@@ -69,6 +70,10 @@ class Rally(base.WorkloadBase):
         to_ts = int(time.time() * 1000)
         self.grafana.create_grafana_urls({'from_ts': from_ts, 'to_ts': to_ts})
         self.grafana.print_dashboard_url(test_name)
+        if self.config["browbeat"]["create_grafana_annotations"]:
+            self.grafana.create_grafana_annotations(from_ts, to_ts, scenario_name,
+                                                    test_name, scenario_args["times"],
+                                                    scenario_args["concurrency"])
         return (from_time, to_time)
 
     def get_task_id(self, test_name):
@@ -286,7 +291,8 @@ class Rally(base.WorkloadBase):
                         exit(1)
 
                     from_time, to_time = self.run_scenario(
-                        scenario_file, scenario, result_dir, test_name, workload["name"])
+                        scenario_file, scenario, result_dir, test_name, workload["name"],
+                        scenario_name)
 
                     new_test_name = test_name.split("-")
                     new_test_name = new_test_name[3:]

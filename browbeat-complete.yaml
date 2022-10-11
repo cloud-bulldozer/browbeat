@@ -10,6 +10,7 @@ browbeat:
   # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
   # setting this option to true.
   start_stop_collectd: false
+  create_grafana_annotations: false
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml

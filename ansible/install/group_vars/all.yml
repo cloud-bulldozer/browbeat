@@ -459,6 +459,10 @@ dashboards_batch: 20
 # For use with all-{cpu, memory, disk, network} openstack dashboards, uses the graphite prefix to create dashboards for specific openstack cloud
 dashboard_cloud_name: "{{graphite_prefix}}"
 
+# Dashboard UID to create Grafana annotations for Browbeat/Rally scenarios.
+# This is optional unless create_grafana_annotations is enabled in browbeat-config.yaml.
+grafana_dashboard_uid:
+
 ########################################
 # StatsD Configuration
 # Points at configured Graphite instance

@@ -98,7 +98,8 @@ class Tools(object):
             .format(self.config['ansible']['check_collectd_config_playbook'])
         returncode = self.run_cmd(ansible_cmd)['rc']
         if returncode > 0:
-            self.logger.warning("""graphite_host is empty in all.yml. Please fill it and run the command
+            self.logger.warning("""graphite_host is empty in all.yml. Please fill it and
+                                run the command
                                 (cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml)
                                 in order to install collectd.""")
             return False
