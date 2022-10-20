@@ -18,8 +18,10 @@ from rally_openstack.task.scenarios.neutron import utils as neutron_utils
 import dynamic_utils
 from rally.task import atomic
 
+from neutronclient.common.exceptions import NetworkNotFoundClient
 
-class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronScenario):
+class DynamicProviderNetworkBase(dynamic_utils.NovaUtils,
+                                 neutron_utils.NeutronScenario, dynamic_utils.LockUtils):
 
     @atomic.action_timer("neutron.create_network")
     def _create_provider_network(self, provider_phys_net):
@@ -32,7 +34,8 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
             "name": self.generate_random_name(),
             "tenant_id": project_id,
             "provider:network_type": "vlan",
-            "provider:physical_network": provider_phys_net
+            "provider:physical_network": provider_phys_net,
+            "description": "dynwklds_provider_net"
         }
         # provider network can be created by admin client only
         return self.admin_clients("neutron").create_network({"network": body})
@@ -42,8 +45,10 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         """Fetches information of a certain provider network.
         :param provider_network: provider network object
         """
-
-        return self.admin_clients("neutron").show_network(provider_network['network']['id'])
+        try:
+            return self.admin_clients("neutron").show_network(provider_network['network']['id'])
+        except NetworkNotFoundClient:
+            return None
 
     @atomic.action_timer("neutron.delete_network")
     def _delete_provider_network(self, provider_network):
@@ -75,7 +80,7 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         if proc.returncode == 0:
             self.log_info("Ping to {} is successful".format(server_ip))
         else:
-            self.log_info("Ping to {} is failed".format(server_ip))
+            self.log_info("Ping to {} has failed".format(server_ip))
 
     def provider_netcreate_nova_boot_ping(self, image, flavor, provider_phys_net, iface_name,
                                           iface_mac, num_vms_provider_net, router_create_args=None,
@@ -96,6 +101,7 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         """
 
         provider_network = self._create_provider_network(provider_phys_net)
+        self.acquire_lock(provider_network['network']['id'])
         subnet = self._create_subnet(provider_network, subnet_create_args or {})
         kwargs["nics"] = [{'net-id': provider_network['network']['id']}]
         tag = "provider_network:"+str(provider_network['network']['id'])
@@ -104,6 +110,7 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
             self.log_info(" Server {} created on provider network {}".format(
                 server, provider_network))
             self.ping_server(server, iface_name, iface_mac, provider_network, subnet)
+        self.release_lock(provider_network['network']['id'])
 
     def pick_random_provider_net(self, provider_phys_net, **kwargs):
         """Picks random provider network that exists
@@ -112,6 +119,7 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         """
 
         kwargs["provider:physical_network"] = provider_phys_net
+        kwargs["description"] = "dynwklds_provider_net"
         nets = self._list_networks(**kwargs)
         return self._show_provider_network({'network': random.choice(nets)})
 
@@ -127,12 +135,21 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         """
 
         random_network = self.pick_random_provider_net(provider_phys_net)
+        if random_network is None:
+            self.log_info("Network has already been deleted, cannot boot VMs on it")
+            return
+        if(not random_network['network']['subnets'] or
+           not self.acquire_lock(random_network['network']['id'])):
+            self.log_info("not booting new VMs on provider network {} as it is in-use".format(
+                          random_network['network']['id']))
+            return
         kwargs["nics"] = [{'net-id': random_network['network']['id']}]
         tag = "provider_network:"+str(random_network['network']['id'])
         server = self._boot_server_with_tag(image, flavor, tag, **kwargs)
         subnet_id = random_network['network']['subnets'][0]
         subnet = self.admin_clients("neutron").show_subnet(subnet_id)
         self.ping_server(server, iface_name, iface_mac, random_network, subnet)
+        self.release_lock(random_network['network']['id'])
 
     def provider_net_nova_delete(self, provider_phys_net, **kwargs):
         """Delete all the VM's on the provider network and then
@@ -142,9 +159,19 @@ class DynamicProviderNetworkBase(dynamic_utils.NovaUtils, neutron_utils.NeutronS
         """
 
         random_network = self.pick_random_provider_net(provider_phys_net)
+        if random_network is None:
+            self.log_info("Network has already been deleted")
+            return
+        if(not random_network['network']['subnets'] or
+           not self.acquire_lock(random_network['network']['id'])):
+            self.log_info("not deleting provider network {} as it is in-use".format(
+                          random_network['network']['id']))
+            return
         kwargs["nics"] = [{'net-id': random_network['network']['id']}]
         tag = "provider_network:"+str(random_network['network']['id'])
         servers = self._get_servers_by_tag(tag)
         for server in servers:
             self._delete_server(server)
+        self.log_info("Deleting provider network {}".format(random_network['network']['id']))
         self._delete_provider_network(random_network)
+        self.release_lock(random_network['network']['id'])
