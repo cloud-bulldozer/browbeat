@@ -26,5 +26,5 @@ testtools>=1.4.0
 twine
 wheel
 docker<3 # Apache-2.0
-molecule<3 # MIT
+molecule<4 # MIT
 selinux>=0.1.5rc1
