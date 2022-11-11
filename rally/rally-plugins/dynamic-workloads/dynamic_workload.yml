@@ -1,3 +1,4 @@
+{% set nova_api_version = nova_api_version or 2.52 %}
 {% set smallest_image_name = smallest_image_name or 'cirros' %}
 {% set smallest_flavor_name = smallest_flavor_name or 'm1.xtiny' %}
 {% set num_create_vms = num_create_vms or 2 %}
@@ -92,6 +93,9 @@ BrowbeatPlugin.dynamic_workload:
       users:
         tenants: 1
         users_per_tenant: 1
+      api_versions:
+        nova:
+          version: {{ nova_api_version }}
       quotas:
         neutron:
           network: -1
