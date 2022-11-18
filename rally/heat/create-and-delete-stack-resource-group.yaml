@@ -21,6 +21,7 @@
         quotas:
           neutron:
             network: -1
+            subnet: -1
             port: -1
           nova:
             instances: -1
