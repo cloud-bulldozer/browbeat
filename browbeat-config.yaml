@@ -712,23 +712,23 @@ workloads:
         # created as part of rally context for dynamic workloads. These external
         # networks will be used in a round robin fashion by the iterations.
         num_external_networks: 16
-        # workloads can be 'all', a single workload(Eg. : create_delete_servers),
+        # workloads can contain a single workload(Eg. : create_delete_servers),
         # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
         # Currently supported workloads : create_delete_servers, migrate_servers
         # swap_floating_ips_between_servers, stop_start_servers, create_loadbalancers,
         # delete_loadbalancers, delete_members_random_lb, pod_fip_simulation,
         # add_subports_to_random_trunks, delete_subports_from_random_trunks,
-        # swap_floating_ips_between_random_subports, provider_netcreate_nova_boot_ping,
-        # provider_net_nova_boot_ping, provider_net_nova_delete, e2e_kube_burner, ocp_on_osp
-        # Note: Octavia, Provider, e2e_kube_burner and ocp_on_osp scenarios are not included in 'all'
-        # by default, and have to be included separately.
+        # swap_floating_ips_between_random_subports,
+        # all_vm_and_trunk(will run all vm and trunk dynamic workloads),
+        # provider_netcreate_nova_boot_ping, provider_net_nova_boot_ping, provider_net_nova_delete,
+        # e2e_kube_burner, ocp_on_osp
         # Steps for running ocp_on_osp workload, given that underlying openstack has been
         # deployed with necessary dependencies:
         # 1) Pass your pull secret in ocp_on_osp/vars/shift_stack_vars.yaml
         # 2) If you want to change any default params(like ocp_version, worker count, master and worker flavors, etc), refer to ocp_on_osp/vars/shift_stack_vars.yml
         # 3) Run "ansible-playbook -vvv ocp_on_osp/ocp_bootstrap.yml"
         # 4) And then run ocp_on_osp workload. NOTE: use "ansible-playbook -vvv ocp_on_osp/ocp_cleanup.yml" for the clean up.
-        workloads: all
+        workloads: all_vm_and_trunk
         file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
 
   - name: dynamic-workloads-min

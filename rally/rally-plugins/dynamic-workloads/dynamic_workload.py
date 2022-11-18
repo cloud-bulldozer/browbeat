@@ -79,7 +79,9 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         self.security_group = self.create_sec_group_with_icmp_ssh()
         self.log_info("security group {} created for this iteration".format(self.security_group))
 
-        if(workloads == "all" or "migrate_servers" in workloads_list or
+        run_all_vm_and_trunk_workloads = "all_vm_and_trunk" in workloads_list
+
+        if(run_all_vm_and_trunk_workloads or "migrate_servers" in workloads_list or
            "swap_floating_ips_between_servers" in workloads_list or
            "stop_start_servers" in workloads_list or
            "pod_fip_simulation" in workloads_list or
@@ -103,38 +105,42 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         except AttributeError:
             DynamicWorkload.browbeat_dir = os.getcwd()
 
-        if workloads == "all" or "create_delete_servers" in workloads_list:
+        if run_all_vm_and_trunk_workloads or "create_delete_servers" in workloads_list:
             self.boot_servers(smallest_image, smallest_flavor, num_create_vms,
                               subnet_create_args=subnet_create_args)
             self.delete_random_servers(num_delete_vms)
 
-        if(workloads == "all" or "migrate_servers" in workloads_list or
+        if(run_all_vm_and_trunk_workloads or "migrate_servers" in workloads_list or
            "swap_floating_ips_between_servers" in workloads_list or
            "stop_start_servers" in workloads_list):
             self.boot_servers_with_fip(smallest_image, smallest_flavor, context_ext_net_id,
                                        num_vms_to_create_with_fip,
                                        network_create_args, subnet_create_args, **kwargs)
 
-        if workloads == "all" or "migrate_servers" in workloads_list:
+        if run_all_vm_and_trunk_workloads or "migrate_servers" in workloads_list:
             self.migrate_servers_with_fip(num_vms_to_migrate)
 
-        if workloads == "all" or "swap_floating_ips_between_servers" in workloads_list:
+        if(run_all_vm_and_trunk_workloads or
+           "swap_floating_ips_between_servers" in workloads_list):
             self.swap_floating_ips_between_servers()
 
-        if workloads == "all" or "stop_start_servers" in workloads_list:
+        if run_all_vm_and_trunk_workloads or "stop_start_servers" in workloads_list:
             self.stop_start_servers_with_fip(num_stop_start_vms)
 
-        if workloads == "all" or "pod_fip_simulation" in workloads_list:
+        if run_all_vm_and_trunk_workloads or "pod_fip_simulation" in workloads_list:
             self.pod_fip_simulation(context_ext_net_id, trunk_image, trunk_flavor, smallest_image,
                                     smallest_flavor, num_initial_subports, num_trunk_vms)
 
-        if workloads == "all" or "add_subports_to_random_trunks" in workloads_list:
+        if(run_all_vm_and_trunk_workloads or
+           "add_subports_to_random_trunks" in workloads_list):
             self.add_subports_to_random_trunks(num_add_subports_trunks, num_add_subports)
 
-        if workloads == "all" or "delete_subports_from_random_trunks" in workloads_list:
+        if(run_all_vm_and_trunk_workloads or
+           "delete_subports_from_random_trunks" in workloads_list):
             self.delete_subports_from_random_trunks(num_delete_subports_trunks, num_delete_subports)
 
-        if workloads == "all" or "swap_floating_ips_between_random_subports" in workloads_list:
+        if(run_all_vm_and_trunk_workloads or
+           "swap_floating_ips_between_random_subports" in workloads_list):
             self.swap_floating_ips_between_random_subports()
 
         if "create_loadbalancers" in workloads_list:
