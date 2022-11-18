@@ -82,7 +82,7 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                 kwargs["userdata"] = userdata
                 self.log_info("Added user data")
             except Exception as e:
-                self.log_info("couldn't add user data %s", e)
+                self.log_info("couldn't add user data %s" % e)
 
             self.log_info("Launching Client : {}".format(i))
             tag = "client:"+str(lb_subnet['network_id'])
@@ -234,6 +234,9 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
                     else:
                         self.log_info("cmd: {} successful".format(cmd))
                         break
+                if attempts == max_attempts:
+                    raise Exception("Connection check failed for pool {} and client {} on lb {}.".
+                                    format(i, j, lb_ip))
             port = port + 1
 
     def create_loadbalancers(
