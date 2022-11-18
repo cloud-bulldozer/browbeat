@@ -39,6 +39,8 @@
             instances: -1
             cores: -1
             ram: -1
+          cinder:
+            volumes: -1
       sla:
         max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}
