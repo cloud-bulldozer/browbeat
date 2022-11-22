@@ -183,6 +183,9 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         server1_port_id = server1_fip["port_id"]
         server2_port_id = server2_fip["port_id"]
 
+        server1 = servers_to_swap[0]
+        server2 = servers_to_swap[1]
+
         fip_update_dict = {"port_id": None}
         self.clients("neutron").update_floatingip(
             server1_fip["id"], {"floatingip": fip_update_dict})
@@ -191,9 +194,13 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
 
         self.log_info("""Ping until failure after dissociating servers' floating IPs,
                       before swapping""")
-        self.log_info("Ping server 1 {} until failure".format(server1_fip["floating_ip_address"]))
+        self.log_info("Ping server 1 {} {} until failure".format(server1.id,
+                                                                 server1_fip[
+                                                                     "floating_ip_address"]))
         self._wait_for_ping_failure(server1_fip["floating_ip_address"])
-        self.log_info("Ping server 2 {} until failure".format(server2_fip["floating_ip_address"]))
+        self.log_info("Ping server 2 {} {} until failure".format(server2.id,
+                                                                 server2_fip[
+                                                                     "floating_ip_address"]))
         self._wait_for_ping_failure(server2_fip["floating_ip_address"])
 
         # Swap floating IPs between server1 and server2
@@ -207,10 +214,14 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         )
 
         self.log_info("Ping until success by swapping servers' floating IPs")
-        self.log_info("Ping server 1 {} until success".format(server1_fip["floating_ip_address"]))
-        self._wait_for_ping(server1_fip["floating_ip_address"])
-        self.log_info("Ping server 2 {} until success".format(server2_fip["floating_ip_address"]))
+        self.log_info("Ping server 1 {} {} until success".format(server1.id,
+                                                                 server2_fip[
+                                                                     "floating_ip_address"]))
         self._wait_for_ping(server2_fip["floating_ip_address"])
+        self.log_info("Ping server 2 {} {} until success".format(server2.id,
+                                                                 server1_fip[
+                                                                     "floating_ip_address"]))
+        self._wait_for_ping(server1_fip["floating_ip_address"])
 
         # Release locks from servers
         self.release_lock(servers_to_swap[0].id)
@@ -229,7 +240,10 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
         length_server_list = len(server_list)
 
         while loop_counter < length_server_list and num_operations_completed < num_vms:
-            server = server_list[loop_counter]
+            # The floating IP of the server may have changed since the server list was
+            # was initially fetched. To fetch updated information about the server,
+            # self._show_server is called.
+            server = self._show_server(server_list[loop_counter])
 
             loop_counter += 1
             if not self.acquire_lock(server.id):
@@ -238,12 +252,12 @@ class VMDynamicScenario(dynamic_utils.NovaUtils,
             fip = self._get_fip_by_server(server)
 
             self._stop_server(server)
-            self.log_info("ping {} until failure after stopping server".format(fip))
+            self.log_info("ping {} {} until failure after stopping server".format(server.id, fip))
             self._wait_for_ping_failure(fip)
 
             start = time.time()
             self._start_server(server)
-            self.log_info("ping {} until success after starting server".format(fip))
+            self.log_info("ping {} {} until success after starting server".format(server.id, fip))
             self._wait_for_ping(fip)
             end = time.time()
             self.log_info("{} took {} seconds to start and ping".format(server, end-start))
