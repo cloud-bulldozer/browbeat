@@ -640,6 +640,7 @@ workloads:
 
       - name: browbeat-stress-ng
         enabled: false
+        nova_api_version: 2.52
         username: centos
         image_name: browbeat-stress-ng
         flavor_name: m1.small
@@ -651,7 +652,7 @@ workloads:
         vm: 1
         vm_bytes: '1G'
         timeout: '60s'
-        file: rally/rally-plugins/workloads/stress-ng.yml
+        file: rally/rally-plugins/workloads/stress_ng.yml
 
   - name: dynamic-workloads
     enabled: false

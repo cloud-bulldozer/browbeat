@@ -1,3 +1,4 @@
+{% set nova_api_version = nova_api_version or 2.52 %}
 {% set flavor_name = flavor_name or "m1.small" %}
 {% set image_name = image_name or "browbeat-stress-ng" %}
 {% set username = username or "centos7" %}
@@ -25,6 +26,7 @@
         ssh_timeout: {{ssh_timeout}}
         num_clients: {{num_clients}}
         command: "stress-ng --cpu {{cpu}} --io {{io}} --vm {{vm}} --vm-bytes {{vm_bytes}} --timeout {{timeout}} --metrics-brief"
+        nova_api_version: {{ nova_api_version }}
       runner:
         type: "constant"
         times: {{times}}
@@ -33,6 +35,9 @@
         users:
           tenants: 3
           users_per_tenant: 2
+        api_versions:
+          nova:
+            version: {{ nova_api_version }}
         network: {}
         quotas:
           neutron:
