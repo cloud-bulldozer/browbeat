@@ -14,6 +14,17 @@ browbeat:
   # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
   # setting this option to true.
   start_stop_collectd: true
+  # This option enables creation of annotations on the Grafana dashboard.
+  # Separate annotations will be created on all panels for the duration of
+  # each scenario that is run using this browbeat configuration file.
+  # grafana_host, grafana_port, grafana_username, grafana_password
+  # and grafana_dashboard_uid have to be passed in
+  # ansible/install/group_vars/all.yml before this option is enabled.
+  # In the Openstack General System Performance Dashboard, the default
+  # annotation setting should be set to query by tag $Cloud when this feature
+  # is enabled.
+  # This feature has been tested on Grafana v9.2.0
+  create_grafana_annotations: false
 ansible:
   hosts: ansible/hosts.yml
   metadata_playbook: ansible/gather/stockpile.yml

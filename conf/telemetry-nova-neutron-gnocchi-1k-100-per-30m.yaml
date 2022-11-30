@@ -11,6 +11,7 @@ browbeat:
   rerun: 10
   rerun_type: complete
   start_stop_collectd: false
+  create_grafana_annotations: false
 ansible:
   hosts: ansible/hosts
   metadata_playbook: ansible/gather/stockpile.yml

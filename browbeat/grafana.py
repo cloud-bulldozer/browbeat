@@ -11,7 +11,10 @@
 #   limitations under the License.
 
 import logging
-
+import yaml
+import json
+import requests
+from requests.auth import HTTPBasicAuth
 
 class Grafana(object):
 
@@ -47,3 +50,57 @@ class Grafana(object):
                     test_name,
                     dashboard,
                     self.grafana_url[dashboard]))
+
+    def create_grafana_annotations(self, start_timestamp, end_timestamp, scenario_name,
+                                   test_name, times, concurrency):
+        """Create annotations on Grafana dashboard for a given scenario
+        :param start_timestamp: epoch time when scenario started running
+        :param end_timestamp: epoch time when scenario finished running
+        :param scenario_name: str, name of Browbeat scenario
+        :param test_name: str, name of test in Rally DB
+        :param times: int, times value from Rally
+        :param concurrency: int, concurrency value from Rally
+        """
+        with open("ansible/install/group_vars/all.yml", "r") as group_vars_file:
+            group_vars = yaml.safe_load(group_vars_file)
+
+        required_fields = ["grafana_host", "grafana_port", "grafana_username",
+                           "grafana_dashboard_uid", "cloud_prefix"]
+
+        for field in required_fields:
+            if group_vars[field] is None:
+                raise Exception("""{} in ansible/install/group_vars/all.yml is
+                                required to create grafana annotations""".format(
+                                field))
+
+        grafana_host = group_vars["grafana_host"]
+        grafana_port = group_vars["grafana_port"]
+        grafana_username = group_vars["grafana_username"]
+        grafana_password = group_vars["grafana_password"]
+        grafana_dashboard_uid = group_vars["grafana_dashboard_uid"]
+        cloud_prefix = group_vars["cloud_prefix"]
+
+        request_body = {"dashboardUID": grafana_dashboard_uid, "time": start_timestamp,
+                        "timeEnd": end_timestamp,
+                        "tags": [cloud_prefix,
+                                 "times: {}".format(times),
+                                 "concurrency: {}".format(concurrency),
+                                 # test_name_prefix contains a time in the
+                                 # yyyymmdd-hhmmss format. This prefix can
+                                 # be used to locate Browbeat results of runs easily.
+                                 "test_name_prefix: {}".format("-".join(test_name.split("-")[:2]))],
+                        "text": scenario_name}
+
+        headers = {'Content-type':'application/json', 'Accept':'application/json'}
+
+        response = requests.post(url="http://{}:{}/api/annotations".format(
+                                 grafana_host, grafana_port), data=json.dumps(request_body),
+                                 auth=HTTPBasicAuth(grafana_username, grafana_password),
+                                 headers=headers)
+
+        if response.status_code == 200:
+            self.logger.info("Grafana annotation created successfully for scenario {}".format(
+                             scenario_name))
+        else:
+            self.logger.warning("Grafana annotation creation failed : {}".format(
+                                response.json()))

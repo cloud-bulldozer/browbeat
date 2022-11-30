@@ -22,6 +22,9 @@ mapping:
       start_stop_collectd:
         type: bool
         required: True
+      create_grafana_annotations:
+        type: bool
+        required: True
   ansible:
     required: True
     type: map
