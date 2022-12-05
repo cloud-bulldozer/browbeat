@@ -3,7 +3,8 @@
 {% set delay_time = delay_time or 600 %}
 {% set iterations_per_batch = iterations_per_batch or 5 %}
 {% set num_iterations_to_delay = num_iterations_to_delay or 1 %}
-{% set num_tenant_networks = num_tenant_networks or 1 %}
+{% set num_tenants = num_tenants or 1 %}
+{% set num_networks_per_tenant = num_networks_per_tenant or 1 %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
@@ -18,7 +19,7 @@ BrowbeatNova.nova_boot_in_batches_with_delay:
       delay_time: {{delay_time}}
       iterations_per_batch: {{iterations_per_batch}}
       num_iterations_to_delay: {{num_iterations_to_delay}}
-      num_tenant_networks: {{num_tenant_networks}}
+      num_networks_per_tenant: {{num_networks_per_tenant}}
       concurrency: {{concurrency}}
     runner:
       concurrency: {{concurrency}}
@@ -26,10 +27,10 @@ BrowbeatNova.nova_boot_in_batches_with_delay:
       type: 'constant'
     context:
       users:
-        tenants: 1
+        tenants: {{num_tenants}}
         users_per_tenant: 8
       network:
-        networks_per_tenant: {{num_tenant_networks}}
+        networks_per_tenant: {{num_networks_per_tenant}}
       quotas:
         neutron:
           network: -1

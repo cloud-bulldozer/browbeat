@@ -116,14 +116,14 @@ class NovaBootPersistWithNetworkVolumeFip(vm_utils.VMScenario, cinder_utils.Cind
 class NovaBootInBatchesWithDelay(vm_utils.VMScenario):
 
     def run(self, image, flavor, delay_time, iterations_per_batch,
-            num_iterations_to_delay, num_tenant_networks, concurrency, **kwargs):
+            num_iterations_to_delay, num_networks_per_tenant, concurrency, **kwargs):
         """Boot VMs in batches with delay in between. This scenario is useful for scaling VMs incrementally.
         :param image: image of the VMs to be booted
         :param flavor: flavor of the VMs to be booted
         :param delay_time: int, time in seconds to delay VM boot in between batches
         :param iterations_per_batch: int, number of iterations that can run before delay occurs
         :param num_iterations_to_delay: int, number of iterations to delay
-        :param num_tenant_networks: int, number of tenant networks
+        :param num_networks_per_tenant: int, number of tenant networks
         :param concurrency: int, concurrency passed to rally runner
         """
         if iterations_per_batch <= num_iterations_to_delay:
@@ -136,7 +136,7 @@ class NovaBootInBatchesWithDelay(vm_utils.VMScenario):
                      self.context["iteration"], delay_time))
             time.sleep(delay_time)
         tenant_network_id = self.context["tenant"]["networks"][((self.context["iteration"]-1)
-                                                               % num_tenant_networks)]["id"]
+                                                               % num_networks_per_tenant)]["id"]
         LOG.info("Iteration {} using tenant network {}".format(self.context["iteration"],
                                                                tenant_network_id))
         kwargs["nics"] = [{"net-id": tenant_network_id}]

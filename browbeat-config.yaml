@@ -430,7 +430,8 @@ workloads:
         # Setting this value to a small multiple(1x or 2x) of the concurrency is optimal.
         # num_iterations_to_delay should always be lesser than iterations_per_batch.
         num_iterations_to_delay: 8
-        num_tenant_networks: 1
+        num_tenants: 1
+        num_networks_per_tenant: 1
         file: rally/rally-plugins/nova/nova_boot_in_batches_with_delay.yml
       - name: netcreate-boot
         enabled: true
