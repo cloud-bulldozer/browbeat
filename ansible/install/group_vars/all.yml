@@ -409,6 +409,11 @@ osp_individual_resources_response_time: false
 # all metrics on all compute nodes
 ovn_compute_collectd_plugin: false
 
+#######################################################################
+# Virt plugin to monitor resources in VMs on computes
+#######################################################################
+virt_collectd_plugin: false
+
 ############################################
 # Prometheus/Collectd-Exporter Configuration
 ############################################

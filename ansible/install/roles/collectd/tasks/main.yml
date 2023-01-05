@@ -270,6 +270,9 @@
           {% if config_type == 'controller' and ceph_controller_collectd_plugin and inventory_hostname == groups['Controller'][0] %}
           -v /etc/ceph/:/etc/ceph/ -v /var/run/ceph/:/var/run/ceph \
           {% endif %}
+          {% if config_type == 'compute' and virt_collectd_plugin %}
+          -v /var/run/libvirt/libvirt-sock-ro:/var/run/libvirt/libvirt-sock-ro \
+          {% endif %}
           {% if config_type == 'cephstorage' and ceph_storage_collectd_plugin and inventory_hostname == groups['CephStorage'][0]  %}
           -v /var/run/ceph/:/var/run/ceph \
           {% endif %}

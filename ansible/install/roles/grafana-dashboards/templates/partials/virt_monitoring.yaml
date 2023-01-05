@@ -1,0 +1,70 @@
+    - title: Virt Metrics
+      collapse: true
+      height: 200px
+      showTitle: true
+      panels:
+        - title: $Cloud - $Node - Virt Disk Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.virt.disk*.*, 3, 4)
+            - target: aliasByMetric($Cloud.$Node.virt.total*)
+
+        - title: $Cloud - $Node - Virt Network Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: aliasByNode($Cloud.$Node.virt.if*.*, 3, 4)
+
+        - title: $Cloud - $Node - Virt Memory Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.virt.memory-total, 'memory-total')
+
+        - title: $Cloud - $Node - Virt vCPU Metrics
+          type: graph
+          legend:
+            alignAsTable: true
+            avg: false
+            current: true
+            max: true
+            min: true
+            rightSide: true
+            show: true
+            total: false
+            values: true
+          nullPointMode: 'null'
+          targets:
+            - target: alias($Cloud.$Node.virt.percent-virt_cpu_total, 'percent-virt_cpu_total')
+            - target: alias($Cloud.$Node.virt.virt_cpu_total, 'virt_cpu_total')

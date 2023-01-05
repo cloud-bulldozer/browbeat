@@ -48,6 +48,9 @@ LoadPlugin processes
 LoadPlugin swap
 LoadPlugin tail
 LoadPlugin uptime
+{% if virt_collectd_plugin %}
+LoadPlugin virt
+{% endif %}
 
 PreCacheChain "PreCache"
 <Chain "PreCache">
@@ -127,6 +130,15 @@ PreCacheChain "PreCache"
   ReportInodes true
 </Plugin>
 
+{% if virt_collectd_plugin %}
+<Plugin virt>
+  Connection "qemu:///system"
+  RefreshInterval 60
+  HostnameFormat name hostname uuid
+  ExtraStats "cpu_util disk job_stats_background"
+</Plugin>
+{% endif %}
+
 {%if disk_compute_collectd_plugin %}
 <Plugin disk>
   Disk "/^[hsv]d[a-z]+[0-9]?$/"
@@ -159,6 +171,7 @@ PreCacheChain "PreCache"
 </Plugin>
 
 {% endif %}
+
 # (akrzos) Including the version of OpenStack that the process was verified as running after
 # OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -10)
