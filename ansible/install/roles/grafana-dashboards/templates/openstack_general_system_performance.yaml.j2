@@ -177,6 +177,8 @@ dashboard:
 
 {% include 'partials/tail.yaml' %}
 
+{% include 'partials/virt_monitoring.yaml' %}
+
 {% if item.template_node_type in sqlalchemy_groups %}
   {% include 'partials/sqlalchemy.yaml' %}
 {% endif %}
