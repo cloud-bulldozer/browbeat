@@ -415,6 +415,53 @@ workloads:
       - 8
     times: 10
     scenarios:
+      # This is a scenario developed specifically for an environment with a mix of
+      # non-NFV compute nodes, ComputeOvsDpdk/ComputeOvsDpdkSriov nodes,
+      # and compute nodes with OvS Hardware Offload/SR-IOV+OvS Hardware Offload.
+      # It creates three different availability zones for the three different types of compute nodes
+      # and boots VMs in them accordingly.
+      # The scenario boots <times> number of VMs in the availability zone which has
+      # the least number of compute nodes and automatically calculates the number of
+      # VMs to boot in the other AZs based on the proportional_scale option.
+      - name: nova-boot-hybrid-computes
+        enabled: true
+        image_name: centos7
+        vanilla_flavor_name: m1.small
+        vanilla_phys_net: provider-0
+        sriov_phys_net: provider-1
+        # option to enable booting DPDK instances in the tests
+        boot_dpdk_vms: False
+        dpdk_flavor_name: m1.small
+        dpdk_phys_net: provider-0
+        # Management network type for the VM can be either tenant and sriov.
+        # The port on the management network should be used for general access to
+        # to the VM and not for dataplane traffic.
+        dpdk_management_nw_type: tenant
+        dpdk_hosts_group: ComputeOvsDpdk
+        # option to enable booting instances with hardware offload configured in the tests
+        boot_hw_offload_vms: False
+        hw_offload_flavor_name: m1.small
+        hw_offload_phys_net: provider-2
+        # Management network type for the VM can be either tenant and sriov.
+        # The port on the management network should be used for general access to
+        # to the VM and not for dataplane traffic.
+        hw_offload_management_nw_type: tenant
+        hw_offload_hosts_group: ComputeSriovOffload
+        # path to tripleo inventory file
+        tripleo_inventory_file: ansible/hosts.yml
+        num_tenants: 2
+        num_networks_per_tenant: 6
+        # This option will scale VMs proportionally on
+        # different compute node types. For example,
+        # if there is 1 SR-IOV+DPDK compute node, 1 SR-IOV+HWOL
+        # compute node and 3 non-NFV compute nodes, then
+        # 3 non-NFV VMs will be booted in each iteration, while
+        # 1 NFV VM of each type will be booted in an iteration.
+        # This option should be enabled only when the environment
+        # is stable, as it could boot a lot of VMs concurrently.
+        proportional_scale: False
+        nova_api_version: 2.74
+        file: rally/rally-plugins/nova/nova_boot_hybrid_computes.yml
       - name: nova-boot-in-batches-with-delay
         enabled: true
         image_name: cirro5

@@ -1,0 +1,66 @@
+{% set image_name = image_name or 'centos7' %}
+{% set vanilla_flavor_name = vanilla_flavor_name or 'm1.small' %}
+{% set dpdk_flavor_name = dpdk_flavor_name or 'm1.small' %}
+{% set hw_offload_flavor_name = hw_offload_flavor_name or 'm1.small' %}
+{% set proportional_scale = proportional_scale or 'False' %}
+{% set nova_api_version = nova_api_version or 2.74 %}
+{% set num_tenants = num_tenants or 1 %}
+{% set num_networks_per_tenant = num_networks_per_tenant or 1 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatNova.nova_boot_hybrid_computes:
+  -
+    args:
+      image:
+        name: '{{ image_name }}'
+      vanilla_flavor:
+        name: '{{ vanilla_flavor_name }}'
+      dpdk_flavor:
+        name: '{{ dpdk_flavor_name }}'
+      hw_offload_flavor:
+        name: '{{ hw_offload_flavor_name }}'
+      dpdk_management_nw_type: '{{ dpdk_management_nw_type }}'
+      hw_offload_management_nw_type: '{{ hw_offload_management_nw_type }}'
+      proportional_scale: '{{ proportional_scale }}'
+      num_networks_per_tenant: {{ num_networks_per_tenant }}
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: 'constant'
+    context:
+      create_nfv_azs_and_networks:
+        provider_phys_nets:
+          dpdk: '{{ dpdk_phys_net }}'
+          sriov: '{{ sriov_phys_net }}'
+          hw_offload: '{{ hw_offload_phys_net }}'
+          vanilla: '{{ vanilla_phys_net }}'
+        boot_dpdk_vms: '{{ boot_dpdk_vms }}'
+        boot_hw_offload_vms: '{{ boot_hw_offload_vms }}'
+        dpdk_hosts_group: '{{ dpdk_hosts_group }}'
+        hw_offload_hosts_group: '{{ hw_offload_hosts_group }}'
+        tripleo_inventory_file: '{{ tripleo_inventory_file }}'
+      api_versions:
+        nova:
+          version: {{ nova_api_version }}
+      users:
+        tenants: {{ num_tenants }}
+        users_per_tenant: 8
+      network:
+        networks_per_tenant: {{num_networks_per_tenant}}
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          subnet: -1
+          router: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}
