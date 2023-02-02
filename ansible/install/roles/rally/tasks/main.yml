@@ -48,6 +48,12 @@
     version: "4.4.2"
     virtualenv: "{{ rally_venv }}"
 
+# Till https://bugs.launchpad.net/rally/+bug/2004022 fixed
+- name: Ensure SQLAlchemy<2.0.0
+  pip:
+    name: 'SQLAlchemy<2.0.0'
+    virtualenv: "{{ rally_venv }}"
+
 - name: Create rally configuration directory
   file:
     path: "{{ rally_venv }}/etc/rally"
