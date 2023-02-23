@@ -54,6 +54,13 @@
     name: 'SQLAlchemy<2.0.0'
     virtualenv: "{{ rally_venv }}"
 
+# Till browbeat code is compatible with novaclient-18.3.0
+# https://bugs.launchpad.net/openstack-browbeat/+bug/2008235
+- name: Ensure python-novaclient<=17.6.0
+  pip:
+    name: 'python-novaclient<=17.6.0'
+    virtualenv: "{{ rally_venv }}"
+
 - name: Create rally configuration directory
   file:
     path: "{{ rally_venv }}/etc/rally"
