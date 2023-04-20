@@ -80,3 +80,11 @@
         dest: "/home/stack/clouds.yaml"
         marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
       throttle: 1
+      when: ansible_distribution_major_version <= '8'
+
+    - name: Remove cloud parameters
+      blockinfile:
+        dest: "/home/stack/.config/openstack/clouds.yaml"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      throttle: 1
+      when: ansible_distribution_major_version > '8'

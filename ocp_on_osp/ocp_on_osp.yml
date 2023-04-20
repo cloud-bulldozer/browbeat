@@ -4,9 +4,11 @@
   gather_facts: true
   vars_files:
     - vars/shift_stack_vars.yaml
-  vars:
-    random_str: "{{ lookup('password', '/dev/null length=9 chars=ascii_lowercase,digits') + 'rhocp' }}"
   tasks:
+    - name: Generate a random string to be used as project,user and cluster name
+      set_fact:
+        random_str: "{{ lookup('password', '/dev/null length=9 chars=ascii_lowercase,digits') + 'rhocp' }}"
+
     - name: Set facts for OCP vars
       set_fact:
         osp_project_name: "{{ random_str }}"
@@ -53,6 +55,7 @@
         sed -e 's/OS_USERNAME=.*/OS_USERNAME={{ osp_user_name }}/' \
         -e 's/OS_PROJECT_NAME=.*/OS_PROJECT_NAME={{ osp_project_name }}/' \
         -e 's/OS_CLOUDNAME=.*/OS_CLOUDNAME={{ osp_project_name }}/' \
+        -e 's/OS_CLOUD=.*/OS_CLOUD={{ osp_project_name }}/' \
         -e 's/OS_PASSWORD=.*/OS_PASSWORD=redhat/' overcloudrc > /home/stack/ocp_clusters/{{ocp_cluster_name}}/shiftstackrc
       args:
         chdir: /home/stack/
@@ -71,6 +74,25 @@
               'project_name': '${OS_PROJECT_NAME:-$OS_TENANT_NAME}' \
             } $(if [ -n "$OS_IDENTITY_API_VERSION" ]; then echo ",'identity_api_version': '${OS_IDENTITY_API_VERSION}'"; fi) }"
       register: cloud_details
+      when: ansible_distribution_major_version <= '8'
+
+    - name: Get cloud.yaml variables
+      shell: |
+        for key in $( set | awk '{FS="="}  /^OS_/ {print $1}' ); do unset $key ; done
+        source /home/stack/ocp_clusters/{{ocp_cluster_name}}/shiftstackrc
+        echo -n " {{ osp_project_name }}: \
+          {'auth': \
+            { 'auth_url': '$OS_AUTH_URL', \
+              'username': '$OS_USERNAME', \
+              'password': '$OS_PASSWORD', \
+              $(if [ -n "$OS_USER_DOMAIN_NAME" ]; then echo "'user_domain_name': '${OS_USER_DOMAIN_NAME}',"; fi) \
+              $(if [ -n "$OS_PROJECT_DOMAIN_NAME" ]; then echo "'project_domain_name': '${OS_PROJECT_DOMAIN_NAME}',"; fi) \
+              'project_name': '${OS_PROJECT_NAME:-$OS_TENANT_NAME}' \
+            } $(if [ -n "$OS_IDENTITY_API_VERSION" ]; then echo ",'identity_api_version': '${OS_IDENTITY_API_VERSION}'"; fi) \
+              $(if [ -n "$OS_REGION_NAME" ]; then echo ",'region_name': '${OS_REGION_NAME}'"; fi) \
+              $(if [ -n "$OS_VOLUME_API_VERSION" ]; then echo ",'volume_api_version': '${OS_VOLUME_API_VERSION}'"; fi) }"
+      register: cloud_details
+      when: ansible_distribution_major_version > '8'
 
     - name: Set clouds_yaml fact
       set_fact:
@@ -84,6 +106,17 @@
         insertbefore: "EOF"
         marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
       throttle: 1
+      when: ansible_distribution_major_version <= '8'
+
+    - name: Insert clouds.yaml parameters
+      blockinfile:
+        dest: "/home/stack/.config/openstack/clouds.yaml"
+        block: |4
+              {{ clouds_yaml|to_nice_yaml(indent=4) }}
+        insertbefore: "EOF"
+        marker: "# {mark} {{ ocp_cluster_name }} OCP CLUSTER MANAGED BLOCK"
+      throttle: 1
+      when: ansible_distribution_major_version > '8'
 
     - name: Read ssh key file
       slurp:
