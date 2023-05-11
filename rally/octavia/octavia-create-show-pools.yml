@@ -15,7 +15,9 @@
           users_per_tenant: 2
         roles:
         - load-balancer_member
-        network: {}
+        network:
+          start_cidr: "10.0.0.0/16"
+          networks_per_tenant: 1
       sla:
         failure_rate:
           max: {{ sla_max_failure }} 
