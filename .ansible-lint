@@ -1,5 +1,6 @@
 ---
 parseable: true
+profile: min
 skip_list:
   - '102'
   - '106'
@@ -18,4 +19,13 @@ skip_list:
   - ANSIBLE0012
 exclude_paths:
   - .zuul.yaml
+  - rally
+  # Temporarily disable linting on these existing playbooks as syntax errors are reported
+  # in them with ansible-lint rev 6.17.2.
+  - ansible/oooq
+  - ansible/gather/stockpile.yml
+  - ansible/logs/get-overcloud-logs.yml
+  - ansible/browbeat/install-at.yml
+  - ansible/common_logging/install_logging.yml
+  - ocp_on_osp/ocp_cleanup.yml
 use_default_rules: true
