@@ -1,0 +1,62 @@
+{% set nova_api_version = nova_api_version or 2.74 %}
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+BrowbeatPlugin.pbench_fio:
+-
+    args:
+      flavor:
+        name: "{{ flavor_name }}"
+      image:
+        name: "{{ image_name }}"
+      num_vms_per_compute: {{ num_vms_per_compute }}
+      public_net_name: "{{ public_net_name }}"
+      user: "{{ user }}"
+      pbench_key_url: "{{ pbench_key_url }}"
+      pbench_config_url: "{{ pbench_config_url }}"
+      pbench_repo_dir_path: "{{ pbench_repo_dir_path }}"
+      pbench_repo_name: "{{ pbench_repo_name }}"
+      volume_size: {{ volume_size }}
+      job_input: "{{ job_input }}"
+      block_size: "{{ block_size }}"
+      io_depth: {{ io_depth }}
+      start_delay: {{ start_delay }}
+      runtime: {{ runtime }}
+      workload_size: "{{ workload_size }}"
+      num_jobs: {{ num_jobs }}
+      sample: {{ sample }}
+      ansible_forks: {{ ansible_forks }}
+    runner:
+      concurrency: {{concurrency}}
+      times: {{times}}
+      type: "constant"
+    context:
+      users:
+        tenants: 1
+        users_per_tenant: 1
+      api_versions:
+        nova:
+          version: {{ nova_api_version }}
+      quotas:
+        neutron:
+          network: -1
+          port: -1
+          router: -1
+          subnet: -1
+          floatingip: -1
+          security_group: -1
+          security_group_rule: -1
+          trunk: -1
+        nova:
+          instances: -1
+          cores: -1
+          ram: -1
+        cinder:
+          gigabytes: -1
+          volumes: -1
+    sla:
+      max_avg_duration: {{sla_max_avg_duration}}
+      max_seconds_per_iteration: {{sla_max_seconds}}
+      failure_rate:
+        max: {{sla_max_failure}}

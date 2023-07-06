@@ -1,0 +1,88 @@
+---
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: copy necessary files, repos and update dns server
+      shell: |
+        sudo cp ~/pbench_repos/* /etc/yum.repos.d
+        sudo cp ~/resolv.conf /etc/resolv.conf
+        sudo cp ~/client_file /root/client_file
+
+- hosts: servers
+  remote_user: cloud-user
+  become: true
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  tasks:
+    - name: create directory
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '1777'
+      with_items:
+        - /var/lib/pbench-agent
+        - /var/lib/pbench-agent/tmp
+
+    - name: copy dns server
+      copy:
+        src: /etc/resolv.conf
+        dest: /etc/resolv.conf
+        mode: 0644
+
+    - name: Add drop-cache file
+      copy:
+        dest: /root/drop-cache.sh
+        content: |
+          sync
+          echo 3 > /proc/sys/vm/drop_caches
+        mode: 777
+
+    - name: copy read.job
+      copy:
+        src: /home/cloud-user/read.job
+        dest: /root/read.job
+
+    - name: copy write.job
+      copy:
+        src: /home/cloud-user/write.job
+        dest: /root/write.job
+
+    - name: copy necessary repos
+      copy:
+        src: /etc/yum.repos.d/
+        dest: /etc/yum.repos.d/
+        mode: 0644
+
+    - name: copy .ssh dir to root
+      copy:
+        src: /home/cloud-user/.ssh/
+        dest: /root/.ssh/
+        mode: 0600
+
+    - name: install ansible-core and pbench.agent
+      shell: |
+        yum install ansible-core -y
+        LANG=C.UTF-8 ansible-galaxy collection install pbench.agent
+
+    - name: install fio, perf, firewalld and sysstat
+      yum:
+        name: '{{ item }}'
+        state: latest
+      with_items:
+        - fio
+        - sysstat
+        - perf
+        - firewalld
+
+    - name: start firewalld
+      systemd:
+        name: firewalld
+        state: started
+
+    - name: mount cinder volume on vms
+      shell: |
+        mkfs.xfs -f /dev/vdb
+        mkdir /mnt/fio
+        mount /dev/vdb /mnt/fio
+        echo "/dev/vdb /mnt/fio xfs rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 0" >> /etc/fstab
+        mount -a

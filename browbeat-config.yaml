@@ -70,6 +70,7 @@ rally:
     - dynamic-workloads: rally/rally-plugins/dynamic-workloads
     - reports: rally/rally-plugins/reports
     - manila: rally/rally-plugins/manila
+    - storage: rally/rally-plugins/pbench-fio
 shaker:
   server: 1.1.1.1
   port: 5555
@@ -873,3 +874,36 @@ workloads:
         provider_net_id:
         ext_net_id:
         file: rally/rally-plugins/manila/create-share-boot-vm-mount-share-write-delete-vm-share.yml
+
+  - name: storage
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: pbench-fio
+        enabled: true
+        image_name: rhel-9
+        flavor_name: m1.small
+        num_vms_per_compute: 1
+        user: cloud-user
+        pbench_key_url: http://example.com/some/path/to/agent/{{ pbench_configuration_environment }}/ssh
+        pbench_config_url: http://example.com/some/path/to/agent/{{ pbench_configuration_environment }}/config
+        public_net_name: public
+        pbench_repo_name: pbench-0.72
+        #do not append '/' at the end for dir_path
+        pbench_repo_dir_path: /home/stack/pbench_repos
+        volume_size: 10
+        job_input: rwrwr
+        #job parameters
+        runtime: 3000
+        io_depth: 16
+        start_delay: 10
+        block_size: 4,8  #comma separated list
+        workload_size: 1G
+        num_jobs: 1
+        sample: 1
+        ansible_forks: 5
+        file: rally/rally-plugins/pbench-fio/pbench-fio.yml

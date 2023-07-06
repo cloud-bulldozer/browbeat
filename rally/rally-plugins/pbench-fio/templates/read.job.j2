@@ -1,0 +1,19 @@
+[global]
+bs = $@
+runtime = {{ runtime }}
+ioengine = libaio
+iodepth = {{ io_depth }}
+direct = 1
+startdelay= {{ start_delay }}
+clocksource = clock_gettime
+directory = /mnt/fio/
+write_bw_log = fio
+write_iops_log = fio
+write_lat_log = fio
+log_avg_msec = 10000
+write_hist_log = fio
+
+[rhcs-read-test]
+rw = $@
+size = {{ workload_size }}
+numjobs = {{ num_jobs }}

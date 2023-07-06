@@ -1,0 +1,24 @@
+---
+- name: Install pbench-agent
+  hosts: servers
+  remote_user: cloud-user
+  become: yes
+  module_defaults:
+    ansible.builtin.get_url:
+      validate_certs: false
+
+  # The default value ('production') can be overridden by cenv, a host-specific
+  # inventory variable.
+  vars:
+    pbench_configuration_environment: "{{ cenv | default('production') }}"
+
+  roles:
+    - pbench_repo_install
+    - pbench_agent_install
+    - pbench_agent_config
+
+  tasks:
+    - name: register pbench across servers
+      shell: |
+        source /etc/profile.d/pbench-agent.sh
+        pbench-register-tool-set
