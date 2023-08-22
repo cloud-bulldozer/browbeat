@@ -23,6 +23,7 @@ elasticsearch:
   enabled: true
   host: 1.1.1.1
   port: 9200
+  life: shortterm
   regather: true
   metadata_files:
     - name: hardware-metadata

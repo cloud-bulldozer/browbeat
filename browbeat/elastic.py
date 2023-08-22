@@ -46,10 +46,11 @@ class Elastic(object):
              'port': self.config['elasticsearch']['port']}],
             send_get_body_as='POST'
         )
+        life = self.config['elasticsearch']['life']
         self.workload = workload
         today = datetime.datetime.today()
-        self.index = "{}-{}-{}".format(tool, workload,
-                                       today.strftime('%Y.%m'))
+        self.index = "{}-{}-{}-{}".format(tool, workload, life,
+                                          today.strftime('%Y.%m'))
 
     def __del__(self):
         self.flush_cache()

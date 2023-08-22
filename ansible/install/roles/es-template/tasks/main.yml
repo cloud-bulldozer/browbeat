@@ -23,14 +23,54 @@
   ignore_errors: true
   when: elastic5
 
-- name: Upload templates
-  uri:
-    url: http://{{ es_ip }}:{{ es_local_port }}/_template/{{ item | basename | regex_replace('\.json','') }}
-    method: PUT
-    body: "{{ lookup('file', item) }}"
-    body_format: json
-  with_fileglob:
-  - "{{ browbeat_path }}/elastic/v7templates/browbeat*"
-  ignore_errors: true
+- name: create ilm policy and templates for esv7
+  block:
+    - name: create shortterm ilm
+      template:
+        src: "{{ browbeat_path }}/elastic/v7ilm_policy/template-browbeat-rally.json.j2"
+        dest: "{{ browbeat_path }}/elastic/v7ilm_policy/browbeat-rally-shortterm.json"
+      vars:
+        age: "{{ shortterm_age }}"
+
+    - name: create longterm ilm
+      template:
+        src: "{{ browbeat_path }}/elastic/v7ilm_policy/template-browbeat-rally.json.j2"
+        dest: "{{ browbeat_path }}/elastic/v7ilm_policy/browbeat-rally-longterm.json"
+      vars:
+        age: "{{ longterm_age }}"
+
+    - name: create shortterm template
+      template:
+        src: "{{ browbeat_path }}/elastic/v7templates/template-browbeat-rally.json.j2"
+        dest: "{{ browbeat_path }}/elastic/v7templates/browbeat-rally-shortterm.json"
+      vars:
+        term: "shortterm"
+
+    - name: create longterm template
+      template:
+        src: "{{ browbeat_path }}/elastic/v7templates/template-browbeat-rally.json.j2"
+        dest: "{{ browbeat_path }}/elastic/v7templates/browbeat-rally-longterm.json"
+      vars:
+        term: "longterm"
+
+    - name: Upload ilm policy
+      uri:
+        url: http://{{ es_ip }}:{{es_local_port }}/_ilm/policy/{{ item | basename | regex_replace('\.json','') }}
+        method: PUT
+        body: "{{ lookup('file', item) }}"
+        body_format: json
+      with_fileglob:
+      - "{{ browbeat_path }}/elastic/v7ilm_policy/browbeat*"
+      ignore_errors: true
+
+    - name: Upload templates
+      uri:
+        url: http://{{ es_ip }}:{{ es_local_port }}/_template/{{ item | basename | regex_replace('\.json','') }}
+        method: PUT
+        body: "{{ lookup('file', item) }}"
+        body_format: json
+      with_fileglob:
+      - "{{ browbeat_path }}/elastic/v7templates/browbeat*"
+      ignore_errors: true
   when: elastic7
 

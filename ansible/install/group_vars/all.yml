@@ -534,7 +534,9 @@ es_ip: 1.1.1.1
 es_local_port: 9200
 es_listen_external: true
 elastic5: false
-elastic7:
+elastic7: true
+shortterm_age: '125d'
+longterm_age: '750d'
 
 ## Filebeat options ##
 filebeat_url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-x86_64.rpm

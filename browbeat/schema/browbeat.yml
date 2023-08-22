@@ -75,6 +75,9 @@ mapping:
       port:
         type: int
         required: True
+      life:
+        type: str
+        required: True
       regather:
         type: bool
         required: True
