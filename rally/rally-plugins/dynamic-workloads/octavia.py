@@ -60,8 +60,8 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
         jump_ssh.execute("chmod 0600 ~/.ssh/id_rsa")
         return jump_ssh, jump_host_ip, jump_host
 
-    def create_clients(self, num_clients, user, user_data_file, image,
-                       flavor, subnet, lb_subnet, **kwargs):
+    def create_clients_lb(self, num_clients, user, user_data_file, image,
+                          flavor, subnet, lb_subnet, **kwargs):
         """Create <num_clients> clients
 
         :param num_clients: int, number of clients to create
@@ -286,9 +286,9 @@ class DynamicOctaviaBase(octavia_utils.OctaviaBase, dynamic_utils.NovaUtils):
             jump_ssh, jump_host_ip, jump_host = self.build_jump_host(
                 ext_net_name, octavia_image, octavia_flavor, user, subnets[0]['subnet'], **kwargs)
 
-            _clients = self.create_clients(num_clients, user, user_data_file, octavia_image,
-                                           octavia_flavor, subnets[1]['subnet'],
-                                           subnets[0]['subnet'], **kwargs)
+            _clients = self.create_clients_lb(num_clients, user, user_data_file, octavia_image,
+                                              octavia_flavor, subnets[1]['subnet'],
+                                              subnets[0]['subnet'], **kwargs)
 
             protocol_port = 80
             # description consists of router id
