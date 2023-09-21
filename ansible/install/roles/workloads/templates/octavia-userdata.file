@@ -8,5 +8,5 @@ chmod 777 /home/cirros/test_server.bin
 sudo su  && echo 1 > /proc/sys/vm/overcommit_memory
 
 for i in $(seq 0 $(($NUM_POOLS-1))); do
-    ./home/cirros/test_server.bin -port  $(($PORT+ $i)) &
+    /home/cirros/test_server.bin -port  $(($PORT+ $i)) &
 done

@@ -65,6 +65,9 @@ iptables_file: /etc/sysconfig/iptables
 
 #octavia_test_bin_path:
 
+# Command to use to download test_bin file
+octavia_test_bin_download_cmd: "wget"
+
 ########################################
 # Browbeat Workloads
 ########################################
