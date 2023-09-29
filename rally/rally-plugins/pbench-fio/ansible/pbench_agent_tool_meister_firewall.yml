@@ -1,0 +1,23 @@
+---
+- name: Open ports for redis and tool data sink
+  hosts: servers
+  remote_user: cloud-user
+  become: true
+
+  roles:
+    - pbench_firewall_open_ports
+
+  tasks:
+    - name: enable port 8765
+      firewalld:
+        port: 8765/tcp
+        permanent: true
+        state: enabled
+
+    - name: restart firewalld and redis
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - firewalld
+        - redis

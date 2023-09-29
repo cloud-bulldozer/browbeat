@@ -235,6 +235,9 @@ class Rally(base.WorkloadBase):
                 workload["name"], scenario_name
             )
 
+            with open("../rally_result_dir_path", "w") as file:
+                file.write(result_dir)
+
             self.logger.debug("Created result directory: {}".format(result_dir))
             self.workload_logger(self.__class__.__name__)
 
