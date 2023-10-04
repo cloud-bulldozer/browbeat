@@ -72,7 +72,9 @@
   when: "'Controller' in group_names"
 
 - name: (Undercloud) Get mysql root password
-  shell: cat /home/stack/undercloud-passwords.conf | grep 'undercloud_db_password=' | sed 's/undercloud_db_password=//g'
+  become: true
+  shell: |
+    grep 'mysql::server::root_password' /etc/puppet/hieradata/service_configs.json | awk -F'"' '{print $4}'
   register: undercloud_mysql_password
   when: "'Undercloud' in group_names"
 
