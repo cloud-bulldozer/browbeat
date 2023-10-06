@@ -75,7 +75,7 @@
           yaxes:
             - format: deckbytes
             - format: short
-        - title: $Cloud - $Node - Average Request Size (avgrq-sz)
+        - title: $Cloud - $Node - Average Request Size (areq-sz)
           type: graph
           legend:
             alignAsTable: true
@@ -91,11 +91,12 @@
           span: 6
           stack: true
           targets:
-            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-avgrq_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-rareq_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-wareq_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
           yaxes:
             - format: ops
             - format: short
-        - title: $Cloud - $Node - Average Queue Length of Requests (avgqu-sz)
+        - title: $Cloud - $Node - Average Queue Length of Requests (aqu-sz)
           type: graph
           legend:
             alignAsTable: true
@@ -111,7 +112,7 @@
           span: 6
           stack: true
           targets:
-            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-avgqu_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
+            - target: aliasByNode(aliasSub(aliasSub($Cloud.$Node.collectd_iostat_python-*.gauge-aqu_sz, 'collectd_iostat_python-', ''), 'gauge-', ''), 2, 3)
           yaxes:
             - format: ops
             - format: short
