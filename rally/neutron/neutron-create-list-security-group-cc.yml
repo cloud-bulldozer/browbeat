@@ -21,6 +21,7 @@
             router: -1
             subnet: -1
             security_group: -1
+            security_group_rule: -1
       sla:
         max_avg_duration: {{sla_max_avg_duration}}
         max_seconds_per_iteration: {{sla_max_seconds}}
