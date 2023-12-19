@@ -3,6 +3,6 @@ elasticsearch
 scapy
 pyrsistent==0.16.0;python_version<'3'
 pyrsistent>=0.17.0;python_version>='3'
-paramiko==2.8.0
+paramiko==3.4.0
 python-manilaclient<=3.0.0
 python-novaclient<18.3.0
