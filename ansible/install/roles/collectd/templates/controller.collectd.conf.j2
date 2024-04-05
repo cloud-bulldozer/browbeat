@@ -121,7 +121,11 @@ PreCacheChain "PreCache"
   LongRunAvgLatency false
   ConvertSpecialMetricTypes true
   <Daemon "mon.{{inventory_hostname}}">
+{% if rhosp_version | float >= 17.0 %}
+    SocketPath "/var/run/ceph/{{ceph_cluster_fsid}}/ceph-mon.{{inventory_hostname}}.asok"
+{% else %}
     SocketPath "/var/run/ceph/ceph-mon.{{inventory_hostname}}.asok"
+{% endif %}
   </Daemon>
 </Plugin>
 

@@ -110,7 +110,11 @@ PreCacheChain "PreCache"
   LongRunAvgLatency false
   ConvertSpecialMetricTypes true
   <Daemon "osd.{{inventory_hostname}}.{{cephstorage_osd_socket.stdout}}">
+{% if rhosp_version | float >= 17.0 %}
+    SocketPath "/var/run/ceph/{{ceph_cluster_fsid}}/ceph-osd.{{cephstorage_osd_socket.stdout}}.asok"
+{% else %}
     SocketPath "/var/run/ceph/ceph-osd.{{cephstorage_osd_socket.stdout}}.asok"
+{% endif %}
   </Daemon>
 </Plugin>
 

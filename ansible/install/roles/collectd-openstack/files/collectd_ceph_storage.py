@@ -313,8 +313,11 @@ class CollectdCephStorage(object):
             if check_output:
                 output = subprocess.check_output(command)
             else:
-                stdin, stdout, stderr = os.popen3(' '.join(command))
-                output = stdout.read()
+                process = subprocess.Popen(' '.join(command), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stdout, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise RuntimeError("Error occurred: {}".format(stderr.decode('utf-8')))
+                output = stdout.decode('utf-8')
         except Exception as exc:
             collectd.error(
                 'collectd-ceph-storage: {} exception: {}'.format(command, exc))
