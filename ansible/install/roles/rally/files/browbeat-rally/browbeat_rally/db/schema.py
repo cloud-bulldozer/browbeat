@@ -15,13 +15,16 @@ from oslo_db import options as db_options
 from browbeat_rally.db import models
 from rally.common import cfg
 from oslo_db.sqlalchemy import session as db_session
-
+import os
 
 CONF = cfg.CONF
 
-# rally.conf always uses stack.sqlite database
+username = os.getenv('USER')
+
+# rally.conf always uses <username>.sqlite database
+db_connection = "sqlite:///%s/%s.sqlite" % (tempfile.gettempdir(), username)
 db_options.set_defaults(
-            CONF, connection="sqlite:///%s/stack.sqlite" % tempfile.gettempdir())
+            CONF, connection=db_connection)
 
 
 def _create_facade_lazily():
@@ -35,7 +38,7 @@ def get_engine():
 
 # alternate way to create engine is
 # from oslo_db.sqlalchemy import engines
-# engine = engines.create_engine("sqlite:///%s/stack.sqlite" % tempfile.gettempdir())
+# engine = engines.create_engine(db_connection)
 def schema_create():
     engine = get_engine()
     metadata = schema.MetaData()

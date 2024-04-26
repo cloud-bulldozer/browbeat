@@ -1,0 +1,26 @@
+---
+#
+# Playbook to install Browbeat (Rally + Shaker) on undercloud
+#
+
+- hosts: Browbeat
+  remote_user: "{{ browbeat_user }}"
+  roles:
+    - common
+    - osp_version
+    - browbeat
+    - stockpile
+    - { role: browbeat-results, when: browbeat_results_in_httpd|bool}
+    - firewall
+    - rally
+    - shaker
+    - { role: flavors, when: browbeat_create_flavors|bool}
+    - { role: images, when: browbeat_upload_guest_images|bool}
+    - { role: workloads, when: install_browbeat_workloads|bool}
+    - { role: e2e-benchmarking, when: install_e2e_benchmarking|bool}
+  environment: "{{proxy_env}}"
+
+- hosts: Controller*, Compute*
+  remote_user: "{{ host_remote_user }}"
+  roles:
+    - no-sshd-dns

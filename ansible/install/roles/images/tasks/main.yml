@@ -32,13 +32,17 @@
   with_items: "{{ browbeat_guest_images }}"
 
 - name: Upload image into cloud (Newton and Ocata versions)
-  shell: . {{ overcloudrc }}; openstack image create --public --disk-format={{ browbeat_guest_images[item].type }} --container-format=bare {{ browbeat_guest_images[item].name }} < {{ home_dir }}/{{ browbeat_guest_images[item].name }}.{{ browbeat_guest_images[item].type }}
+  shell: |
+    . {{ overcloudrc }}
+    openstack image create --public --disk-format={{ browbeat_guest_images[item].type }} --container-format=bare {{ browbeat_guest_images[item].name }} < {{ home_dir }}/{{ browbeat_guest_images[item].name }}.{{ browbeat_guest_images[item].type }}
   ignore_errors: true
   when: "not browbeat_guest_images[item].convert_to_raw"
   with_items: "{{ browbeat_guest_images }}"
 
 - name: Upload raw image into cloud (Newton and Ocata versions)
-  shell: . {{ overcloudrc }}; openstack image create --public --disk-format=raw --container-format=bare {{ browbeat_guest_images[item].name }} < {{ home_dir }}/{{ browbeat_guest_images[item].name }}.raw
+  shell: |
+    . {{ overcloudrc }}
+    openstack image create --public --disk-format=raw --container-format=bare {{ browbeat_guest_images[item].name }} < {{ home_dir }}/{{ browbeat_guest_images[item].name }}.raw
   ignore_errors: true
   when: "browbeat_guest_images[item].convert_to_raw"
   with_items: "{{ browbeat_guest_images }}"

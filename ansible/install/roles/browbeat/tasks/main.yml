@@ -117,37 +117,40 @@
     line: 'export REQUESTS_CA_BUNDLE={{ overcloud_ca_path }}'
   when: overcloud_ca_path is defined
 
-- name: Determine if generate_tripleo_hostfile has been run
-  stat:
-    path: "{{ browbeat_path }}/ansible/hosts"
-  register: hosts_file_exists
+- block:
+    - name: Determine if generate_tripleo_hostfile has been run
+      stat:
+        path: "{{ browbeat_path }}/ansible/hosts"
+      register: hosts_file_exists
 
-- name: Determine if generate_tripleo_inventory has been run
-  stat:
-    path: "{{ browbeat_path }}/ansible/hosts.yml"
-  register: hosts_yml_file_exists
+    - name: Determine if generate_tripleo_inventory has been run
+      stat:
+        path: "{{ browbeat_path }}/ansible/hosts.yml"
+      register: hosts_yml_file_exists
 
-- name: set either of inventory file exists
-  set_fact:
-    inventry_file: "{{ (hosts_file_exists.stat.exists and hosts_file_exists.stat.isreg) or (hosts_yml_file_exists.stat.exists and hosts_yml_file_exists.stat.isreg) }}"
+    - name: set either of inventory file exists
+      set_fact:
+        inventry_file: "{{ (hosts_file_exists.stat.exists and hosts_file_exists.stat.isreg) or (hosts_yml_file_exists.stat.exists and hosts_yml_file_exists.stat.isreg) }}"
 
-- debug: msg="Hosts file is already generated. {{ inventry_file }}"
-  when: inventry_file
+    - debug:
+        msg: "Hosts file is already generated. {{ inventry_file }}"
+      when: inventry_file
 
-- name: Generate hosts and ssh-config on Browbeat Machine - Default(stack)
-  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_inventory.sh -l --user stack
-  when: tripleo and (not inventry_file) and ansible_user!= "zuul"
+    - name: Generate hosts and ssh-config on Browbeat Machine - Default(stack)
+      shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_inventory.sh -l --user stack
+      when: tripleo and (not inventry_file) and ansible_user != "zuul"
 
-- name: Generate hosts and ssh-config on Browbeat Machine - Zuul
-  shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_inventory.sh -l --user zuul
-  when: tripleo and (not inventry_file) and ansible_user== "zuul"
+    - name: Generate hosts and ssh-config on Browbeat Machine - Zuul
+      shell: . {{ home_dir }}/stackrc; {{ browbeat_path }}/ansible/generate_tripleo_inventory.sh -l --user zuul
+      when: tripleo and (not inventry_file) and ansible_user == "zuul"
 
-- name: Move files to correct location
-  command: mv {{item}} {{ browbeat_path }}/ansible/{{item}}
-  with_items:
-    - hosts.yml
-    - heat-admin-id_rsa
-  when: "(tripleo and (not inventry_file))"
+    - name: Move files to correct location
+      command: mv {{ item }} {{ browbeat_path }}/ansible/{{ item }}
+      with_items:
+        - hosts.yml
+        - heat-admin-id_rsa
+      when: tripleo and (not inventry_file)
+  when: not is_rhoso_deployment
 
 - name: Install requirements.txt into browbeat-venv
   pip:
@@ -180,4 +183,4 @@
         insertafter: "hide"
         line: "            v.Optional('regex',default=''): v.All(str),"
 
-  when: collectd_prometheus
+  when: collectd_prometheus and not is_rhoso_deployment

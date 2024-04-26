@@ -1,0 +1,85 @@
+---
+#
+# we will be fixing all the gaps to run the browbeat from the provisioner host
+# just preparing the provosioner host to run browbeat for rhoso
+#
+
+- name: copy the clouds.yaml from the ospclient pod
+  block:
+  - name: create the target folder for the clouds.yaml
+    file:
+      path: "{{home_dir}}/.config/openstack"
+      state: directory
+      mode: '0755'
+
+  - name: copy the clouds.yaml
+    shell: |
+      oc cp openstack/openstackclient:/home/cloud-admin/.config/openstack/{{item}} {{home_dir}}/.config/openstack/{{item}}
+    with_items:
+      - clouds.yaml
+      - secure.yaml
+    environment:
+      KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: read the cloud yaml files
+  set_fact:
+    clouds_yaml: "{{ lookup('file', '{{home_dir}}/.config/openstack/clouds.yaml') | from_yaml }}"
+    secure_yaml: "{{ lookup('file', '{{home_dir}}/.config/openstack/secure.yaml') | from_yaml }}"
+
+- name: create the environment file
+  copy:
+    dest: "{{ overcloudrc }}"
+    content: |
+      export OS_CLOUD=default
+
+- name: update clouds.yaml content
+  set_fact:
+    clouds_yaml: >-
+      {{
+        clouds_yaml | combine({
+          'clouds': clouds_yaml.clouds | combine({
+            'default': clouds_yaml.clouds.default | combine({
+              'auth': clouds_yaml.clouds.default.auth | combine({'password': secure_yaml.clouds.default.auth.password}),
+              'insecure': True,
+              'identity_api_version': '3'
+             })
+          })
+        })
+      }}
+
+- name: update clouds.yaml
+  copy:
+    dest: "{{home_dir}}/.config/openstack/clouds.yaml"
+    content: "{{ clouds_yaml | to_nice_yaml }}"
+
+- name: create JSON content for keystone
+  set_fact:
+    keystone_content: |
+      {
+        "openstack": {
+        "auth_url": "{{ clouds_yaml.clouds.default.auth.auth_url }}",
+        "region_name": "{{ clouds_yaml.clouds.default.region_name }}",
+        "endpoint_type": "public",
+        "admin": {
+          "username": "{{ clouds_yaml.clouds.default.auth.username }}",
+          "password": "{{ clouds_yaml.clouds.default.auth.password }}",
+          "user_domain_name": "{{ clouds_yaml.clouds.default.auth.user_domain_name }}",
+          "project_name": "{{ clouds_yaml.clouds.default.auth.project_name }}",
+          "project_domain_name": "{{ clouds_yaml.clouds.default.auth.project_domain_name }}"
+          },
+        "https_insecure": {{ clouds_yaml.clouds.default.insecure | default(false) }}
+        }
+      }
+
+- name: create keystone config file from clouds.yaml
+  copy:
+    dest: "{{home_dir}}/.config/openstack/keystone-v3.json"
+    content: "{{ keystone_content | to_nice_json }}"
+
+- name: install openstack client
+  shell: |
+    sudo yum install "http://download.eng.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm" -y
+    sudo rhos-release 16.2
+    sudo yum install python3-openstackclient -y
+  ignore_errors: true
+  become: true

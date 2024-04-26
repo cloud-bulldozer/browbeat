@@ -1,26 +1,15 @@
 ---
-#
-# Playbook to install Browbeat (Rally + Shaker) on undercloud
-#
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: "redirecting to browbeat installation based on deployment type"
 
-- hosts: Browbeat
-  remote_user: "{{ browbeat_user }}"
-  roles:
-    - common
-    - osp_version
-    - browbeat
-    - stockpile
-    - { role: browbeat-results, when: browbeat_results_in_httpd|bool}
-    - firewall
-    - rally
-    - shaker
-    - { role: flavors, when: browbeat_create_flavors|bool}
-    - { role: images, when: browbeat_upload_guest_images|bool}
-    - { role: workloads, when: install_browbeat_workloads|bool}
-    - { role: e2e-benchmarking, when: install_e2e_benchmarking|bool}
-  environment: "{{proxy_env}}"
+- name: Install browbeat
+  import_playbook: browbeat_rhoso.yaml
+  vars:
+    rally_undercloud_enabled: false
+  when: is_rhoso_deployment
 
-- hosts: Controller*, Compute*
-  remote_user: "{{ host_remote_user }}"
-  roles:
-    - no-sshd-dns
+- name: Install browbeat
+  import_playbook: browbeat_rhosp.yaml
+  when: not is_rhoso_deployment

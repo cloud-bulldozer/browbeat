@@ -4,8 +4,9 @@
 # Browbeat Install Configuration
 ########################################
 
-# Adjust Browbeat user if you are deploying Browbeat on a different machine than the Undercloud
-browbeat_user: stack
+# Adjust Browbeat user if you are deploying Browbeat on a different machine
+# other than kni provisoner host. use 'stack' if you deploying in undercloud
+browbeat_user: kni
 # Login user for the local/jump machine (Typically Undercloud)
 local_remote_user: stack
 # Login user for the Overcloud hosts

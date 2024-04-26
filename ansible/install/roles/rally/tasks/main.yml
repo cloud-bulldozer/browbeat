@@ -84,20 +84,20 @@
 # as python package. This code can be used in browbeat rally plugins.
 # Sqlalchemy giving errors when we run this extra DB code as rally plugin
 # so we came up with this python package approach.
-- name: install rally browbeat code
-  shell: |
-    source {{ rally_venv }}/bin/activate
-    pip install .
-  args:
-    executable: /bin/bash
-    chdir: "{{ role_path }}/files/browbeat-rally"
-  when: rhosp_version is version('13.0', '>=')
+- block:
+    - name: Install rally browbeat code
+      shell: |
+        source {{ rally_venv }}/bin/activate
+        pip install .
+      args:
+        executable: /bin/bash
+        chdir: "{{ role_path }}/files/browbeat-rally"
 
-- name: create lock table in rally db for dynamic workloads
-  shell: |
-    source {{ rally_venv }}/bin/activate
-    python {{ role_path }}/files/create_lock_table.py
-  when: rhosp_version is version('13.0', '>=')
+    - name: Create lock table in rally db for dynamic workloads
+      shell: |
+        source {{ rally_venv }}/bin/activate
+        python {{ role_path }}/files/create_lock_table.py
+  when: is_rhoso_deployment or rhosp_version is version('13.0', '>=')
 
 - block:
     - name: copy of stackrc
@@ -140,13 +140,17 @@
 
 - name: Setup rally deployment for overcloud
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment create --fromenv --name overcloud
+  when: not is_rhoso_deployment
+
+- name: Setup rally deployment for overcloud
+  shell: . {{ rally_venv }}/bin/activate; rally deployment create --file={{home_dir}}/.config/openstack/keystone-v3.json --name overcloud
+  when: is_rhoso_deployment
 
 - name: Check Rally deployment for overcloud
   shell: . {{ rally_venv }}/bin/activate; . {{ overcloudrc }}; rally deployment check
   register: rally_deployment_check_overcloud
 
-- name: Fail if Rally deployment cannot be verfied for overcloud
+- name: Fail if Rally deployment cannot be verified for overcloud
   fail:
     msg: "Failed to verify that your deployment is ready to benchmark"
   when: rally_deployment_check_overcloud.rc != 0
-
