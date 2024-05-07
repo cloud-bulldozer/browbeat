@@ -339,19 +339,20 @@
   shell: ls /var/run/ceph/ceph-osd.*.asok | head -n 1 | egrep -o '[0-9]+'
   register: cephstorage_osd_socket
   become: true
-  when: "('CephStorage' in group_names and ceph_storage_collectd_plugin)"
+  when: "(rhosp_version is version('17.0', '<')) and ('CephStorage' in group_names and ceph_storage_collectd_plugin)"
 # End CephStorage OSD monitoring
 
-- name: Get Ceph cluster fsid
-  shell: ls /var/run/ceph/
-  register: ceph_cluster_fsid
-  become: true
-  when: "rhosp_version is version('17.0', '>=')"
-  delegate_to: controller-0
+- block:
+    - name: Get Ceph cluster fsid
+      shell: ls /var/run/ceph/
+      register: ceph_cluster_fsid
+      become: true
+      delegate_to: controller-0
 
-- name: set fact for ceph cluster id
-  set_fact:
-    ceph_cluster_fsid: "{{ ceph_cluster_fsid.stdout }}"
+    - name: set fact for ceph cluster id
+      set_fact:
+        ceph_cluster_fsid: "{{ ceph_cluster_fsid.stdout }}"
+  when: "(rhosp_version is version('17.0', '>=')) and ('CephStorage' in group_names and ceph_storage_collectd_plugin)"
 
 - name: Configure collectd.conf
   template:
