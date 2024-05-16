@@ -6,3 +6,8 @@
       environment:
         KUBECONFIG: "{{ kubeconfig_path }}"
       ignore_errors: yes
+
+- name: stop the cronjob to stop index data from OCP
+  import_playbook: toggle-indexing-cron-job.yml
+  vars:
+    cron_state: "absent"

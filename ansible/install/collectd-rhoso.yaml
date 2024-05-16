@@ -6,3 +6,8 @@
   roles:
     - { role: collectd-rhoso }
   environment: "{{proxy_env}}"
+
+- name: trigger the cronjob to index data from OCP
+  import_playbook: toggle-indexing-cron-job.yml
+  vars:
+    cron_state: "present"

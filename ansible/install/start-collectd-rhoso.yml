@@ -18,3 +18,7 @@
           when: is_statefulset_exist.rc == 0
       environment:
         KUBECONFIG: "{{ kubeconfig_path }}"
+- name: trigger the cronjob to index data from OCP
+  import_playbook: toggle-indexing-cron-job.yml
+  vars:
+    cron_state: "present"
