@@ -2,6 +2,7 @@
 # buggy minor version (!=) or capping (<) once you have proof it breaks.
 ansible>=2.4.1
 elasticsearch==7.13
+numpy<2.0.0
 pyrsistent==0.16.0;python_version<'3'
 pyrsistent>=0.17.0;python_version>='3'
 grafyaml>=0.0.7
