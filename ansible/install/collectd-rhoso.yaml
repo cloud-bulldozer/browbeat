@@ -1,0 +1,8 @@
+- hosts: localhost
+  gather_facts: true
+  vars:
+    ansible_user: "{{ browbeat_user }}"
+    ansible_python_interpreter: "{{ python_interpreter }}"
+  roles:
+    - { role: collectd-rhoso }
+  environment: "{{proxy_env}}"

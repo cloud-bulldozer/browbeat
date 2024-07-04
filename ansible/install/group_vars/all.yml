@@ -11,6 +11,10 @@ local_remote_user: stack
 # Login user for the Overcloud hosts
 host_remote_user: heat-admin
 
+is_rhoso_deployment: true
+python_interpreter: /usr/bin/python3.6
+kubeconfig_path: /home/kni/clusterconfigs/auth/kubeconfig
+
 # OpenStack Installer
 # Tripleo is the only installer supported currently
 tripleo: true

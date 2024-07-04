@@ -1,0 +1,82 @@
+---
+- block:
+    - name: Fetch Cluster IP and Ports for openstack service
+      command: oc get svc openstack -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
+      register: openstack_svc
+
+    - name: Fetch Cluster IP and Ports for ovsdbserver-nb-0 service
+      command: oc get svc ovsdbserver-nb-0 -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
+      register: ovsdbserver_nb_0_svc
+
+    - name: Fetch Cluster IP and Ports for ovsdbserver-sb-0 service
+      command: oc get svc ovsdbserver-sb-0 -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
+      register: ovsdbserver_sb_0_svc
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Parse openstack service details
+  set_fact:
+    openstack_svc_ip: "{{ openstack_svc.stdout.split(' ')[0] }}"
+    openstack_svc_port: "{{ openstack_svc.stdout.split(' ')[1] }}"
+
+- name: Parse ovsdbserver-nb-0 service details
+  set_fact:
+    ovsdbserver_nb_0_svc_ip: "{{ ovsdbserver_nb_0_svc.stdout.split(' ')[0] }}"
+    ovsdbserver_nb_0_svc_port: "{{ ovsdbserver_nb_0_svc.stdout.split(' ')[1] }}"
+
+- name: Parse ovsdbserver-sb-0 service details
+  set_fact:
+    ovsdbserver_sb_0_svc_ip: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[0] }}"
+    ovsdbserver_sb_0_svc_port: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[1] }}"
+
+- name: Create environment file with key-value pairs
+  copy:
+    dest: ~/env_file.env
+    content: |
+      COLLECTD_INTERVAL={{ collectd_interval }}
+      OVN_NBDB_IP={{ ovsdbserver_nb_0_svc_ip }}
+      OVN_NBDB_PORT={{ ovsdbserver_nb_0_svc_port }}
+      OVN_SBDB_IP={{ ovsdbserver_sb_0_svc_ip }}
+      OVN_SBDB_PORT={{ ovsdbserver_sb_0_svc_port }}
+
+- name: Render collectd template with db_conf
+  template:
+    src: "controlplane.collectd.conf.j2"
+    dest: "{{ ansible_env.HOME }}/collectd-db.conf"
+  vars:
+    db_conf: true
+
+- name: Render collectd template without db_conf
+  template:
+    src: "controlplane.collectd.conf.j2"
+    dest: "{{ ansible_env.HOME }}/collectd.conf"
+  vars:
+    db_conf: false
+
+- name: Create ospperf namespace
+  shell:
+    cmd: oc new-project ospperf
+  register: create_ns
+  ignore_errors: yes
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- block:
+    - name: Create configmaps for collectd configs
+      shell: |
+        oc create configmap collectd-configs --from-file={{ ansible_env.HOME }}/collectd.conf --from-file={{ ansible_env.HOME }}/collectd-db.conf -n ospperf
+
+    - name: Create collectd entrypoint configmap
+      shell: |
+        oc create configmap collectd-entrypoint --from-file="{{ role_path }}/files/entrypoint.sh" -n ospperf
+
+    - name: Create collectd env configmap
+      shell: |
+        oc create configmap collectd-env-vars --from-env-file={{ ansible_env.HOME }}/env_file.env -n ospperf
+
+    - name: Apply collectd deployment yaml
+      shell: |
+        oc apply -f {{ role_path }}/files/collectd_deploy.yaml -n ospperf
+  when: create_ns.rc == 0
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
