@@ -1,0 +1,119 @@
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: collectd-scc
+allowHostNetwork: true
+allowHostPID: true
+allowPrivilegedContainer: true
+allowPrivilegeEscalation: true
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+fsGroup:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+users:
+- system:serviceaccount:ospperf:collectd-sa
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: collectd-sa
+  namespace: ospperf
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-exec
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-exec-binding
+subjects:
+- kind: ServiceAccount
+  name: collectd-sa
+  namespace: ospperf
+roleRef:
+  kind: ClusterRole
+  name: pod-exec
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: osp-controlplane-collectd
+  namespace: ospperf
+  labels:
+    app: ospcp-collectd
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ospcp-collectd
+  template:
+    metadata:
+      labels:
+        app: ospcp-collectd
+    spec:
+      serviceAccountName: collectd-sa
+      hostNetwork: true
+      hostPID: true
+      containers:
+      - name: ospcp-collectd
+        image: quay.io/masco/collecd-rhoso-ocp
+        command:
+        - "/bin/bash"
+        - "/entrypoint.sh"
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: config-files
+          mountPath: "/etc/config"
+        - name: entrypoint-script
+          mountPath: "/entrypoint.sh"
+          subPath: "entrypoint.sh"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: collectd-env-vars
+      volumes:
+      - name: config-files
+        configMap:
+          name: collectd-configs
+      - name: entrypoint-script
+        configMap:
+          name: collectd-entrypoint
+      nodeSelector:
+        node-role.kubernetes.io/worker: ""
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - ospcp-collectd
+            topologyKey: "kubernetes.io/hostname"

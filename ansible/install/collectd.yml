@@ -1,6 +1,7 @@
 ---
 - name: set fact collectd_container
   import_playbook: pre-collectd.yml
+  when: not is_rhoso_deployment
 
 - name: Run containerized collectd (Stein and greater recommended)
   import_playbook: collectd-container.yml
@@ -9,3 +10,7 @@
 - name: Run collectd installed through RPMs
   import_playbook: collectd-baremetal.yml
   when: not hostvars['undercloud']['collectd_container']
+
+- name: Run collectd rhoso
+  import_playbook: collectd-rhoso.yaml
+  when: is_rhoso_deployment

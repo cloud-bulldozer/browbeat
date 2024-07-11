@@ -1,0 +1,341 @@
+# Interval default is 10s
+Interval {{collectd_interval}}
+
+# Loaded Plugins:
+LoadPlugin "logfile"
+<Plugin "logfile">
+  File "/var/log/collectd.log"
+  LogLevel "info"
+  PrintSeverity true
+  Timestamp true
+</Plugin>
+
+LoadPlugin write_graphite
+
+LoadPlugin cpu
+LoadPlugin conntrack
+{% if keystone_overcloud_collectd_plugin or osp_resources_collectd_plugin %}
+{% if db_conf %}
+LoadPlugin dbi
+{% endif %}
+{% endif %}
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin exec
+LoadPlugin interface
+LoadPlugin irq
+LoadPlugin load
+LoadPlugin match_regex
+LoadPlugin memory
+LoadPlugin mysql
+LoadPlugin numa
+LoadPlugin processes
+<LoadPlugin python>
+  Globals true
+</LoadPlugin>
+LoadPlugin swap
+LoadPlugin tail
+LoadPlugin turbostat
+LoadPlugin unixsock
+LoadPlugin uptime
+
+# Open unix domain socket for collectdctl
+<Plugin unixsock>
+  SocketFile "/var/run/collectd-unixsock"
+  SocketGroup "collectd"
+  SocketPerms "0770"
+  DeleteSocket true
+</Plugin>
+
+PreCacheChain "PreCache"
+<Chain "PreCache">
+  <Rule "ignore_tap">
+    <Match "regex">
+      Plugin "^interface$"
+      PluginInstance "^tap*"
+    </Match>
+    Target "stop"
+  </Rule>
+  <Rule "ignore_interfaces_q">
+    <Match "regex">
+      Plugin "^interface$"
+      PluginInstance "^q.*"
+    </Match>
+    Target "stop"
+  </Rule>
+  Target "return"
+</Chain>
+
+# Graphite Host Configuration
+{% if collectd_graphite %}
+<Plugin write_graphite>
+  <Carbon>
+    Host "{{graphite_host}}"
+    Port "{{collectd_write_graphite_port}}"
+    Prefix "{{graphite_prefix}}."
+    Protocol "tcp"
+    LogSendErrors true
+    StoreRates true
+    AlwaysAppendDS false
+    EscapeCharacter "_"
+  </Carbon>
+</Plugin>
+{% endif %}
+
+{% if ovn_monitoring %}
+{% if db_conf %}
+<Plugin exec>
+  Instance "ovn_sbdb_Address_Set"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Address_Set"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Port_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Port_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Logical_Flow"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Logical_Flow"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Multicast_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Multicast_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Datapath_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Datapath_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_Port_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Port_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_sbdb_MAC_Binding"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "MAC_Binding"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Switch"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Switch"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Switch_Port"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Switch_Port"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Address_Set"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Address_Set"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Port_Group"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Port_Group"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Load_Balancer"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Load_Balancer"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_ACL"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "ACL"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router_Port"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router_Port"
+</Plugin>
+<Plugin exec>
+  Instance "ovn_nbdb_Logical_Router_Static_Route"
+  Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router_Static_Route"
+</Plugin>
+{% endif %}
+{% endif %}
+
+{%if iostat_controller_collectd_plugin %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_iostat_python"
+
+  <Module collectd_iostat_python>
+    Path "/usr/bin/iostat"
+    Interval {{iostat_controller_collectd_interval}}
+    IostatInterval 2
+    Count 2
+    Verbose false
+    NiceNames false
+    PluginName collectd_iostat_python
+  </Module>
+</Plugin>
+
+{% endif %}
+
+{%if ovn_raft_monitoring %}
+{% if db_conf %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_ovn_raft_monitoring"
+  <Module collectd_ovn_raft_monitoring>
+    Interval {{ovn_raft_controller_collectd_interval}}
+  </Module>
+</Plugin>
+
+{% endif %}
+{% endif %}
+
+# Including the version of OpenStack that the process was verified as running after
+# OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
+# A Minus before the version means the process was not found in that version. (Ex -10)
+<Plugin processes>
+  # Aodh (OpenStack Installed)
+  ProcessMatch "aodh-evaluator" "aodh-evaluator"                                        # 10,11,12,13
+  ProcessMatch "aodh-listener" "aodh-listener"                                          # 10,11,12,13
+  ProcessMatch "aodh-notifier" "aodh-notifier"                                          # 10,11,12,13
+  ProcessMatch "aodh_wsgi" "aodh_wsgi.*-DFOREGROUND"                                    # 11,12,13
+
+  # Barbican (OpenStack Installed)
+  ProcessMatch "barbican_wsgi" "barbican_wsgi.*-DFOREGROUND"                           # 13
+  ProcessMatch "barbican-keystone-listener" "python.+barbican-keystone-listener"       # 13
+  ProcessMatch "barbican-worker" "python.+barbican-worker"                             # 13
+
+  # Ceilometer (OpenStack Installed)
+  ProcessMatch "ceilometer-agent-notification" "ceilometer-agent-notification"          # 10,11,12,13
+  ProcessMatch "ceilometer-collector" "ceilometer-collector"                            # 10,11,-12,-13
+  ProcessMatch "ceilometer-polling" "ceilometer-polling"                                # 10,11,12,13
+  ProcessMatch "ceilometer_wsgi" "ceilometer_wsgi.*-DFOREGROUND"                        # 11,-12,-13
+
+  # Ceph (OpenStack Installed)
+  # When CephStorage nodes deployed
+  ProcessMatch "ceph-mon" "^/usr/bin/ceph-mon"                                          # -10,-11,-12,-13
+
+  # Cinder (OpenStack Installed)
+  ProcessMatch "cinder-api" "python.+cinder-api"                                        # 10,-11,-12
+  ProcessMatch "cinder-scheduler" "python.+cinder-scheduler"                            # 10,11,12,13
+  ProcessMatch "cinder-volume" "python.+cinder-volume"                                  # 10,11,12,13
+  ProcessMatch "cinder_wsgi" "cinder_wsgi.*-DFOREGROUND"                                # 11,12,13
+
+  # Collectd (Browbeat Installed)
+  ProcessMatch "collectd" "/usr/sbin/collectd"
+
+  # Conmon (OpenStack Installed)
+  ProcessMatch "conmon" "/usr/bin/conmon"                                               # 16
+
+  # Docker (OpenStack Installed)
+  ProcessMatch "dockerd-current" "dockerd-current"                                      # 12,13
+
+  # Pacemaker / Corosync (OpenStack Installed)
+  ProcessMatch "attrd" "/usr/libexec/pacemaker/attrd"                                   # 10,11,12,13
+  ProcessMatch "cib" "/usr/libexec/pacemaker/cib"                                       # 10,11,12,13
+  Process "corosync"                                                                    # 10,11,12,13
+  ProcessMatch "crmd" "/usr/libexec/pacemaker/crmd"                                     # 10,11,12,13
+  ProcessMatch "lrmd" "/usr/libexec/pacemaker/lrmd"                                     # 10,11,12,13
+  ProcessMatch "pacemakerd" "/usr/sbin/pacemakerd"                                      # 10,11,12,13
+  ProcessMatch "pcsd" "^/usr/bin/ruby.+/usr/lib/pcsd"                                   # 10,11,12,13
+  ProcessMatch "pengine" "/usr/libexec/pacemaker/pengine"                               # 10,11,12,13
+  ProcessMatch "stonithd" "/usr/libexec/pacemaker/stonithd"                             # 10,11,12,13
+
+  # Everything Else (OpenStack Installed)
+  # (Processes displayed under "Everything Else" on Grafana Dashboards)
+  ProcessMatch "dnsmasq" "^dnsmasq.+"                                                   # 10,11,12
+  ProcessMatch "haproxy" "/usr/sbin/haproxy.+/etc/haproxy/haproxy.cfg"                  # 10,11,12,13
+  Process "httpd"                                                                       # 10,11,12,13
+  Process "keepalived"                                                                  # 10,11,12
+  Process "memcached"                                                                   # 10,11,12,13
+  Process "mongod"                                                                      # 10,11,-12,-13
+  ProcessMatch "mysqld" "/usr/libexec/mysqld"                                           # 10,11,12,13
+  ProcessMatch "rabbitmq" "/usr/lib64/erlang/erts-.+/bin/beam.smp"                      # 10,11,12,13
+  Process "redis-server"                                                                # 10,11,12,13
+  ProcessMatch "karaf" "java.+karaf"                                                    # ODL Specific
+
+  # Glance (OpenStack Installed)
+  ProcessMatch "glance-api" "python.+glance-api"                                        # 10,11,12,13
+  ProcessMatch "glance-registry" "python.+glance-registry"                              # 10,-11,-12,-13
+
+  # Gnocchi (OpenStack Installed)
+  ProcessMatch "gnocchi-metricd-master" "gnocchi-metricd.*master"                       # 11,12,13
+  ProcessMatch "gnocchi-metricd-scheduler" "gnocchi-metricd.*scheduler"                 # 10,11,-12,-13
+  ProcessMatch "gnocchi-metricd-processing" "gnocchi-metricd.*processing"               # 10,11,12,13
+  ProcessMatch "gnocchi-metricd-reporting" "gnocchi-metricd.*reporting"                 # 10,11,12,13
+  ProcessMatch "gnocchi-metricd-janitor" "gnocchi-metricd.*janitor"                     # 10,11,12,13
+  ProcessMatch "gnocchi-metricd" "gnocchi-metricd "                                     # 10(Old proctitle)
+  ProcessMatch "gnocchi-statsd" "python.+gnocchi-statsd"                                # 10,11,12,13
+  ProcessMatch "gnocchi_wsgi" "gnocchi_wsgi.*-DFOREGROUND"                              # 11,12,13
+
+  # Heat (OpenStack Installed)
+  ProcessMatch "heat-api" "python.+heat-api --config-file"                              # 10,11,-12,-13
+  ProcessMatch "heat-api-cfn" "python.+heat-api-cfn"                                    # 10,11,-12,-13
+  ProcessMatch "heat-api-cloudwatch" "python.+heat-api-cloudwatch"                      # 10,11,-12,-123
+  ProcessMatch "heat_api_cfn" "heat_api_cfn_ws"                                         # 12,13
+  ProcessMatch "heat_api_cloudwatch" "heat_api_cloudw"                                  # 12,-13
+  ProcessMatch "heat_api_wsgi" "heat_api_wsgi"                                          # 12,13
+  ProcessMatch "heat-engine" "python.+heat-engine"                                      # 10,11,12,13
+
+  # Horizon (OpenStack Installed)
+  ProcessMatch "horizon" "horizon"                                                      # 13
+
+  # Keystone (OpenStack Installed)
+  ProcessMatch "keystone-admin" "keystone-admin.*-DFOREGROUND"                          # 10,11,12,13
+  ProcessMatch "keystone-main" "keystone-main.*-DFOREGROUND"                            # 10,11,12,13
+  ProcessMatch "keystone" "keystone.*-DFOREGROUND"                                      # 16
+  # Starting Pike, fernet tokens are default thus token_flush not needed
+  ProcessMatch "keystone-token-flush" "keystone-manage.*token_flush"                    # 10,11,-12,-13
+
+  # Neutron (OpenStack Installed)
+  ProcessMatch "neutron-dhcp-agent" "python.+neutron-dhcp-agent"                        # 10,11,12,13
+  ProcessMatch "neutron-l3-agent" "python.+neutron-l3-agent"                            # 10,11,12,13
+  ProcessMatch "neutron-metadata-agent" "python.+neutron-metadata-agent"                # 10,11,12,13
+  ProcessMatch "neutron-ns-metadata-proxy" "python.+neutron-ns-metadata-proxy"          # 10,11
+  ProcessMatch "neutron-openvswitch-agent" "python.+neutron-openvswitch-agent"          # 10,11,12,13
+  ProcessMatch "neutron-rootwrap-daemon" "python.+neutron-rootwrap-daemon"              # 10,11,12,13
+  ProcessMatch "neutron-server" "python.+neutron-server"                                # 10,11,12,13
+  ProcessMatch "neutron-keepalived-state-change" "python.+neutron-keepalived-state-change" #For HA router
+
+  # Nova (OpenStack Installed)
+  ProcessMatch "nova-api" "python.+nova-api$"                                           # 10,11,-12,-13
+  ProcessMatch "nova-api-metadata" "python.+nova-api-metadata"                          # 12,13
+  ProcessMatch "nova_api_wsgi" "nova_api_wsgi"                                          # 12,13
+  ProcessMatch "nova-conductor" "python.+nova-conductor"                                # 10,11,12,13
+  ProcessMatch "nova-consoleauth" "python.+nova-consoleauth"                            # 10,11,12,13
+  ProcessMatch "nova-novncproxy" "python.+nova-novncproxy"                              # 10,11,12,13
+  ProcessMatch "nova-scheduler" "python.+nova-scheduler"                                # 10,11,12,13
+  ProcessMatch "placement_wsgi" "placement_wsgi.*-DFOREGROUND"                          # 11,12,13
+  ProcessMatch "nova_metadata_w" "nova_metadata_w.*-DFOREGROUND"                        # 16
+
+  # Octavia (OpenStack Installed)
+  ProcessMatch "octavia-housekeeping" "python.+octavia-housekeeping"                    # 13
+  ProcessMatch "octavia-health-manager" "python.+octavia-health-manager"                # 13
+  ProcessMatch "octavia-api" "python.+octavia-api"                                      # 13
+  ProcessMatch "octavia-worker" "octavia-worker --config-file"                          # 13
+  ProcessMatch "octavia_wsgi" "octavia_wsgi.*-DFOREGROUND"                              # 16
+
+  # OVS (OpenStack Installed)
+  ProcessMatch "ovs-vswitchd" "ovs-vswitchd.+openvswitch"                               # 10,11,12,13
+  ProcessMatch "ovsdb-client" "ovsdb-client"                                            # 10,11,12,13
+  ProcessMatch "ovsdb-server" "ovsdb-server.+openvswitch"                               # 10,11,12,13
+  ProcessMatch "ovsdb-server-nb" "ovsdb-server.+ovsdb-server-nb"                           # 16
+  ProcessMatch "ovsdb-server-sb" "ovsdb-server.+ovsdb-server-sb"                           # 16
+  ProcessMatch "ovn-northd" "ovn-northd.+ovnnb_db"                                      # 16
+  ProcessMatch "ovn-controller" "ovn-controller.+openvswitch"                           # 9,10
+  ProcessMatch "ovn-controller-vtep" "ovn-controller-vtep.+openvswitch"                 # 9,10
+
+  # Panko (OpenStack Installed)
+  ProcessMatch "panko_wsgi" "panko_wsgi.*-DFOREGROUND"                                  # 11,12,13
+
+  # Swift (OpenStack Installed)
+  ProcessMatch "swift-account-auditor" "python.+swift-account-auditor"                  # 10,11,12,13
+  ProcessMatch "swift-account-reaper" "python.+swift-account-reaper"                    # 10,11,12,13
+  ProcessMatch "swift-account-replicator" "python.+swift-account-replicator"            # 10,11,12,13
+  ProcessMatch "swift-account-server" "python.+swift-account-server"                    # 10,11,12,13
+  ProcessMatch "swift-container-auditor" "python.+swift-container-auditor"              # 10,11,12,13
+  ProcessMatch "swift-container-replicator" "python.+swift-container-replicator"        # 10,11,12,13
+  ProcessMatch "swift-container-server" "python.+swift-container-server"                # 10,11,12,13
+  ProcessMatch "swift-container-updater" "python.+swift-container-updater"              # 10,11,12,13
+  ProcessMatch "swift-object-auditor" "python.+swift-object-auditor"                    # 10,11,12,13
+  ProcessMatch "swift-object-expirer" "python.+swift-object-expirer"                    # 11,12,13
+  ProcessMatch "swift-object-replicator" "python.+swift-object-replicator"              # 10,11,12,13
+  ProcessMatch "swift-object-server" "python.+swift-object-server"                      # 10,11,12,13
+  ProcessMatch "swift-object-updater" "python.+swift-object-updater"                    # 10,11,12,13
+  ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11,12,13
+</Plugin>
+
+# Include other collectd configuration files
+Include "/etc/collectd.d"
