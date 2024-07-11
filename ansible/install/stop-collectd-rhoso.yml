@@ -1,0 +1,8 @@
+- hosts: localhost
+  tasks:
+    - name: stop collectd on OCP nodes.
+      shell: |
+        oc scale -n ospperf statefulset osp-controlplane-collectd --replicas=0
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"
+      ignore_errors: yes

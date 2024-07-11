@@ -1,11 +1,18 @@
 ---
-- name: set fact collectd_container
-  import_playbook: pre-collectd.yml
+- name: stop collectd on osp <= 17
+  block:
+    - name: set fact collectd_container
+      import_playbook: pre-collectd.yml
 
-- name: Run containerized collectd (Stein and greater recommended)
-  import_playbook: stop-collectd-container.yml
-  when: hostvars['undercloud']['collectd_container']
+    - name: Run containerized collectd (Stein and greater recommended)
+      import_playbook: stop-collectd-container.yml
+      when: hostvars['undercloud']['collectd_container']
 
-- name: Run collectd installed through RPMs
-  import_playbook: stop-collectd-baremetal.yml
-  when: not hostvars['undercloud']['collectd_container']
+    - name: Run collectd installed through RPMs
+      import_playbook: stop-collectd-baremetal.yml
+      when: not hostvars['undercloud']['collectd_container']
+  when: not is_rhoso_deployment
+
+- name: stop collectd on RHOSO ocp workers
+  import_playbook: stop-collectd-rhoso.yml
+  when: is_rhoso_deployment

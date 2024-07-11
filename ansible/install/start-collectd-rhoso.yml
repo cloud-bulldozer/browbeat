@@ -1,0 +1,20 @@
+- hosts: localhost
+  tasks:
+    - block:
+        - name: check if collectd already deployed using statefulset
+          shell: |
+            oc -n ospperf get statefulset osp-controlplane-collectd
+          register: is_statefulset_exist
+          ignore_errors: true
+
+        - name: get number of worker nodes
+          shell: |
+            oc get nodes -l node-role.kubernetes.io/worker --no-headers | wc -l
+          register: worker_node_count
+
+        - name: scale the collectd containers
+          shell: |
+            oc -n ospperf scale statefulset osp-controlplane-collectd --replicas={{ worker_node_count.stdout }}
+          when: is_statefulset_exist.rc == 0
+      environment:
+        KUBECONFIG: "{{ kubeconfig_path }}"
