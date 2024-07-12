@@ -10,7 +10,9 @@ RUN dnf clean all && \
     dnf install -y python3-pip python3-devel && \
     pip3 install --upgrade pip && \
     pip3 install pyrabbit && \
-    dnf install -y perl-DBD-MySQL collectd-dbi && \
+    dnf install -y collectd-dbi && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libdbi-drivers-0.9.0-14.el8.x86_64.rpm && \
+    dnf install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libdbi-dbd-mysql-0.9.0-14.el8.x86_64.rpm && \
     dnf install -y centos-release-openstack-bobcat && \
     dnf config-manager --set-enabled crb && \
     dnf install -y openvswitch libibverbs && \

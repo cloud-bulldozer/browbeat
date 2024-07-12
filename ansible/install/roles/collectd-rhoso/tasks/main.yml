@@ -11,6 +11,15 @@
     - name: Fetch Cluster IP and Ports for ovsdbserver-sb-0 service
       command: oc get svc ovsdbserver-sb-0 -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
       register: ovsdbserver_sb_0_svc
+
+    - name: Retrieve the DbRootPassword from the secret
+      command: oc get secret osp-secret -n openstack -o jsonpath='{.data.DbRootPassword}'
+      register: DbRootPassword_output
+
+    - name: Retrive DB config node hostname
+      shell: |
+        oc debug node/$(oc get nodes -l node-role.kubernetes.io/worker --no-headers | awk 'NR==1 {print $1}') -- hostname -f 2>/dev/null | tr '.' '_'
+      register: db_config_node_hostname
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
 
@@ -29,9 +38,18 @@
     ovsdbserver_sb_0_svc_ip: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[0] }}"
     ovsdbserver_sb_0_svc_port: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[1] }}"
 
+- name: Decode the Base64 encoded DbRootPassword
+  set_fact:
+    mysql_root_password: "{{ DbRootPassword_output.stdout | b64decode }}"
+
+- name: set fact for mysql host ip and port
+  set_fact:
+    mysql_host_ip: "{{ openstack_svc_ip }}"
+    mysql_port: "{{ openstack_svc_port }}"
+
 - name: Create environment file with key-value pairs
   copy:
-    dest: ~/env_file.env
+    dest: /tmp/env_file.env
     content: |
       COLLECTD_INTERVAL={{ collectd_interval }}
       OVN_NBDB_IP={{ ovsdbserver_nb_0_svc_ip }}
@@ -42,29 +60,33 @@
 - name: Render collectd template with db_conf
   template:
     src: "controlplane.collectd.conf.j2"
-    dest: "{{ ansible_env.HOME }}/collectd-db.conf"
+    dest: /tmp/collectd-db.conf
   vars:
     db_conf: true
 
 - name: Render collectd template without db_conf
   template:
     src: "controlplane.collectd.conf.j2"
-    dest: "{{ ansible_env.HOME }}/collectd.conf"
+    dest: /tmp/collectd.conf
   vars:
     db_conf: false
+
+- name: delete existing ospperf namespace
+  shell: |
+    oc delete project ospperf --force
+  ignore_errors: yes
 
 - name: Create ospperf namespace
   shell:
     cmd: oc new-project ospperf
   register: create_ns
-  ignore_errors: yes
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
 
 - block:
     - name: Create configmaps for collectd configs
       shell: |
-        oc create configmap collectd-configs --from-file={{ ansible_env.HOME }}/collectd.conf --from-file={{ ansible_env.HOME }}/collectd-db.conf -n ospperf
+        oc create configmap collectd-configs --from-file=/tmp/collectd.conf --from-file=/tmp/collectd-db.conf -n ospperf
 
     - name: Create collectd entrypoint configmap
       shell: |
@@ -72,7 +94,7 @@
 
     - name: Create collectd env configmap
       shell: |
-        oc create configmap collectd-env-vars --from-env-file={{ ansible_env.HOME }}/env_file.env -n ospperf
+        oc create configmap collectd-env-vars --from-env-file=/tmp/env_file.env -n ospperf
 
     - name: Apply collectd deployment yaml
       shell: |

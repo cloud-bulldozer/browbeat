@@ -82,8 +82,8 @@ PreCacheChain "PreCache"
 </Plugin>
 {% endif %}
 
-{% if ovn_monitoring %}
 {% if db_conf %}
+{% if ovn_monitoring %}
 <Plugin exec>
   Instance "ovn_sbdb_Address_Set"
   Exec stack "/usr/local/bin/ovn_monitoring.sh" "sb" "Address_Set"
@@ -149,6 +149,284 @@ PreCacheChain "PreCache"
   Exec stack "/usr/local/bin/ovn_monitoring.sh" "nb" "Logical_Router_Static_Route"
 </Plugin>
 {% endif %}
+
+{%if ovn_raft_monitoring %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  Import "collectd_ovn_raft_monitoring"
+  <Module collectd_ovn_raft_monitoring>
+    Interval {{ovn_raft_controller_collectd_interval}}
+  </Module>
+</Plugin>
+
+{% endif %}
+
+{% if osp_resources_collectd_plugin %}
+
+<Plugin dbi>
+  <Query host_vms_count>
+    Statement "select  host, running_vms from compute_nodes"
+    <Result>
+      Type gauge
+      InstancesFrom "host"
+      ValuesFrom "running_vms"
+    </Result>
+  </Query>
+  <Query instances_del_count>
+    Statement "select count(*) as instances_del from instances where deleted!=0"
+    <Result>
+      Type gauge
+      InstancePrefix "instances_del"
+      ValuesFrom "instances_del"
+    </Result>
+  </Query>
+  <Query instances_count>
+    Statement "select count(*) as instances from instances where deleted=0"
+    <Result>
+      Type gauge
+      InstancePrefix "instances"
+      ValuesFrom "instances"
+    </Result>
+  </Query>
+  <Query instance_active_count>
+    Statement "select count(*) as instances from instances where deleted=0 and vm_state = 'active'"
+    <Result>
+      Type gauge
+      InstancePrefix "instances_active"
+      ValuesFrom "instances"
+    </Result>
+  </Query>
+  <Query instance_faults_count>
+    Statement "select count(*) as instance_faults from instance_faults"
+    <Result>
+      Type gauge
+      InstancePrefix "instance_faults"
+      ValuesFrom "instance_faults"
+    </Result>
+  </Query>
+  <Database "nova_cell0">
+    Driver "mysql"
+    DriverOption "host" "{{ mysql_host_ip }}"
+    DriverOption "port" "{{ mysql_port }}"
+    DriverOption "dbname" "nova_cell0"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password}}"
+    Query host_vms_count
+    Query instances_count
+    Query instance_active_count
+    Query instances_del_count
+    Query instance_faults_count
+  </Database>
+
+  <Query network_count>
+    Statement "select count(*) as network from networks"
+    <Result>
+      Type gauge
+      InstancePrefix "network"
+      ValuesFrom "network"
+    </Result>
+  </Query>
+  <Query subnet_count>
+    Statement "select count(*) as subnet from subnets"
+    <Result>
+      Type gauge
+      InstancePrefix "subnet"
+      ValuesFrom "subnet"
+    </Result>
+  </Query>
+  <Query port_others_count>
+    Statement "select count(*) as port_others from ports where device_owner not in ('network:dhcp','compute:nova')"
+    <Result>
+      Type gauge
+      InstancePrefix "port_others"
+      ValuesFrom "port_others"
+    </Result>
+  </Query>
+  <Query port_dhcp_count>
+   Statement "select count(*) as port_dhcp from ports where device_owner='network:dhcp'"
+    <Result>
+      Type gauge
+      InstancePrefix "port_dhcp"
+      ValuesFrom "port_dhcp"
+    </Result>
+  </Query>
+  <Query port_compute_count>
+   Statement "select count(*) as port_compute from ports where device_owner='compute:nova'"
+    <Result>
+      Type gauge
+      InstancePrefix "port_compute"
+      ValuesFrom "port_compute"
+    </Result>
+  </Query>
+  <Query floatingips_count>
+   Statement "select count(*) as floatingips from floatingips"
+    <Result>
+      Type gauge
+      InstancePrefix "floatingips"
+      ValuesFrom "floatingips"
+    </Result>
+  </Query>
+  <Query router_count>
+   Statement "select count(*) as router from routers"
+    <Result>
+      Type gauge
+      InstancePrefix "router"
+      ValuesFrom "router"
+    </Result>
+  </Query>
+  <Query router_iface_count>
+   Statement "select count(*) as router_iface from routerports where port_type='network:router_interface'"
+    <Result>
+      Type gauge
+      InstancePrefix "router_iface"
+      ValuesFrom "router_iface"
+    </Result>
+  </Query>
+  <Query router_gw_count>
+   Statement "select count(*) as router_gw from routerports where port_type='network:router_gateway'"
+    <Result>
+      Type gauge
+      InstancePrefix "router_gw"
+      ValuesFrom "router_gw"
+    </Result>
+  </Query>
+  <Query sg_count>
+   Statement "select count(*) as sg from securitygroups"
+    <Result>
+      Type gauge
+      InstancePrefix "sg"
+      ValuesFrom "sg"
+    </Result>
+  </Query>
+  <Query sgr_count>
+   Statement "select count(*) as sgr from securitygrouprules"
+    <Result>
+      Type gauge
+      InstancePrefix "sgr"
+      ValuesFrom "sgr"
+    </Result>
+  </Query>
+  <Query trunk_count>
+   Statement "select count(*) as trunk from trunks"
+    <Result>
+      Type gauge
+      InstancePrefix "trunk"
+      ValuesFrom "trunk"
+    </Result>
+  </Query>
+  <Query subports_count>
+   Statement "select count(*) as subports from subports"
+    <Result>
+      Type gauge
+      InstancePrefix "subports"
+      ValuesFrom "subports"
+    </Result>
+  </Query>
+  <Database "neutron">
+    Driver "mysql"
+    DriverOption "host" "{{ mysql_host_ip }}"
+    DriverOption "port" "{{ mysql_port }}"
+    DriverOption "dbname" "neutron"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password}}"
+    Query network_count
+    Query port_others_count
+    Query subnet_count
+    Query port_dhcp_count
+    Query port_compute_count
+    Query floatingips_count
+    Query router_count
+    Query router_iface_count
+    Query router_gw_count
+    Query sg_count
+    Query sgr_count
+    Query trunk_count
+    Query subports_count
+  </Database>
+
+  <Query load_balancer_count>
+    Statement "select count(*) as load_balancer from load_balancer"
+    <Result>
+      Type gauge
+      InstancePrefix "load_balancer"
+      ValuesFrom "load_balancer"
+    </Result>
+  </Query>
+  <Query amphora_count>
+    Statement "select count(*) as amphora from amphora"
+    <Result>
+      Type gauge
+      InstancePrefix "amphora"
+      ValuesFrom "amphora"
+    </Result>
+  </Query>
+  <Query pool_count>
+    Statement "select count(*) as pool from pool"
+    <Result>
+      Type gauge
+      InstancePrefix "pool"
+      ValuesFrom "pool"
+    </Result>
+  </Query>
+  <Query member_count>
+    Statement "select count(*) as member from member"
+    <Result>
+      Type gauge
+      InstancePrefix "member"
+      ValuesFrom "member"
+    </Result>
+  </Query>
+  <Database "octavia">
+    Driver "mysql"
+    DriverOption "host" "{{ mysql_host_ip }}"
+    DriverOption "port" "{{ mysql_port }}"
+    DriverOption "dbname" "octavia"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password}}"
+    Query load_balancer_count
+    Query amphora_count
+    Query pool_count
+    Query member_count
+  </Database>
+</Plugin>
+
+{% endif %}
+
+{% if keystone_overcloud_collectd_plugin %}
+
+<Plugin dbi>
+  <Query token_count>
+    Statement "select count(*) as count from token"
+    <Result>
+      Type gauge
+      InstancePrefix "token"
+      ValuesFrom "count"
+    </Result>
+  </Query>
+  <Database "keystone">
+    Driver "mysql"
+    DriverOption "host" "{{ mysql_host_ip }}"
+    DriverOption "port" "{{ mysql_port }}"
+    DriverOption "dbname" "keystone"
+    DriverOption "username" "root"
+    DriverOption "password" "{{mysql_root_password}}"
+    Query token_count
+  </Database>
+</Plugin>
+
+{% endif %}
+
+<Plugin mysql>
+  <Database "overcloud">
+    Alias "{{ db_config_node_hostname.stdout }}"
+    Host "{{ mysql_host_ip }}"
+    User "root"
+    Port "{{ mysql_port }}"
+    Password "{{mysql_root_password}}"
+    InnodbStats true
+  </Database>
+</Plugin>
+
 {% endif %}
 
 {%if iostat_controller_collectd_plugin %}
@@ -167,19 +445,6 @@ PreCacheChain "PreCache"
   </Module>
 </Plugin>
 
-{% endif %}
-
-{%if ovn_raft_monitoring %}
-{% if db_conf %}
-<Plugin python>
-  ModulePath "/usr/local/bin/"
-  Import "collectd_ovn_raft_monitoring"
-  <Module collectd_ovn_raft_monitoring>
-    Interval {{ovn_raft_controller_collectd_interval}}
-  </Module>
-</Plugin>
-
-{% endif %}
 {% endif %}
 
 # Including the version of OpenStack that the process was verified as running after
