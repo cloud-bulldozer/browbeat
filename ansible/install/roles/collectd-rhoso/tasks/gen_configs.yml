@@ -1,0 +1,23 @@
+---
+- name: generate config files
+  debug:
+    msg: "generating config files for {{ node }}"
+
+- name: include node specific vars
+  include_vars: "{{ node }}.yml"
+
+- name: render collectd template with db_conf
+  template:
+    src: "controlplane.collectd.conf.j2"
+    dest: "/tmp/{{ node }}.conf"
+  vars:
+    db_conf: true
+  when: idx == 0
+
+- name: render collectd template without db_conf
+  template:
+    src: "controlplane.collectd.conf.j2"
+    dest: "/tmp/{{ node }}.conf"
+  vars:
+    db_conf: false
+  when: idx != 0

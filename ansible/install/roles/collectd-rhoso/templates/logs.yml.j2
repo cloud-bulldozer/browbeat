@@ -1,0 +1,4 @@
+container_logs:
+{% for instance, filename in filenames.items() %}
+  {{ instance }}: "/var/log/containers/{{ filename }}.log"
+{% endfor %}

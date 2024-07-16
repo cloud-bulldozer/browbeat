@@ -1,0 +1,8 @@
+# only below listed containers' logfiles only captured
+# for tail plugin.
+#
+# key: container name
+# value: instance name used by tail plugin to push data in graphite
+container_instance_map:
+   nova-api-log: nova-api
+   nova-metadata-log: nova-metadata-api

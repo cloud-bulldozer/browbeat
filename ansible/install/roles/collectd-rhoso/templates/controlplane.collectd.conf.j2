@@ -602,5 +602,36 @@ PreCacheChain "PreCache"
   ProcessMatch "swift-proxy-server" "python.+swift-proxy-server"                        # 10,11,12,13
 </Plugin>
 
+{% if container_logs is not none and container_logs | length > 0 %}
+<Plugin "tail">
+{% for instance, file in container_logs.items() %}
+  <File "{{ file }}">
+   Instance "{{ instance }}"
+    <Match>
+      Regex " ERROR "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "error"
+    </Match>
+{%if regex_warn %}
+    <Match>
+      Regex " WARNING "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "warn"
+    </Match>
+{% endif %}
+{%if regex_info %}
+    <Match>
+      Regex " INFO "
+      DSType "CounterInc"
+      Type "counter"
+      Instance "info"
+    </Match>
+{% endif %}
+  </File>
+{% endfor %}
+</Plugin>
+{% endif %}
 # Include other collectd configuration files
 Include "/etc/collectd.d"

@@ -20,6 +20,10 @@
       shell: |
         oc debug node/$(oc get nodes -l node-role.kubernetes.io/worker --no-headers | awk 'NR==1 {print $1}') -- hostname -f 2>/dev/null | tr '.' '_'
       register: db_config_node_hostname
+
+    - name: Fetch all the worker node names
+      command: oc get nodes -o jsonpath='{range .items[?(@.metadata.labels.node-role\.kubernetes\.io/worker)]}{.metadata.name}{"\n"}{end}'
+      register: worker_nodes
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
 
@@ -37,6 +41,12 @@
   set_fact:
     ovsdbserver_sb_0_svc_ip: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[0] }}"
     ovsdbserver_sb_0_svc_port: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[1] }}"
+
+- name: generate logfiles vars for each worker nodes
+  include_tasks: gen_logfile_vars.yml
+  loop: "{{ worker_nodes.stdout_lines }}"
+  loop_control:
+    loop_var: node
 
 - name: Decode the Base64 encoded DbRootPassword
   set_fact:
@@ -57,19 +67,12 @@
       OVN_SBDB_IP={{ ovsdbserver_sb_0_svc_ip }}
       OVN_SBDB_PORT={{ ovsdbserver_sb_0_svc_port }}
 
-- name: Render collectd template with db_conf
-  template:
-    src: "controlplane.collectd.conf.j2"
-    dest: /tmp/collectd-db.conf
-  vars:
-    db_conf: true
-
-- name: Render collectd template without db_conf
-  template:
-    src: "controlplane.collectd.conf.j2"
-    dest: /tmp/collectd.conf
-  vars:
-    db_conf: false
+- name: generate templates
+  include_tasks: gen_configs.yml
+  loop: "{{ worker_nodes.stdout_lines }}"
+  loop_control:
+    loop_var: node
+    index_var: idx
 
 - name: delete existing ospperf namespace
   shell: |
@@ -83,10 +86,14 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
 
+- name: collect all config file paths
+  set_fact:
+    config_files: "{{ worker_nodes.stdout_lines | map('regex_replace', '^', '/tmp/') | map('regex_replace', '$', '.conf') }}"
+
 - block:
     - name: Create configmaps for collectd configs
       shell: |
-        oc create configmap collectd-configs --from-file=/tmp/collectd.conf --from-file=/tmp/collectd-db.conf -n ospperf
+        oc create -n ospperf configmap collectd-configs --from-file={{ config_files | join(' --from-file=') }}
 
     - name: Create collectd entrypoint configmap
       shell: |

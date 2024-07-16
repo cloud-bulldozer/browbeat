@@ -1,0 +1,39 @@
+---
+- name: generate var file
+  debug:
+    msg: "generating var file for {{ node }}"
+
+- name: include container names/ instance maping
+  include_vars: "constants.yml"
+
+- name: get all the file names
+  shell: |
+    kubectl get pods -n openstack --field-selector spec.nodeName={{ node }} -o json | jq -r '.items[] | .metadata.name as $pod_name | .metadata.namespace as $namespace | .status.containerStatuses[] | "\($pod_name)_\($namespace)_\(.name)-\(.containerID | gsub("cri-o://"; ""))"'
+  register: filenames_output
+
+- name: set filenames fact
+  set_fact:
+    filenames_list: "{{ filenames_output.stdout_lines }}"
+
+- name: get intrested container names as list
+  set_fact:
+    containers: "{{ container_instance_map | dict2items | map(attribute='key') | list }}"
+
+- name: filter the file names
+  set_fact:
+    filenames: >-
+      {%- set result = {} -%}
+      {%- for filename in filenames_list -%}
+        {%- set parts = filename.split('_') -%}
+        {%- set cName = parts[2] | regex_replace('^(.*?)-([^\\-]*)$', '\\1') -%}
+        {%- if cName in container_instance_map -%}
+          {%- set key = container_instance_map[cName] -%}
+          {%- set _ = result.update({key: filename}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}
+
+- name: generate var file
+  template:
+    src: "logs.yml.j2"
+    dest: "{{ role_path }}/vars/{{ node }}.yml"

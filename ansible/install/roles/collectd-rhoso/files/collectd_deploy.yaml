@@ -4,6 +4,7 @@ metadata:
   name: collectd-scc
 allowHostNetwork: true
 allowHostPID: true
+allowHostDirVolumePlugin: true
 allowPrivilegedContainer: true
 allowPrivilegeEscalation: true
 runAsUser:
@@ -14,6 +15,11 @@ fsGroup:
   type: RunAsAny
 supplementalGroups:
   type: RunAsAny
+volumes:
+  - hostPath
+  - configMap
+  - secret
+  - persistentVolumeClaim
 users:
 - system:serviceaccount:ospperf:collectd-sa
 
@@ -85,16 +91,20 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        - name: varlogpods
+          mountPath: "/var/log/pods"
+        - name: varlogcontainer
+          mountPath: "/var/log/containers"
         - name: config-files
           mountPath: "/etc/config"
         - name: entrypoint-script
           mountPath: "/entrypoint.sh"
           subPath: "entrypoint.sh"
         env:
-        - name: POD_NAME
+        - name: NODE_NAME
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              fieldPath: spec.nodeName
         envFrom:
         - configMapRef:
             name: collectd-env-vars
@@ -105,6 +115,14 @@ spec:
       - name: entrypoint-script
         configMap:
           name: collectd-entrypoint
+      - name: varlogcontainer
+        hostPath:
+          path: "/var/log/containers"
+          type: Directory
+      - name: varlogpods
+        hostPath:
+          path: "/var/log/pods"
+          type: Directory
       nodeSelector:
         node-role.kubernetes.io/worker: ""
       affinity:
