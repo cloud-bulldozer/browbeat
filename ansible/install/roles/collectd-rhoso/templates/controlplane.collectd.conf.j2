@@ -604,7 +604,7 @@ PreCacheChain "PreCache"
 
 {% if container_logs is not none and container_logs | length > 0 %}
 <Plugin "tail">
-{% for instance, file in container_logs.items() %}
+{% for instance, file in container_logs.items() if instance not in ["ovn-northd"] %}
   <File "{{ file }}">
    Instance "{{ instance }}"
     <Match>
@@ -631,6 +631,614 @@ PreCacheChain "PreCache"
 {% endif %}
   </File>
 {% endfor %}
+{% if 'ovsdb-server-nb' in container_logs %}
+<File "{{ container_logs['ovsdb-server-nb'] }}">
+  Instance "ovnnbdb"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+{% endif %}
+{% if 'ovsdb-server-sb' in container_logs %}
+  <File "{{ container_logs['ovsdb-server-sb'] }}">
+  Instance "ovnsbdb"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+{% endif %}
+{% if 'ovn-northd' in container_logs %}
+  <File "{{ container_logs['ovn-northd'] }}">
+  Instance "ovnnorthd"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+{% endif %}
+{% if 'ovn-controller' in container_logs %}
+  <File "{{ container_logs['ovn-controller'] }}">
+  Instance "ovncontroller"
+    <Match>
+      Regex "Unreasonably long ([0-9]*)ms poll interval"
+      DSType "GaugeLast"
+      Type "count"
+      Instance "poll"
+    </Match>
+  </File>
+{% endif %}
+{% if 'neutron-server' in container_logs %}
+  <File "{{ container_logs['neutron-server'] }}">
+  Instance "neutron_resources"
+    <Match>
+      Regex "POST /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0"
+      DSType "CounterInc"
+      Type "counter"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "{{ container_logs['neutron-server'] }}">
+  Instance "neutron_avg_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+
+  <File "{{ container_logs['neutron-server'] }}">
+  Instance "neutron_min_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+
+  <File "{{ container_logs['neutron-server'] }}">
+  Instance "neutron_max_response_time"
+    <Match>
+      Regex "POST /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+    {% if osp_individual_resources_response_time %}
+    <Match>
+      Regex "POST /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_networks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_networks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_networks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/networks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_networks"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_routers"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_routers"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_routers"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/routers.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_routers"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_subnets"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_subnets"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_subnets"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/subnets.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_subnets"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_ports"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_ports"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_ports"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_ports"
+    </Match>
+    <Match>
+      Regex "POST /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post_trunks"
+    </Match>
+    <Match>
+      Regex "PUT /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put_trunks"
+    </Match>
+    <Match>
+      Regex "GET /v2.0/trunks.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get_trunks"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.0/ports.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete_trunks"
+    </Match>
+  {% endif %}
+  </File>
+{% endif %}
+{% if 'nova-api' in container_logs %}
+  <File "{{ container_logs['nova-api'] }}">
+  Instance "nova_avg_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "{{ container_logs['nova-api'] }}">
+  Instance "nova_min_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMin"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
+
+  <File "{{ container_logs['nova-api'] }}">
+  Instance "nova_max_response_time"
+    <Match>
+      Regex "POST /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "post"
+    </Match>
+    <Match>
+      Regex "PUT /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "put"
+    </Match>
+    <Match>
+      Regex "GET /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "get"
+    </Match>
+    <Match>
+      Regex "DELETE /v2.1.*time: ([0-9.]+)"
+      DSType "GaugeMax"
+      Type "response_time"
+      Instance "delete"
+    </Match>
+  </File>
+{% endif %}
 </Plugin>
 {% endif %}
 # Include other collectd configuration files
