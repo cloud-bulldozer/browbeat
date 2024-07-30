@@ -451,6 +451,10 @@ PreCacheChain "PreCache"
 # OpenStack Installation with a comment at the end of each Process/ProcessMatch statement.
 # A Minus before the version means the process was not found in that version. (Ex -10)
 <Plugin processes>
+  # Ansible
+  ProcessMatch "ansible-playbook" "ansible-playbook"
+  ProcessMatch "ansible-runner" "ansible-runner"
+
   # Aodh (OpenStack Installed)
   ProcessMatch "aodh-evaluator" "aodh-evaluator"                                        # 10,11,12,13
   ProcessMatch "aodh-listener" "aodh-listener"                                          # 10,11,12,13
