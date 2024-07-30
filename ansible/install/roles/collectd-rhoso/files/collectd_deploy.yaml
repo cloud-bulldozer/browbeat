@@ -91,6 +91,18 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        - mountPath: /etc/pki/rabbitmq/tls/certs/rabbitmq.crt
+          name: rabbitmq-tls
+          readOnly: true
+          subPath: tls.crt
+        - mountPath: /etc/pki/rabbitmq/tls/private/rabbitmq.key
+          name: rabbitmq-tls
+          readOnly: true
+          subPath: tls.key
+        - mountPath: /etc/pki/rabbitmq/tls/certs/rabbitmqca.crt
+          name: rabbitmq-tls
+          readOnly: true
+          subPath: ca.crt
         - mountPath: /etc/pki/ovnsb/tls/certs/ovndb.crt
           name: ovsdbserver-sb-tls-certs
           readOnly: true
@@ -133,6 +145,10 @@ spec:
         - configMapRef:
             name: collectd-env-vars
       volumes:
+      - name: rabbitmq-tls
+        secret:
+          defaultMode: 256
+          secretName: cert-rabbitmq-svc
       - name: ovsdbserver-sb-tls-certs
         secret:
           defaultMode: 256

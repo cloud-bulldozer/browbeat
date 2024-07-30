@@ -383,7 +383,26 @@ LoadPlugin unixsock
   </Database>
 </Plugin>
 
+{%if rabbitmq_controller_collectd_plugin %}
+<Plugin python>
+  ModulePath "/usr/local/bin/"
+  LogTraces true
+  Interactive false
+  Import "collectd_rabbitmq_monitoring"
+  <Module collectd_rabbitmq_monitoring>
+    interval {{rabbitmq_controller_collectd_interval}}
+    host "{{ rabbitmq_svc_ip }}"
+    port "15671"
+    username "{{ rabbitmq_username }}"
+    password "{{ rabbitmq_password }}"
+    message_count {% for a_queue in rhoso_ctlplane_monitored_queues %}"{{a_queue}}" {% endfor %}
+
+  </Module>
+</Plugin>
 {% endif %}
+
+{% endif %}
+# db_conf end
 
 {%if iostat_controller_collectd_plugin %}
 <Plugin python>

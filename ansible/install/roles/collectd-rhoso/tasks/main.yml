@@ -28,6 +28,16 @@
     - name: Fetch all the worker node names
       command: oc get nodes -o jsonpath='{range .items[?(@.metadata.labels.node-role\.kubernetes\.io/worker)]}{.metadata.name}{"\n"}{end}'
       register: worker_nodes
+
+    - name: Fetch Cluster IP and Ports for rabbitmq service
+      shell: |
+        oc get svc rabbitmq -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[1].port}'
+      register: rabbitmq_svc
+
+    - name: Fetch rabbitmq default username and password
+      shell: |
+        oc get secret rabbitmq-default-user -n openstack -o jsonpath='{.data.default_user\.conf}' | base64 --decode
+      register: rabbitmq_default_user_conf
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
 
@@ -50,6 +60,16 @@
   set_fact:
     ovsdbserver_sb_0_svc_ip: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[0] }}"
     ovsdbserver_sb_0_svc_port: "{{ ovsdbserver_sb_0_svc.stdout.split(' ')[1] }}"
+
+- name: Parse rabbitmq service details
+  set_fact:
+    rabbitmq_svc_ip: "{{ rabbitmq_svc.stdout.split(' ')[0] }}"
+    rabbitmq_svc_port: "{{ rabbitmq_svc.stdout.split(' ')[1] }}"
+
+- name: Parse rabbitmq username and password
+  set_fact:
+    rabbitmq_username: "{{ rabbitmq_default_user_conf.stdout | regex_findall('default_user = (\\S+)') | first }}"
+    rabbitmq_password: "{{ rabbitmq_default_user_conf.stdout | regex_findall('default_pass = (\\S+)') | first }}"
 
 - name: generate logfiles vars for each worker nodes
   include_tasks: gen_logfile_vars.yml
@@ -111,6 +131,7 @@
       loop:
         - cert-ovndbcluster-sb-ovndbs
         - cert-ovndbcluster-nb-ovndbs
+        - cert-rabbitmq-svc
 
     - name: Create configmaps for collectd configs
       shell: |

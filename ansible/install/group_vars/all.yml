@@ -327,6 +327,15 @@ controller_monitored_queues:
   - "notifications.error"
   - "notifications.critical"
 
+# Queues to monitor message count on RHOSO controlplane
+rhoso_ctlplane_monitored_queues:
+  - "notifications.sample"
+  - "notifications.audit"
+  - "notifications.info"
+  - "notifications.warn"
+  - "notifications.error"
+  - "notifications.critical"
+
 ########################
 # ovsagent monitoring
 ########################

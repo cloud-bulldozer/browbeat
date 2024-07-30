@@ -9,7 +9,7 @@ RUN dnf clean all && \
     dnf install -y sysstat && \
     dnf install -y python3-pip python3-devel && \
     pip3 install --upgrade pip && \
-    pip3 install pyrabbit && \
+    pip3 install pyrabbit2 && \
     dnf install -y collectd-dbi && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libdbi-drivers-0.9.0-14.el8.x86_64.rpm && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/l/libdbi-dbd-mysql-0.9.0-14.el8.x86_64.rpm && \
@@ -31,5 +31,6 @@ RUN rm /etc/collectd.d/virt.conf
 ADD files/ovn_monitoring.sh /usr/local/bin/ovn_monitoring.sh
 ADD files/collectd_iostat_python.py /usr/local/bin/collectd_iostat_python.py
 ADD files/collectd_ovn_raft_monitoring.py /usr/local/bin/collectd_ovn_raft_monitoring.py
+ADD files/collectd_rabbitmq_monitoring.py /usr/local/bin/collectd_rabbitmq_monitoring.py
 
 CMD ["collectd", "-f"]
