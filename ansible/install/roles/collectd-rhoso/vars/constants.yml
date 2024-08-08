@@ -6,3 +6,14 @@
 container_instance_map:
    nova-api-log: nova-api
    nova-metadata-log: nova-metadata-api
+   nova-scheduler-scheduler: nova-scheduler
+   nova-cell1-novncproxy-novncproxy: nova-novncproxy
+   cinder-api-log: cinder-api
+   cinder-scheduler: cinder-scheduler
+   glance-api: glance-api
+   keystone-api: keystone
+   ovsdbserver-nb: ovsdb-server-nb
+   ovsdbserver-sb: ovsdb-server-sb
+   neutron-api: neutron-server
+   ovn-controller: ovn-controller
+   ovn-northd: ovn-northd
