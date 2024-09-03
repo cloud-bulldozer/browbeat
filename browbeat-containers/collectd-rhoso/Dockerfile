@@ -4,7 +4,7 @@ RUN dnf clean all && \
     dnf group install -y "Development Tools" --nobest && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     dnf install -y centos-release-opstools && \
-    dnf install -y collectd collectd-turbostat collectd-disk collectd-apache collectd-ceph \
+    dnf install -y collectd collectd-write_prometheus collectd-turbostat collectd-disk collectd-apache collectd-ceph \
      collectd-mysql collectd-python collectd-ping collectd-virt python3-sqlalchemy-collectd --nobest && \
     dnf install -y sysstat && \
     dnf install -y python3-pip python3-devel && \

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ospcp-collectd-monitor
+  namespace: openshift-monitoring
+spec:
+  endpoints:
+  - honorLabels: true
+    interval: 30s
+    path: /metrics
+    port: http
+    scheme: http
+  namespaceSelector:
+    matchNames:
+    - ospperf
+  selector:
+    matchLabels:
+      app: ospcp-collectd

@@ -106,6 +106,39 @@
     - name: Apply collectd deployment yaml
       shell: |
         oc apply -f {{ role_path }}/files/collectd_deploy.yaml -n ospperf
+
+    - name: Wait for all pods to be in Running state
+      shell: |
+        expected_count={{ worker_nodes.stdout_lines|length }}
+        running_count=$(oc get pods -n ospperf -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' | wc -w)
+        [ "$running_count" -eq "$expected_count" ] && echo "running" || echo "failure"
+      register: pod_status
+      retries: 10
+      delay: 30
+      until: pod_status.stdout == "running"
+
+    - name: Create prometheus cluster role and rolebinding
+      shell: |
+        oc apply -f "{{ role_path }}/files/prometheus_cluster_role.yaml"
+        oc apply -f "{{ role_path }}/files/prometheus_cluster_rolebinding.yaml"
+
+    - name: Render service yamls for each collectd pod
+      template:
+        src: collectd_svc_template.yaml.j2
+        dest: /tmp/collectd_svc_{{ item }}.yaml
+      loop: "{{ range(0, worker_nodes.stdout_lines|length) }}"
+      vars:
+        idx: "{{ item }}"
+
+    - name: Apply generated service yamls
+      shell: |
+        oc apply -f /tmp/collectd_svc_{{ item }}.yaml
+      loop: "{{ range(0, worker_nodes.stdout_lines|length) }}"
+      when: worker_nodes.stdout_lines is defined
+
+    - name: Apply prometheus service monitor
+      shell: |
+        oc apply -f "{{ role_path }}/files/collectd_svc_monitor.yaml"
   when: create_ns.rc == 0
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"

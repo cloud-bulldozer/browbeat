@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ospcp-collectd-service-{{ idx }}
+  namespace: ospperf
+  labels:
+    app: ospcp-collectd
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: osp-controlplane-collectd-{{ idx }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9104
+      targetPort: 9104
+  type: ClusterIP
