@@ -1,0 +1,41 @@
+# Containers & pod metrics
+#
+- query: (sum(irate(container_cpu_usage_seconds_total{name!="",container!~"POD|",namespace=~"openstack"}[2m]) * 100) by (container, pod, namespace, node)) > 0
+  metricName: containerCPU
+
+- query: sum(container_memory_rss{name!="",container!~"POD|",namespace=~"openstack"}) by (container, pod, namespace, node)
+  metricName: containerMemory
+
+- query: sum(irate(container_network_receive_packets_total{cluster="",namespace=~"openstack", pod!=""}[2m])) by (pod, namespace, node, interface)
+  metricName: containerRecvPackets
+
+- query: sum(irate(container_network_transmit_packets_total{cluster="",namespace=~"openstack", pod!=""}[2m])) by (pod, namespace, node, interface)
+  metricName: containerTranPackets
+
+- query: cluster_version{type="completed"}
+  metricName: clusterVersion
+  instant: true
+
+- query: sum by (cluster_version)(etcd_cluster_version)
+  metricName: etcdVersion
+  instant: true
+
+- query: count(kube_secret_info{namespace='openstack'})
+  metricName: ospSecretCount
+  instant: true
+
+- query: count(kube_deployment_labels{namespace='openstack'})
+  metricName: ospDeploymentCount
+  instant: true
+
+- query: count(kube_configmap_info{namespace='openstack'})
+  metricName: ospConfigmapCount
+  instant: true
+
+- query: count(kube_service_info{namespace='openstack'})
+  metricName: ospServiceCount
+  instant: true
+
+- query: count(kube_statefulset_labels{namespace='openstack'})
+  metricName: ospStatefulsetCount
+  instant: true

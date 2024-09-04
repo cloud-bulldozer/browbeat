@@ -1,0 +1,8 @@
+required_vars:
+  - es_server
+  - es_index
+  - uuid
+  - job_name
+  - metrics
+  - start_time
+  - end_time

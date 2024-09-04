@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  vars:
+    cron_state: "present"
+  tasks:
+    - block:
+        - name: Enure the log file exist
+          stat:
+            path: "/tmp/ocp_index_cron.log"
+          register: log_file
+
+        - name: find the age of file(last modification)
+          set_fact:
+            file_age: "{{ ((ansible_date_time.epoch | int) - (log_file.stat.mtime | int)) / 60 }}"
+          when: log_file.stat.exists
+
+        - name: run the ansible task with the start time
+          include_role:
+            name: index-ocp-data
+          vars:
+            start_time: "{{ log_file.stat.mtime | int }}"
+          when: log_file.stat.exists and (file_age | int < 30)
+
+        - name: run the ansible task without start time
+          include_role:
+            name: index-ocp-data
+          when: not log_file.stat.exists or (file_age | int >= 30)
+      when: cron_state == "absent"
+
+    - name: toggle the indexing OCP data cron job
+      cron:
+        name: "Index ocp data every 30 mins"
+        minute: "*/30"
+        job: "PATH=/usr/local/bin:/usr/bin:/bin && /usr/bin/ansible-playbook {{ browbeat_path }}/ansible/install/index-ocp-data.yml > /tmp/ocp_index_cron.log 2>&1"
+        state: "{{ cron_state }}"

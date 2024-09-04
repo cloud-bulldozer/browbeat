@@ -1,0 +1,22 @@
+---
+- name: Check if oc is installed
+  shell: "which oc"
+  register: oc_location
+  ignore_errors: true
+
+- name: Fail if oc is not installed
+  fail:
+    msg: "oc is not installed"
+  when: oc_location.rc != 0
+
+- name: Check if logged into Kubernetes cluster
+  shell: "oc version"
+  register: oc_version
+  ignore_errors: true
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Fail if not logged in
+  fail:
+    msg: "Not logged in to Kubernetes cluster"
+  when: oc_version.rc != 0

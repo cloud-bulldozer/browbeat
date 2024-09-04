@@ -1,0 +1,62 @@
+---
+- name: prepare kube-burner args
+  set_fact:
+    uuid: "{{ lookup('pipe', 'uuidgen') }}"
+    es_index: "OSP-metrics-from-OCP-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}"
+    end_time: "{{ ansible_date_time.epoch | int }}"
+    job_name: "{{ cloud_prefix }}"
+    es_server: "http://{{ es_ip }}:{{ es_local_port }}"
+    metrics: "{{ ocp_metrics_query }}"
+
+- name: calculate start time from end time
+  set_fact:
+    start_time: "{{ end_time | int - 1800 }}"
+  when: start_time is undefined
+
+- name: Check if all variables are defined
+  assert:
+    that:
+      - item in vars
+  loop: "{{ required_vars }}"
+  loop_control:
+    label: "{{ item }}"
+  register: var_check_result
+  ignore_errors: true
+
+- name: Extract missing variables
+  set_fact:
+    missing_vars: "{{ var_check_result.results | selectattr('failed', 'equalto', true) | map(attribute='item') | list }}"
+
+- name: Fail if any variable is not defined
+  fail:
+    msg: "Variable '{{ missing_vars | join(', ') }}' is not defined. Aborting playbook execution."
+  when: missing_vars | length > 0
+
+- name: check oc is installed and accessable
+  include_tasks: check_oc.yml
+
+- name: Download kube-burner
+  ansible.builtin.get_url:
+    url: "{{ kube_burner_path }}"
+    dest: /tmp/kube-burner.tar.gz
+
+- name: Extract the kube-burner
+  ansible.builtin.unarchive:
+    src: /tmp/kube-burner.tar.gz
+    dest: /tmp
+    mode: '0774'
+
+- block:
+    - name: retrieve the prometheus url
+      shell: oc get routes -n  openshift-monitoring prometheus-k8s -o=jsonpath='{.spec.host}'
+      register: prometheus_url
+
+    - name: create token to access prometheus
+      shell: oc create token prometheus-k8s -n openshift-monitoring
+      register: token
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: index data from premetheus to elastic
+  shell: |
+          /tmp/kube-burner index --es-server {{ es_server }} --es-index {{ es_index }} --uuid={{ uuid}} --job-name {{ job_name }} --token={{ token.stdout}} -m={{ metrics }} --start={{ start_time }} --end={{ end_time }} --log-level debug -u https://{{ prometheus_url.stdout }}
