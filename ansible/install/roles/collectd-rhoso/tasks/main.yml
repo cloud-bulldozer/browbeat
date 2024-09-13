@@ -4,6 +4,10 @@
       command: oc get svc openstack -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
       register: openstack_svc
 
+    - name: Fetch Cluster IP and Ports for openstack cell1 service
+      command: oc get svc openstack-cell1 -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
+      register: openstack_cell1_svc
+
     - name: Fetch Cluster IP and Ports for ovsdbserver-nb-0 service
       command: oc get svc ovsdbserver-nb-0 -n openstack -o jsonpath='{.spec.clusterIP} {.spec.ports[0].port}'
       register: ovsdbserver_nb_0_svc
@@ -32,6 +36,11 @@
     openstack_svc_ip: "{{ openstack_svc.stdout.split(' ')[0] }}"
     openstack_svc_port: "{{ openstack_svc.stdout.split(' ')[1] }}"
 
+- name: Parse openstack service cell1 details
+  set_fact:
+    openstack_cell1_svc_ip: "{{ openstack_cell1_svc.stdout.split(' ')[0] }}"
+    openstack_cell1_svc_port: "{{ openstack_cell1_svc.stdout.split(' ')[1] }}"
+
 - name: Parse ovsdbserver-nb-0 service details
   set_fact:
     ovsdbserver_nb_0_svc_ip: "{{ ovsdbserver_nb_0_svc.stdout.split(' ')[0] }}"
@@ -56,6 +65,11 @@
   set_fact:
     mysql_host_ip: "{{ openstack_svc_ip }}"
     mysql_port: "{{ openstack_svc_port }}"
+
+- name: set fact for mysql cell1 host ip and port
+  set_fact:
+    mysql_cell1_host_ip: "{{ openstack_cell1_svc_ip }}"
+    mysql_cell1_port: "{{ openstack_cell1_svc_port }}"
 
 - name: Create environment file with key-value pairs
   copy:

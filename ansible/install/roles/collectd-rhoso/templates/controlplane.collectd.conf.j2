@@ -160,11 +160,11 @@ LoadPlugin unixsock
       ValuesFrom "instance_faults"
     </Result>
   </Query>
-  <Database "nova_cell0">
+  <Database "nova_cell1">
     Driver "mysql"
-    DriverOption "host" "{{ mysql_host_ip }}"
-    DriverOption "port" "{{ mysql_port }}"
-    DriverOption "dbname" "nova_cell0"
+    DriverOption "host" "{{ mysql_cell1_host_ip }}"
+    DriverOption "port" "{{ mysql_cell1_port }}"
+    DriverOption "dbname" "nova_cell1"
     DriverOption "username" "root"
     DriverOption "password" "{{mysql_root_password}}"
     Query host_vms_count
