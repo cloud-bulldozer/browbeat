@@ -105,6 +105,13 @@
     config_files: "{{ worker_nodes.stdout_lines | map('regex_replace', '^', '/tmp/') | map('regex_replace', '$', '.conf') }}"
 
 - block:
+    - name: Copy cert secrets from openstack ns to ospperf
+      shell: |
+        oc get secret {{ item }} -n openstack -o yaml | sed 's/namespace: openstack/namespace: ospperf/' | oc apply -n ospperf -f -
+      loop:
+        - cert-ovndbcluster-sb-ovndbs
+        - cert-ovndbcluster-nb-ovndbs
+
     - name: Create configmaps for collectd configs
       shell: |
         oc create -n ospperf configmap collectd-configs --from-file={{ config_files | join(' --from-file=') }}

@@ -91,6 +91,30 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        - mountPath: /etc/pki/ovnsb/tls/certs/ovndb.crt
+          name: ovsdbserver-sb-tls-certs
+          readOnly: true
+          subPath: tls.crt
+        - mountPath: /etc/pki/ovnsb/tls/private/ovndb.key
+          name: ovsdbserver-sb-tls-certs
+          readOnly: true
+          subPath: tls.key
+        - mountPath: /etc/pki/ovnsb/tls/certs/ovndbca.crt
+          name: ovsdbserver-sb-tls-certs
+          readOnly: true
+          subPath: ca.crt
+        - mountPath: /etc/pki/ovnnb/tls/certs/ovndb.crt
+          name: ovsdbserver-nb-tls-certs
+          readOnly: true
+          subPath: tls.crt
+        - mountPath: /etc/pki/ovnnb/tls/private/ovndb.key
+          name: ovsdbserver-nb-tls-certs
+          readOnly: true
+          subPath: tls.key
+        - mountPath: /etc/pki/ovnnb/tls/certs/ovndbca.crt
+          name: ovsdbserver-nb-tls-certs
+          readOnly: true
+          subPath: ca.crt
         - name: varlogpods
           mountPath: "/var/log/pods"
         - name: varlogcontainer
@@ -109,6 +133,14 @@ spec:
         - configMapRef:
             name: collectd-env-vars
       volumes:
+      - name: ovsdbserver-sb-tls-certs
+        secret:
+          defaultMode: 256
+          secretName: cert-ovndbcluster-sb-ovndbs
+      - name: ovsdbserver-nb-tls-certs
+        secret:
+          defaultMode: 256
+          secretName: cert-ovndbcluster-nb-ovndbs
       - name: config-files
         configMap:
           name: collectd-configs
