@@ -909,3 +909,21 @@ workloads:
         sample: 1
         ansible_forks: 5
         file: rally/rally-plugins/pbench-fio/pbench-fio.yml
+
+  - name: barbican
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: create-and-list-secrets
+        enabled: true
+        file: rally/barbican/create-and-list-secret.yaml
+      - name: create-and-delete-secrets
+        enabled: true
+        file: rally/barbican/create-and-delete-secret.yaml
+      - name: create-and-delete-certificate
+        enabled: true
+        file: rally/barbican/create-and-delete-certificate.yaml
