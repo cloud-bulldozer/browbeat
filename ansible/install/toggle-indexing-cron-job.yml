@@ -31,5 +31,5 @@
       cron:
         name: "Index ocp data for the given time"
         minute: "*/{{ kubeburner_index_interval | int }}"
-        job: "PATH=/usr/local/bin:/usr/bin:/bin && /usr/bin/ansible-playbook {{ browbeat_path }}/ansible/install/index-ocp-data.yml > /tmp/ocp_index_cron.log 2>&1"
+        job: "PATH={{ ansible_env.PATH }} && ansible-playbook {{ browbeat_path }}/ansible/install/index-ocp-data.yml > /tmp/ocp_index_cron.log 2>&1"
         state: "{{ cron_state }}"
