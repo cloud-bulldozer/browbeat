@@ -10,7 +10,7 @@
 
 - name: calculate start time from end time
   set_fact:
-    start_time: "{{ end_time | int - 1800 }}"
+    start_time: "{{ end_time | int - (kubeburner_index_interval | int * 60) }}"
   when: start_time is undefined
 
 - name: Check if all variables are defined

@@ -19,17 +19,17 @@
             name: index-ocp-data
           vars:
             start_time: "{{ log_file.stat.mtime | int }}"
-          when: log_file.stat.exists and (file_age | int < 30)
+          when: log_file.stat.exists and (file_age | int < kubeburner_index_interval | int)
 
         - name: run the ansible task without start time
           include_role:
             name: index-ocp-data
-          when: not log_file.stat.exists or (file_age | int >= 30)
+          when: not log_file.stat.exists or (file_age | int >= kubeburner_index_interval | int)
       when: cron_state == "absent"
 
     - name: toggle the indexing OCP data cron job
       cron:
-        name: "Index ocp data every 30 mins"
-        minute: "*/30"
+        name: "Index ocp data for the given time"
+        minute: "*/{{ kubeburner_index_interval | int }}"
         job: "PATH=/usr/local/bin:/usr/bin:/bin && /usr/bin/ansible-playbook {{ browbeat_path }}/ansible/install/index-ocp-data.yml > /tmp/ocp_index_cron.log 2>&1"
         state: "{{ cron_state }}"
