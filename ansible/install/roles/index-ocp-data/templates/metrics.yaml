@@ -1,6 +1,5 @@
 # Containers & pod metrics
-#
-- query: (sum(irate(container_cpu_usage_seconds_total{name!="",container!~"POD|",namespace=~"openstack"}[2m]) * 100) by (container, pod, namespace, node)) > 0
+- query: sum(irate(container_cpu_usage_seconds_total{name!="",container!~"POD|",namespace=~"openstack"}[2m]) * 100) by (container, pod, namespace, node)
   metricName: containerCPU
 
 - query: sum(container_memory_rss{name!="",container!~"POD|",namespace=~"openstack"}) by (container, pod, namespace, node)
@@ -12,6 +11,7 @@
 - query: sum(irate(container_network_transmit_packets_total{cluster="",namespace=~"openstack", pod!=""}[2m])) by (pod, namespace, node, interface)
   metricName: containerTranPackets
 
+# OCP Cluster details
 - query: cluster_version{type="completed"}
   metricName: clusterVersion
   instant: true
@@ -39,3 +39,142 @@
 - query: count(kube_statefulset_labels{namespace='openstack'})
   metricName: ospStatefulsetCount
   instant: true
+
+# MYSQL Innodb data
+- query: sum(irate(collectd_mysql_mysql_innodb_log_total[5m])) by (type)
+  metricName: ospMysqlInnodbLog
+
+- query: sum(irate(collectd_mysql_mysql_innodb_data_total[5m])) by (type)
+  metricName: ospMysqlInnodbData
+
+- query: sum(irate(collectd_mysql_mysql_innodb_dblwr_total[5m])) by (type)
+  metricName: ospMysqlInnodbDoubleWrite
+
+- query: sum(irate(collectd_mysql_mysql_innodb_pages_total[5m])) by (type)
+  metricName: ospMysqlInnodbPages
+
+- query: sum(irate(collectd_mysql_mysql_innodb_row_lock_total[5m])) by (type)
+  metricName: ospMysqlInnodbRowLock
+
+- query: sum(irate(collectd_mysql_mysql_innodb_rows_total[5m])) by (type)
+  metricName: ospMysqlInnodbRows
+
+# OVN DB Tables Row Counts
+- query: sum(collectd_ovn_gauge) by (type)
+  metricName: ospOVNDBTableRowCount
+
+# OVN RAFT Monitoring
+- query: sum(collectd_ovn_raft_monitoring_gauge) by (ovn_raft_monitoring)
+  metricName: ospOVNRAFTData
+
+# Tail info
+- query: sum(increase(collectd_tail_counter_total[5m])) by (tail, type)
+  metricName: ospTailInfo
+
+# OSP DB Data
+- query: sum(collectd_dbi_gauge) by (type, dbi)
+  metricName: ospDbResources
+
+# OSP resource response time
+- query: sum(collectd_tail_response_time{tail=~".*_avg_response_time"}) by (tail, type)
+  metricName: ospResourceAvgRespTime
+
+- query: sum(collectd_tail_response_time{tail=~".*_min_response_time"}) by (tail, type)
+  metricName: ospResourceMinRespTime
+
+- query: sum(collectd_tail_response_time{tail=~".*_max_response_time"}) by (tail, type)
+  metricName: ospResourceMaxRespTime
+
+# Commenting processes plugin queries, as the processes naming has changed in RHOSO
+# Collecting processes metrics from prometheus now. we can use these below queries
+# once regex is corrected.
+
+# # OSP Process and Thread Counts
+# - query: sum(collectd_processes_ps_count_processes) by (processes, instance)
+#   metricName: ospProcessCount
+#
+# - query: sum(collectd_processes_ps_count_threads) by (processes, instance)
+#   metricName: ospThreadsCount
+#
+# # OSP process CPU time
+# - query: sum(irate(collectd_processes_ps_cputime_syst_total[2m]) / 10000) by (instance, processes)
+#   metricName: ospProcessCPUSys
+#
+# - query: sum(irate(collectd_processes_ps_cputime_syst_total[2m]) / 10000) by (instance, processes)
+#   metricName: ospProcessCPUUser
+#
+# # OSP Process Memory
+# - query: sum(irate(collectd_processes_ps_rss[5m])) by (instance, processes)
+#   metricName: ospProcessMemRSS
+#
+# - query: sum(irate(collectd_processes_ps_vm[5m])) by (instance, processes)
+#   metricName: ospProcessMemVirt
+#
+# # OSP Process Pagefault
+# - query: sum(increase(collectd_processes_ps_pagefaults_majflt_total[5m])) by (instance, processes)
+#   metricName: ospProcessPagefaultMax
+#
+# - query: sum(increase(collectd_processes_ps_pagefaults_minflt_total[5m])) by (instance, processes)
+#   metricName: ospProcessPagefaultMin
+#
+# # OSP process IOPs
+# - query: sum(irate(collectd_processes_io_ops_write_total[5m])) by (instance, processes)
+#   metricName: ospProcessIOPsWrite
+#
+# - query: sum(irate(collectd_processes_io_ops_read_total[5m])) by (instance, processes)
+#   metricName: ospProcessIOPsRead
+#
+# # OSP Process IO Throughput
+# - query: sum(irate(collectd_processes_io_octets_rx_total[5m])) by (instance, processes)
+#   metricName: ospProcessIORx
+#
+# - query: sum(irate(collectd_processes_io_octets_tx_total[5m])) by (instance, processes)
+#   metricName: ospProcessIOTx
+#
+# # OSP Process Disk IO
+# - query: sum(irate(collectd_processes_disk_octets_read_total[5m])) by (instance, processes)
+#   metricName: ospProcessDiskRead
+#
+# - query: sum(irate(collectd_processes_disk_octets_write_total[5m])) by (instance, processes)
+#   metricName: ospProcessDiskWrite
+
+# MariaDB
+- query: sum(collectd_mysql_threads) by (name, type)
+  metricName: ospMysqlThreads
+
+- query: sum(rate(collectd_mysql_mysql_octets_tx_total[2m])) by (name)
+  metricName: ospMysqlTrafficTx
+
+- query: sum(rate(collectd_mysql_mysql_octets_rx_total[2m])) by (name)
+  metricName: ospMysqlTrafficRx
+
+- query: sum(increase(collectd_mysql_cache_result_total[5m])) by (type)
+  metricName: ospMysqlQueryCache
+
+- query: sum(collectd_mysql_cache_size) by (type)
+  metricName: ospMysqlQueryCacheSize
+
+- query: sum(collectd_mysql_mysql_bpool_bytes) by (type)
+  metricName: ospMysqlBufferPoolData
+
+- query: sum(increase(collectd_mysql_mysql_bpool_counters_total[5m])) by (type)
+  metricName: ospMysqlBufferPool
+
+- query: sum(increase(collectd_mysql_mysql_commands_total[5m])) by (type)
+  metricName: ospMysqlCommands
+
+- query: sum(increase(collectd_mysql_mysql_handler_total[5m])) by (type)
+  metricName: ospMysqlHandlers
+
+- query: sum(increase(collectd_mysql_mysql_locks_total[5m])) by (type)
+  metricName: ospMysqlLocks
+
+- query: sum(increase(collectd_mysql_mysql_select_total[5m])) by (type)
+  metricName: ospMysqlSelect
+
+- query: sum(increase(collectd_mysql_mysql_sort_total[5m])) by (type)
+  metricName: ospMysqlSort
+
+# RabbitMQ
+- query: sum(collectd_rabbitmq_monitoring_gauge) by (rabbitmq_monitoring)
+  metricName: ospRabbitmqQueueCounts
