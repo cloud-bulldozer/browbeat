@@ -1,0 +1,266 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 4,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 12,
+        "panels": [],
+        "title": "Action ",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "elasticsearch",
+          "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-GrYlRd"
+            },
+            "decimals": 5,
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 1
+        },
+        "id": 8,
+        "options": {
+          "displayMode": "basic",
+          "minVizHeight": 10,
+          "minVizWidth": 0,
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showUnfilled": true,
+          "text": {
+            "titleSize": 15
+          },
+          "valueMode": "color"
+        },
+        "pluginVersion": "10.1.2",
+        "repeat": "action",
+        "repeatDirection": "h",
+        "targets": [
+          {
+            "alias": "",
+            "bucketAggs": [
+              {
+                "field": "browbeat_uuid.keyword",
+                "id": "3",
+                "settings": {
+                  "min_doc_count": "1",
+                  "order": "desc",
+                  "orderBy": "_term",
+                  "size": "10"
+                },
+                "type": "terms"
+              },
+              {
+                "field": "timestamp",
+                "id": "2",
+                "settings": {
+                  "interval": "auto"
+                },
+                "type": "date_histogram"
+              }
+            ],
+            "datasource": {
+              "type": "elasticsearch",
+              "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+            },
+            "metrics": [
+              {
+                "field": "raw",
+                "id": "1",
+                "settings": {
+                  "percents": [
+                    "95"
+                  ]
+                },
+                "type": "percentiles"
+              }
+            ],
+            "query": "cloud_name: $cloudName AND browbeat_uuid.keyword: $uuid AND scenario.keyword: $scenario AND action: $action",
+            "refId": "A",
+            "timeField": "timestamp"
+          }
+        ],
+        "title": "$action  action ",
+        "type": "bargauge"
+      }
+    ],
+    "refresh": "",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "selected": true,
+            "text": [
+              "None"
+            ],
+            "value": [
+              ""
+            ]
+          },
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+          },
+          "definition": "{\"find\": \"terms\", \"field\": \"cloud_name.keyword\" }",
+          "hide": 0,
+          "includeAll": false,
+          "label": "cloudName",
+          "multi": true,
+          "name": "cloudName",
+          "options": [],
+          "query": "{\"find\": \"terms\", \"field\": \"cloud_name.keyword\" }",
+          "refresh": 2,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+          },
+          "definition": "{\"find\": \"terms\", \"field\": \"browbeat_uuid.keyword\", \"query\": \"cloud_name.keyword: $cloudName\" }",
+          "hide": 0,
+          "includeAll": true,
+          "label": "uuid",
+          "multi": true,
+          "name": "uuid",
+          "options": [],
+          "query": "{\"find\": \"terms\", \"field\": \"browbeat_uuid.keyword\", \"query\": \"cloud_name.keyword: $cloudName\" }",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "isNone": true,
+            "selected": false,
+            "text": "None",
+            "value": ""
+          },
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+          },
+          "definition": "{\"find\": \"terms\", \"field\": \"scenario.keyword\",\"query\":\"cloud_name.keyword:$cloudName AND browbeat_uuid.keyword: $uuid \"}",
+          "hide": 0,
+          "includeAll": false,
+          "label": "scenario",
+          "multi": false,
+          "name": "scenario",
+          "options": [],
+          "query": "{\"find\": \"terms\", \"field\": \"scenario.keyword\",\"query\":\"cloud_name.keyword:$cloudName AND browbeat_uuid.keyword: $uuid \"}",
+          "refresh": 2,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        },
+        {
+          "current": {
+            "selected": true,
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": {
+            "type": "elasticsearch",
+            "uid": "d54ce558-93a5-4672-bf45-e70c4c65b65b"
+          },
+          "definition": "{\"find\": \"terms\", \"field\": \"action.keyword\", \"query\": \"cloud_name.keyword: $cloudName AND  browbeat_uuid: $uuid AND scenario.keyword: $scenario\"}",
+          "hide": 0,
+          "includeAll": true,
+          "label": "action",
+          "multi": true,
+          "name": "action",
+          "options": [],
+          "query": "{\"find\": \"terms\", \"field\": \"action.keyword\", \"query\": \"cloud_name.keyword: $cloudName AND  browbeat_uuid: $uuid AND scenario.keyword: $scenario\"}",
+          "refresh": 2,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-7d",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Browbeat rally run comparision",
+    "uid": "bc449663-ad06-4abd-ad81-1e3767d0a41a",
+    "version": 53,
+    "weekStart": ""
+  }
