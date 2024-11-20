@@ -70,7 +70,7 @@ class Tools(object):
         workloads.run_workload(copy.deepcopy(workload), run_iteration)
 
     def check_metadata(self):
-        meta = self.config['elasticsearch']['metadata_files']
+        meta = self.config['elasticsearch'].get('metadata_files', []) or []
         for _meta in meta:
             if not os.path.isfile(_meta['file']):
                 self.logger.info(

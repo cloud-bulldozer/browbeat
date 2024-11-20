@@ -62,7 +62,7 @@ mapping:
         required: True
       metadata_files:
         type: seq
-        required: True
+        required: False
         sequence:
           - type: map
             mapping:

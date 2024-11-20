@@ -73,22 +73,20 @@ class Elastic(object):
         return json_data
 
     def combine_metadata(self, result):
-        if (self.config['elasticsearch']['metadata_files'] is not None and
-                len(self.config['elasticsearch']['metadata_files']) > 0):
-            meta = self.config['elasticsearch']['metadata_files']
-            for _meta in meta:
-                try:
-                    with open(_meta['file']) as jdata:
-                        result[_meta['name']] = json.load(jdata)
-                except Exception:
-                    self.logger.error(
-                        "Error loading Metadata file : {}".format(
-                            _meta['file']))
-                    self.logger.error(
-                        "Please make sure the metadata file exists and"
-                        " is valid JSON or run the playbook ansible/gather/site.yml"
-                        " before running the Browbeat test Suite")
-                    sys.exit(1)
+        meta = self.config['elasticsearch'].get('metadata_files', []) or []
+        for _meta in meta:
+            try:
+                with open(_meta['file']) as jdata:
+                    result[_meta['name']] = json.load(jdata)
+            except Exception:
+                self.logger.error(
+                    "Error loading Metadata file : {}".format(
+                        _meta['file']))
+                self.logger.error(
+                    "Please make sure the metadata file exists and"
+                    " is valid JSON or run the playbook ansible/gather/site.yml"
+                    " before running the Browbeat test Suite")
+                sys.exit(1)
         return result
 
     # Used to transform the cache dict into an elastic insertable iterable
