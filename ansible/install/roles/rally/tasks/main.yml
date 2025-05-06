@@ -67,6 +67,13 @@
     name: 'python-novaclient<18.3.0'
     virtualenv: "{{ rally_venv }}"
 
+# Till browbeat code is compatible with dogpile.cache-1.4.0
+# https://bugs.launchpad.net/openstack-browbeat/+bug/2110045
+- name: Ensure dogpile.cache<1.4.0
+  pip:
+    name: 'dogpile.cache<1.4.0'
+    virtualenv: "{{ rally_venv }}"
+
 - name: Create rally configuration directory
   file:
     path: "{{ rally_venv }}/etc/rally"
