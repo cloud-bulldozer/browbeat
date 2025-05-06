@@ -155,12 +155,12 @@ class PbenchFio(vm_utils.VMScenario, neutron_utils.NeutronScenario,
 
     def copy_pbench_results(self, jumphost_ip, pbench_result_dir):
         cmd = f"scp -r -i ../pbench_fio_jumphost_pkey root@{jumphost_ip}:" \
-              f"/var/lib/pbench-agent/* {pbench_result_dir}/"
+            f"/var/lib/pbench-agent/* {pbench_result_dir}/"
         os.system(cmd)
 
     def copy_pbench_logs(self, jumphost_ip, user, pbench_log_dir):
         cmd = f"scp -i ../pbench_fio_jumphost_pkey {user}@{jumphost_ip}:" \
-              f"~/*.log {pbench_log_dir}/"
+            f"~/*.log {pbench_log_dir}/"
         os.system(cmd)
 
     def render_template(self, env, template, runtime, io_depth, workload_size,
@@ -252,19 +252,19 @@ class PbenchFio(vm_utils.VMScenario, neutron_utils.NeutronScenario,
     @atomic.action_timer("pbench_fio.write_job")
     def write(self, jump_ssh_root, block_size, sample):
         cmd_str = f"export LANG=C.UTF-8 && " \
-                  f"source /etc/profile.d/pbench-agent.sh && " \
-                  f"pbench-fio -t write -b {block_size} --client-file /root/client_file " \
-                  f"--pre-iteration-script=/root/drop-cache.sh --job-file=/root/write.job " \
-                  f"--sample={sample}"
+            f"source /etc/profile.d/pbench-agent.sh && " \
+            f"pbench-fio -t write -b {block_size} --client-file /root/client_file " \
+            f"--pre-iteration-script=/root/drop-cache.sh --job-file=/root/write.job " \
+            f"--sample={sample}"
         return self.exec_command_over_ssh(cmd_str, jump_ssh_root)
 
     @atomic.action_timer("pbench_fio.read_job")
     def read(self, jump_ssh_root, block_size, sample):
         cmd_str = f"export LANG=C.UTF-8 && " \
-                  f"source /etc/profile.d/pbench-agent.sh && " \
-                  f"pbench-fio -t read -b {block_size} --client-file /root/client_file " \
-                  f"--pre-iteration-script=/root/drop-cache.sh --job-file=/root/read.job " \
-                  f"--sample={sample}"
+            f"source /etc/profile.d/pbench-agent.sh && " \
+            f"pbench-fio -t read -b {block_size} --client-file /root/client_file " \
+            f"--pre-iteration-script=/root/drop-cache.sh --job-file=/root/read.job " \
+            f"--sample={sample}"
         return self.exec_command_over_ssh(cmd_str, jump_ssh_root)
 
     def build_jumphost(self, image, flavor, tenant_network, public_net_name,
@@ -354,9 +354,9 @@ class PbenchFio(vm_utils.VMScenario, neutron_utils.NeutronScenario,
     def prepare_inventory(self, server_ips, pbench_key_url, pbench_config_url, pbench_repo_name):
         servers = "\n".join([str(i) for i in server_ips])
         inventory_str = f"[servers]\n{servers}\n\n" \
-                        f"[servers:vars]\npbench_key_url = {pbench_key_url}\n" \
-                        f"pbench_config_url = {pbench_config_url}\n" \
-                        f"pbench_repo_name = {pbench_repo_name}"
+            f"[servers:vars]\npbench_key_url = {pbench_key_url}\n" \
+            f"pbench_config_url = {pbench_config_url}\n" \
+            f"pbench_repo_name = {pbench_repo_name}"
 
         with open("../pbench_inventory.inv", 'w') as file:
             file.write(inventory_str)

@@ -7,7 +7,7 @@
 - hosts: Undercloud
   remote_user: "{{ local_remote_user }}"
   vars:
-    - ansible_ssh_pipelining: yes
+    ansible_ssh_pipelining: yes
   roles:
     - rsyslog-install
     - rsyslog-templates
@@ -16,7 +16,7 @@
   remote_user: "{{ host_remote_user }}"
   serial: 10
   vars:
-    - ansible_ssh_pipelining: yes
+    ansible_ssh_pipelining: yes
   roles:
     - rsyslog-install
     - rsyslog-templates

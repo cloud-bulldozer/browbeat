@@ -108,12 +108,12 @@ class CreateNFSShareBootVMAndAccessShare(utils.ManilaScenario, vm_utils.VMScenar
 
         mount_opt = "-t nfs -o nfsvers=4.1,proto=tcp"
         test_data = "Test Data"
-        script = f"sudo cloud-init status -w;" \
-                 f"sudo ip add add {ip}/24 dev eth1;" \
-                 f"sudo ip link set eth1 up;" \
-                 f"sudo mount {mount_opt} {location[0]} /mnt || exit 1;" \
-                 f"df -h;" \
-                 f"sudo echo {test_data} | sudo tee /mnt/testfile || exit 2"
+        script = f"sudo cloud-init status -w && " \
+            f"sudo ip add add {ip}/24 dev eth1 && " \
+            f"sudo ip link set eth1 up && " \
+            f"sudo mount {mount_opt} {location[0]} /mnt || exit 1 && " \
+            f"df -h && " \
+            f"sudo echo {test_data} | sudo tee /mnt/testfile || exit 2"
 
         command = {
             "script_inline": script,
