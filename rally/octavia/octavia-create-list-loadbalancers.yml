@@ -16,6 +16,17 @@
         network:
           start_cidr: "10.0.0.0/16"
           networks_per_tenant: 1
+        quotas:
+          neutron:
+            network: -1
+            port: -1
+            router: -1
+            subnet: -1
+            floatingip: -1
+          nova:
+            instances: -1
+            cores: -1
+            ram: -1
       sla:
         failure_rate:
           max: {{ sla_max_failure }} 
