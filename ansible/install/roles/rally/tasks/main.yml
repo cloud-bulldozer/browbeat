@@ -40,6 +40,7 @@
     name: rally-openstack
     version: "{{ rally_openstack_version }}"
     virtualenv: "{{ rally_venv }}"
+    extra_args: "{{ rally_upper_constraints | default(omit) }}"
 
 # Till https://bugs.launchpad.net/rally/+bug/1922707 fixed
 - name: set decorator to 4.4.2
