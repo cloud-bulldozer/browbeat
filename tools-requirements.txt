@@ -1,4 +1,6 @@
-setuptools>=40.3.0
+setuptools>=80.9.0;python_version>='3.9'
+setuptools<80.9.0;python_version<'3.9'
+wheel
 elasticsearch
 scapy
 pyrsistent==0.16.0;python_version<'3'
@@ -6,3 +8,6 @@ pyrsistent>=0.17.0;python_version>='3'
 paramiko==2.8.0
 python-manilaclient<=3.0.0
 python-novaclient<18.3.0
+oslo.utils>=3.36.0
+oslo.log>=3.36.0
+oslo.serialization

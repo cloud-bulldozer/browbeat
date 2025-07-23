@@ -6,24 +6,25 @@
 
 # Adjust Browbeat user if you are deploying Browbeat on a different machine
 # other than kni provisoner host. use 'stack' if you deploying in undercloud
-browbeat_user: kni
+browbeat_user: root
 # Login user for the local/jump machine (Typically Undercloud)
 local_remote_user: stack
 # Login user for the Overcloud hosts
 host_remote_user: heat-admin
 
 is_rhoso_deployment: true
-python_interpreter: /usr/bin/python3.6
-kubeconfig_path: /home/kni/clusterconfigs/auth/kubeconfig
+python_interpreter: "{{ '/usr/bin/python3.9' if is_rhoso_deployment else '/usr/bin/python3.6' }}"
+kubeconfig_path: /root/mno/kubeconfig
 kube_burner_path: https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.7.12/kube-burner-V1.7.12-linux-x86_64.tar.gz
 ocp_metrics_query: roles/index-ocp-data/templates/metrics.yaml
 kubeburner_index_interval: 10 #in minutes
 
 # OpenStack Installer
-# Tripleo is the only installer supported currently
-tripleo: true
+# Tripleo is the only installer supported for non RHOSO deployments
+tripleo: false
 
-home_dir: "/home/{{browbeat_user}}"
+# if your browbeat user is not root, you need to change this to /home/{{browbeat_user}}
+home_dir: "/{{browbeat_user}}"
 browbeat_path: "{{home_dir}}/browbeat"
 
 # Creates rally deployment Undercloud
@@ -45,7 +46,7 @@ browbeat_venv: "{{browbeat_path}}/.browbeat-venv"
 rally_venv: "{{browbeat_path}}/.rally-venv"
 
 # Rally version to install
-rally_openstack_version: 2.2.0
+rally_openstack_version: "{{ '3.0.0' if is_rhoso_deployment else '2.2.0' }}"
 
 # The default Shaker venv
 shaker_venv: "{{browbeat_path}}/.shaker-venv"
