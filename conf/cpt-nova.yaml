@@ -1,0 +1,181 @@
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
+browbeat:
+  cloud_name: openstack
+  rerun: 1
+  # Two types of rerun:
+  # iteration reruns on the iteration
+  # complete reruns after all workloads complete
+  # rerun_type: complete
+  rerun_type: iteration
+  # This option enables starting collectd before running workloads,
+  # and stopping collectd after running workloads. It should be enabled
+  # when it is required to store collectd data only when workloads
+  # are running. Please install collectd by running the command
+  # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
+  # setting this option to true.
+  start_stop_collectd: true
+  # This option enables creation of annotations on the Grafana dashboard.
+  # Separate annotations will be created on all panels for the duration of
+  # each scenario that is run using this browbeat configuration file.
+  # grafana_host, grafana_port, grafana_username, grafana_password
+  # and grafana_dashboard_uid have to be passed in
+  # ansible/install/group_vars/all.yml before this option is enabled.
+  # In the Openstack General System Performance Dashboard, the default
+  # annotation setting should be set to query by tag $Cloud when this feature
+  # is enabled.
+  # This feature has been tested on Grafana v9.2.0
+  create_grafana_annotations: false
+ansible:
+  hosts: ansible/hosts.yml
+  metadata_playbook: ansible/gather/stockpile.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
+  ssh_config: /home/stack/.ssh/config
+elasticsearch:
+  enabled: true
+  host: 1.1.1.1
+  port: 80
+  #allowed values: shortterm, longterm
+  life: longterm
+  regather: false
+  metadata_files:
+grafana:
+  enabled: false
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+filebeat:
+  enabled: false
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - octavia: rally/rally-plugins/octavia
+    - cinder: rally/rally-plugins/cinder
+    - nova: rally/rally-plugins/nova
+    - browbeat: rally/rally-plugins/browbeat
+    - workloads: rally/rally-plugins/workloads
+    - dynamic-workloads: rally/rally-plugins/dynamic-workloads
+    - reports: rally/rally-plugins/reports
+    - manila: rally/rally-plugins/manila
+    - storage: rally/rally-plugins/pbench-fio
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+
+workloads:
+# Rally
+  - name: nova
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: boot-snapshot-delete-cirros
+        enabled: true
+        file: rally/nova/nova-boot-snapshot-cc.yml
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+      - name: boot-list-cirros
+        enabled: true
+        image_name: cirro5
+        file: rally/nova/nova-boot-list-cc.yml
+        flavor_name: m1.tiny-cirros
+      - name: boot-show-cirros
+        enabled: true
+        image_name: cirro5
+        file: rally/nova/nova-boot-show-cc.yml
+        flavor_name: m1.tiny-cirros
+      - name: boot-bounce-delete-cirros
+        enabled: true
+        image_name: cirro5
+        file: rally/nova/nova-boot-bounce-delete-cc.yml
+        flavor_name: m1.tiny-cirros
+      - name: boot-lock-unlock-cirros
+        enabled: true
+        image_name: cirro5
+        file: rally/nova/nova-lock-unlock-cc.yml
+        flavor_name: m1.tiny-cirros
+      - name: boot_server_from_volume_and_resize
+        enabled: true
+        image_name: cirro5
+        file: rally/nova/nova-boot-from-volume-and-resize.yml
+        initial_flavor_name: m1.tiny-cirros
+        final_flavor_name: m1.small
+  - name: simple-plugins
+    enabled: true
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 8
+    times: 10
+    scenarios:
+      - name: nova-boot-in-batches-with-delay
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        # Time to throttle VM boot in seconds
+        delay_time: 600
+        # Number of iterations that can run before delay is introduced
+        # iterations_per_batch should always be greater than concurrency.
+        iterations_per_batch: 10
+        # Number of iterations that should be delayed per batch.
+        # For example, if iterations_per_batch is 3000 and num_iterations_to_delay
+        # is 50, iterations 3000-3050, 6000-6050.... will be delayed.
+        # Setting this value to a small multiple(1x or 2x) of the concurrency is optimal.
+        # num_iterations_to_delay should always be lesser than iterations_per_batch.
+        num_iterations_to_delay: 8
+        num_tenants: 1
+        num_networks_per_tenant: 1
+        file: rally/rally-plugins/nova/nova_boot_in_batches_with_delay.yml
+      - name: netcreate-boot
+        enabled: true
+        enable_dhcp: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot.yml
+      - name: netcreate-boot-one-network
+        enabled: true
+        enable_dhcp: true
+        num_vms: 4
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_vms_on_single_network.yml
+      - name: netcreate-boot-ping
+        enabled: true
+        num_vms: 4
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        ext_net_id:
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping.yml
+      - name: netcreate-boot-ping-sec-group
+        enabled: true
+        num_vms: 4
+        num_sg: 2
+        num_sgr: 3
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        ext_net_id:
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_fip_ping_sec_groups.yml
+      - name: netcreate-boot-test-metadata
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        username: cirros
+        ssh_timeout: 120
+        external_network:
+        file: rally/rally-plugins/netcreate-boot/netcreate_nova_boot_test_metadata.yml
