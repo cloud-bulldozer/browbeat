@@ -78,7 +78,7 @@ shaker:
 workloads:
 # Rally
   - name: nova
-    enabled: false
+    enabled: true
     type: rally
     rally_deployment: overcloud
     concurrency:
@@ -117,7 +117,7 @@ workloads:
         initial_flavor_name: m1.tiny-cirros
         final_flavor_name: m1.small
   - name: simple-plugins
-    enabled: true
+    enabled: false
     type: rally
     rally_deployment: overcloud
     concurrency:
