@@ -927,3 +927,9 @@ workloads:
       - name: create-and-delete-certificate
         enabled: true
         file: rally/barbican/create-and-delete-certificate.yaml
+      - name: create-and-delete-asymmetric
+        enabled: true
+        file: rally/barbican/create-and-delete-asymmetric.yaml
+      - name: create-and-delete-symmetric-secret
+        enabled: true
+        file: rally/barbican/create-and-delete-symmetric-secret.yaml
