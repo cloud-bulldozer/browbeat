@@ -2,7 +2,6 @@
 - project:
     templates:
       - docs-on-readthedocs
-      - openstack-python37-jobs
       - openstack-tox-molecule
     vars:
       rtd_webhook_id: '51626'
@@ -10,10 +9,14 @@
       jobs:
         - openstack-tox-linters
         - openstack-tox-molecule
+        - openstack-tox-py38
+        - openstack-tox-py39
     gate:
       jobs:
         - openstack-tox-linters
         - openstack-tox-molecule
+        - openstack-tox-py38
+        - openstack-tox-py39
     post:
       jobs:
         - browbeat-upload-git-mirror
