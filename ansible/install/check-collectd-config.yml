@@ -5,4 +5,4 @@
       include_vars:
         file: "group_vars/all.yml"
         name: group_vars
-      failed_when: group_vars['graphite_host'] is none
+      failed_when: group_vars['is_rhoso_deployment'] is not true and group_vars['graphite_host'] is none
