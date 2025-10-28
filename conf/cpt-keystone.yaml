@@ -1,0 +1,111 @@
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
+browbeat:
+  cloud_name: openstack
+  rerun: 1
+  # Two types of rerun:
+  # iteration reruns on the iteration
+  # complete reruns after all workloads complete
+  # rerun_type: complete
+  rerun_type: iteration
+  # This option enables starting collectd before running workloads,
+  # and stopping collectd after running workloads. It should be enabled
+  # when it is required to store collectd data only when workloads
+  # are running. Please install collectd by running the command
+  # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
+  # setting this option to true.
+  start_stop_collectd: true
+  # This option enables creation of annotations on the Grafana dashboard.
+  # Separate annotations will be created on all panels for the duration of
+  # each scenario that is run using this browbeat configuration file.
+  # grafana_host, grafana_port, grafana_username, grafana_password
+  # and grafana_dashboard_uid have to be passed in
+  # ansible/install/group_vars/all.yml before this option is enabled.
+  # In the Openstack General System Performance Dashboard, the default
+  # annotation setting should be set to query by tag $Cloud when this feature
+  # is enabled.
+  # This feature has been tested on Grafana v9.2.0
+  create_grafana_annotations: false
+ansible:
+  hosts: ansible/hosts.yml
+  metadata_playbook: ansible/gather/stockpile.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
+  ssh_config: /home/stack/.ssh/config
+elasticsearch:
+  enabled: true
+  host: 1.1.1.1
+  port: 80
+  #allowed values: shortterm, longterm
+  life: longterm
+  regather: false
+  metadata_files:
+grafana:
+  enabled: false
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+filebeat:
+  enabled: false
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - octavia: rally/rally-plugins/octavia
+    - cinder: rally/rally-plugins/cinder
+    - nova: rally/rally-plugins/nova
+    - browbeat: rally/rally-plugins/browbeat
+    - workloads: rally/rally-plugins/workloads
+    - dynamic-workloads: rally/rally-plugins/dynamic-workloads
+    - reports: rally/rally-plugins/reports
+    - manila: rally/rally-plugins/manila
+    - storage: rally/rally-plugins/pbench-fio
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+
+workloads:
+# Rally
+  - name: authenticate
+    enabled: true
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 8
+    times: 100
+    scenarios:
+      - name: authentic-keystone
+        enabled: true
+        file: rally/authenticate/keystone-cc.yml
+      - name: authentic-neutron
+        enabled: true
+        file: rally/authenticate/validate_neutron-cc.yml
+      - name: authentic-nova
+        enabled: true
+        file: rally/authenticate/validate_nova-cc.yml
+
+  - name: keystonebasic
+    enabled: true
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 8
+    times: 100
+    scenarios:
+      - name: create-and-list-tenants
+        enabled: true
+        file: rally/keystonebasic/create_and_list_tenants-cc.yml
+      - name: create-and-list-users
+        enabled: true
+        file: rally/keystonebasic/create_and_list_users-cc.yml
