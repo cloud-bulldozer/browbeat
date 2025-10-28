@@ -101,7 +101,7 @@ workloads:
         file: rally/nova/nova-boot-show-cc.yml
         flavor_name: m1.tiny-cirros
       - name: boot-bounce-delete-cirros
-        enabled: true
+        enabled: false
         image_name: cirro5
         file: rally/nova/nova-boot-bounce-delete-cc.yml
         flavor_name: m1.tiny-cirros
