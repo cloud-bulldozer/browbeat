@@ -1,5 +1,6 @@
 {% set image_name = image_name or "centos7" %}
 {% set flavor_name = flavor_name or "m1.small" %}
+{% set availability_zone = availability_zone or "nova" %}
 {% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
 {% set sla_max_failure = sla_max_failure or 0 %}
 {% set sla_max_seconds = sla_max_seconds or 60 %}
@@ -7,6 +8,7 @@
   NovaServers.boot_and_bounce_server:
     -
       args:
+        availability_zone: "{{ availability_zone }}"
         flavor:
           name: {{flavor_name}}
         image:
