@@ -13,7 +13,7 @@ local_remote_user: stack
 host_remote_user: heat-admin
 
 is_rhoso_deployment: true
-python_interpreter: "{{ '/usr/bin/python3.9' if is_rhoso_deployment else '/usr/bin/python3.6' }}"
+python_interpreter: /usr/bin/python3
 kubeconfig_path: /root/mno/kubeconfig
 kube_burner_path: https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.7.12/kube-burner-V1.7.12-linux-x86_64.tar.gz
 ocp_metrics_query: roles/index-ocp-data/templates/metrics.yaml
