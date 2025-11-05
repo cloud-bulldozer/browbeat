@@ -1,0 +1,36 @@
+{% set sla_max_avg_duration = sla_max_avg_duration or 60 %}
+{% set sla_max_failure = sla_max_failure or 0 %}
+{% set sla_max_seconds = sla_max_seconds or 60 %}
+---
+  ManilaShares.create_and_list_share:
+    -
+      args:
+        share_proto: "{{ share_proto }}"
+        size: 1
+        share_type: {{ share_type }}
+        min_sleep: 2
+        max_sleep: 4
+      runner:
+        type: "constant"
+        times: {{ times }}
+        concurrency: {{ concurrency }}
+      context:
+        quotas:
+          manila:
+            shares: -1
+            gigabytes: -1
+            share_networks: -1
+        users:
+          tenants: 2
+          users_per_tenant: 1
+          user_choice_method: "round_robin"
+        network:
+          networks_per_tenant: 1
+          start_cidr: "10.0.0.0/16"
+        manila_share_networks:
+          use_share_networks: True
+      sla:
+        max_avg_duration: {{ sla_max_avg_duration }}
+        max_seconds_per_iteration: {{ sla_max_seconds }}
+        failure_rate:
+          max: {{ sla_max_failure }}

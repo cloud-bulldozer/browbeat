@@ -876,6 +876,11 @@ workloads:
         provider_net_id:
         ext_net_id:
         file: rally/rally-plugins/manila/create-share-boot-vm-mount-share-write-delete-vm-share.yml
+      - name: create-share-with-autocreated-share-network-list
+        enabled: true
+        share_type: default
+        share_proto: "nfs"
+        file: rally/manila/create-share-with-share-networks-list.yaml
 
   - name: storage
     enabled: false
