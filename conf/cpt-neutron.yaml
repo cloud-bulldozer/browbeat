@@ -1,0 +1,267 @@
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
+browbeat:
+  cloud_name: openstack
+  rerun: 1
+  # Two types of rerun:
+  # iteration reruns on the iteration
+  # complete reruns after all workloads complete
+  # rerun_type: complete
+  rerun_type: iteration
+  # This option enables starting collectd before running workloads,
+  # and stopping collectd after running workloads. It should be enabled
+  # when it is required to store collectd data only when workloads
+  # are running. Please install collectd by running the command
+  # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
+  # setting this option to true.
+  start_stop_collectd: true
+  # This option enables creation of annotations on the Grafana dashboard.
+  # Separate annotations will be created on all panels for the duration of
+  # each scenario that is run using this browbeat configuration file.
+  # grafana_host, grafana_port, grafana_username, grafana_password
+  # and grafana_dashboard_uid have to be passed in
+  # ansible/install/group_vars/all.yml before this option is enabled.
+  # In the Openstack General System Performance Dashboard, the default
+  # annotation setting should be set to query by tag $Cloud when this feature
+  # is enabled.
+  # This feature has been tested on Grafana v9.2.0
+  create_grafana_annotations: false
+ansible:
+  hosts: ansible/hosts.yml
+  metadata_playbook: ansible/gather/stockpile.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
+  ssh_config: /home/stack/.ssh/config
+elasticsearch:
+  enabled: true
+  host: 1.1.1.1
+  port: 80
+  #allowed values: shortterm, longterm
+  life: longterm
+  regather: false
+  metadata_files:
+grafana:
+  enabled: false
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+filebeat:
+  enabled: false
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - octavia: rally/rally-plugins/octavia
+    - cinder: rally/rally-plugins/cinder
+    - nova: rally/rally-plugins/nova
+    - browbeat: rally/rally-plugins/browbeat
+    - workloads: rally/rally-plugins/workloads
+    - dynamic-workloads: rally/rally-plugins/dynamic-workloads
+    - reports: rally/rally-plugins/reports
+    - manila: rally/rally-plugins/manila
+    - storage: rally/rally-plugins/pbench-fio
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+
+workloads:
+# Rally
+  - name: neutron
+    enabled: true
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 2
+    times: 10
+    scenarios:
+      - name: create-list-network
+        enabled: true
+        file: rally/neutron/neutron-create-list-network-cc.yml
+      - name: create-update-network
+        enabled: true
+        file: rally/neutron/neutron-create-update-network-cc.yml
+        network_update_args:
+          admin_state_up: False
+      - name: create-delete-network
+        enabled: true
+        file: rally/neutron/neutron-create-delete-network-cc.yml
+      - name: create-list-port
+        enabled: true
+        file: rally/neutron/neutron-create-list-port-cc.yml
+      - name: create-update-port
+        enabled: true
+        file: rally/neutron/neutron-create-update-port-cc.yml
+        network_create_args: {}
+        port_create_args: {}
+        ports_per_network: 5
+        port_update_args:
+          admin_state_up: False
+          device_id: "dummy_id"
+          device_owner: "dummy_owner"
+      - name: create-delete-port
+        enabled: true
+        file: rally/neutron/neutron-create-delete-port-cc.yml
+        network_create_args: {}
+        port_create_args: {}
+        ports_per_network: 5
+      - name: create-list-router
+        enabled: true
+        file: rally/neutron/neutron-create-list-router-cc.yml
+      - name: create-update-router
+        enabled: true
+        file: rally/neutron/neutron-create-update-router-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
+        router_create_args: {}
+        router_update_args:
+          admin_state_up: False
+      - name: create-delete-router
+        enabled: true
+        file: rally/neutron/neutron-create-delete-router-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
+        router_create_args: {}
+      - name: create-list-security-group
+        enabled: true
+        file: rally/neutron/neutron-create-list-security-group-cc.yml
+      - name: create-list-subnet
+        enabled: true
+        file: rally/neutron/neutron-create-list-subnet-cc.yml
+      - name: create-update-subnets
+        enabled: true
+        file: rally/neutron/neutron-create-update-subnet-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.4.0.0/16"
+        subnets_per_network: 2
+        subnet_update_args:
+          enable_dhcp: true
+      - name: create-delete-subnets
+        enabled: true
+        file: rally/neutron/neutron-create-delete-subnet-cc.yml
+        network_create_args: {}
+        subnet_create_args: {}
+        subnet_cidr_start: "1.1.0.0/30"
+        subnets_per_network: 2
+      - name: create-list-trunks
+        enabled: true
+        subport_count: 10
+        file: rally/neutron/neutron-create-list-trunks.yml
+      - name: boot-server-with-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subport_count: 10
+        file: rally/neutron/neutron-boot-server-with-subports.yml
+      - name: boot-server-and-add-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subport_count: 10
+        file: rally/neutron/neutron-boot-server-and-add-subports.yml
+      - name: boot-server-and-batch-add-subports
+        enabled: true
+        flavor_name: m1.small
+        image_name: centos7
+        subports_per_batch: 10
+        batches: 5
+        file: rally/neutron/neutron-boot-server-and-batch-add-subports.yml
+
+  - name: simple-plugins
+    enabled: false
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 8
+    times: 10
+    scenarios:
+      - name: router-subnet-create-delete
+        enabled: true
+        num_networks:  5
+        file: rally/rally-plugins/neutron/router_subnet_create_delete.yml
+      - name: neutron-securitygroup-port
+        enabled: true
+        file: rally/rally-plugins/neutron/securitygroup_port.yml
+      - name: octavia-create-loadbalancer-resources
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        user: cirros
+        ext_net_id:
+        protocol: HTTP
+        lb_algorithm: ROUND_ROBIN
+        protocol_port: 80
+        num_clients: 1
+        file: rally/rally-plugins/octavia/octavia-create-loadabalancer-resources.yml
+      - name: octavia-fully-populated-loadbalancer
+        enabled: true
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
+        vip_subnet_id:
+        num_lb: 1
+        jump_host_ip:
+        user: "cirros"
+        user_data_file:
+        file: rally/rally-plugins/octavia/octavia-fully-populated-loadbalancer.yml
+      - name: octavia-create-loadbalancer-listeners-pools-members
+        enabled: true
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
+        protocol: HTTP
+        lb_algorithm: ROUND_ROBIN
+        protocol_port: 80
+        vip_subnet_id:
+        num_pools: 2
+        num_clients: 2
+        user: "cirros"
+        user_data_file: /home/stack/user_data.file
+        jump_host_ip:
+        file: rally/rally-plugins/octavia/octavia-create-loadabalancer-listeners-pools-members.yml
+      - name: trunk-network-simulation
+        enabled: false
+        num_subports: 1
+        ext_net_id:
+        file: ./rally/rally-plugins/netcreate-boot/trunk_network_simulation.yml
+      # provider_phys_net should be provider physical network name.
+      # Please don't create any vlan interfaces on the physical interface used with this provider type.
+      # So use a dedicated interface with provider bridge mappings.
+      # Provide the MAC address of this interface you find in the undercloud.
+      # Workload will prepare a scapy packet using the interface name and mac.
+      - name: provider-netcreate-boot-ping
+        enabled: true
+        enable_dhcp: true
+        num_vms: 1
+        image_name: custom-cirros
+        flavor_name: m1.tiny-cirros
+        provider_phys_net: "provider"
+        iface_name: "ens7f0"
+        iface_mac: "3c:fd:fe:c1:8c:70"
+        file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping.yml
+      - name: nova-boot-from-context-provider-networks-ping
+        # Creates provider networks as part of rally context. Number of VMs booted is equal to times.
+        # VMs are booted on the provider networks in round robin order.
+        enabled: true
+        num_provider_networks: 8
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        provider_phys_net: "provider"
+        iface_name: "ens7f0"
+        iface_mac: "3c:fd:fe:c1:8c:70"
+        cidr_prefix: "172.31"
+        ping_timeout: 30
+        file: rally/rally-plugins/netcreate-boot/nova_boot_from_context_provider_networks_ping.yml

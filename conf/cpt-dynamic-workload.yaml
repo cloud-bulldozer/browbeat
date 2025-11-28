@@ -1,0 +1,172 @@
+# Basic set of initial stress tests to test overcloud before running complete set of benchmarks.
+browbeat:
+  cloud_name: openstack
+  rerun: 1
+  # Two types of rerun:
+  # iteration reruns on the iteration
+  # complete reruns after all workloads complete
+  # rerun_type: complete
+  rerun_type: iteration
+  # This option enables starting collectd before running workloads,
+  # and stopping collectd after running workloads. It should be enabled
+  # when it is required to store collectd data only when workloads
+  # are running. Please install collectd by running the command
+  # "cd ansible;ansible-playbook -i hosts.yml -vvv install/collectd.yml" before
+  # setting this option to true.
+  start_stop_collectd: true
+  # This option enables creation of annotations on the Grafana dashboard.
+  # Separate annotations will be created on all panels for the duration of
+  # each scenario that is run using this browbeat configuration file.
+  # grafana_host, grafana_port, grafana_username, grafana_password
+  # and grafana_dashboard_uid have to be passed in
+  # ansible/install/group_vars/all.yml before this option is enabled.
+  # In the Openstack General System Performance Dashboard, the default
+  # annotation setting should be set to query by tag $Cloud when this feature
+  # is enabled.
+  # This feature has been tested on Grafana v9.2.0
+  create_grafana_annotations: false
+ansible:
+  hosts: ansible/hosts.yml
+  metadata_playbook: ansible/gather/stockpile.yml
+  logging_playbook: ansible/common_logging/browbeat_logging.yml
+  start_collectd_playbook: ansible/install/start-collectd.yml
+  stop_collectd_playbook: ansible/install/stop-collectd.yml
+  check_collectd_config_playbook: ansible/install/check-collectd-config.yml
+  ssh_config: /home/stack/.ssh/config
+elasticsearch:
+  enabled: true
+  host: 1.1.1.1
+  port: 80
+  #allowed values: shortterm, longterm
+  life: longterm
+  regather: false
+  metadata_files:
+grafana:
+  enabled: false
+  host: example.grafana.com
+  port: 3000
+  dashboards:
+    - openstack-general-system-performance
+filebeat:
+  enabled: false
+rally:
+  sleep_before: 5
+  sleep_after: 5
+  plugins:
+    - glance: rally/rally-plugins/glance
+    - neutron: rally/rally-plugins/neutron
+    - netcreate-boot: rally/rally-plugins/netcreate-boot
+    - octavia: rally/rally-plugins/octavia
+    - cinder: rally/rally-plugins/cinder
+    - nova: rally/rally-plugins/nova
+    - browbeat: rally/rally-plugins/browbeat
+    - workloads: rally/rally-plugins/workloads
+    - dynamic-workloads: rally/rally-plugins/dynamic-workloads
+    - reports: rally/rally-plugins/reports
+    - manila: rally/rally-plugins/manila
+    - storage: rally/rally-plugins/pbench-fio
+shaker:
+  server: 1.1.1.1
+  port: 5555
+  flavor: m1.small
+  join_timeout: 600
+  sleep_before: 0
+  sleep_after: 0
+  shaker_region: regionOne
+  external_host: 2.2.2.2
+
+workloads:
+# Rally
+  - name: dynamic-workloads
+    enabled: true
+    type: rally
+    rally_deployment: overcloud
+    concurrency:
+      - 1
+    times: 1
+    scenarios:
+      - name: dynamic-workload
+        enabled: true
+        # nova_api_version >=2.52 is required for server tags,
+        # which are used by dynamic workloads.
+        nova_api_version: 2.52
+        # smallest image name and smallest flavor name are used for
+        # vm dynamic scenarios and for jumphost in trunk dynamic scenario.
+        smallest_image_name: cirro5
+        smallest_flavor_name: m1.tiny-cirros
+        ext_net_id:
+        num_create_vms: 10
+        num_delete_vms: 5
+        num_vms_to_create_with_fip: 10
+        num_vms_to_migrate: 5
+        num_stop_start_vms: 5
+        octavia_image_name: custom-cirros
+        octavia_flavor_name: m1.tiny-cirros
+        num_lbs: 4
+        num_pools: 2
+        num_clients: 2
+        delete_num_lbs: 2
+        delete_num_members: 1
+        user: cirros
+        #If num_pools > 2 you need to make the change in
+        #octavia-userdata.file ( NUM_POOLS = <num_pools>)
+        user_data_file: /home/stack/octavia-userdata.file
+        num_initial_subports: 1
+        num_trunk_vms: 1
+        num_add_subports_trunks: 1
+        num_add_subports: 1
+        num_delete_subports_trunks: 1
+        num_delete_subports: 1
+        provider_phys_net: "provider1"
+        iface_name: "ens7f0"
+        iface_mac: "3c:fd:fe:c1:73:40"
+        num_vms_provider_net: 2
+        e2e_kube_burner_job_iterations: 100
+        e2e_kube_burner_qps: 20
+        e2e_kube_burner_burst: 20
+        # e2e_kube_burner_workload can be poddensity, clusterdensity, maxnamespaces,
+        # or maxservices
+        e2e_kube_burner_workload: poddensity
+        ocp_kubeconfig_paths:
+          - /home/stack/.kube/config
+        # Run stress_ng inside VMs. To run this, the following steps have to be performed before running browbeat.yml to install browbeat.
+        # 1. In ansible/install/group_vars/all.yml
+        # (i) Set install_browbeat_workloads to true
+        # (ii) Fill browbeat_network
+        # (iii) Enable the stress_ng workload
+        stress_ng_username: centos
+        stress_ng_image_name: browbeat-stress-ng
+        stress_ng_flavor_name: m1.small
+        stress_ng_ssh_timeout: 120
+        stress_ng_num_clients: 2
+        stress_ng_cpu: 4
+        stress_ng_io: 2
+        stress_ng_vm: 1
+        stress_ng_vm_bytes: '1G'
+        stress_ng_timeout: '60s'
+        # External networks with /23 ranges will be created by dynamic workloads.
+        # All these external networks will share the first 16 bits.
+        cidr_prefix: "172.31"
+        # num_external_networks are the number of the external networks to be
+        # created as part of rally context for dynamic workloads. These external
+        # networks will be used in a round robin fashion by the iterations.
+        num_external_networks: 16
+        # workloads can contain a single workload(Eg. : create_delete_servers),
+        # or a comma separated string(Eg. : create_delete_servers,migrate_servers).
+        # Currently supported workloads : create_delete_servers, migrate_servers
+        # swap_floating_ips_between_servers, stop_start_servers,
+        # boot_clients_and_run_stress_ng_on_clients, create_loadbalancers,
+        # delete_loadbalancers, delete_members_random_lb, pod_fip_simulation,
+        # add_subports_to_random_trunks, delete_subports_from_random_trunks,
+        # swap_floating_ips_between_random_subports,
+        # all_vm_and_trunk(will run all vm and trunk dynamic workloads),
+        # provider_netcreate_nova_boot_ping, provider_net_nova_boot_ping, provider_net_nova_delete,
+        # e2e_kube_burner, ocp_on_osp
+        # Steps for running ocp_on_osp workload, given that underlying openstack has been
+        # deployed with necessary dependencies:
+        # 1) Pass your pull secret in ocp_on_osp/vars/shift_stack_vars.yaml
+        # 2) If you want to change any default params(like ocp_version, worker count, master and worker flavors, etc), refer to ocp_on_osp/vars/shift_stack_vars.yml
+        # 3) Run "ansible-playbook -vvv ocp_on_osp/ocp_bootstrap.yml"
+        # 4) And then run ocp_on_osp workload. NOTE: use "ansible-playbook -vvv ocp_on_osp/ocp_cleanup.yml" for the clean up.
+        workloads: all_vm_and_trunk
+        file: rally/rally-plugins/dynamic-workloads/dynamic_workload.yml
