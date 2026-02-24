@@ -190,6 +190,7 @@ index_prow_run() {
     base_json='{
         "ciSystem":"'"${ci}"'",
         "uuid":"'"${browbeat_uuid}"'",
+        "browbeat_uuid":"'"${browbeat_uuid}"'",
         "benchmark":"'"${BENCHMARK:-}"'",
         "masterNodesCount":"'"${masters}"'",
         "workerNodesCount":"'"${workers}"'",
