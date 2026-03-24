@@ -133,8 +133,7 @@ class DynamicWorkload(vm.VMDynamicScenario, trunk.TrunkDynamicScenario,
         if run_all_vm_and_trunk_workloads or "stop_start_servers" in workloads_list:
             self.stop_start_servers_with_fip(num_stop_start_vms)
 
-        if(run_all_vm_and_trunk_workloads or
-           "boot_clients_and_run_stress_ng_on_clients" in workloads_list):
+        if "boot_clients_and_run_stress_ng_on_clients" in workloads_list:
             self.run_stress_ng_on_vms(stress_ng_flavor, stress_ng_username,
                                       stress_ng_ssh_timeout, stress_ng_num_clients,
                                       stress_ng_command, stress_ng_image,
