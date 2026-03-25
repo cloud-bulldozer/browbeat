@@ -313,24 +313,6 @@ class NeutronUtils(neutron_utils.NeutronScenario):
         """
         return self.admin_clients("neutron").show_port(port_id)
 
-    def get_router_from_context(self):
-        """Retrieve router that was created as part of Rally context
-        :returns: router object that is part of Rally context
-        """
-        return self.show_router(self.context["tenant"]["networks"][0]["router_id"])
-
-    def get_network_from_context(self):
-        """Retrieve network that was created as part of Rally context
-        :returns: network object that is part of Rally context
-        """
-        return self.show_network(self.context["tenant"]["networks"][0]["id"])
-
-    def get_subnet_from_context(self):
-        """Retrieve subnet that was created as part of Rally context
-        :returns: subnet object that is part of Rally context
-        """
-        return self.show_subnet(self.context["tenant"]["networks"][0]["subnets"][0])
-
 class LockUtils:
 
     def acquire_lock(self, object_id):
