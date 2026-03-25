@@ -14,6 +14,7 @@ Contents:
    introduction
    installation
    usage
+   workflow
    plugins
    charts
    developing

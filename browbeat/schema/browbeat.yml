@@ -170,4 +170,4 @@ mapping:
           type:
             type: str
             required: True
-            enum: ['rally', 'shaker']
+            enum: ['rally', 'shaker', 'workflow']

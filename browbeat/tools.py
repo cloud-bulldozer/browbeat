@@ -18,6 +18,7 @@ import subprocess
 
 from browbeat.workloads import rally
 from browbeat.workloads import shaker
+from browbeat.workloads import workflow
 
 
 class Tools(object):
@@ -65,6 +66,8 @@ class Tools(object):
             workloads = rally.Rally(self.config, result_dir_ts)
         elif workload["type"] == "shaker":
             workloads = shaker.Shaker(self.config, result_dir_ts)
+        elif workload["type"] == "workflow":
+            workloads = workflow.Workflow(self.config, result_dir_ts)
         else:
             self.logger.error("Unknown workload provider: {}".format(workload["type"]))
         workloads.run_workload(copy.deepcopy(workload), run_iteration)

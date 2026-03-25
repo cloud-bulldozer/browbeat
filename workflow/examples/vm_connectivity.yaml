@@ -1,0 +1,114 @@
+name: "VM Connectivity Test"
+description: "Create VMs and test connectivity"
+
+variables:
+  image_name: "cirros"
+  flavor_name: "m1.small"
+  network_name: "test-vm-network"
+  vm1_name: "test-vm-1"
+  vm2_name: "test-vm-2"
+
+steps:
+  - name: "create-network"
+    operation: "neutron.create_network"
+    args:
+      name: "{{ network_name }}"
+      admin_state_up: true
+    save_as: "network"
+    on_failure: "fail"
+
+  - name: "create-subnet"
+    operation: "neutron.create_subnet"
+    args:
+      network_id: "{{ network.id }}"
+      cidr: "192.168.100.0/24"
+      ip_version: 4
+      name: "test-vm-subnet"
+      dns_nameservers:
+        - "8.8.8.8"
+    save_as: "subnet"
+    on_failure: "fail"
+
+  - name: "log-network-ready"
+    operation: "workflow.log"
+    args:
+      message: "Network {{ network.name }} ({{ network.id }}) is ready"
+      level: "info"
+
+  - name: "create-vm-1"
+    operation: "nova.create_server"
+    args:
+      name: "{{ vm1_name }}"
+      image: "{{ image_name }}"
+      flavor: "{{ flavor_name }}"
+      nics:
+        - net-id: "{{ network.id }}"
+    save_as: "vm1"
+    wait_for_status: "ACTIVE"
+    wait_timeout: 300
+    on_failure: "fail"
+
+  - name: "log-vm1-created"
+    operation: "workflow.log"
+    args:
+      message: "VM1 {{ vm1.name }} ({{ vm1.id }}) created with status {{ vm1.status }}"
+      level: "info"
+
+  - name: "create-vm-2"
+    operation: "nova.create_server"
+    args:
+      name: "{{ vm2_name }}"
+      image: "{{ image_name }}"
+      flavor: "{{ flavor_name }}"
+      nics:
+        - net-id: "{{ network.id }}"
+    save_as: "vm2"
+    wait_for_status: "ACTIVE"
+    wait_timeout: 300
+    on_failure: "fail"
+
+  - name: "log-vm2-created"
+    operation: "workflow.log"
+    args:
+      message: "VM2 {{ vm2.name }} ({{ vm2.id }}) created with status {{ vm2.status }}"
+      level: "info"
+
+  - name: "wait-for-network-setup"
+    operation: "workflow.wait"
+    args:
+      seconds: 30
+
+  - name: "log-vms-ready"
+    operation: "workflow.log"
+    args:
+      message: "Both VMs are active and network is ready for connectivity tests"
+      level: "info"
+
+  - name: "delete-vm-1"
+    operation: "nova.delete_server"
+    args:
+      server_id: "{{ vm1.id }}"
+    on_failure: "continue"
+
+  - name: "delete-vm-2"
+    operation: "nova.delete_server"
+    args:
+      server_id: "{{ vm2.id }}"
+    on_failure: "continue"
+
+  - name: "wait-for-vm-deletion"
+    operation: "workflow.wait"
+    args:
+      seconds: 10
+
+  - name: "delete-network"
+    operation: "neutron.delete_network"
+    args:
+      network_id: "{{ network.id }}"
+    on_failure: "continue"
+
+  - name: "log-cleanup-complete"
+    operation: "workflow.log"
+    args:
+      message: "VM connectivity test completed and resources cleaned up"
+      level: "info"
