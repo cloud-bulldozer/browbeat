@@ -592,6 +592,13 @@ workloads:
         iface_name: "ens7f0"
         iface_mac: "3c:fd:fe:c1:8c:70"
         file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping.yml
+      - name: provider-netcreate-boot-ping-ssh
+        enabled: true
+        image_name: cirro5
+        flavor_name: m1.tiny-cirros
+        username: cirros
+        iface_name: "ens7f0"
+        file: rally/rally-plugins/netcreate-boot/provider_netcreate_nova_boot_ping_ssh.yml
       - name: nova-boot-from-context-provider-networks-ping
         # Creates provider networks as part of rally context. Number of VMs booted is equal to times.
         # VMs are booted on the provider networks in round robin order.
