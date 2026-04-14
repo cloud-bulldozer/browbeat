@@ -1,0 +1,53 @@
+name: "Basic Network Test"
+description: "Simple network creation and deletion test scenario"
+
+variables:
+  network_name: "test-network-workflow"
+
+steps:
+  - name: "create-network"
+    operation: "neutron.create_network"
+    args:
+      name: "{{ network_name }}"
+      admin_state_up: true
+    save_as: "network"
+    on_failure: "fail"
+
+  - name: "log-network-created"
+    operation: "workflow.log"
+    args:
+      message: "Successfully created network {{ network.id }}"
+      level: "info"
+
+  - name: "create-subnet"
+    operation: "neutron.create_subnet"
+    args:
+      network_id: "{{ network.id }}"
+      cidr: "192.168.100.0/24"
+      ip_version: 4
+      name: "test-subnet-workflow"
+    save_as: "subnet"
+    on_failure: "fail"
+
+  - name: "log-subnet-created"
+    operation: "workflow.log"
+    args:
+      message: "Successfully created subnet {{ subnet.id }} with CIDR {{ subnet.cidr }}"
+      level: "info"
+
+  - name: "wait-5-seconds"
+    operation: "workflow.wait"
+    args:
+      seconds: 5
+
+  - name: "delete-network"
+    operation: "neutron.delete_network"
+    args:
+      network_id: "{{ network.id }}"
+    on_failure: "continue"
+
+  - name: "log-complete"
+    operation: "workflow.log"
+    args:
+      message: "Network test scenario completed successfully"
+      level: "info"

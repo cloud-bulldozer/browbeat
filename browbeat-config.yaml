@@ -945,3 +945,15 @@ workloads:
       - name: create-and-delete-symmetric-secret
         enabled: true
         file: rally/barbican/create-and-delete-symmetric-secret.yaml
+
+# Workflow - User-defined OpenStack test sequences
+  - name: workflow-scenarios
+    enabled: false
+    type: workflow
+    scenarios:
+      - name: basic-network-test
+        enabled: true
+        file: workflow/examples/basic_network.yaml
+      - name: vm-connectivity-test
+        enabled: false
+        file: workflow/examples/vm_connectivity.yaml

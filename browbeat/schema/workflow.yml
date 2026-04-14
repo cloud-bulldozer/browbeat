@@ -1,0 +1,29 @@
+# This schema defines how a Workflow workload is formatted
+name: Workflow workload schema
+type: map
+mapping:
+  enabled:
+    type: bool
+    required: True
+  name:
+    type: str
+    required: True
+  type:
+    type: str
+    required: True
+    enum: ["workflow"]
+  scenarios:
+    type: seq
+    sequence:
+    - type: map
+      allowempty: True
+      mapping:
+        enabled:
+          type: bool
+          required: True
+        file:
+          type: str
+          required: True
+        name:
+          type: str
+          required: True
