@@ -1,0 +1,60 @@
+name: "RAFT Leader Chaos - OVN Northbound"
+description: >
+  Find the OVN Northbound RAFT leader pod and kill it using krkn pod_scenario.
+  This tests OVN RAFT failover and leader re-election.
+
+variables:
+  kubeconfig_path: "~/.kube/config"
+  namespace: "openstack"
+
+steps:
+  - name: "find-ovn-nb-raft-leader"
+    operation: "oc.find_raft_leader"
+    args:
+      pod_prefix: "ovsdbserver-nb"
+      namespace: "{{ namespace }}"
+      container: "ovsdbserver-nb"
+      command: "ovs-appctl -t /tmp/ovnnb_db.ctl cluster/status OVN_Northbound"
+      leader_pattern: "Role: leader"
+    save_as: "leader_info"
+    timeout: 120
+    on_failure: "fail"
+
+  - name: "log-leader-found"
+    operation: "workflow.log"
+    args:
+      message: "RAFT leader is {{ leader_info.pod }} (label: {{ leader_info.pod_label }})"
+
+  - name: "kill-raft-leader"
+    operation: "krkn.pod_scenario"
+    args:
+      kubeconfig: "{{ kubeconfig_path }}"
+      env:
+        NAMESPACE: "{{ leader_info.namespace }}"
+        POD_LABEL: "{{ leader_info.pod_label }}"
+        EXPECTED_POD_COUNT: "1"
+        DISRUPTION_COUNT: "1"
+    save_as: "chaos_result"
+    timeout: 600
+    on_failure: "continue"
+
+  - name: "wait-for-re-election"
+    operation: "workflow.wait"
+    args:
+      seconds: 30
+
+  - name: "verify-new-leader"
+    operation: "oc.find_raft_leader"
+    args:
+      pod_prefix: "ovsdbserver-nb"
+      namespace: "{{ namespace }}"
+      container: "ovsdbserver-nb"
+      command: "ovs-appctl -t /tmp/ovnnb_db.ctl cluster/status OVN_Northbound"
+    save_as: "new_leader_info"
+    timeout: 120
+    on_failure: "fail"
+
+  - name: "log-new-leader"
+    operation: "workflow.log"
+    args:
+      message: "New RAFT leader after chaos: {{ new_leader_info.pod }}"

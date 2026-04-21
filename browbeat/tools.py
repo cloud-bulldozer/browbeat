@@ -28,11 +28,22 @@ class Tools(object):
         self.config = config
 
     # Run command, return stdout as result
-    def run_cmd(self, cmd):
+    def run_cmd(self, cmd, timeout=None):
         self.logger.debug("Running command : %s" % cmd)
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
+        try:
+            stdout, stderr = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr = process.communicate()
+            self.logger.error(
+                "Command timed out after {} seconds: {}".format(timeout, cmd))
+            return {
+                'stdout': stdout.strip().decode(),
+                'stderr': stderr.strip(),
+                'rc': -1
+            }
         output_dict = {}
         output_dict['stdout'] = stdout.strip().decode()
         output_dict['stderr'] = stderr.strip()

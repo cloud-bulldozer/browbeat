@@ -957,3 +957,12 @@ workloads:
       - name: vm-connectivity-test
         enabled: false
         file: workflow/examples/vm_connectivity.yaml
+      - name: check-krkn
+        enabled: false
+        file: workflow/examples/krkn_generic.yaml
+      - name: check-krkn-pod
+        enabled: true
+        file: workflow/examples/krkn_pod_chaos.yaml
+      - name: check-oc-krkn
+        enabled: true
+        file: workflow/examples/krkn_raft_leader_chaos.yaml

@@ -13,6 +13,8 @@
 from workflow.nova import get_handlers as get_nova_handlers
 from workflow.neutron import get_handlers as get_neutron_handlers
 from workflow.common import get_handlers as get_common_handlers
+from workflow.krkn import get_handlers as get_krkn_handlers
+from workflow.oc import get_handlers as get_oc_handlers
 
 
 def get_all_handlers(workflow_instance):
@@ -28,4 +30,6 @@ def get_all_handlers(workflow_instance):
     handlers.update(get_nova_handlers(workflow_instance))
     handlers.update(get_neutron_handlers(workflow_instance))
     handlers.update(get_common_handlers(workflow_instance))
+    handlers.update(get_krkn_handlers(workflow_instance))
+    handlers.update(get_oc_handlers(workflow_instance))
     return handlers
