@@ -192,6 +192,7 @@ index_prow_run() {
         "uuid":"'"${browbeat_uuid}"'",
         "browbeat_uuid":"'"${browbeat_uuid}"'",
         "benchmark":"'"${BENCHMARK:-}"'",
+        "benchmarkType":"'"${WORKLOAD_TYPE:-}"'",
         "masterNodesCount":"'"${masters}"'",
         "workerNodesCount":"'"${workers}"'",
         "masterNodesType":"'"${master_type}"'",
