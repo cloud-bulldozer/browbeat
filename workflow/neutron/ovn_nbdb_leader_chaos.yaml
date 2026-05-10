@@ -14,7 +14,7 @@ steps:
       pod_prefix: "ovsdbserver-nb"
       namespace: "{{ namespace }}"
       container: "ovsdbserver-nb"
-      command: "ovs-appctl -t /tmp/ovnnb_db.ctl cluster/status OVN_Northbound"
+      command: "ovs-appctl -t /etc/ovn/ovnnb_db.ctl cluster/status OVN_Northbound"
       leader_pattern: "Role: leader"
     save_as: "leader_info"
     timeout: 120
@@ -49,7 +49,7 @@ steps:
       pod_prefix: "ovsdbserver-nb"
       namespace: "{{ namespace }}"
       container: "ovsdbserver-nb"
-      command: "ovs-appctl -t /tmp/ovnnb_db.ctl cluster/status OVN_Northbound"
+      command: "ovs-appctl -t /etc/ovn/ovnnb_db.ctl cluster/status OVN_Northbound"
     save_as: "new_leader_info"
     timeout: 120
     on_failure: "fail"
